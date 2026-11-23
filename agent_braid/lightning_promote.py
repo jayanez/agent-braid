@@ -106,6 +106,7 @@ class CandidateRecord:
     evaluation: EvaluationRecord
     heldOutSupport: str
     profile: dict
+    run: store.RunStore
 
     @property
     def executionAuthorization(self) -> bool:
@@ -155,7 +156,7 @@ def build_record(run: store.RunStore, candidate_sha256: str, scope: str, *,
     except promotion.PromotionError as exc:
         raise PromoteError(exc.reason) from None
     return CandidateRecord(scope, entry.target, candidate_sha256, text, registration, evaluation,
-                           support, profile)
+                           support, profile, run)
 
 
 # --- preview (REQ-003) ----------------------------------------------------------------
@@ -244,6 +245,10 @@ def preview_promote(record: CandidateRecord, *, home: Path | None, root: Path,
     value, raw = read_registry(home, record.scope)
     before = read_target(root, record.scope)
     evidence = set(record.evidence)
+    if not value.decisions:
+        # A scope's first decision cites the file it replaces: the baseline the build check
+        # requires while no candidate is active, restored when none remains.
+        evidence.add(_hex(before))
     if reason is not None:
         evidence.add(_hex(reason.encode("utf-8")))
     blockers = []
@@ -277,19 +282,49 @@ def _private_dirs(home: Path | None) -> None:
 
 
 def write_target(root: Path, scope: str, raw: bytes) -> None:
-    """Replace the mapped file atomically (same-directory temp file, fsync, rename)."""
+    """Replace the mapped file atomically: same-directory temp file with the file's mode,
+    fsync, rename, directory fsync. Any OS failure is ``target-write-failed``."""
     path = Path(root) / scope_entry(scope).target
     temp = path.with_name(f".{path.name}.tmp-{secrets.token_hex(8)}")
-    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644)
     try:
-        with os.fdopen(fd, "wb") as handle:
-            handle.write(raw)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temp, path)
-    except BaseException:
-        temp.unlink(missing_ok=True)
-        raise
+        mode = stat.S_IMODE(os.lstat(path).st_mode)
+    except OSError:
+        mode = 0o644
+    try:
+        fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, mode)
+        try:
+            with os.fdopen(fd, "wb") as handle:
+                handle.write(raw)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.chmod(temp, mode)
+            os.replace(temp, path)
+        except BaseException:
+            temp.unlink(missing_ok=True)
+            raise
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    except OSError:
+        raise PromoteError("target-write-failed") from None
+
+
+def _keep_text(run: store.RunStore, raw: bytes) -> None:
+    """Keep a text content-addressed in the run store (a baseline or an override reason)."""
+    try:
+        run.write_candidate_text(_hex(raw), raw.decode("utf-8"))
+    except (store.StoreError, UnicodeDecodeError):
+        raise PromoteError("text-not-storable") from None
+
+
+def baseline_digests(value: promotion.ProfileRegistry) -> frozenset[str]:
+    """Extra evidence of the scope's first decision; it includes the baseline file digest."""
+    if not value.journal:
+        return frozenset()
+    first = value.decisions[value.journal[0]["subject"]]
+    return frozenset(first["evidenceSha256s"])
 
 
 def _save(home: Path | None, value: promotion.ProfileRegistry) -> None:
@@ -306,8 +341,17 @@ def _target_sha(value: promotion.ProfileRegistry) -> str | None:
 def _checked(document: dict, preview_digest: Any) -> None:
     """The recomputed preview must equal the one the human read, and carry no blocker."""
     _require(type(preview_digest) is str and document["previewDigest"] == preview_digest, "preview-stale")
-    if document["blockers"]:
+    if document.get("blockers"):
         raise PromoteError(document["blockers"][0])
+
+
+def _unchanged(document: dict, home: Path | None, root: Path, scope: str):
+    """Re-read registry and file right before writing; both must still be the previewed bytes."""
+    value, raw = read_registry(home, scope)
+    before = read_target(root, scope)
+    _require(_hex(raw) == document["registrySha256Before"]
+             and _hex(before) == document["fileSha256Before"], "preview-stale")
+    return value, before
 
 
 def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, preview_digest: str,
@@ -323,8 +367,8 @@ def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, pre
     document = preview_promote(record, home=home, root=root, override_reason=override_reason)
     _checked(document, preview_digest)
     reason = document["overrideReason"]
-    extra = [_hex(reason.encode("utf-8"))] if reason is not None else []
-    value, _ = read_registry(home, record.scope)
+    extra = sorted(set(document["evidence"]) - set(record.evidence))
+    value, before = _unchanged(document, home, root, record.scope)
     try:
         decision = promotion.decide(
             record.registration, record.evaluation, profile=record.profile, actor=actor,
@@ -333,14 +377,17 @@ def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, pre
         begun = value.record(decision, at).begin(decision, current=current, at=at)
     except promotion.PromotionError as exc:
         raise PromoteError(exc.reason) from None
-    before = read_target(root, record.scope)
+    if not value.decisions:
+        _keep_text(record.run, before)  # the baseline, restorable later
+    if reason is not None:
+        _keep_text(record.run, reason.encode("utf-8"))  # OD-5: the text beside its cited digest
     _private_dirs(home)
     _save(home, begun)
     try:
         write_target(root, record.scope, record.text.encode("utf-8"))
         committed = begun.commit(current=current, at=at)
         _save(home, committed)
-    except BaseException:
+    except Exception:
         _abort(home, root, record.scope, begun, before, at)
         raise PromoteError("apply-failed") from None
     return {"status": "committed", "action": "promote", "scope": record.scope,
@@ -350,14 +397,78 @@ def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, pre
 
 
 def _abort(home, root, scope, begun, before: bytes, at: int) -> None:
-    """Restore the file bytes (if they changed) and record ``aborted``; the prior profile is kept."""
+    """Restore the file bytes (if they changed) and record ``aborted``; the prior profile is kept.
+
+    The abort is recorded even when the restore fails; a failure of either step is reported
+    as ``abort-failed`` and left to ``--abort`` recovery (the build check flags the file)."""
+    restored = True
     try:
-        unchanged = read_target(root, scope) == before
+        if read_target(root, scope) != before:
+            write_target(root, scope, before)
     except PromoteError:
-        unchanged = False
-    if not unchanged:
+        restored = False
+    try:
+        _save(home, begun.abort(at=at, reason="apply-failed"))
+    except (PromoteError, promotion.PromotionError):
+        restored = False
+    _require(restored, "abort-failed")
+
+
+# --- recovery from an interrupted promotion ---------------------------------------------
+
+
+def _restored_text(value: promotion.ProfileRegistry, after: promotion.ProfileRegistry,
+                   run: store.RunStore) -> tuple[str, str]:
+    """Digest and text the mapped file must hold after a change: the active candidate of
+    ``after``, or, when none is active, the baseline cited by the scope's first decision."""
+    candidate = active_candidate(after)
+    if candidate is not None:
+        return candidate, _text(run, candidate)
+    for digest in sorted(baseline_digests(value)):
+        try:
+            return digest, run.candidate_text(digest)
+        except store.StoreError:
+            continue
+    raise PromoteError("candidate-not-stored")
+
+
+def preview_abort(scope: str, *, home: Path | None, root: Path, run: store.RunStore,
+                  reason: str = "owner-abort", at: int) -> dict:
+    """Preview dropping a pending (interrupted) promotion and restoring the active text."""
+    value, raw = read_registry(home, scope)
+    _require(value.pending is not None, "no-transaction")
+    try:
+        after = value.abort(at=at, reason=reason)
+    except promotion.PromotionError as exc:
+        raise PromoteError(exc.reason) from None
+    candidate, text = _restored_text(value, after, run)
+    before = read_target(root, scope)
+    return seal({
+        "schema": PREVIEW_SCHEMA, "action": "abort", "scope": scope,
+        "targetPath": scope_entry(scope).target, "currentSha256": active_candidate(value),
+        "pendingSha256": value.decisions[value.pending]["profile"]["candidateSha256"],
+        "candidateSha256": candidate, "fileSha256Before": _hex(before),
+        "registrySha256Before": _hex(raw), "cohort": COHORT, "reason": reason,
+        "diffSummary": _diff(before, text.encode("utf-8")), "requiredDecision": "human-apply"})
+
+
+def apply_abort(scope: str, *, home: Path | None, root: Path, run: store.RunStore,
+                preview_digest: str, reason: str = "owner-abort", at: int) -> dict:
+    """Restore the active (or baseline) text, then record ``aborted`` for the pending entry."""
+    document = preview_abort(scope, home=home, root=root, run=run, reason=reason, at=at)
+    _checked(document, preview_digest)
+    value, before = _unchanged(document, home, root, scope)
+    after = value.abort(at=at, reason=reason)
+    _, text = _restored_text(value, after, run)
+    write_target(root, scope, text.encode("utf-8"))
+    try:
+        _save(home, after)
+    except PromoteError:
         write_target(root, scope, before)
-    _save(home, begun.abort(at=at, reason="apply-failed"))
+        raise PromoteError("apply-failed") from None
+    return {"status": "aborted", "action": "abort", "scope": scope,
+            "activeSha256": active_candidate(after), "registrySha256After": after.sha256,
+            "fileSha256After": _hex(read_target(root, scope)), "executionAuthorization": False}
 
 
 # --- CLI: agent-braid lightning promote -----------------------------------------------
@@ -367,14 +478,22 @@ def add_arguments(parser) -> None:
     parser.add_argument("--home", type=Path, help="explicit private Agent Braid state root")
     parser.add_argument("--scope", default="lightning.skill.analyze", help="registry scope (closed map)")
     parser.add_argument("--root", type=Path, default=Path("."), help="plugin source checkout (default: .)")
-    parser.add_argument("--candidate", required=True, metavar="SHA256", help="candidate text digest")
+    parser.add_argument("--candidate", metavar="SHA256", help="candidate text digest")
     parser.add_argument("--run-id", required=True, help="Lightning run that stores the candidate text")
-    parser.add_argument("--registration", required=True, type=Path, help="SPEC-049 registration JSON")
-    parser.add_argument("--evaluation", required=True, type=Path, help="SPEC-049 evaluation record JSON")
-    parser.add_argument("--identity", required=True, type=Path,
+    parser.add_argument("--registration", type=Path, help="SPEC-049 registration JSON")
+    parser.add_argument("--evaluation", type=Path, help="SPEC-049 evaluation record JSON")
+    parser.add_argument("--identity", type=Path,
                         help="JSON identity: sourceSha256, host, model, toolSetSha256, policySha256")
+    parser.add_argument("--current-identity", type=Path,
+                        help="JSON identity now in force (default: --identity); begin and commit "
+                             "refuse a drifted one")
     parser.add_argument("--override-reason", help="owner reason to promote without held-out support")
-    parser.add_argument("--apply", action="store_true", help="write; requires --preview-digest and --actor")
+    parser.add_argument("--abort", action="store_true",
+                        help="recover an interrupted promotion of --scope: drop the pending entry, "
+                             "restore the active text (preview unless --apply)")
+    parser.add_argument("--reason", default=None, help="journal reason id (default: owner-abort)")
+    parser.add_argument("--apply", action="store_true",
+                        help="write; requires --preview-digest (and --actor and --safety to promote)")
     parser.add_argument("--preview-digest", help="digest of the preview the human read")
     parser.add_argument("--actor", help="human decider id (a human decision is the only accepted kind)")
     parser.add_argument("--safety", type=Path,
@@ -393,6 +512,8 @@ def _read_file(path: Path, limit: int = 1 << 20) -> bytes:
 
 def record_from_args(args) -> CandidateRecord:
     scope_entry(args.scope)
+    _require(all(getattr(args, k) for k in ("candidate", "registration", "evaluation", "identity")),
+             "promote-needs-candidate-pair-identity")
     registration = load_record(Registration, _read_file(args.registration))
     evaluation = load_record(EvaluationRecord, _read_file(args.evaluation))
     try:
@@ -407,9 +528,30 @@ def record_from_args(args) -> CandidateRecord:
                         evaluation=evaluation, identity=identity)
 
 
+def _run_store(args) -> store.RunStore:
+    try:
+        return store.RunStore(args.home, args.run_id)
+    except store.StoreError:
+        raise PromoteError("candidate-not-stored") from None
+
+
 def run(args) -> int:
     """Print the preview JSON and return 0; a refusal is one stderr line and exit 2."""
     try:
+        at = int(time.time())
+        if args.abort:
+            run_store = _run_store(args)
+            reason = args.reason or "owner-abort"
+            if args.apply:
+                _require(bool(args.preview_digest), "apply-needs-digest")
+                output = apply_abort(args.scope, home=args.home, root=args.root, run=run_store,
+                                     preview_digest=args.preview_digest, reason=reason, at=at)
+            else:
+                _require(args.preview_digest is None, "preview-digest-needs-apply")
+                output = preview_abort(args.scope, home=args.home, root=args.root, run=run_store,
+                                       reason=reason, at=at)
+            print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
+            return 0
         record = record_from_args(args)
         if args.apply:
             _require(args.preview_digest and args.actor and args.safety, "apply-needs-digest-actor-safety")
@@ -417,16 +559,25 @@ def run(args) -> int:
                 safety = json.loads(_read_file(args.safety))
             except ValueError:
                 raise PromoteError("invalid-safety") from None
-            output = apply_promote(record, home=args.home, root=args.root,
+            current = None
+            if args.current_identity:
+                try:
+                    current = json.loads(_read_file(args.current_identity))
+                except ValueError:
+                    raise PromoteError("invalid-identity") from None
+            output = apply_promote(record, home=args.home, root=args.root, current=current,
                                    preview_digest=args.preview_digest,
                                    actor={"kind": "human", "id": args.actor}, safety=safety,
-                                   at=int(time.time()), override_reason=args.override_reason)
+                                   at=at, override_reason=args.override_reason)
         else:
             _require(args.preview_digest is None, "preview-digest-needs-apply")
             output = preview_promote(record, home=args.home, root=args.root,
                                      override_reason=args.override_reason)
     except PromoteError as exc:
         print(f"lightning promote refused ({exc.reason})", file=sys.stderr)
+        return 2
+    except OSError:
+        print("lightning promote refused (io-error)", file=sys.stderr)
         return 2
     print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
     return 0

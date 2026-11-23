@@ -27,10 +27,21 @@ CLI: `agent-braid lightning promote --candidate <sha> --run-id <run> --registrat
 prints the preview on stdout and writes nothing; a refusal is the single stderr line
 `lightning promote refused (<reason>)` with exit status 2.
 
+Recovery: `lightning promote --abort --run-id <run> [--scope <s>] [--reason <id>]`
+previews dropping a pending (interrupted) promotion: `action` `abort`, the
+`pendingSha256` being dropped, the `candidateSha256` the file returns to (the active
+candidate, or the baseline cited by the scope's first decision), the journal `reason`
+and `requiredDecision` `human-apply`. `--apply --preview-digest <d>` restores that text,
+then records `aborted`.
+
 Apply rule: `--apply --preview-digest d` recomputes the preview and writes only
-when the recomputed digest equals `d`. Order: registry `record` (if new), human
-`decide`, `begin`, file write by atomic rename, `commit`; on any failure,
-`abort` and restore the file bytes.
+when the recomputed digest equals `d`. Right before writing, the registry and file bytes must still match
+`registrySha256Before` and `fileSha256Before` (`preview-stale` otherwise). Order:
+registry `record` (if new), human `decide`, `begin`, file write by atomic rename
+(file mode kept, directory fsynced), `commit`; on any failure, `abort` and restore
+the file bytes. If the restore or the abort record fails, the refusal is
+`abort-failed` and `--abort` recovers. A scope's first apply keeps the replaced
+baseline text, and an override reason's text, content-addressed in the run store.
 
 Refusal reasons: `unknown-scope`, `candidate-not-stored`, `digest-mismatch`,
 `preview-stale`, `automatic-promotion-disabled`, `cohort-mismatch`,

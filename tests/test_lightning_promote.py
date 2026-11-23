@@ -196,7 +196,9 @@ class PreviewTests(Base):
         self.assertEqual(doc['fileSha256Before'], sha256_text(BASE_TEXT))
         self.assertEqual(doc['registrySha256Before'], sha256_text(''))
         self.assertEqual(doc['diffSummary'], {'added': 2, 'removed': 1})
-        self.assertEqual(doc['evidence'], sorted([self.registration.sha256, self.evaluation.sha256]))
+        # The scope's first decision also cites the baseline file it replaces.
+        self.assertEqual(doc['evidence'], sorted([self.registration.sha256, self.evaluation.sha256,
+                                                  sha256_text(BASE_TEXT)]))
         self.assertEqual((doc['cohort'], doc['requiredDecision'], doc['heldOutSupport']),
                          ('native', 'approved', 'supported'))
         self.assertIs(doc['executionAuthorization'], False)
@@ -304,13 +306,32 @@ class ApplyTests(Base):
         self.assertEqual(result['registrySha256After'], value.sha256)
 
     def test_bounded_write_set(self):
-        outside = snapshot(Path(self.tmp.name).resolve() / 'home' / 'lightning')
+        before = snapshot(self.home, self.root)
         self.apply()
-        changed = {p for p in snapshot(self.home, self.root)}
-        allowed = {str(lp.registry_path(self.home, SCOPE)), str(lp.registry_path(self.home, SCOPE)) + '.lock',
-                   str(self.target)}
-        self.assertEqual(changed - set(snapshot(self.home / 'lightning')), allowed)
-        self.assertEqual(snapshot(self.home / 'lightning'), outside)
+        after = snapshot(self.home, self.root)
+        changed = {p for p in after if before.get(p) != after[p]} | (set(before) - set(after))
+        registry = str(lp.registry_path(self.home, SCOPE))
+        baseline = str(self.run.root / 'candidates' / f'{sha256_text(BASE_TEXT)}.md')
+        self.assertEqual(changed, {registry, registry + '.lock', str(self.target), baseline})
+        # The baseline text is kept content-addressed in the run store and cited by the decision.
+        self.assertEqual(self.run.candidate_text(sha256_text(BASE_TEXT)), BASE_TEXT)
+        self.assertIn(sha256_text(BASE_TEXT), lp.baseline_digests(self.registry()))
+
+    def test_file_mode_is_kept(self):
+        os.chmod(self.target, 0o640)
+        self.apply()
+        self.assertEqual(os.stat(self.target).st_mode & 0o777, 0o640)
+
+    def test_change_between_preview_check_and_write_is_stale(self):
+        real = lp.read_target
+        calls = []
+
+        def drifting(root, scope):
+            calls.append(1)
+            return real(root, scope) + (b'drift\n' if len(calls) > 1 else b'')
+        with patch.object(lp, 'read_target', drifting):
+            self.refused('preview-stale', self.apply)
+        self.assertFalse(lp.registry_path(self.home, SCOPE).exists())
 
     def test_automatic_actor_refused_and_nothing_written(self):
         before = snapshot(self.home, self.root)
@@ -357,6 +378,8 @@ class ApplyTests(Base):
         self.assertEqual(list(decision['limits']), ['owner-override-no-held-out-support'])
         self.assertIn(sha256_text('drill only'), decision['evidenceSha256s'])
         self.assertNotIn(b'drill only', lp.registry_path(self.home, SCOPE).read_bytes())
+        # OD-5: the reason text is kept in the run store beside its cited digest.
+        self.assertEqual(self.run.candidate_text(sha256_text('drill only')), 'drill only')
 
     def test_failed_file_write_aborts_and_restores(self):
         real = os.replace
@@ -379,6 +402,57 @@ class ApplyTests(Base):
             self.refused('apply-failed', self.apply)
         self.assertEqual(self.target.read_text(), BASE_TEXT)
         self.assertEqual(self.registry().journal[-1]['event'], 'aborted')
+
+    def test_failed_restore_still_records_the_abort_and_reports_abort_failed(self):
+        real = lp.write_target
+
+        def failing(root, scope, raw):
+            if raw != TEXT.encode():
+                raise lp.PromoteError('target-write-failed')
+            return real(root, scope, raw)
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=hp.PromotionError('stale-host')), \
+                patch.object(lp, 'write_target', failing):
+            self.refused('abort-failed', self.apply)
+        self.assertEqual(self.registry().journal[-1]['event'], 'aborted')
+        self.assertEqual(self.target.read_text(), TEXT)  # left for the build check to flag
+
+    def interrupted(self):
+        """A promotion interrupted after begin was saved: pending entry, candidate text on disk."""
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                self.apply()
+        self.assertIsNotNone(self.registry().pending)
+        self.assertEqual(self.target.read_text(), TEXT)
+
+    def test_interrupted_promotion_is_recovered_by_abort(self):
+        self.interrupted()
+        self.refused('transaction-in-progress', lambda: self.apply(at=11))
+        before = snapshot(self.home, self.root)
+        doc = lp.preview_abort(SCOPE, home=self.home, root=self.root, run=self.run, at=12)
+        self.assertEqual(snapshot(self.home, self.root), before)
+        self.assertEqual((doc['action'], doc['pendingSha256'], doc['candidateSha256']),
+                         ('abort', self.sha, sha256_text(BASE_TEXT)))
+        result = lp.apply_abort(SCOPE, home=self.home, root=self.root, run=self.run,
+                                preview_digest=doc['previewDigest'], at=12)
+        self.assertEqual(result['status'], 'aborted')
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+        value = self.registry()
+        self.assertIsNone(value.pending)
+        self.assertEqual(value.journal[-1]['event'], 'aborted')
+        self.apply(at=13)  # a new promotion can start again
+        self.assertEqual(self.target.read_text(), TEXT)
+
+    def test_abort_needs_a_pending_entry_and_a_fresh_preview(self):
+        self.refused('no-transaction', lambda: lp.preview_abort(SCOPE, home=self.home, root=self.root,
+                                                                run=self.run, at=1))
+        self.interrupted()
+        doc = lp.preview_abort(SCOPE, home=self.home, root=self.root, run=self.run, at=12)
+        self.target.write_text('edit\n')
+        self.refused('preview-stale', lambda: lp.apply_abort(
+            SCOPE, home=self.home, root=self.root, run=self.run, preview_digest=doc['previewDigest'], at=12))
+        other = lp.preview_abort(SCOPE, home=self.home, root=self.root, run=self.run, reason='other', at=12)
+        self.assertNotEqual(other['previewDigest'], lp.preview_abort(
+            SCOPE, home=self.home, root=self.root, run=self.run, at=12)['previewDigest'])
 
     def test_reapply_of_the_active_candidate_refused(self):
         self.apply()
@@ -433,7 +507,12 @@ def violations(source):
 
 
 class BoundaryTests(Base):
-    """procedure_008 / SC-008: no socket, no process, standard library only, bounded writes."""
+    """procedure_008 / SC-008: no socket, no process, standard library only, bounded writes.
+
+    The AST check is module-local: it covers ``lightning_promote.py`` itself. Importing it
+    still loads Agent Braid modules (for example ``harness_promotion`` -> ``harness_lab``)
+    that import ``subprocess``; the runtime test shows the promotion paths never call it.
+    """
 
     def test_module_source_has_no_forbidden_import_or_call(self):
         self.assertEqual(violations(MODULE.read_text()), [])

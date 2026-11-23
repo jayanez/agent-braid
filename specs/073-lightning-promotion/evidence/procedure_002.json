@@ -5,14 +5,14 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_promote.py": "7ede83913541403bfbf4ade137a58ccd5c5483bea4ad56b97429a129d4913e0a",
-  "tests/test_lightning_promote.py": "6bea206e31cd49c0458e1590248aee0ed06cff768f98b021b14dd3de80eaea75"
+  "agent_braid/lightning_promote.py": "9550ff94b2b311a2c53584fa8af220af99d788ca39927b72990ff67429da57fd",
+  "tests/test_lightning_promote.py": "bd31017978aace74b5bf00bb1e328d793dfcd8da828b57445a1077f09ccd324e"
  },
- "limits": "The apply path is proven with a synthetic native fixture pair whose C-vs-A strata are assessed noninferior (OD-4); real SPEC-072 pairs are refused. Human identity, safety counts and the current identity are self-asserted by the caller.",
- "outcome": "passed: apply_promote recomputes the preview, requires its digest, then calls harness_promotion.decide() with a human actor (approved), records and begins the decision, saves the registry, replaces the mapped SKILL.md by same-directory temp file, fsync and rename, commits and saves; the journal reads recorded, begun, committed and the registry's active candidate equals the file digest. Writes are bounded to the scope's registry file, its lock file and the mapped SKILL.md. Negative controls: automatic actor (automatic-promotion-disabled), synthetic cohort (cohort-mismatch), drifted current identity (stale-model), unsafe or unknown safety counts (unsafe-admission, safety-unknown), a SPEC-072 descriptive-only pair (regression-not-covered, OD-4), re-applying the active candidate (already-active), no held-out support without an override reason (no-held-out-support); with a reason the decision carries the limit owner-override-no-held-out-support and the reason's SHA-256, never its text (OD-5). A failed file write or commit aborts: file bytes restored, journal ends aborted, no temp file left, no active profile.",
+ "limits": "Proven with a synthetic native fixture pair whose C-vs-A strata are assessed noninferior (OD-4); real SPEC-072 pairs are refused. Human identity, safety counts and the current identity are self-asserted by the caller.",
+ "outcome": "passed: apply_promote recomputes the preview, requires its digest and, right before writing, the previewed registry and file digests; then decide() with a human actor (approved), record, begin, save, atomic SKILL.md replace (mode kept, temp fsync, rename, directory fsync), commit, save; journal recorded, begun, committed; active candidate equals the file digest. A scope's first apply cites and stores the replaced baseline text; an override reason's text is stored in the run store beside its cited digest (OD-5). Writes are bounded to the registry file, its lock, the mapped SKILL.md and run-store texts. An interrupted promotion (pending entry, candidate text on disk) blocks new promotions with transaction-in-progress and is recovered by --abort: preview (no writes), digest-checked apply restoring the baseline text and recording aborted, after which a new promotion succeeds. Negative controls: automatic actor (automatic-promotion-disabled), synthetic cohort (cohort-mismatch), drifted identity (stale-model), unsafe or unknown safety, SPEC-072 descriptive-only pair (regression-not-covered, OD-4), re-apply (already-active), no held-out support without reason (no-held-out-support), a change between preview check and write (preview-stale), failed write or commit (apply-failed, file restored, aborted), failed restore (abort-failed with aborted still recorded), abort with no pending entry (no-transaction) or a stale abort preview (preview-stale).",
  "procedure": "procedure_002",
  "result": "OK",
  "scenario": "SC-002",
  "specification": "SPEC-073 BL.3",
- "testsRun": 38
+ "testsRun": 43
 }
