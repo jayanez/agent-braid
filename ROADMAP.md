@@ -657,7 +657,7 @@ Next step (planned 2026-11-22, documentation only so far; see the
 
 - SPEC-080 (HAR.3) ships a read-only `harness` Agent Skill in every host and adds
   OpenCode to the harness host registry ([ADR 0044](docs/adr/0044-harness-portability-tiers-skill-surface.md),
-  Proposed).
+  Accepted 2026-11-23).
 - SPEC-081 (M4.9 — AI tooling integration for Pi and ThinkRail) adds Pi and JetBrains
   ThinkRail as hosts through a Pi package.
 - HAR.4 — Harness evaluation platform makes evaluation verdicts decidable and
