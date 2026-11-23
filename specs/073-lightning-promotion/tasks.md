@@ -9,7 +9,7 @@ imply release or owner acceptance. `quick` means
 - [x] T001 (REQ-001 / SC-001): Owner review of spec, plan and contracts; OD-1 to
   OD-3 decided and recorded under Clarifications. Dependencies: none.
   Verification: review record bound to a frozen commit.
-- [ ] T002 (REQ-001 / SC-001): `lightning_promote.build_record` with the scope
+- [x] T002 (REQ-001 / SC-001): `lightning_promote.build_record` with the scope
   map and content-addressed text lookup; tests for unknown scope, digest
   mismatch and oversize text; consume the SPEC-072 SPEC-049 pair; refuse
   without H1 `supported` unless an owner override reason is recorded.
