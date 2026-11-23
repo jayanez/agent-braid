@@ -22,10 +22,18 @@ Nothing here decides, begins or commits a promotion (``AUTOMATIC_PROMOTION`` sta
 from __future__ import annotations
 
 from dataclasses import dataclass
+import difflib
+from hashlib import sha256
+import json
+import os
+from pathlib import Path
+import stat
+import sys
 from typing import Any
 
 from . import harness_promotion as promotion
 from . import lightning_store as store
+from . import plugin_registry
 from .harness_evaluation import REGISTRATION_FORMAT, REPORT_FORMAT, EvaluationRecord, Registration
 from .system_one import InvalidDecision, canonical, freeze, parse_json
 
@@ -33,6 +41,10 @@ COHORT = "native"
 EFFECTS = ("skill-text",)
 SUPPORTED = "supported"
 NO_SUPPORT = "no-held-out-support"
+PREVIEW_SCHEMA = "braid-lightning-promotion-preview/v0.1"
+OVERRIDE_LIMIT = "owner-override-no-held-out-support"
+MAX_REASON = 512
+MAX_TARGET = 64 * 1024
 
 
 @dataclass(frozen=True)
@@ -56,7 +68,7 @@ class PromoteError(ValueError):
     """Sanitized refusal carrying a fixed reason code only."""
 
     def __init__(self, reason: str):
-        self.reason = reason
+        self.reason = self.code = reason
         super().__init__(reason)
 
 
@@ -142,3 +154,165 @@ def build_record(run: store.RunStore, candidate_sha256: str, scope: str, *,
         raise PromoteError(exc.reason) from None
     return CandidateRecord(scope, entry.target, candidate_sha256, text, registration, evaluation,
                            support, profile)
+
+
+# --- preview (REQ-003) ----------------------------------------------------------------
+
+
+def registry_path(home: Path | None, scope: str) -> Path:
+    """The working registry of ``scope`` in the private plugin home (OD-3)."""
+    return plugin_registry.home_path(home) / "lightning-promotion" / scope_entry(scope).registry
+
+
+def _hex(raw: bytes) -> str:
+    return sha256(raw).hexdigest()
+
+
+def read_registry(home: Path | None, scope: str) -> tuple[promotion.ProfileRegistry, bytes]:
+    """The scope's registry and its stored bytes; an absent file is the empty registry and ``b""``."""
+    path = registry_path(home, scope)
+    if not os.path.lexists(path):
+        return promotion.ProfileRegistry.empty(scope), b""
+    try:
+        value = promotion.load(path)
+    except promotion.PromotionError as exc:
+        raise PromoteError(exc.reason) from None
+    _require(value.scope == scope, "scope-mismatch")
+    return value, value.to_bytes()
+
+
+def read_target(root: Path, scope: str) -> bytes:
+    """Bytes of the mapped file: a regular, non-linked file inside ``root``."""
+    path = Path(root) / scope_entry(scope).target
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except OSError:
+        raise PromoteError("target-unavailable") from None
+    with os.fdopen(fd, "rb") as handle:
+        _require(stat.S_ISREG(os.fstat(handle.fileno()).st_mode), "target-unavailable")
+        raw = handle.read(MAX_TARGET + 1)
+    _require(len(raw) <= MAX_TARGET, "target-unavailable")
+    return raw
+
+
+def active_candidate(value: promotion.ProfileRegistry) -> str | None:
+    active = value.active
+    return value.decisions[active]["profile"]["candidateSha256"] if active else None
+
+
+def check_reason(reason: Any) -> str | None:
+    """An owner override reason: one line of at most 512 printable characters, or None."""
+    if reason is None:
+        return None
+    _require(type(reason) is str and reason.strip() and len(reason) <= MAX_REASON
+             and reason.isprintable(), "invalid-override-reason")
+    return reason
+
+
+def _diff(before: bytes, after: bytes) -> dict:
+    old = before.decode("utf-8", "replace").splitlines()
+    new = after.decode("utf-8", "replace").splitlines()
+    added = removed = 0
+    for line in difflib.ndiff(old, new):
+        added += line.startswith("+ ")
+        removed += line.startswith("- ")
+    return {"added": added, "removed": removed}
+
+
+def regression_covered(evaluation: EvaluationRecord) -> bool:
+    """True when every stratum's C-vs-A noninferiority is assessed and met (``decide()`` gate, OD-4)."""
+    strata = evaluation.to_dict().get("strata") or {}
+    return bool(strata) and all(
+        (s.get("comparisons", {}).get("C-vs-A", {}).get("noninferiority") or {}).get("status") == "assessed"
+        and s["comparisons"]["C-vs-A"]["noninferiority"].get("verdict") == "noninferior"
+        for s in strata.values())
+
+
+def seal(document: dict) -> dict:
+    """Add ``previewDigest`` (SHA-256 of the canonical fields) and ``executionAuthorization``."""
+    body = {k: v for k, v in document.items() if k not in ("previewDigest", "executionAuthorization")}
+    return {**body, "previewDigest": _hex(canonical(body)), "executionAuthorization": False}
+
+
+def preview_promote(record: CandidateRecord, *, home: Path | None, root: Path,
+                    override_reason: str | None = None) -> dict:
+    """The promotion preview of ``record``; reads the registry and the target, writes nothing."""
+    _require(type(record) is CandidateRecord, "invalid-record")
+    reason = check_reason(override_reason)
+    value, raw = read_registry(home, record.scope)
+    before = read_target(root, record.scope)
+    evidence = set(record.evidence)
+    if reason is not None:
+        evidence.add(_hex(reason.encode("utf-8")))
+    blockers = []
+    if not regression_covered(record.evaluation):
+        blockers.append("regression-not-covered")
+    if record.heldOutSupport == NO_SUPPORT and reason is None:
+        blockers.append(NO_SUPPORT)
+    if value.pending is not None:
+        blockers.append("transaction-in-progress")
+    if active_candidate(value) == record.candidateSha256:
+        blockers.append("already-active")
+    return seal({
+        "schema": PREVIEW_SCHEMA, "action": "promote", "scope": record.scope,
+        "targetPath": record.target, "currentSha256": active_candidate(value),
+        "candidateSha256": record.candidateSha256, "fileSha256Before": _hex(before),
+        "registrySha256Before": _hex(raw), "cohort": COHORT, "evidence": sorted(evidence),
+        "heldOutSupport": record.heldOutSupport, "overrideReason": reason,
+        "diffSummary": _diff(before, record.text.encode("utf-8")),
+        "blockers": sorted(blockers), "requiredDecision": "approved"})
+
+
+# --- CLI: agent-braid lightning promote -----------------------------------------------
+
+
+def add_arguments(parser) -> None:
+    parser.add_argument("--home", type=Path, help="explicit private Agent Braid state root")
+    parser.add_argument("--scope", default="lightning.skill.analyze", help="registry scope (closed map)")
+    parser.add_argument("--root", type=Path, default=Path("."), help="plugin source checkout (default: .)")
+    parser.add_argument("--candidate", required=True, metavar="SHA256", help="candidate text digest")
+    parser.add_argument("--run-id", required=True, help="Lightning run that stores the candidate text")
+    parser.add_argument("--registration", required=True, type=Path, help="SPEC-049 registration JSON")
+    parser.add_argument("--evaluation", required=True, type=Path, help="SPEC-049 evaluation record JSON")
+    parser.add_argument("--identity", required=True, type=Path,
+                        help="JSON identity: sourceSha256, host, model, toolSetSha256, policySha256")
+    parser.add_argument("--override-reason", help="owner reason to promote without held-out support")
+
+
+def _read_file(path: Path, limit: int = 1 << 20) -> bytes:
+    try:
+        with Path(path).open("rb") as handle:
+            raw = handle.read(limit + 1)
+    except OSError:
+        raise PromoteError("input-unavailable") from None
+    _require(len(raw) <= limit, "input-unavailable")
+    return raw
+
+
+def record_from_args(args) -> CandidateRecord:
+    scope_entry(args.scope)
+    registration = load_record(Registration, _read_file(args.registration))
+    evaluation = load_record(EvaluationRecord, _read_file(args.evaluation))
+    try:
+        identity = json.loads(_read_file(args.identity))
+    except ValueError:
+        raise PromoteError("invalid-identity") from None
+    try:
+        run = store.RunStore(args.home, args.run_id)
+    except store.StoreError:
+        raise PromoteError("candidate-not-stored") from None
+    return build_record(run, args.candidate, args.scope, registration=registration,
+                        evaluation=evaluation, identity=identity)
+
+
+def run(args) -> int:
+    """Print the preview JSON and return 0; a refusal is one stderr line and exit 2."""
+    try:
+        record = record_from_args(args)
+        output = preview_promote(record, home=args.home, root=args.root,
+                                 override_reason=args.override_reason)
+    except PromoteError as exc:
+        print(f"lightning promote refused ({exc.reason})", file=sys.stderr)
+        return 2
+    print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
+    return 0
