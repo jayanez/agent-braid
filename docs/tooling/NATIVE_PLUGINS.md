@@ -584,6 +584,30 @@ other unit writes. The skill now says the dependency alone orders the units and 
 (`tests/test_spec069_guidance.py` `DependencyReadRuleTests`). The scoring rule is
 unchanged. The change ships in the next alpha; no host run has measured it yet.
 
+### Pending behaviour change: disjoint `units` refusal (SPEC-079, unreleased)
+
+Not in any published alpha yet. Per SPEC-079 OD-D, it ships in the first alpha after the v4
+held-out result is recorded; that alpha's release record lists it
+([SPEC-079](../../specs/079-kind-choice-tool-fix/spec.md) REQ-001 to REQ-005).
+
+- **Disjoint `units` requests are refused.** When every pair of declared units has no
+  dependency and no shared resource other than read/read, `analyze-work` returns
+  `status: refused` with code `[units-cannot-answer-independence]` instead of an `ok`
+  report whose pairs are all `unknown`. The message (at most 400 characters) names
+  `kind` `aim` and the analyze skill. `result` carries `constructedRequest` (coverage
+  still `partial`) and `provenance` so a host can edit it and replay it as `kind` `aim`.
+  Replaying it unchanged still yields no `independent-candidate`. Execution authority is
+  never granted.
+- **Unchanged:** a single unit; any overlapping, dependent or mixed declaration; and
+  every validation or bound refusal, which still comes first.
+- **Tool descriptions.** The `analyze-work` description leads with the kind choice and
+  the `units` refusal. It describes digests as any `sha256:` label, with an example, instead
+  of a bare precondition. The `analyze` description says it takes a plan-level request
+  and points parallel or overlap questions at `analyze-work`
+  (SPEC-079 T001 and T002 add the tests).
+- **Telemetry.** The refusal reason is counted in the `other` bucket, because the
+  `refusal-reason` vocabulary is unchanged.
+
 ### Release notes for 0.1.0-alpha.8
 
 Release notes for the plugin release that ships SPEC-069, version `0.1.0-alpha.8`
