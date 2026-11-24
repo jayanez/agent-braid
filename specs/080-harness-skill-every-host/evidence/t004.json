@@ -1,0 +1,33 @@
+{
+ "format": "spec080-task-evidence/v1",
+ "task": "SPEC-080/T004",
+ "base": "develop 54d195cc0159c4ba564766049fca1a4e5093f0cc",
+ "date": "2026-11-24",
+ "executionAuthorization": false,
+ "files": [
+  {
+   "path": "tests/test_harness_skill.py",
+   "sha256": "9a36d89603cd99b65602eb641bb4200ea55aeafbdcdc6915a58553e923f7205e",
+   "size": 8208
+  }
+ ],
+ "command": "python3.13 -m unittest tests.test_harness_skill",
+ "result": "14 tests OK",
+ "controls": [
+  "extra frontmatter key",
+  "top-level license",
+  "renamed skill",
+  "inserted prepare command",
+  "missing read command",
+  "launcher command outside harness (plugin setup)",
+  "unconditional --telemetry local",
+  "removed decline",
+  "removed untrusted-data rule",
+  "leaked prompt wording"
+ ],
+ "profile": "quick ran locally up to the environmental publication gate ('public repository contains unreachable objects'); the CI validate aggregate on the PR head is the pr evidence.",
+ "limits": [
+  "Checks text, not model behaviour.",
+  "Python privacy and wording rules are conventions; the CLI's own limits remain the guard."
+ ]
+}

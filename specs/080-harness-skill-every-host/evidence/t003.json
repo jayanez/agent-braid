@@ -1,0 +1,57 @@
+{
+ "format": "spec080-task-evidence/v1",
+ "task": "SPEC-080/T003",
+ "base": "develop 54d195cc0159c4ba564766049fca1a4e5093f0cc",
+ "date": "2026-11-24",
+ "executionAuthorization": false,
+ "files": [
+  {
+   "path": "integrations/agent-braid/plugin/harness/SKILL.md",
+   "sha256": "61281cca4acd2c6d7cecfd97f179d55e0ba0ca51b061429e11773928c0103222",
+   "size": 2947
+  }
+ ],
+ "checks": {
+  "frontmatterKeys": [
+   "name",
+   "description",
+   "compatibility",
+   "metadata"
+  ],
+  "metadataLicense": "CC-BY-SA-4.0",
+  "commandsNamed": [
+   "capabilities",
+   "compare",
+   "evaluation-summary",
+   "evidence",
+   "inspect",
+   "registry-status",
+   "status",
+   "validate"
+  ],
+  "declinedEffects": [
+   "prepare",
+   "import",
+   "launch",
+   "run",
+   "recover",
+   "grant",
+   "reserve",
+   "admit",
+   "promote",
+   "adopt",
+   "activate",
+   "edit a registry",
+   "setup",
+   "plugin installation"
+  ],
+  "untrustedDataRule": true,
+  "telemetryFlag": "only when the user asks for local telemetry in this request (OD-5 a)",
+  "heldoutOverlap": "no held-out prompt shares five consecutive words with the skill (test_no_heldout_prompt_shares_five_consecutive_words)"
+ },
+ "order": "Written after the held-out set was frozen (T009, merged in 54d195cc).",
+ "limits": [
+  "Static text checks only; whether host models invoke the skill is H1, tested in T010.",
+  "Not yet packaged: T005 adds it to the build after T014."
+ ]
+}
