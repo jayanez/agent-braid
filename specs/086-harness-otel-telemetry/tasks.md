@@ -7,9 +7,11 @@ Every result keeps `executionAuthorization: false`.
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1 to OD-8.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1 to OD-8.
   Dependencies: none. Target files: none. Verification: procedure_001.
-  Planned evidence: `evidence/t001-owner-review.md`; obtained: none.
+  Planned evidence: `evidence/t001-owner-review.md`; obtained: that record
+  (2026-11-24). Every decision took the recommended option; content capture and
+  `gen_ai.evaluation.*` events are noted as future paths only.
 - [ ] T002 (REQ-001 / SC-002): Run the Codex review of this spec on the merged candidate; record raw output and triage.
   Each finding is confirmed, fixed or rejected with a reason. Independent model
   review, not human review. Dependencies: this PR merged. Target files:
