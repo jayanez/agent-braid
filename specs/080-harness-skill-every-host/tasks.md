@@ -56,14 +56,19 @@ configuration or publishes before T015.
   `agent_braid/harness_hooks.py`, `agent_braid/harness_advisory.py`, their tests.
   Verification: procedure_006, then `quick`. Planned evidence:
   `evidence/t006.json`; obtained: none.
-- [ ] T007 (REQ-007 / SC-007): Observe the current OpenCode configuration shapes with one command in a temporary home (version, `plugins`, `permissions`, `mcp.servers`, `skills`); record redacted fixtures; touch no user configuration.
+- [x] T007 (REQ-007 / SC-007): Observe the current OpenCode configuration shapes with one command in a temporary home (version, `plugins`, `permissions`, `mcp.servers`, `skills`); record redacted fixtures; touch no user configuration.
   Dependencies: T001. Target files: `evidence/t007-opencode-schema.json`, test
   fixtures. Verification: procedure_007. Planned evidence:
-  `evidence/t007-opencode-schema.json`; obtained: none.
-- [ ] T008 (REQ-007 / SC-007): Test the OpenCode install profile against the T007 fixtures (install, doctor, remove); fix an observed drift or refuse with a stable code; no guessed shape; then confirm the observed OpenCode version, in the same temporary home, lists the installed server, or record `opencode-acceptance-unobserved`.
+  `evidence/t007-opencode-schema.json`; obtained: that file (2026-11-24): OpenCode 2.1.4 in sandboxed temporary
+  homes reads both singular and plural shapes (plural wins on a same-name MCP entry);
+  17 redacted fixtures; a self-initiated model-catalog request was blocked and recorded.
+- [x] T008 (REQ-007 / SC-007): Test the OpenCode install profile against the T007 fixtures (install, doctor, remove); fix an observed drift or refuse with a stable code; no guessed shape; then confirm the observed OpenCode version, in the same temporary home, lists the installed server, or record `opencode-acceptance-unobserved`.
   Dependencies: T007. Target files: `agent_braid/tooling_install.py` (only on drift),
   `tests/test_tooling_install_opencode.py`. Verification: procedure_007, then `quick`.
-  Planned evidence: `evidence/t008.json`; obtained: none.
+  Planned evidence: `evidence/t008.json`; obtained: that file (2026-11-24): drift fixed (an unowned same-name
+  `mcp.servers` entry now refuses `unowned_collision`; doctor reports `shadowed`);
+  2.1.4 lists the installed server (`pending`) in the same temporary home from no
+  file, the singular and the plural fixture; acceptance observed, not connected.
 
 ## Phase P3 — host validity and telemetry
 
