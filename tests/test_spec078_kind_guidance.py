@@ -35,8 +35,9 @@ class KindSelectionTests(GuidanceCase):
         request = {"unitsRequestVersion": units["request"]["unitsRequestVersion"],
                    "units": [{"id": "a", "coverage": "complete", "effects": [{"kind": "write", "resource": "src/a.py"}]},
                              {"id": "b", "coverage": "complete", "effects": [{"kind": "write", "resource": "src/b.py"}]}]}
-        pairs = self.send("units", request)["result"]["report"]["interactions"]
-        self.assertEqual([p["classification"] for p in pairs], ["unknown"])
+        envelope = self.send("units", request)  # SPEC-079 REQ-001: refused, never a parallel verdict
+        self.assertEqual(envelope["status"], "refused")
+        self.assertIn("units-cannot-answer-independence", envelope["summary"])
 
     def test_aim_with_the_placeholder_digests_reports_independent_candidate(self):
         aim = next(e for e in documented_examples(SKILL.read_text("utf-8")) if e["kind"] == "aim")

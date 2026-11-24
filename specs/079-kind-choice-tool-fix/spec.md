@@ -77,9 +77,11 @@ Owner decisions (2026-11-22, `speckit-clarify`):
 ## Requirements and acceptance scenarios
 
 - **REQ-001 — Disjoint `units` redirect.** When `analyze-work` receives
-  `kind: units` and the constructed records would be pairwise disjoint (no shared
-  written resource, no write/read overlap, no declared dependency between any two
-  units; read/read sharing is not overlap), it does not return an `ok` report whose pairs are all `unknown`.
+  `kind: units` and the constructed records would be pairwise disjoint (no declared
+  dependency between any two units, and no resource shared by two units with a write-like
+  effect on it, where write-like is the analyzer's `write`, `transform`, `delete` or `deploy`;
+  sharing through `read`, `call` or `emit` only is not overlap), it does not return an `ok`
+  report whose pairs are all `unknown`.
   It returns status `refused` (OD-A) with code `units-cannot-answer-independence` and a
   message naming `kind: aim` and the skill. A single-unit declaration, and non-disjoint
   or mixed declarations (any pair overlapping or dependent), keep their current behaviour byte-for-byte.
@@ -196,8 +198,10 @@ bytes, the v4 prompts. Observation contract: `score_case(...)["validFirstAttempt
 from the unchanged SPEC-069 scorer, plus transcript counts of tool kinds.
 Execution contract: SPEC-071 runner on the subscription route, EUR 0.
 Compatibility: disjoint `units` requests change from `ok`/`unknown` to `refused`
-(`units-cannot-answer-independence`); all other inputs unchanged. v4 results are not comparable pairwise to
-v3-test.
+(`units-cannot-answer-independence`); all other inputs unchanged. This includes disjoint `units`
+declarations whose coverage is partial: they are refused too (OD-A), and v4 holds no partial `units`
+case, so the cost of the extra `aim` call for them is not measured. v4 results are not comparable
+pairwise to v3-test.
 
 ## Evidence and unresolved questions
 
