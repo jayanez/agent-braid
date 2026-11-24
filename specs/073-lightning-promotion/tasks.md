@@ -35,7 +35,7 @@ imply release or owner acceptance. `quick` means
   Verification: procedure_005.
 - [x] T008 (REQ-006 / SC-006): revocation preview and apply. Dependencies: T005.
   Verification: procedure_006.
-- [ ] T009 (REQ-007 / SC-007): `propose_reflections` through
+- [x] T009 (REQ-007 / SC-007): `propose_reflections` through
   `ExperienceStore.add`; assert `activate` is never called. Dependencies: T002.
   Verification: procedure_007.
 

@@ -1,0 +1,18 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "439ebba238278f80b88749e577c79ad6dbaa6901d3bd97d610febad7bb4afd24",
+  "tests/test_lightning_promote.py": "86fca97a6f86662f75f7a863849e89e6b1f939dcb6962e410390cae5d9a9d28c"
+ },
+ "limits": "Reflection texts are synthetic; no GEPA run produced them. Activation stays the separate human-governed SPEC-049 step.",
+ "outcome": "passed: propose_reflections adds each short GEPA reflection through ExperienceStore.add with the candidate's scope and identity as applicability and the SPEC-049 evaluation record as provenance and evidence; every entry ends quarantined with executionAuthorization false, while ExperienceStore.activate and validate are patched to fail and are never called; the module code names no activate call. A 512-character text is accepted. Negative controls: a 513-character text (invalid-text), a poison pattern (poisoned-text), an empty or over-long batch (invalid-reflections) and a non-store value (invalid-store).",
+ "procedure": "procedure_007",
+ "result": "OK",
+ "scenario": "SC-007",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 66
+}
