@@ -17,7 +17,7 @@ imply release or owner acceptance. `quick` means
   Verification: procedure_001.
 - [x] T003 (REQ-003 / SC-003): `preview` and CLI `lightning promote` (no
   writes) with preview digest. Dependencies: T002. Verification: procedure_003.
-- [ ] T004 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
+- [x] T004 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
   standard-library imports, bounded write set). Dependencies: T002.
   Verification: procedure_008.
 
