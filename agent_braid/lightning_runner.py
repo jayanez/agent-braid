@@ -19,6 +19,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import time
 import uuid
@@ -29,6 +30,7 @@ from . import lightning_hooks as hooks_mod
 from . import lightning_reward as reward_mod
 from . import lightning_heldout_v2 as v2_mod
 from . import lightning_heldout_v3 as v3_mod
+from . import lightning_heldout_v4 as v4_mod
 from . import lightning_store as store_mod
 from .harness_host_claude import ENV_DENY, SUBSCRIPTION_KEY_SOURCES
 from .lightning_hosts import (DeclaredLimit, HostConfig, OsSandbox, PARSERS, Profile, SafetyStop,
@@ -39,10 +41,14 @@ from .lightning_schema import FAILED, RESULT_SCHEMA, RUNNING, SUCCEEDED, Attempt
 PROMPT_FILES = {'development': 'specs/069-aim-request-authoring/prompts/development.json',
                 'held-out': 'specs/069-aim-request-authoring/prompts/held-out.json',
                 **v2_mod.PROMPT_FILES,  # SPEC-078 v2 splits, bound by the SPEC-078 freeze
-                **v3_mod.PROMPT_FILES}  # SPEC-078 Amendment 1 split, bound by the v3 freeze
-# Frozen held-out sets of SPEC-078: prompt set -> the module that owns its freeze.
-HELDOUT = {**{name: v2_mod for name in v2_mod.PROMPT_FILES}, **{name: v3_mod for name in v3_mod.PROMPT_FILES}}
-TEST_SETS = {'v2-test': '.V2T-', 'v3-test': v3_mod.TEST_MARKER}  # scored once per candidate
+                **v3_mod.PROMPT_FILES,  # SPEC-078 Amendment 1 split, bound by the v3 freeze
+                **v4_mod.PROMPT_FILES}  # SPEC-079 split, bound by the v4 freeze
+# Frozen held-out sets of SPEC-078 and SPEC-079: prompt set -> the module that owns its freeze.
+HELDOUT = {**{name: v2_mod for name in v2_mod.PROMPT_FILES}, **{name: v3_mod for name in v3_mod.PROMPT_FILES},
+           **{name: v4_mod for name in v4_mod.PROMPT_FILES}}
+TEST_SETS = {'v2-test': '.V2T-', 'v3-test': v3_mod.TEST_MARKER, 'v4-test': v4_mod.TEST_MARKER}  # once per candidate
+# Splits whose plugin is built from the freeze commit, not this checkout (SPEC-079 OD-D).
+PINNED = {name: v4_mod for name in v4_mod.PROMPT_FILES}
 # Subscription credentials read from this process's environment only (OD-1, decided 2026-11-08). OpenCode has none
 # verified (OD-2): without a host-reported subscription key source it ends as route-unverified.
 CREDENTIALS = {'claude-code': 'CLAUDE_CODE_OAUTH_TOKEN', 'opencode': None}
@@ -69,7 +75,8 @@ FINGERPRINTS = 'specs/072-lightning-prompt-optimization/holdout-fingerprints.jso
 FINGERPRINT_SCHEMA = 'braid-lightning-holdout-fingerprints/v0.1'
 WINDOW = v2_mod.WINDOW  # words; every v1 held-out prompt has at least 29, every v2 prompt at least 24
 # Never readable by an optimizer call (SPEC-072 REQ-006), besides the host configuration stores.
-OPTIMIZER_DENIED = (PROMPT_FILES['held-out'], *(PROMPT_FILES[n] for n in (*v2_mod.PROTECTED, *v3_mod.PROTECTED)),
+OPTIMIZER_DENIED = (PROMPT_FILES['held-out'],
+                    *(PROMPT_FILES[n] for n in (*v2_mod.PROTECTED, *v3_mod.PROTECTED, *v4_mod.PROTECTED)),
                     'scripts/spec069_scoring.py', 'scripts/spec069_fixture_workspace.py', '.git')
 
 
@@ -79,7 +86,8 @@ window_sha256 = v2_mod.window_sha256
 
 def canary_note(prompt_set: str) -> str:
     """The non-target note planted in rollout workspaces; held-out workspaces also carry the held-out canary."""
-    extra = f' {HOLDOUT_CANARY}' if prompt_set in ('held-out', *v2_mod.PROTECTED, *v3_mod.PROTECTED) else ''
+    extra = f' {HOLDOUT_CANARY}' if prompt_set in ('held-out', *v2_mod.PROTECTED, *v3_mod.PROTECTED,
+                                                   *v4_mod.PROTECTED) else ''
     return f'Internal note {LIGHTNING_CANARY}{extra}\n'
 
 
@@ -94,9 +102,10 @@ def load_fingerprints(root: Path) -> dict:
 
 
 def scan_fingerprints(root: Path) -> dict:
-    """Every protected fingerprint: the SPEC-069 held-out set and, once frozen, the SPEC-078 validation and test."""
+    """Every protected fingerprint: the SPEC-069 held-out set, once frozen the SPEC-078 validation and test splits,
+    and the SPEC-079 v4 test split."""
     prints = load_fingerprints(root)
-    for module in (v2_mod, v3_mod):
+    for module in (v2_mod, v3_mod, v4_mod):
         try:
             extra = module.load_fingerprints(root)
         except v2_mod.FreezeError as exc:
@@ -411,6 +420,34 @@ def check_protocol_freeze(root: Path) -> str:
     return actual
 
 
+_PINNED_BUILD = (
+    'import json, sys\n'
+    'from pathlib import Path\n'
+    'sys.path.insert(0, sys.argv[1])\n'
+    'from scripts import spec069_native_runs as driver\n'
+    "plugin, record = driver.build_candidate('final', Path(sys.argv[2]), Path(sys.argv[3]), False)\n"
+    "print(json.dumps({'plugin': str(plugin), 'record': record}))\n"
+)
+
+
+def build_pinned_plugin(commit: str, work: Path, cache: Path) -> Path:
+    """The plugin of ``commit`` (SPEC-079 OD-D): a detached worktree at that commit builds its own ``final`` arm with
+    its own build script, so no byte of this checkout enters the measured plugin. The worktree is always removed."""
+    root = checkout_root()
+    source = work / 'pinned-source'
+    subprocess.run(['git', '-C', str(root), 'worktree', 'add', '--detach', str(source), commit],
+                   check=True, capture_output=True)
+    try:
+        built = subprocess.run([sys.executable, '-I', '-c', _PINNED_BUILD, str(source), str(work / 'pinned'), str(cache)],
+                               cwd=source, check=True, capture_output=True, text=True)
+        value = json.loads(built.stdout.strip().splitlines()[-1])
+        if value['record'].get('sourceCommit') != commit:
+            raise RunnerError('The pinned plugin was not built from the freeze commit', 'protocol-hash-mismatch')
+        return Path(value['plugin'])
+    finally:
+        subprocess.run(['git', '-C', str(root), 'worktree', 'remove', '--force', str(source)], capture_output=True)
+
+
 def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, prompt_set: str = 'development',
         fake_hosts: bool = False, fake_variant: str = 'default', fake_key_source: str | None = 'none',
         plugin_dir: Path | None = None, hooks: hooks_mod.RolloutHooks | None = None,
@@ -434,6 +471,9 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
             raise RunnerError(f'{prompt_set} runs with {wanted} repetition(s)', 'config-enum')
         if skill_text is None and (plugin_dir is not None or config['target']['path'] != held.SKILL):
             raise RunnerError(f'An A0 run on {prompt_set} builds the frozen skill itself', 'skill-hash-mismatch')
+        if prompt_set in PINNED and (skill_text is not None or plugin_dir is not None):
+            raise RunnerError(f'The {prompt_set} arm is the plugin and skill of the freeze commit only (SPEC-079 OD-D)',
+                              'skill-hash-mismatch')
         if prompt_set in TEST_SETS and not resume:
             sha = hashlib.sha256((root / held.SKILL).read_bytes() if skill_text is None
                                  else skill_text.encode()).hexdigest()
@@ -481,8 +521,13 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     try:
         workdir = profile.make('work')
         if plugin_dir is None:
-            plugin_dir = driver.fake_plugin(workdir) if fake_hosts else driver.build_candidate(
-                arm, workdir, Path(environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache', False)[0]
+            cache = Path(environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache'
+            if fake_hosts:
+                plugin_dir = driver.fake_plugin(workdir)
+            elif prompt_set in PINNED:
+                plugin_dir = build_pinned_plugin(PINNED[prompt_set].FREEZE_COMMIT, workdir, cache)
+            else:
+                plugin_dir = driver.build_candidate(arm, workdir, cache, False)[0]
         passthrough: dict[str, str] = {}
         if fake_hosts:
             variant = fake_variant if fake_variant in driver.FAKE_VARIANTS else 'default'
