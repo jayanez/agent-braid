@@ -132,7 +132,7 @@ class SetupTests(unittest.TestCase):
 class BoundaryTests(unittest.TestCase):
     def test_modules_import_only_stdlib_and_open_no_sockets_or_processes(self):
         allowed_local = {'lightning_config', 'lightning_schema', 'lightning_store', 'plugin_registry',
-                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact', 'view_loom', 'system_one_shadow', 'trace_adapter', 'lightning_export'}  # SPEC-075: dataset export; SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
+                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact', 'view_loom', 'system_one_shadow', 'trace_adapter', 'lightning_export', 'lightning_promote'}  # SPEC-073: promotion preview; SPEC-075: dataset export; SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
         for name in MODULES:
             tree = ast.parse((ROOT / 'agent_braid' / f'{name}.py').read_text())
             for node in ast.walk(tree):
@@ -185,8 +185,16 @@ BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_a
 SKILL = ROOT / 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
 
 
+# SPEC-073 is the one human promotion path; its own boundary tests are in tests/test_lightning_promote.py.
+PROMOTION_MODULE = 'lightning_promote.py'
+
+
+def bl2_modules():
+    return [p for p in (ROOT / 'agent_braid').glob('lightning_*.py') if p.name != PROMOTION_MODULE]
+
+
 def bl2_files():
-    return sorted([*(ROOT / 'agent_braid').glob('lightning_*.py'), *(ROOT / 'scripts').glob('spec072_*.py')])
+    return sorted([*bl2_modules(), *(ROOT / 'scripts').glob('spec072_*.py')])
 
 
 class BL2BoundaryTests(unittest.TestCase):
@@ -209,7 +217,7 @@ class BL2BoundaryTests(unittest.TestCase):
                         self.assertIn(alias.name.split('.')[0], sys.stdlib_module_names, (path.name, alias.name))
 
     def test_no_promotion_execution_recovery_or_grant_call(self):
-        for path in (ROOT / 'agent_braid').glob('lightning_*.py'):
+        for path in bl2_modules():
             for node in ast.walk(ast.parse(path.read_text())):
                 name = (node.attr if isinstance(node, ast.Attribute) else node.id if isinstance(node, ast.Name)
                         else node.name.split('.')[-1] if isinstance(node, ast.alias) else None)

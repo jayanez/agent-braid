@@ -29,4 +29,6 @@ when the recomputed digest equals `d`. Order: registry `record` (if new), human
 Refusal reasons: `unknown-scope`, `candidate-not-stored`, `digest-mismatch`,
 `preview-stale`, `automatic-promotion-disabled`, `cohort-mismatch`,
 `no-previous`, `text-too-large`, `no-held-out-support` (apply without an
-owner override reason).
+owner override reason), `regression-not-covered` (OD-4: a SPEC-072 pair whose
+C-vs-A strata are descriptive-only), `candidate-mismatch`, `registration-mismatch`,
+`no-candidate`.

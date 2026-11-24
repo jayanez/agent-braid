@@ -100,6 +100,21 @@ with the approval record):
   `SKILL.md`. The build check catches an export that lags the file. Undo:
   moving the file is a path constant plus one copy.
 
+Owner decisions after the freeze (2026-11-23, raised while implementing T002):
+
+- **OD-4 — `decide()` unchanged.** `harness_promotion.decide()` approves only
+  when every stratum's C-vs-A check is `noninferior`, but every SPEC-072 pair is
+  `descriptive-only` by design. SPEC-049 is not amended here: an apply over a
+  real SPEC-072 pair is refused with `regression-not-covered` and writes
+  nothing. The apply path is proven with a synthetic native fixture pair whose
+  strata are assessed noninferior; the T010 drill uses a fixture candidate.
+  Undo: a later specification may add an owner-override path to `decide()`.
+- **OD-5 — Override reason.** An apply without H1 `supported` needs an owner
+  override reason. The decision records the limit id
+  `owner-override-no-held-out-support` and the reason's SHA-256 in
+  `evidenceSha256s`; the reason text stays in the preview and the run store,
+  never in the registry.
+
 Context: BL.2b (SPEC-078) found no candidate that beats A0, so this feature is
 plumbing only and promotes nothing; T010 (the owner's rollback drill) is the
 first and only real promotion run it plans.
