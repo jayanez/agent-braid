@@ -1,0 +1,27 @@
+{
+ "closedRecords": {
+  "specs/069-aim-request-authoring/prompts/FREEZE.json": "df656f2f6c0bd70763b847db743afb44f90bf500d50786398cf71b03760baa14",
+  "specs/078-lightning-heldout-v2/prompts/FREEZE-v3.json": "990ca71383e7cd806769b24789b501c027a04bb525f2ee73be9ddd9151826c6d",
+  "specs/078-lightning-heldout-v2/prompts/FREEZE.json": "9c0f6df179496b9ffcd7d30ddb6888b5d5a445c6a843dbc0c3a0b5aff8d93dd8"
+ },
+ "commit": "331a384eeed0c52d39186ce64fc8344f4a23a759",
+ "files": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
+  "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+  "agent_braid/tooling_mcp.py": "4c1e12fe9da2a37121e7bd20f15b4599cf8511c92798e4b3eeef7741118dcdd7",
+  "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+  "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
+  "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
+  "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
+  "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+  "scripts/spec079_build_v4.py": "3f415da4f397c44c6caaf25ad814c4d72af744208847f94e4a36c7d77a04d2be",
+  "specs/079-kind-choice-tool-fix/evaluation-protocol.md": "76365fd5aaa9241319f64029e2c03816f3487a574bfac3874bd2d1de68fb75df",
+  "specs/079-kind-choice-tool-fix/evidence/gate0-v4-report.json": "6468ddc5619883dd5dc3ea73cf041608df20565c832f08a713affc2ca03ae9a2",
+  "specs/079-kind-choice-tool-fix/prompts/v4-test.json": "6a4fa339a353776430141b11244c656c27b72abbaac56832ea1aa43b0455d8af"
+ },
+ "pluginCommit": "331a384eeed0c52d39186ce64fc8344f4a23a759",
+ "pluginVersion": "0.1.0a2",
+ "schema": "braid-lightning-v4-freeze/v0.1"
+}
