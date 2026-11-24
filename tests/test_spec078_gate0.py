@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import copy
 import unittest
+from unittest import mock
 
+from agent_braid import tooling_mcp
 from scripts import spec078_gate0 as gate0
 from scripts.spec078_build_set import SKILL
 
@@ -99,8 +101,19 @@ class Gate0Tests(unittest.TestCase):
         self.assertTrue(self.report["passed"])
 
     def test_the_units_null_agrees_with_partial_coverage(self):
+        # SPEC-078 is closed and measured this on the pre-SPEC-079 tool, where disjoint `units` requests
+        # returned ok/unknown. Only this test depends on that path, so only it pins `_units_disjoint` off;
+        # the SPEC-079 refusal itself is covered by tests/test_tooling_mcp_units_redirect.py.
+        with mock.patch.object(tooling_mcp, "_units_disjoint", lambda records: False):
+            report = gate0.run(self.sets, self.skill)
+        for split, rows in report["nulls"]["units-kind"]["splits"].items():
+            self.assertEqual(rows, report["nulls"]["partial-coverage"]["splits"][split], split)
+
+    def test_the_units_null_is_refused_on_the_shipped_tool(self):
+        """SPEC-079 REQ-001: on the shipped tool the `units` null passes no case it scores."""
         for split, rows in self.report["nulls"]["units-kind"]["splits"].items():
-            self.assertEqual(rows, self.report["nulls"]["partial-coverage"]["splits"][split], split)
+            self.assertEqual(rows["passing"], 0, split)
+            self.assertGreater(rows["of"], 0, split)
 
     def test_a_null_that_meets_the_threshold_fails_gate0(self):
         # over-declaration is right on chain-read cases; alone they push its Wilson bound over 0.80
