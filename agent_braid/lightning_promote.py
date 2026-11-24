@@ -45,6 +45,10 @@ SUPPORTED = "supported"
 NO_SUPPORT = "no-held-out-support"
 PREVIEW_SCHEMA = "braid-lightning-promotion-preview/v0.1"
 OVERRIDE_LIMIT = "owner-override-no-held-out-support"
+# A scope's first decision names its baseline digest in a limit id (SPEC-049 ids hold at most
+# 64 characters, so the id carries a 176-bit prefix that selects one cited evidence digest).
+BASELINE_LIMIT = "lightning-baseline:"
+BASELINE_PREFIX = 44
 MAX_REASON = 512
 MAX_TARGET = 64 * 1024
 
@@ -319,12 +323,24 @@ def _keep_text(run: store.RunStore, raw: bytes) -> None:
         raise PromoteError("text-not-storable") from None
 
 
-def baseline_digests(value: promotion.ProfileRegistry) -> frozenset[str]:
-    """Extra evidence of the scope's first decision; it includes the baseline file digest."""
+def baseline_limit(digest: str) -> str:
+    return BASELINE_LIMIT + digest[:BASELINE_PREFIX]
+
+
+def baseline_digest(value: promotion.ProfileRegistry) -> str | None:
+    """The baseline file digest the scope's first decision names; None before any decision.
+
+    Only the digest its ``lightning-baseline:`` limit selects counts: the same decision may
+    also cite an override reason's digest, which is never a baseline.
+    """
     if not value.journal:
-        return frozenset()
+        return None
     first = value.decisions[value.journal[0]["subject"]]
-    return frozenset(first["evidenceSha256s"])
+    marks = [limit[len(BASELINE_LIMIT):] for limit in first["limits"] if limit.startswith(BASELINE_LIMIT)]
+    _require(len(marks) == 1, "baseline-unknown")
+    found = [d for d in first["evidenceSha256s"] if d.startswith(marks[0])]
+    _require(len(found) == 1, "baseline-unknown")
+    return found[0]
 
 
 def _save(home: Path | None, value: promotion.ProfileRegistry) -> None:
@@ -369,11 +385,14 @@ def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, pre
     reason = document["overrideReason"]
     extra = sorted(set(document["evidence"]) - set(record.evidence))
     value, before = _unchanged(document, home, root, record.scope)
+    limits = [OVERRIDE_LIMIT] if reason is not None else []
+    if not value.decisions:
+        limits.append(baseline_limit(_hex(before)))  # names the baseline among the evidence
     try:
         decision = promotion.decide(
             record.registration, record.evaluation, profile=record.profile, actor=actor,
             decision="approved", safety=safety, evidence=extra, rollback_target=_target_sha(value),
-            limits=[OVERRIDE_LIMIT] if reason is not None else [], at=at)
+            limits=sorted(limits), at=at)
         begun = value.record(decision, at).begin(decision, current=current, at=at)
     except promotion.PromotionError as exc:
         raise PromoteError(exc.reason) from None
@@ -424,12 +443,12 @@ def _restored_text(value: promotion.ProfileRegistry, after: promotion.ProfileReg
     candidate = active_candidate(after)
     if candidate is not None:
         return candidate, _text(run, candidate)
-    for digest in sorted(baseline_digests(value)):
-        try:
-            return digest, run.candidate_text(digest)
-        except store.StoreError:
-            continue
-    raise PromoteError("candidate-not-stored")
+    digest = baseline_digest(value)
+    _require(digest is not None, "candidate-not-stored")
+    try:
+        return digest, run.candidate_text(digest)
+    except store.StoreError:
+        raise PromoteError("candidate-not-stored") from None
 
 
 def preview_abort(scope: str, *, home: Path | None, root: Path, run: store.RunStore,

@@ -34,6 +34,12 @@ def summary(verdict):
                                       'firstAttemptPrompts': 8, 'withinRetryPrompts': 10}}}
 
 
+def low_reason():
+    """An override reason whose digest sorts before the baseline's among the cited evidence."""
+    base = sha256_text(BASE_TEXT)
+    return next(r for r in (f'drill {i}' for i in range(1000)) if sha256_text(r) < base)
+
+
 def pair(candidate, base_verdict='misses', primary_verdict='meets', base=None):
     base = base or sha256_text(BASE_TEXT)
     return spec049_pair(
@@ -315,7 +321,9 @@ class ApplyTests(Base):
         self.assertEqual(changed, {registry, registry + '.lock', str(self.target), baseline})
         # The baseline text is kept content-addressed in the run store and cited by the decision.
         self.assertEqual(self.run.candidate_text(sha256_text(BASE_TEXT)), BASE_TEXT)
-        self.assertIn(sha256_text(BASE_TEXT), lp.baseline_digests(self.registry()))
+        self.assertEqual(lp.baseline_digest(self.registry()), sha256_text(BASE_TEXT))
+        decision = self.registry().decisions[self.registry().active]
+        self.assertEqual(list(decision['limits']), [lp.baseline_limit(sha256_text(BASE_TEXT))])
 
     def test_file_mode_is_kept(self):
         os.chmod(self.target, 0o640)
@@ -328,10 +336,14 @@ class ApplyTests(Base):
 
         def drifting(root, scope):
             calls.append(1)
-            return real(root, scope) + (b'drift\n' if len(calls) > 1 else b'')
+            # Calls 1-2 are the human's preview and apply's recomputed one (equal digests);
+            # call 3 is the re-read right before writing, which alone must catch the drift.
+            return real(root, scope) + (b'drift\n' if len(calls) > 2 else b'')
         with patch.object(lp, 'read_target', drifting):
             self.refused('preview-stale', self.apply)
+        self.assertEqual(len(calls), 3)
         self.assertFalse(lp.registry_path(self.home, SCOPE).exists())
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
 
     def test_automatic_actor_refused_and_nothing_written(self):
         before = snapshot(self.home, self.root)
@@ -375,7 +387,8 @@ class ApplyTests(Base):
         self.refused('no-held-out-support', lambda: self.apply(record))
         self.apply(record, override_reason='drill only')
         decision = self.registry().decisions[self.registry().active]
-        self.assertEqual(list(decision['limits']), ['owner-override-no-held-out-support'])
+        self.assertEqual(list(decision['limits']), [lp.baseline_limit(sha256_text(BASE_TEXT)),
+                                                    'owner-override-no-held-out-support'])
         self.assertIn(sha256_text('drill only'), decision['evidenceSha256s'])
         self.assertNotIn(b'drill only', lp.registry_path(self.home, SCOPE).read_bytes())
         # OD-5: the reason text is kept in the run store beside its cited digest.
@@ -454,6 +467,21 @@ class ApplyTests(Base):
         self.assertNotEqual(other['previewDigest'], lp.preview_abort(
             SCOPE, home=self.home, root=self.root, run=self.run, at=12)['previewDigest'])
 
+    def test_abort_after_override_restores_the_baseline_not_the_reason(self):
+        reason = low_reason()
+        registration, evaluation = pair(self.sha, base_verdict='meets')
+        record = self.build(registration=registration, evaluation=noninferior(evaluation))
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                self.apply(record, override_reason=reason)
+        first = self.registry().decisions[self.registry().pending]
+        self.assertEqual(sorted(first['evidenceSha256s'])[0], sha256_text(reason))
+        doc = lp.preview_abort(SCOPE, home=self.home, root=self.root, run=self.run, at=12)
+        self.assertEqual(doc['candidateSha256'], sha256_text(BASE_TEXT))
+        lp.apply_abort(SCOPE, home=self.home, root=self.root, run=self.run,
+                       preview_digest=doc['previewDigest'], at=12)
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+
     def test_reapply_of_the_active_candidate_refused(self):
         self.apply()
         self.refused('already-active', lambda: self.apply(at=11))
@@ -476,6 +504,14 @@ class ApplyTests(Base):
         self.assertEqual((code, err), (2, 'lightning promote refused (preview-stale)\n'))
         code, _, err = cli.cli('--apply', '--preview-digest', digest)
         self.assertEqual((code, err), (2, 'lightning promote refused (apply-needs-digest-actor-safety)\n'))
+
+    def test_cli_os_error_is_one_fixed_line(self):
+        cli = CliPreviewTests('test_cli_refusal_is_one_fixed_line')
+        cli.tmp, cli.home, cli.root, cli.sha = self.tmp, self.home, self.root, self.sha
+        cli.registration, cli.evaluation = self.registration, self.evaluation
+        with patch.object(lp, 'preview_promote', side_effect=PermissionError('denied')):
+            code, out, err = cli.cli()
+        self.assertEqual((code, out, err), (2, '', 'lightning promote refused (io-error)\n'))
 
 
 MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'

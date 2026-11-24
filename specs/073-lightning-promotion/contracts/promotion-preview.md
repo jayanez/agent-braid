@@ -41,11 +41,12 @@ registry `record` (if new), human `decide`, `begin`, file write by atomic rename
 (file mode kept, directory fsynced), `commit`; on any failure, `abort` and restore
 the file bytes. If the restore or the abort record fails, the refusal is
 `abort-failed` and `--abort` recovers. A scope's first apply keeps the replaced
-baseline text, and an override reason's text, content-addressed in the run store.
+baseline text, and an override reason's text, content-addressed in the run store,
+and names the baseline in a `lightning-baseline:` limit id (scope map contract).
 
 Refusal reasons: `unknown-scope`, `candidate-not-stored`, `digest-mismatch`,
 `preview-stale`, `automatic-promotion-disabled`, `cohort-mismatch`,
 `no-previous`, `text-too-large`, `no-held-out-support` (apply without an
 owner override reason), `regression-not-covered` (OD-4: a SPEC-072 pair whose
 C-vs-A strata are descriptive-only), `candidate-mismatch`, `registration-mismatch`,
-`no-candidate`.
+`no-candidate`, `baseline-unknown` (the first decision names no single baseline).

@@ -13,7 +13,10 @@ Build check (`plugin_package`): for each scope with a registry, the packaged
 file's SHA-256 must equal `ProfileRegistry.active`. Mismatch message:
 `lightning-promotion-mismatch: <scope> expected <sha> actual <sha>`. A scope
 whose registry has no active candidate requires the file to equal the
-baseline digest recorded at its first `record`.
+baseline digest recorded at its first `record`. That first decision names the
+baseline explicitly with the limit id `lightning-baseline:<first 44 hex of its digest>`;
+only the cited evidence digest that prefix selects is the baseline (an override
+reason's digest, cited by the same decision, never is).
 
 Severity (OD-2): a release build refuses on mismatch; a local developer build
 prints the same message as a warning and continues.
