@@ -11,6 +11,10 @@ recorded. `executionAuthorization` stays false throughout.
   Dependencies: none. Target files: none (review record only).
   Verification: procedure_001.
   Planned evidence: `evidence/t001-owner-review.md`; obtained: none.
+  Progress (2026-11-24): part 1 of that record decides OD-2 to OD-6, all with the
+  recommended option (Docker Desktop already installed; host-side credential proxy,
+  else a read-only mount; one shadow task per stratum; `claude-code` first; a failed
+  gate is `infeasible`). OD-1 (ADR 0045) waits for the T002 triage; T001 stays open.
 - [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage
   each finding (confirmed, fixed, rejected with reason). Independent model review,
   not human review. Dependencies: this PR merged. Target files: none.
