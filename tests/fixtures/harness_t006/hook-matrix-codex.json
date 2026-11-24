@@ -1,0 +1,1 @@
+{"executionAuthorization":false,"format":"braid-harness-hook-matrix/v0.1","host":"codex","modeled":[],"observation":"modeled-not-observed","observedBuild":null,"qualification":"unqualified","unavailable":["PermissionRequest","PostToolUse","PreCompact","PreToolUse","SessionStart","Stop"]}

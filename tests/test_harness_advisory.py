@@ -135,7 +135,7 @@ class ProfileTests(Workspace):
 
     def test_invalid_future_and_escalated_profiles_refuse(self):
         good = _compile(make_inventory()).to_dict()
-        future = dict(good, format="braid-harness-profile/v0.2")
+        future = dict(good, format="braid-harness-profile/v0.3")  # v0.2 is current (SPEC-080 T006)
         self.refused("profile-inventory", "--workspace", self.work,
                      "--profile", self.put("f.json", future), reason="unsupported-version")
         auth = dict(good, executionAuthorization=True)
