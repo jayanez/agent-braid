@@ -1,0 +1,18 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "9550ff94b2b311a2c53584fa8af220af99d788ca39927b72990ff67429da57fd",
+  "tests/test_lightning_promote.py": "bd31017978aace74b5bf00bb1e328d793dfcd8da828b57445a1077f09ccd324e"
+ },
+ "limits": "Proven with a synthetic native fixture pair whose C-vs-A strata are assessed noninferior (OD-4); real SPEC-072 pairs are refused. Human identity, safety counts and the current identity are self-asserted by the caller.",
+ "outcome": "passed: apply_promote recomputes the preview, requires its digest and, right before writing, the previewed registry and file digests; then decide() with a human actor (approved), record, begin, save, atomic SKILL.md replace (mode kept, temp fsync, rename, directory fsync), commit, save; journal recorded, begun, committed; active candidate equals the file digest. A scope's first apply cites and stores the replaced baseline text; an override reason's text is stored in the run store beside its cited digest (OD-5). Writes are bounded to the registry file, its lock, the mapped SKILL.md and run-store texts. An interrupted promotion (pending entry, candidate text on disk) blocks new promotions with transaction-in-progress and is recovered by --abort: preview (no writes), digest-checked apply restoring the baseline text and recording aborted, after which a new promotion succeeds. Negative controls: automatic actor (automatic-promotion-disabled), synthetic cohort (cohort-mismatch), drifted identity (stale-model), unsafe or unknown safety, SPEC-072 descriptive-only pair (regression-not-covered, OD-4), re-apply (already-active), no held-out support without reason (no-held-out-support), a change between preview check and write (preview-stale), failed write or commit (apply-failed, file restored, aborted), failed restore (abort-failed with aborted still recorded), abort with no pending entry (no-transaction) or a stale abort preview (preview-stale).",
+ "procedure": "procedure_002",
+ "result": "OK",
+ "scenario": "SC-002",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 43
+}

@@ -6,15 +6,15 @@
  },
  "inputs": {
   "agent_braid/lightning_cli.py": "6ea586972f3f5711bb1a260626945007c22f294d5db1419169dc8de8d12ecb4e",
-  "agent_braid/lightning_promote.py": "bf49b656fcff2eb8c16e50eeef668d360734414ca4125486d44041fbf1739bde",
+  "agent_braid/lightning_promote.py": "7ede83913541403bfbf4ade137a58ccd5c5483bea4ad56b97429a129d4913e0a",
   "tests/test_lightning_cli.py": "90869f38d6f86693a8806d7ffd32e2da6f4f7db1aa05643ea10215707e48520d",
-  "tests/test_lightning_promote.py": "1f4896a503fe429e54d2f315bca1bdecc12d10fd7d083fb10ab46fea382ce679"
+  "tests/test_lightning_promote.py": "6bea206e31cd49c0458e1590248aee0ed06cff768f98b021b14dd3de80eaea75"
  },
- "limits": "Apply with a matching preview digest and preview-stale after a registry or file change are T005; synthetic run store, pair and plugin tree in a temporary directory.",
- "outcome": "passed (preview half): preview_promote and agent-braid lightning promote print scope, target path, current and candidate digests, file and registry digests, cohort native, cited SPEC-049 evidence, held-out support, diff line counts, blockers and a preview digest, with executionAuthorization false and no candidate text; every file under the plugin home and the plugin tree is byte-identical after the preview and no registry is created. The digest is deterministic and changes when the target file changes. A SPEC-072-style descriptive-only pair shows the blocker regression-not-covered (OD-4); without H1 support the blocker no-held-out-support is lifted only by an owner override reason, cited by its SHA-256 (OD-5). Negative controls: invalid override reasons, missing or symlinked target (target-unavailable), CLI unknown scope and unstored candidate refused with one fixed stderr line and exit 2.",
+ "limits": "Synthetic run store, pair and plugin tree in a temporary directory.",
+ "outcome": "passed: preview_promote and agent-braid lightning promote print scope, target path, current and candidate digests, file and registry digests, cohort native, cited SPEC-049 evidence, held-out support, diff line counts, blockers and a preview digest, with executionAuthorization false and no candidate text, and write nothing (every file under the plugin home and plugin tree unchanged). --apply --preview-digest writes only when the recomputed preview digest matches: after a target-file edit or a registry change the same digest is refused (preview-stale), a second CLI apply of a used digest is refused (preview-stale), and --apply without actor and safety is refused. Negative controls: invalid override reasons, missing or symlinked target (target-unavailable), unknown scope and unstored candidate with one fixed stderr line and exit 2.",
  "procedure": "procedure_003",
  "result": "OK",
  "scenario": "SC-003",
  "specification": "SPEC-073 BL.3",
- "testsRun": 20
+ "testsRun": 38
 }
