@@ -590,8 +590,9 @@ Not in any published alpha yet. Per SPEC-079 OD-D, it ships in the first alpha a
 held-out result is recorded; that alpha's release record lists it
 ([SPEC-079](../../specs/079-kind-choice-tool-fix/spec.md) REQ-001 to REQ-005).
 
-- **Disjoint `units` requests are refused.** When every pair of declared units has no
-  dependency and no shared resource other than read/read, `analyze-work` returns
+- **Disjoint `units` requests are refused.** When no declared unit depends on another and
+  no resource is shared by two units with a `write`, `transform`, `delete` or `deploy`
+  effect on it (sharing through `read`, `call` or `emit` alone does not count), `analyze-work` returns
   `status: refused` with code `[units-cannot-answer-independence]` instead of an `ok`
   report whose pairs are all `unknown`. The message (at most 400 characters) names
   `kind` `aim` and the analyze skill. `result` carries `constructedRequest` (coverage
