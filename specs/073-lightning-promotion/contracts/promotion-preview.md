@@ -11,15 +11,21 @@ Schema identifier: `braid-lightning-promotion-preview/v0.1` (JSON on stdout).
 | `currentSha256` | hex or null | registry active digest |
 | `candidateSha256` | hex | digest to become active |
 | `fileSha256Before` | hex | target file bytes now |
-| `registrySha256Before` | hex | registry bytes now |
+| `registrySha256Before` | hex | registry bytes now (SHA-256 of empty bytes when no registry file exists) |
 | `cohort` | const `native` | evaluated cohort |
 | `evidence` | sorted list of hex | SPEC-049 registration and evaluation record digests cited |
 | `heldOutSupport` | enum `supported`, `no-held-out-support` | H1 outcome of the SPEC-072 report for every host of the scope |
 | `overrideReason` | string or null | required on apply when `heldOutSupport` is `no-held-out-support`; recorded in the decision |
 | `diffSummary` | object `{added, removed}` line counts | no text body |
+| `blockers` | sorted list of refusal reasons | refusals an apply would raise now (for example `regression-not-covered`, `no-held-out-support`, `transaction-in-progress`, `already-active`); empty when none |
 | `requiredDecision` | const `approved` | the human decision still needed |
 | `previewDigest` | hex | SHA-256 over canonical bytes of all fields above |
 | `executionAuthorization` | const `false` | never true |
+
+CLI: `agent-braid lightning promote --candidate <sha> --run-id <run> --registration <file>
+--evaluation <file> --identity <file> [--scope <s>] [--root <checkout>] [--override-reason <text>]`
+prints the preview on stdout and writes nothing; a refusal is the single stderr line
+`lightning promote refused (<reason>)` with exit status 2.
 
 Apply rule: `--apply --preview-digest d` recomputes the preview and writes only
 when the recomputed digest equals `d`. Order: registry `record` (if new), human
