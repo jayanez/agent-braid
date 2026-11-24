@@ -88,3 +88,23 @@ def verify_package(root):
         raise ValueError('Plugin package inventory changed; reinstall using the native manager')
     return {'status': 'verified', 'files': len(value['files']), 'version': value['version'],
             'limits': ['Byte inventory is not publisher authentication, native host acceptance or provider approval']}
+
+
+def check_lightning_promotions(source_root, *, release):
+    """SPEC-073 REQ-004 (OD-2): mapped skills must equal the committed export's active candidates.
+
+    Reads ``integrations/lightning-promotion/registry-export.json`` when it exists. A release
+    build refuses on any mismatch; a local developer build returns the mismatch lines as
+    warnings. No export means no promotion and nothing to check.
+    """
+    from .lightning_promote import EXPORT_PATH, PromoteError, load_export, mismatches
+    path = Path(source_root) / EXPORT_PATH
+    if not path.exists():
+        return []
+    try:
+        lines = mismatches(source_root, load_export(path.read_bytes()))
+    except PromoteError as exc:
+        lines = [f'lightning-promotion-mismatch: export invalid ({exc.reason})']
+    if lines and release:
+        raise ValueError('; '.join(lines))
+    return lines

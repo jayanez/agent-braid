@@ -490,6 +490,70 @@ def apply_abort(scope: str, *, home: Path | None, root: Path, run: store.RunStor
             "fileSha256After": _hex(read_target(root, scope)), "executionAuthorization": False}
 
 
+# --- build check (REQ-004) -------------------------------------------------------------
+
+EXPORT_FORMAT = "braid-lightning-promotion-export/v0.1"
+EXPORT_PATH = "integrations/lightning-promotion/registry-export.json"
+
+
+def export_bytes(registries: Any) -> bytes:
+    """Canonical committed export of scope registries (OD-3), consumed by release builds."""
+    _require(isinstance(registries, (list, tuple)) and all(type(r) is promotion.ProfileRegistry
+                                                           for r in registries), "invalid-export")
+    documents = {r.scope: json.loads(r.to_bytes()) for r in registries}
+    _require(len(documents) == len(registries) and all(map(scope_entry, documents)), "invalid-export")
+    return canonical({"format": EXPORT_FORMAT, "registries": documents})
+
+
+def load_export(raw: bytes) -> dict:
+    """Scope -> ProfileRegistry from export bytes; unknown scopes and non-canonical bytes refused."""
+    try:
+        value = parse_json(raw)
+    except InvalidDecision:
+        raise PromoteError("invalid-export") from None
+    _require(canonical(value) == raw and type(value) is dict
+             and set(value) == {"format", "registries"} and value["format"] == EXPORT_FORMAT
+             and type(value["registries"]) is dict, "invalid-export")
+    result = {}
+    for scope, document in value["registries"].items():
+        scope_entry(scope)
+        try:
+            registry = promotion.ProfileRegistry.from_bytes(canonical(document))
+        except promotion.PromotionError:
+            raise PromoteError("invalid-export") from None
+        _require(registry.scope == scope, "invalid-export")
+        result[scope] = registry
+    return result
+
+
+def mismatches(source_root: Path, registries: Any) -> list[str]:
+    """``lightning-promotion-mismatch`` lines for mapped files that disagree with their registry.
+
+    The digest is of the canonical source ``SKILL.md`` the packaged skill is built from
+    (packaging applies the SPEC-054 name substitutions). A scope without a registry is
+    not checked; a registry with no active candidate requires the baseline its first
+    decision cites.
+    """
+    lines = []
+    for scope, value in sorted(dict(registries).items()):
+        scope_entry(scope)
+        try:
+            actual = _hex(read_target(source_root, scope))
+        except PromoteError:
+            actual = "missing"
+        expected = active_candidate(value)
+        if expected is None:
+            try:
+                expected = baseline_digest(value)
+            except PromoteError:
+                expected = "baseline-unknown"
+            if expected is None:
+                continue
+        if actual != expected:
+            lines.append(f"lightning-promotion-mismatch: {scope} expected {expected} actual {actual}")
+    return lines
+
+
 # --- CLI: agent-braid lightning promote -----------------------------------------------
 
 
