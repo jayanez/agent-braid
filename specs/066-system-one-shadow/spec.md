@@ -47,7 +47,7 @@ whether to serialize. Their ground truth arrives later as an observed outcome.
 This specification turns System One into a measured, owner-consented, local
 subsystem in stages:
 
-1. **S1.5a (this delivery): shadow mode.** For every successful report-bearing
+1. **S1.5a (delivered; closed by owner decision 2026-11-10): shadow mode.** For every successful report-bearing
    `analyze` or `analyze-work` call, record one System One decision episode next
    to the unchanged System 2 result, without changing any output. The current
    runtime `analyze` tool (Git replay) returns evidence and an advisory plan
@@ -285,22 +285,36 @@ that git-history replay cannot supply that population, so S1.5d is Deferred.
 ## Success criteria (S1.5a)
 
 - SC-001: The parity test shows identical envelopes in `off` and `shadow` mode for
-  fixtures of every tool.
-- SC-002: Episodes validate against the v0.1 contract, and a seeded test
-  confirms they contain no input strings.
+  fixtures of every tool (REQ-002).
+- SC-002: Episodes validate against the v0.2 contract (v0.1 lines stay readable),
+  and a seeded test confirms they contain no input strings (REQ-003).
 - SC-003: Store refusals (unsafe path, oversize, busy) leave the caller's result
-  and timing within budget.
-- SC-004: `system-one report` reports counts that match seeded episodes.
-- SC-005: With `systemOne` absent or `off`, the registry digest is unchanged.
+  and timing within budget (REQ-002, REQ-004).
+- SC-004: `system-one report` reports counts that match seeded episodes (REQ-005).
+- SC-005: With `systemOne` absent or `off`, the registry digest is unchanged
+  (REQ-001).
 - SC-006: A real owner session in `shadow` mode produces at least one episode,
   recorded as a redacted receipt under `docs/development/REAL_USE_EVIDENCE.md`
-  rules. This is a pending owner-run check, not implied by tests.
+  rules. This is a pending owner-run check, not implied by tests (REQ-003).
 - SC-007: `system-one --telemetry local` records a CLI `system-one` aggregate
   and nothing else (REQ-006).
 - SC-008: A changed backend manifest digest yields `refused` /
   `identity-mismatch` episodes and unchanged envelopes (REQ-007).
 - SC-009: `plugin-status` shows the configured and active modes and the store
   presence, and no episode data (REQ-008).
+- SC-010: Given a symlinked store directory, when an episode is appended, then the
+  store refuses and nothing is written (REQ-004).
+
+## Clarifications
+
+Open items this specification already states; none is decided here.
+
+- Human review of this specification stays pending (Status).
+- S1.5b–e carry outline requirements only; each needs its own plan and task review
+  before implementation (Purpose and scope).
+- The REQ-402 rule-based advise go on DP-1 is reviewed on 2026-12-31 (REQ-402 (g)).
+- S1.5d is Deferred: the B0 check of 2026-11-14 shows that git-history replay
+  cannot supply the DP-1 `unknown` population (GO rule for learned models).
 
 ## References
 
