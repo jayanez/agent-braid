@@ -70,5 +70,24 @@ class V4SetTests(unittest.TestCase):
             self.assertEqual(spec078_gate0.kind_from_prompt(case["prompt"]), case["facts"]["kind"], case["id"])
 
 
+class V4Gate0Tests(unittest.TestCase):
+    """SPEC-079 T005 (REQ-007 / SC-010): references valid, literal follower valid, every null below OD-1."""
+
+    REPORT = v4.ROOT / "specs/079-kind-choice-tool-fix/evidence/gate0-v4-report.json"
+
+    def test_gate0(self):
+        committed = json.loads(self.REPORT.read_text("utf-8"))
+        self.assertTrue(committed["passed"])
+        self.assertEqual((committed["pins"], committed["references"], committed["partialControls"],
+                          committed["follower"]), ([], [], [], []))
+        for name, null in committed["nulls"].items():
+            self.assertEqual(null["unexpectedPasses"], [], name)
+            self.assertFalse(null["splits"]["test"]["meetsThreshold"], name)
+            self.assertGreater(null["splits"]["test"]["of"], 0, name)
+        self.assertFalse(committed["oldReadRuleStrategy"]["test"]["meetsThreshold"])
+        fresh = v4.gate0(json.loads(v4.OUT.read_text("utf-8"))["cases"])
+        self.assertEqual(json.loads(json.dumps(fresh, sort_keys=True)), committed)
+
+
 if __name__ == "__main__":
     unittest.main()
