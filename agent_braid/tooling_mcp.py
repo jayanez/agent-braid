@@ -48,8 +48,9 @@ _UINT = re.compile(r"^(0|[1-9][0-9]*)$")
 class ToolingError(ValueError):
     """A bounded, expected refusal at the adapter boundary.
 
-    `code` is a closed refusal bucket (the telemetry `refusal-reason` vocabulary) chosen at the raise
-    site, never derived from the message. Unclassified raise sites keep `other`.
+    `code` is a refusal code chosen at the raise site, never derived from the message. Unclassified raise
+    sites keep `other`. Telemetry records `code` only when it is in its closed `refusal-reason` vocabulary
+    and files any other code, such as SPEC-079's `units-cannot-answer-independence`, as `other`.
     """
 
     code = "other"
@@ -224,19 +225,20 @@ _UNITS_REDIRECT = (
 def _units_disjoint(records: list[dict[str, Any]]) -> bool:
     """True when two or more constructed units are pairwise disjoint (SPEC-079 REQ-001).
 
-    Disjoint: no dependency edge and no shared resource unless every effect on it is a read.
-    Any overlapping or dependent pair, or a single unit, keeps the existing units path.
+    Disjoint means the analyzer would classify no pair as ordered or conflicting: no dependency edge and
+    no resource shared by two units with a write-like effect (`analysis.WRITE_LIKE`) on it. Units coverage
+    is always partial, so every such pair is `unknown`. Any dependent or conflicting pair, or a single
+    unit, keeps the existing units path.
     """
     if len(records) < 2 or any(record["dependencies"] for record in records):
         return False
-    kinds: dict[str, list[tuple[int, str]]] = {}
+    users: dict[str, set[int]] = {}
+    kinds: dict[str, set[str]] = {}
     for index, record in enumerate(records):
         for effect in record["effects"]["declared"]:
-            kinds.setdefault(effect["resource"], []).append((index, effect["kind"]))
-    for uses in kinds.values():
-        if len({index for index, _ in uses}) > 1 and any(kind != "read" for _, kind in uses):
-            return False
-    return True
+            users.setdefault(effect["resource"], set()).add(index)
+            kinds.setdefault(effect["resource"], set()).add(effect["kind"])
+    return not any(len(users[resource]) > 1 and kinds[resource] & analysis.WRITE_LIKE for resource in users)
 
 
 def _core_failure_types() -> tuple[type[BaseException], ...]:
