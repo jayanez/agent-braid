@@ -173,7 +173,8 @@ BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner 
                'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin',
                'spec072_development_arms',  # T010 reuses the BL.2 lab-script profile, token and gate helpers
                'view_loom', 'trace_adapter',  # SPEC-074 REQ-006: Loom parser and host transcript reader
-               'system_one_shadow'}  # SPEC-074 REQ-006/007: episode validation and read-only day-file read
+               'system_one_shadow',  # SPEC-074 REQ-006/007: episode validation and read-only day-file read
+               'spec079_freeze'}  # SPEC-079: the v4 freeze definition and boundary check a v4-test run applies
 BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
                        'import_module', '__import__'}  # no dynamic import around the static checks
 BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',
