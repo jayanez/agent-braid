@@ -1,0 +1,44 @@
+{
+ "format": "braid-har-opencode-capture/v0.1",
+ "opencodeVersion": "opencode v2.1.4",
+ "binarySha256": "775ac4ffbce16d31bcd42ed6b389d45a44d7762fac89efa5bd3601a0ce3a73f5",
+ "case": "mcp-singular",
+ "family": "mcp",
+ "shape": "singular",
+ "input": {
+  "mcp": {
+   "probe": {
+    "type": "local",
+    "command": [
+     "/usr/bin/true"
+    ]
+   }
+  }
+ },
+ "configAfter": {
+  "mcp": {
+   "probe": {
+    "type": "local",
+    "command": [
+     "/usr/bin/true"
+    ]
+   }
+  }
+ },
+ "debugConfigInfo": {
+  "mcp": {
+   "servers": {
+    "probe": {
+     "type": "local",
+     "command": [
+      "/usr/bin/true"
+     ]
+    }
+   }
+  }
+ },
+ "serversListed": {
+  "probe": true
+ },
+ "mcpList": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n"
+}

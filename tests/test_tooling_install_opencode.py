@@ -196,6 +196,102 @@ class LifecycleTests(Base):
         self.assertIn("legacy-braid", json.loads(self.config.read_text())["mcp"])
 
 
+FIXTURES = Path(__file__).parent / "fixtures" / "opencode"
+OBSERVED_VERSION = "opencode v2.1.4"
+
+
+def fixture(case):
+    return json.loads((FIXTURES / f"{case}.json").read_text())
+
+
+def mcp_shape(parsed):
+    """The observed shape name of an ``mcp`` object: singular, plural or mixed (SPEC-080 T007)."""
+    names = set(parsed.get("mcp", {}))
+    if names == {"servers"}:
+        return "plural"
+    return "mixed" if "servers" in names else "singular"
+
+
+class ObservedShapeTests(Base):
+    """SPEC-080 T008: the profile against the shapes OpenCode 2.1.4 was observed to read (T007)."""
+
+    def assert_shape_read(self, parsed):
+        case = {"singular": "mcp-singular", "plural": "mcp-plural", "mixed": "mcp-mixed"}[mcp_shape(parsed)]
+        observed = fixture(case)
+        self.assertEqual(observed["opencodeVersion"], OBSERVED_VERSION)
+        self.assertTrue(observed["serversListed"] and all(observed["serversListed"].values()), case)
+
+    def test_fixtures_record_the_observed_version_and_shapes(self):
+        cases = {path.stem: json.loads(path.read_text()) for path in FIXTURES.glob("*.json")}
+        self.assertEqual({value["opencodeVersion"] for value in cases.values()}, {OBSERVED_VERSION})
+        for case in ("mcp-singular", "mcp-plural", "mcp-mixed", "mcp-add-oracle"):
+            self.assertTrue(all(cases[case]["serversListed"].values()), case)
+        self.assertEqual(cases["mcp-add-oracle"]["configAfter"], {"mcp": {"servers": {"probe": {
+            "type": "local", "command": ["/usr/bin/true"]}}}})
+        self.assertFalse(any(cases["mcp-unknown-key-control"]["serversListed"].values()))
+        self.assertFalse(cases["mcp-plural-list"]["serversListed"]["probe"])
+        # One name in both shapes: OpenCode keeps the plural entry (its command is /usr/bin/true).
+        kept = cases["mcp-mixed-same-name"]["debugConfigInfo"]["mcp"]["servers"]["probe"]["command"]
+        self.assertEqual(kept, ["/usr/bin/true"])
+
+    def test_install_into_singular_fixture_writes_a_read_shape_and_restores_bytes(self):
+        original = json.dumps(fixture("mcp-singular")["input"], indent=2) + "\n"
+        self.write_config(original)
+        self.transact()
+        parsed = json.loads(self.config.read_text())
+        self.assertEqual(mcp_shape(parsed), "singular")
+        self.assert_shape_read(parsed)
+        self.assertEqual(parsed["mcp"]["probe"], fixture("mcp-singular")["input"]["mcp"]["probe"])
+        self.assertEqual(self.doctor()["checks"]["ownedEntry"], {"status": "ok"})
+        self.transact("uninstall")
+        self.assertEqual(self.config.read_text(), original)
+
+    def test_install_into_plural_fixture_leaves_the_observed_mixed_shape(self):
+        original = json.dumps(fixture("mcp-plural")["input"], indent=2) + "\n"
+        self.write_config(original)
+        self.transact()
+        parsed = json.loads(self.config.read_text())
+        self.assertEqual(mcp_shape(parsed), "mixed")
+        self.assert_shape_read(parsed)
+        self.assertEqual(parsed["mcp"]["servers"], fixture("mcp-plural")["input"]["mcp"]["servers"])
+        self.assertEqual(self.doctor()["checks"]["ownedEntry"], {"status": "ok"})
+        self.transact("uninstall")
+        self.assertEqual(self.config.read_text(), original)
+
+    def test_plural_entry_with_the_same_name_refuses_unowned_collision(self):
+        original = json.dumps({"mcp": {"servers": {"agent-braid": {"type": "local", "command": ["x"]}}}}) + "\n"
+        self.write_config(original)
+        for operation in ("install", "configure"):
+            with self.subTest(operation=operation), self.assertRaises(InstallationRefused) as caught:
+                self.plan(operation)
+            self.assertEqual(caught.exception.code, "unowned_collision")
+            self.assertIn("mcp.servers.agent-braid", str(caught.exception))
+        self.assertEqual(self.config.read_text(), original)
+        self.assertFalse(self.receipt.exists())
+
+    def test_plural_entry_added_after_install_blocks_update_and_doctor_reports_shadowed(self):
+        self.write_config('{\n  "mcp": {\n    "servers": {}\n  }\n}\n')
+        self.transact()
+        self.assertEqual(self.doctor()["checks"]["ownedEntry"], {"status": "ok"})
+        text = self.config.read_text().replace('"servers": {}', '"servers": {"agent-braid": {"type": "local", "command": ["x"]}}')
+        self.write_config(text)
+        self.assertEqual(self.doctor()["checks"]["ownedEntry"], {"status": "shadowed", "code": "unowned_collision"})
+        with self.assertRaises(InstallationRefused) as caught:
+            self.plan("update")
+        self.assertEqual(caught.exception.code, "unowned_collision")
+        # Removal still removes only the owned singular entry and keeps the unowned plural one.
+        self.transact("uninstall")
+        self.assertEqual(json.loads(self.config.read_text()),
+                         {"mcp": {"servers": {"agent-braid": {"type": "local", "command": ["x"]}}}})
+
+    def test_server_name_servers_is_refused(self):
+        selection = replace(self.selection, name="servers")
+        with self.assertRaises(InstallationRefused) as caught:
+            self.plan(selection=selection)
+        self.assertEqual(caught.exception.code, "invalid_configuration")
+        self.assertFalse(self.config.exists())
+
+
 class PathTests(Base):
     def test_user_paths_follow_xdg_and_prefer_existing_jsonc(self):
         xdg = self.root / "xdg"

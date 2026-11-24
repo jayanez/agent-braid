@@ -1,0 +1,700 @@
+{
+ "format": "braid-spec080-t008/v0.1",
+ "task": "SPEC-080 T008",
+ "requirement": "REQ-007 / SC-007",
+ "procedure": "procedure_007",
+ "date": "2026-11-24",
+ "executionAuthorization": false,
+ "qualifies": false,
+ "baseCommit": "198ded24b1cec790646a7e21fe393854eec31169",
+ "candidateCommit": "bb92c18b488ca04b97638fa14808779b80916ed5",
+ "filesChanged": {
+  "agent_braid/tooling_install.py": "8620fe8b2cbd4c892c19b034f361f1506c30e1a5774c9e74e02590987eab075f",
+  "docs/tooling/INSTALL.md": "315ff7065efe2b85980cf7e836a77b0858caff6521b018276c0f6dc4bf3f441b",
+  "scripts/har_opencode_capture.py": "ccdf997db97aa4ea9642ef5c9a50bfb813b04639e081a5a6fef0255f49057a6c",
+  "specs/068-opencode-native-integration/contracts/opencode-legacy-profile.md": "19a64118e35de1e81eafe39ca15e69801d16dd8d931cf83467241016fc9f21be",
+  "specs/080-harness-skill-every-host/evidence/t007-opencode-schema.json": "fff1b134f25a61c144043ada471632fedbdac3eb345f6f07c37edd4dee9b4e44",
+  "tests/fixtures/opencode/baseline-empty.json": "7d31c3389c20b127db44ef87b1036e0a9c71e7e078cf760218e3f6948ebd322c",
+  "tests/fixtures/opencode/mcp-add-oracle.json": "11a0102be891a84763e9447836291f07dd82593ccb1097968ddea3f54d3ed281",
+  "tests/fixtures/opencode/mcp-mixed-same-name.json": "c123c85087f68c3b77480e8af5907bb0b4104e8a96211a6a4d842c20435105a7",
+  "tests/fixtures/opencode/mcp-mixed.json": "f5991ac7ba1f5610eaddf0c103d5d03e4ec7239108af4057d8237430155dc70f",
+  "tests/fixtures/opencode/mcp-plural-list-beside-singular.json": "38e4c3a7bd65a8cf59f3cdcac3e9292265ee1ddeb022128ade87960a5f612a49",
+  "tests/fixtures/opencode/mcp-plural-list.json": "7a812436c9379b3ae9f15f25e9d2d61e65d9420350b3a37a1ab1fd0675d89edd",
+  "tests/fixtures/opencode/mcp-plural.json": "d101f9570068f1e0dd1e4184d8a65350e1522c291a46bc4db7defd5a2e4dda3b",
+  "tests/fixtures/opencode/mcp-singular-codemode-false.json": "af1f4ef3189719cdf1012022e60581530bf05aae641da1564e7ff4de70356bf4",
+  "tests/fixtures/opencode/mcp-singular-codemode-true.json": "2627a6b6753dfbf99b87a22bb0c9f10d5cf4f529de5b73210745158bf39cd75f",
+  "tests/fixtures/opencode/mcp-singular.json": "8b773ef144673c8ab04b6fbfc4c1768aed1f333f1154c87ec5335c250bb8fbfd",
+  "tests/fixtures/opencode/mcp-unknown-key-control.json": "26d98008c1ff1866e06e232e15d740c9ec8fe9fba039ee8645eae16ef0b318ed",
+  "tests/fixtures/opencode/permission-singular.json": "4604560fbf90d973566155e734a8bdaa2a1a59eb90a4330cedb8a6a7ddcca245",
+  "tests/fixtures/opencode/permissions-plural.json": "625311aae602dac94cf9c1c760d1aa622a117c90b06a3ed3fc40773d24a6a391",
+  "tests/fixtures/opencode/plugin-singular.json": "9895565311673f5c9c6e479e91ec9a9c4d1725666d8a4fbbe8b31fcafcee87d8",
+  "tests/fixtures/opencode/plugins-plural.json": "5244d0014d5834d60eefe414a6d1b10f75333a4596db2b6d97b279c090bdda9e",
+  "tests/fixtures/opencode/skills-plural-list.json": "58b86932d24ac55a0d939e2f9a35f09fd81480bdedffb2d087a22a1ac00a194d",
+  "tests/fixtures/opencode/skills-plural-object.json": "f66ce281d336fac1e42ddbb499a65f32eef544639dc85fd4d9c4c9a94bbd68ce",
+  "tests/test_har_opencode_capture.py": "b464e4c3f5c875d41f463b36fb81e71f193ede42d23161412bb2f7ed54f7e6cf",
+  "tests/test_tooling_install_opencode.py": "54f3f0f9a4d9a3926808bbb9f6fbe7b0ec59b5fbaae9c7638ca46a08ffdddb73"
+ },
+ "opencode": {
+  "version": "opencode v2.1.4",
+  "sha256": "775ac4ffbce16d31bcd42ed6b389d45a44d7762fac89efa5bd3601a0ce3a73f5",
+  "path": "<HOME>/.opencode/bin/opencode"
+ },
+ "observedShapes": "evidence/t007-opencode-schema.json (fixtures tests/fixtures/opencode/*.json)",
+ "drift": {
+  "found": true,
+  "profileShape": "the profile writes the singular mcp.<name> entry; OpenCode 2.1.4 reads it alone, beside a plural mcp.servers object (mixed) and beside a list-shaped mcp.servers, so the written shape needed no change",
+  "observedDrift": "one name in both shapes: OpenCode 2.1.4 keeps mcp.servers.<name> over mcp.<name> (T007 case mcp-mixed-same-name), so an unowned plural entry with the profile's name silently replaced the owned one while doctor reported ownedEntry ok",
+  "fix": [
+   "preview of install, configure and update refuses unowned_collision when mcp.servers.<name> exists; nothing is written",
+   "doctor reports an owned entry shadowed by mcp.servers.<name> as {status: shadowed, code: unowned_collision}",
+   "--name servers is refused with invalid_configuration: OpenCode reads mcp.servers as the plural container",
+   "uninstall still removes only the owned mcp.<name> entry and leaves mcp.servers untouched"
+  ],
+  "notChanged": [
+   "codemode: false stays (SPEC-068 D7); `opencode debug config` drops codemode for both true and false, so its acceptance is not observable with local commands",
+   "no plural or list-shaped entry is written: the profile never writes a shape T007 did not observe being read",
+   "no key outside mcp.<name> and the receipt-owned skills is edited"
+  ]
+ },
+ "acceptance": {
+  "result": "accepted",
+  "code": null,
+  "meaning": "the observed OpenCode version, run in the same temporary home, loads the configuration the profile wrote (debug config normalizes it to mcp.servers.agent-braid) and `opencode mcp list` lists agent-braid; status pending, not connected (the sandbox and the absent mcp SDK leave the server unstarted)",
+  "runs": {
+   "none": {
+    "seed": null,
+    "installStatus": "applied",
+    "writtenConfig": {
+     "mcp": {
+      "agent-braid": {
+       "type": "local",
+       "command": [
+        "<PYTHON>",
+        "-m",
+        "agent_braid",
+        "tooling",
+        "serve",
+        "--source-root",
+        "<SOURCE>",
+        "--result-root",
+        "<TMP>/results"
+       ],
+       "codemode": false
+      }
+     }
+    },
+    "doctor": {
+     "configuration": {
+      "status": "present",
+      "scope": "user",
+      "path": "<TMP>/config/opencode/opencode.json",
+      "receiptPresent": true
+     },
+     "ownedEntry": {
+      "status": "ok"
+     },
+     "ownedSkills": {
+      "status": "ok",
+      "files": {
+       "agent-braid-analyze/SKILL.md": "ok",
+       "agent-braid-evidence/SKILL.md": "ok",
+       "agent-braid-execute/SKILL.md": "ok",
+       "agent-braid-plan/SKILL.md": "ok",
+       "agent-braid-recover/SKILL.md": "ok"
+      }
+     },
+     "nativePlugin": {
+      "status": "not-detected",
+      "domain": "conservative match on documented plugin entries"
+     }
+    },
+    "listed": true,
+    "code": null,
+    "statusLine": "○ agent-braid  pending",
+    "seedServersListed": {},
+    "debugConfigInfo": {
+     "mcp": {
+      "servers": {
+       "agent-braid": {
+        "type": "local",
+        "command": [
+         "<PYTHON>",
+         "-m",
+         "agent_braid",
+         "tooling",
+         "serve",
+         "--source-root",
+         "<SOURCE>",
+         "--result-root",
+         "<TMP>/results"
+        ]
+       }
+      }
+     }
+    },
+    "mcpList": [
+     {
+      "argv": [
+       "opencode",
+       "mcp",
+       "list"
+      ],
+      "exit": 0,
+      "stdout": "○ agent-braid  pending\n",
+      "stdoutSha256": "59da1d512be34fba4555783b8215e6bfd772d9e8f03e878efeceafc39c820cfe",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     }
+    ],
+    "removeStatus": "applied",
+    "configAfterRemove": "{}\n",
+    "restoredSeedBytes": null,
+    "listedAfterRemove": false,
+    "mcpListAfterRemove": {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "serviceStops": [
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     },
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     }
+    ],
+    "networkAttempts": [
+     "GET https://models.opencode.ai/api.json"
+    ],
+    "opencodeCommands": [
+     [
+      "opencode",
+      "--version"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ]
+    ]
+   },
+   "mcp-singular": {
+    "seed": {
+     "case": "mcp-singular",
+     "config": {
+      "mcp": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "installStatus": "applied",
+    "writtenConfig": {
+     "mcp": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      },
+      "agent-braid": {
+       "type": "local",
+       "command": [
+        "<PYTHON>",
+        "-m",
+        "agent_braid",
+        "tooling",
+        "serve",
+        "--source-root",
+        "<SOURCE>",
+        "--result-root",
+        "<TMP>/results"
+       ],
+       "codemode": false
+      }
+     }
+    },
+    "doctor": {
+     "configuration": {
+      "status": "present",
+      "scope": "user",
+      "path": "<TMP>/config/opencode/opencode.json",
+      "receiptPresent": true
+     },
+     "ownedEntry": {
+      "status": "ok"
+     },
+     "ownedSkills": {
+      "status": "ok",
+      "files": {
+       "agent-braid-analyze/SKILL.md": "ok",
+       "agent-braid-evidence/SKILL.md": "ok",
+       "agent-braid-execute/SKILL.md": "ok",
+       "agent-braid-plan/SKILL.md": "ok",
+       "agent-braid-recover/SKILL.md": "ok"
+      }
+     },
+     "nativePlugin": {
+      "status": "not-detected",
+      "domain": "conservative match on documented plugin entries"
+     }
+    },
+    "listed": true,
+    "code": null,
+    "statusLine": "○ agent-braid  pending",
+    "seedServersListed": {
+     "probe": true
+    },
+    "debugConfigInfo": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       },
+       "agent-braid": {
+        "type": "local",
+        "command": [
+         "<PYTHON>",
+         "-m",
+         "agent_braid",
+         "tooling",
+         "serve",
+         "--source-root",
+         "<SOURCE>",
+         "--result-root",
+         "<TMP>/results"
+        ]
+       }
+      }
+     }
+    },
+    "mcpList": [
+     {
+      "argv": [
+       "opencode",
+       "mcp",
+       "list"
+      ],
+      "exit": 0,
+      "stdout": "○ agent-braid  pending\n✗ probe        failed: Connection closed: MCP server process exited with code 0\n",
+      "stdoutSha256": "0ed459fc79388b57f34e47e717075e22334982970a5f8538e6f4db56d44af216",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     }
+    ],
+    "removeStatus": "applied",
+    "configAfterRemove": "{\n  \"mcp\": {\n    \"probe\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/usr/bin/true\"\n      ]\n    }\n  }\n}\n",
+    "restoredSeedBytes": true,
+    "listedAfterRemove": false,
+    "mcpListAfterRemove": {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "serviceStops": [
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     },
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     }
+    ],
+    "networkAttempts": [],
+    "opencodeCommands": [
+     [
+      "opencode",
+      "--version"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ]
+    ]
+   },
+   "mcp-plural": {
+    "seed": {
+     "case": "mcp-plural",
+     "config": {
+      "mcp": {
+       "servers": {
+        "probe": {
+         "type": "local",
+         "command": [
+          "/usr/bin/true"
+         ]
+        }
+       }
+      }
+     }
+    },
+    "installStatus": "applied",
+    "writtenConfig": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      },
+      "agent-braid": {
+       "type": "local",
+       "command": [
+        "<PYTHON>",
+        "-m",
+        "agent_braid",
+        "tooling",
+        "serve",
+        "--source-root",
+        "<SOURCE>",
+        "--result-root",
+        "<TMP>/results"
+       ],
+       "codemode": false
+      }
+     }
+    },
+    "doctor": {
+     "configuration": {
+      "status": "present",
+      "scope": "user",
+      "path": "<TMP>/config/opencode/opencode.json",
+      "receiptPresent": true
+     },
+     "ownedEntry": {
+      "status": "ok"
+     },
+     "ownedSkills": {
+      "status": "ok",
+      "files": {
+       "agent-braid-analyze/SKILL.md": "ok",
+       "agent-braid-evidence/SKILL.md": "ok",
+       "agent-braid-execute/SKILL.md": "ok",
+       "agent-braid-plan/SKILL.md": "ok",
+       "agent-braid-recover/SKILL.md": "ok"
+      }
+     },
+     "nativePlugin": {
+      "status": "not-detected",
+      "domain": "conservative match on documented plugin entries"
+     }
+    },
+    "listed": true,
+    "code": null,
+    "statusLine": "○ agent-braid  pending",
+    "seedServersListed": {
+     "probe": true
+    },
+    "debugConfigInfo": {
+     "mcp": {
+      "servers": {
+       "agent-braid": {
+        "type": "local",
+        "command": [
+         "<PYTHON>",
+         "-m",
+         "agent_braid",
+         "tooling",
+         "serve",
+         "--source-root",
+         "<SOURCE>",
+         "--result-root",
+         "<TMP>/results"
+        ]
+       },
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "mcpList": [
+     {
+      "argv": [
+       "opencode",
+       "mcp",
+       "list"
+      ],
+      "exit": 0,
+      "stdout": "○ agent-braid  pending\n✗ probe        failed: Connection closed: MCP server process exited with code 0\n",
+      "stdoutSha256": "0ed459fc79388b57f34e47e717075e22334982970a5f8538e6f4db56d44af216",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+     }
+    ],
+    "removeStatus": "applied",
+    "configAfterRemove": "{\n  \"mcp\": {\n    \"servers\": {\n      \"probe\": {\n        \"type\": \"local\",\n        \"command\": [\n          \"/usr/bin/true\"\n        ]\n      }\n    }\n  }\n}\n",
+    "restoredSeedBytes": true,
+    "listedAfterRemove": false,
+    "mcpListAfterRemove": {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "serviceStops": [
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     },
+     {
+      "exit": 0,
+      "portClosedAfterStop": true
+     }
+    ],
+    "networkAttempts": [],
+    "opencodeCommands": [
+     [
+      "opencode",
+      "--version"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ],
+     [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     [
+      "opencode",
+      "reload"
+     ],
+     [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     [
+      "opencode",
+      "service",
+      "stop"
+     ]
+    ]
+   }
+  }
+ },
+ "commands": [
+  "python3.13 scripts/har_opencode_capture.py schema",
+  "python3.13 scripts/har_opencode_capture.py profile",
+  "python3.13 scripts/har_opencode_capture.py profile --seed mcp-singular",
+  "python3.13 scripts/har_opencode_capture.py profile --seed mcp-plural",
+  "python -m unittest tests.test_tooling_install_opencode.ObservedShapeTests (before the fix: 3 failures, 1 error in 6 tests)",
+  "python -m unittest tests.test_tooling_install tests.test_tooling_install_golden tests.test_tooling_install_opencode tests.test_plugin_opencode tests.test_opencode_entry tests.test_har_opencode_capture",
+  "python -m unittest (the 12 tooling and OpenCode modules listed under results.related)",
+  "mutation controls: each guard disabled in turn, ObservedShapeTests rerun, source restored"
+ ],
+ "results": {
+  "redBeforeFix": {
+   "tests": 6,
+   "failures": 3,
+   "errors": 1,
+   "failing": [
+    "test_plural_entry_with_the_same_name_refuses_unowned_collision",
+    "test_plural_entry_added_after_install_blocks_update_and_doctor_reports_shadowed",
+    "test_server_name_servers_is_refused"
+   ]
+  },
+  "afterFix": {
+   "ObservedShapeTests": "6 tests OK",
+   "tests.test_tooling_install_opencode": "47 tests OK (41 existing + 6 new)",
+   "tests.test_har_opencode_capture": "5 tests OK",
+   "related": "246 tests OK, 6 skipped: test_tooling_install, test_tooling_install_golden, test_tooling_install_opencode, test_plugin_opencode, test_opencode_entry, test_har_opencode_capture, test_plugin_legacy, test_spec060_release, test_tooling_lifecycle_acceptance, test_tooling_journey, test_tooling_mcp, test_tooling_skills_acceptance, test_tooling_telemetry (Python 3.13)",
+   "specKitGates": "all gates passed (fsck unreachable-object probe stubbed)"
+  }
+ },
+ "controls": {
+  "mutations": {
+   "G1 reserved name 'servers' accepted": {
+    "exit": 1,
+    "failingTests": [
+     "test_server_name_servers_is_refused"
+    ],
+    "summary": "FAILED (failures=1)"
+   },
+   "G2 install/update ignores plural mcp.servers.<name>": {
+    "exit": 1,
+    "failingTests": [
+     "test_plural_entry_added_after_install_blocks_update_and_doctor_reports_shadowed",
+     "test_plural_entry_with_the_same_name_refuses_unowned_collision"
+    ],
+    "summary": "FAILED (failures=2, errors=1)"
+   },
+   "G3 doctor ignores plural mcp.servers.<name>": {
+    "exit": 1,
+    "failingTests": [
+     "test_plural_entry_added_after_install_blocks_update_and_doctor_reports_shadowed"
+    ],
+    "summary": "FAILED (failures=1)"
+   }
+  },
+  "negativeObservation": "T007 negative control: mcpServers is not listed by `opencode mcp list` and is dropped by `debug config`",
+  "removalObservation": "after uninstall `opencode mcp list` no longer lists agent-braid; seeded files are restored byte for byte"
+ },
+ "limits": [
+  "one OpenCode build (2.1.4) on one macOS arm64 machine; another build may read other shapes",
+  "acceptance means loaded and listed (status pending), not connected; no MCP tool call, session or model call",
+  "the user's real OpenCode configuration and service were not read or contacted: HOME and XDG_* below a temporary root, sandbox denies the real home and every outbound IP except the temporary service port",
+  "OpenCode attempted GET https://models.opencode.ai/api.json on its own; the sandbox refused it",
+  "codemode acceptance is not observable with local commands",
+  "the six-location precedence (T002 rows 09 and 11) is not re-observed here"
+ ]
+}

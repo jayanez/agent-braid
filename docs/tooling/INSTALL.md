@@ -164,7 +164,12 @@ Only the owned member is edited; comments, trailing commas and every other byte 
 the JSONC file are preserved. Preview refuses `ambiguous_configuration` when both
 `opencode.json` and `opencode.jsonc` exist in the scope, `invalid_configuration`
 for a file that does not parse, and an unowned `agent-braid` entry or skill is never
-overwritten (`unowned_collision`). Because the default key equals the native
+overwritten (`unowned_collision`). OpenCode 2.1.4 reads both `mcp.<name>` and the
+plural `mcp.servers.<name>` (side by side as well), and keeps the plural entry when
+one name is in both, so preview also refuses `unowned_collision` when
+`mcp.servers.<name>` exists, `doctor` reports such an owned entry as `shadowed`, and
+`--name servers` is refused (`invalid_configuration`); see
+[SPEC-080 T007](../../specs/080-harness-skill-every-host/evidence/t007-opencode-schema.json). Because the default key equals the native
 plugin's server name, the legacy entry shadows the plugin's server when both are
 configured; preview and `doctor` warn with `native_plugin_shadowed` (only when the plugin entry is in the configuration file the profile edits; `opencode plugin add` writes the global one), and `--name`
 selects another key. Behavior is checked by `tests/test_tooling_install_opencode.py`

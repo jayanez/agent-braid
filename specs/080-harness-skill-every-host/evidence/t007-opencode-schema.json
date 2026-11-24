@@ -1,0 +1,2310 @@
+{
+ "format": "braid-har-opencode-capture/v0.1",
+ "task": "SPEC-080 T007",
+ "requirement": "REQ-007 / SC-007",
+ "executionAuthorization": false,
+ "qualifies": false,
+ "binary": {
+  "path": "<HOME>/.opencode/bin/opencode",
+  "version": "opencode v2.1.4",
+  "sha256": "775ac4ffbce16d31bcd42ed6b389d45a44d7762fac89efa5bd3601a0ce3a73f5"
+ },
+ "isolation": {
+  "home": "fresh tempfile.mkdtemp() root per case; HOME and XDG_{CONFIG,DATA,CACHE,STATE}_HOME below it",
+  "environment": "built from scratch: PATH=/usr/bin:/bin, LANG, NO_COLOR, the six variables above",
+  "sandbox": "sandbox-exec: deny read and write below the real home except the binary directory; deny outbound IP except localhost:<service port>",
+  "service": "per-case `service.json` port; `opencode service stop` after each case, port checked closed",
+  "cwd": "<TMP>/cwd (empty)"
+ },
+ "commandsPerCase": [
+  [
+   "opencode",
+   "debug",
+   "config"
+  ],
+  [
+   "opencode",
+   "reload"
+  ],
+  [
+   "opencode",
+   "mcp",
+   "list"
+  ],
+  [
+   "opencode",
+   "plugin",
+   "list"
+  ],
+  [
+   "opencode",
+   "service",
+   "stop"
+  ]
+ ],
+ "preliminaries": [
+  {
+   "argv": [
+    "opencode",
+    "--version"
+   ],
+   "exit": 0,
+   "stdout": "opencode v2.1.4\n",
+   "stdoutSha256": "a2228d75cd5db6de7be03154e04fb86c3ea379a91a9b8f0bd338cbd76c65b099",
+   "stderr": "",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "argv": [
+    "opencode",
+    "--help"
+   ],
+   "exit": 0,
+   "stdout": "DESCRIPTION\n  OpenCode command line interface\n\nUSAGE\n  opencode <subcommand> [flags] [<directory>]\n\nARGUMENTS\n  directory string    Directory to start OpenCode in (optional)\n\nFLAGS\n  --standalone            Run with a private server instead of the background service\n  --server string         Connect to a server URL instead of the background service\n  --auto                  Auto-approve permissions that are not explicitly denied\n  --continue, -c          Continue the last session\n  --session, -s string    Session ID to continue, or to create if it does not exist\n  --prompt string         Prompt to use\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n\nSUBCOMMANDS\n  upgrade, update    Upgrade OpenCode to the latest or a specific version\n  uninstall          Uninstall OpenCode, keeping session data, configuration, and state\n  acp                Start an Agent Client Protocol server\n  api                Make a request to the running server\n  debug              Debugging and troubleshooting tools\n  auth               manage integrations and credentials\n  mcp                Manage MCP (Model Context Protocol) servers\n  plugin             Manage plugins\n  models             List all available models\n  stats              Show shareable usage statistics\n  mini               Start the minimal interactive interface\n  run                Run OpenCode with a message\n  session            Manage sessions\n  service            Manage the background server\n  reload             Reload configuration\n  pair               Print one-time links to connect a browser or app\n  serve              Start the v2 API and web server\n",
+   "stdoutSha256": "fcbfb3e3220e806a3ecf4bbe002dc8dc835e8f676d68393ab22a0d32a3a4e619",
+   "stderr": "",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "argv": [
+    "opencode",
+    "mcp",
+    "--help"
+   ],
+   "exit": 0,
+   "stdout": "DESCRIPTION\n  Manage MCP (Model Context Protocol) servers\n\nUSAGE\n  opencode mcp <subcommand> [flags]\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n\nSUBCOMMANDS\n  list      List configured MCP servers and their status\n  add       Add an MCP server to your configuration\n  auth      Authenticate with an OAuth-capable remote MCP server\n  logout    Remove stored OAuth credentials for an MCP server\n",
+   "stdoutSha256": "69c33332c72991a09d9710f5523cfbe557adf01e24d71f6c0fc2ff1b697fd845",
+   "stderr": "",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "argv": [
+    "opencode",
+    "debug",
+    "--help"
+   ],
+   "exit": 0,
+   "stdout": "DESCRIPTION\n  Debugging and troubleshooting tools\n\nUSAGE\n  opencode debug <subcommand> [flags]\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n\nSUBCOMMANDS\n  agents       List all agents\n  config       List configuration sources\n  heap-dump    Write a heap snapshot of the running server and print its path\n  paths        Show global paths (data, config, cache, state)\n",
+   "stdoutSha256": "6df546f3753078c5ded6befb44bdb750ccc5f8a09d1466b49f98dbf863fbb38f",
+   "stderr": "",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ ],
+ "preliminaryNetworkAttempts": [],
+ "cases": [
+  {
+   "case": "baseline-empty",
+   "family": "control",
+   "shape": "none",
+   "note": "no configuration file",
+   "input": null,
+   "inputSha256": null,
+   "oracle": null,
+   "configAfter": null,
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "absent",
+    "info": null,
+    "keyPaths": {}
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "52d988e45f32a2c5c23aa7373a1fafcf9d5954e3ff8ceac2aa55c3ad6865cc9d",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "mcp-add-oracle",
+   "family": "mcp",
+   "shape": "written-by-opencode",
+   "note": "the shape this version itself writes with `opencode mcp add --global`",
+   "input": null,
+   "inputSha256": null,
+   "oracle": {
+    "argv": [
+     "opencode",
+     "mcp",
+     "add",
+     "--global",
+     "probe",
+     "--",
+     "/usr/bin/true"
+    ],
+    "exit": 0,
+    "stdout": "MCP server \"probe\" added to <TMP>/config/opencode/opencode.json\n",
+    "stdoutSha256": "a451ec8d126602b3b6e6fbf6e05c0936dead53fa945f71e6903919719ca4d373",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "configAfter": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {}
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-singular",
+   "family": "mcp",
+   "shape": "singular",
+   "note": "",
+   "input": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "inputSha256": "0f51319d45323c974a9c0e0efad3d203118174aca16aed6ea28fae68863d8623",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe": true,
+     "mcp.probe": false
+    }
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-plural",
+   "family": "mcp",
+   "shape": "plural",
+   "note": "",
+   "input": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     }
+    }
+   },
+   "inputSha256": "946ed6292e110a24a633468d2cd2a1d866af6a58ba821ad441435847d3624bf5",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe": true,
+     "mcp.probe": false
+    }
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-mixed",
+   "family": "mcp",
+   "shape": "mixed",
+   "note": "a plural container beside a singular sibling, as an install into a plural file would leave it",
+   "input": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     },
+     "probe2": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "inputSha256": "c59b261354987bef61811127e09c2f550832c52f29b77e86186faf370d50c530",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     },
+     "probe2": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe2": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       },
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe": true,
+     "mcp.servers.probe2": true,
+     "mcp.probe2": false
+    }
+   },
+   "serversListed": {
+    "probe": true,
+    "probe2": true
+   },
+   "listedServers": [
+    "probe",
+    "probe2"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe2\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          },\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "9578cd255a2e9bdfc38ae53910881510e4ccbcba07b8a4b132c0b733baf7d8c3",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe   failed: Connection closed: MCP server process exited with code 0\n✗ probe2  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "cbb37e6a67f3ec5436de213da2759ac693a98c1c50cef838a4ed215860cd146a",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-plural-list",
+   "family": "mcp",
+   "shape": "plural-list",
+   "note": "list-shaped `mcp.servers`, the 2026-11-22 vendor-docs reading",
+   "input": {
+    "mcp": {
+     "servers": [
+      {
+       "name": "probe",
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     ]
+    }
+   },
+   "inputSha256": "eb94e3ce52d497c21d10de8faf8745fef89863d790172d0d08e30afcc3388381",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "servers": [
+      {
+       "name": "probe",
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     ]
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {},
+    "keyPaths": {
+     "mcp.servers": false
+    }
+   },
+   "serversListed": {
+    "probe": false
+   },
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {}\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "e0c0115650c4246c794c698a3af7f07d23e5e6c9c54cf2e924f3312b61a14685",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "mcp-plural-list-beside-singular",
+   "family": "mcp",
+   "shape": "plural-list+singular",
+   "note": "a singular entry inserted beside a list-shaped `mcp.servers`",
+   "input": {
+    "mcp": {
+     "servers": [
+      {
+       "name": "probe",
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     ],
+     "probe2": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "inputSha256": "b54f4493c53f1fe6a60eacc2ce3f428323b01506d6df0c9af3fb7e5b01a15edd",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "servers": [
+      {
+       "name": "probe",
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     ],
+     "probe2": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe2": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe2": true
+    }
+   },
+   "serversListed": {
+    "probe": false,
+    "probe2": true
+   },
+   "listedServers": [
+    "probe2"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe2\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "06dffdc719771350f70b1595f16f9d3d6fe0ff9d08ef538f295e3b6ec570d268",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe2  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "83e95cf9f6d9334a1cb17aff89cec9ade269b19f95ab65fa126764ee0bf7dba4",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-mixed-same-name",
+   "family": "mcp",
+   "shape": "mixed-same-name",
+   "note": "one name in both shapes: which command does OpenCode keep (true: plural, false: singular)",
+   "input": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     },
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/false"
+      ]
+     }
+    }
+   },
+   "inputSha256": "1dbdf472ca940662a7d84f9b9ee44b01dc74315ec166e179d48fe47a3e0214f3",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     },
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/false"
+      ]
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe": true
+    }
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-singular-codemode-false",
+   "family": "mcp",
+   "shape": "singular+codemode-false",
+   "note": "the profile's `codemode: false` member (SPEC-068 D7)",
+   "input": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ],
+      "codemode": false
+     }
+    }
+   },
+   "inputSha256": "e6bc7d5cbd2036a539021400dbde31c26e53b060c240b5d4378b7f58ce7a4250",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ],
+      "codemode": false
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe.codemode": false
+    }
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-singular-codemode-true",
+   "family": "mcp",
+   "shape": "singular+codemode-true",
+   "note": "control for the `codemode` member: is it visible in `debug config` at all",
+   "input": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ],
+      "codemode": true
+     }
+    }
+   },
+   "inputSha256": "60814276d628c3d2198ff65c826a5fc31a4d094176fe9a09ba72b3c8f2db9cef",
+   "oracle": null,
+   "configAfter": {
+    "mcp": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ],
+      "codemode": true
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "mcp": {
+      "servers": {
+       "probe": {
+        "type": "local",
+        "command": [
+         "/usr/bin/true"
+        ]
+       }
+      }
+     }
+    },
+    "keyPaths": {
+     "mcp.servers.probe.codemode": false
+    }
+   },
+   "serversListed": {
+    "probe": true
+   },
+   "listedServers": [
+    "probe"
+   ],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"mcp\": {\n        \"servers\": {\n          \"probe\": {\n            \"type\": \"local\",\n            \"command\": [\n              \"/usr/bin/true\"\n            ]\n          }\n        }\n      }\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "a1480cfddc3069be0bf36e1c7665ec6f45057f76b8e1ade68901bf27f877f7bf",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "✗ probe  failed: Connection closed: MCP server process exited with code 0\n",
+     "stdoutSha256": "78809eb30e9069ccb8dd15a1a536c0be2808edb20b0646fd26e753225b2d3aa2",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": []
+  },
+  {
+   "case": "mcp-unknown-key-control",
+   "family": "control",
+   "shape": "unknown-key",
+   "note": "negative control: a key OpenCode does not define must not be listed",
+   "input": {
+    "mcpServers": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "inputSha256": "99e9b1ac9ebe3849c2cbeed5a076c89c6229f608517bee1f41885d9e84ef0399",
+   "oracle": null,
+   "configAfter": {
+    "mcpServers": {
+     "probe": {
+      "type": "local",
+      "command": [
+       "/usr/bin/true"
+      ]
+     }
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {},
+    "keyPaths": {
+     "mcpServers": false
+    }
+   },
+   "serversListed": {
+    "probe": false
+   },
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {}\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "e0c0115650c4246c794c698a3af7f07d23e5e6c9c54cf2e924f3312b61a14685",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "plugin-singular",
+   "family": "plugins",
+   "shape": "singular",
+   "note": "",
+   "input": {
+    "plugin": [
+     "./probe-plugin-absent.js"
+    ]
+   },
+   "inputSha256": "d304f5440a8dcbaeb6deaf7490fdc242426f8f82d1b093cbb35b0aec65c451e5",
+   "oracle": null,
+   "configAfter": {
+    "plugin": [
+     "./probe-plugin-absent.js"
+    ]
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "plugins": [
+      "./probe-plugin-absent.js"
+     ]
+    },
+    "keyPaths": {
+     "plugin": false,
+     "plugins": true
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"plugins\": [\n        \"./probe-plugin-absent.js\"\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "43895f52426c6dc040f4efa3a70bb4ac95aec9e26d1f1c574aa2990d329b61e5",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "ID  VERSION  SOURCE\n-   local    <TMP>/config/opencode/probe-plugin-absent.js\n",
+     "stdoutSha256": "9ac02e63b72595cc997e41e14144b92fc82105b83804f5ca50fa921731291875",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "plugins-plural",
+   "family": "plugins",
+   "shape": "plural",
+   "note": "",
+   "input": {
+    "plugins": [
+     "./probe-plugin-absent.js"
+    ]
+   },
+   "inputSha256": "cc967c64dbb73aa53b762aae2bae1e8c909b5ff447b4e823be0ede8024f75e1a",
+   "oracle": null,
+   "configAfter": {
+    "plugins": [
+     "./probe-plugin-absent.js"
+    ]
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "plugins": [
+      "./probe-plugin-absent.js"
+     ]
+    },
+    "keyPaths": {
+     "plugin": false,
+     "plugins": true
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"plugins\": [\n        \"./probe-plugin-absent.js\"\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "43895f52426c6dc040f4efa3a70bb4ac95aec9e26d1f1c574aa2990d329b61e5",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "ID  VERSION  SOURCE\n-   local    <TMP>/config/opencode/probe-plugin-absent.js\n",
+     "stdoutSha256": "9ac02e63b72595cc997e41e14144b92fc82105b83804f5ca50fa921731291875",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "permission-singular",
+   "family": "permissions",
+   "shape": "singular",
+   "note": "",
+   "input": {
+    "permission": {
+     "edit": "deny"
+    }
+   },
+   "inputSha256": "8a3735fb0c638a823b97fab3a860e6f7ddcf03820963adde2bf0f901a4c6f6c0",
+   "oracle": null,
+   "configAfter": {
+    "permission": {
+     "edit": "deny"
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "permissions": [
+      {
+       "action": "edit",
+       "resource": "*",
+       "effect": "deny"
+      }
+     ]
+    },
+    "keyPaths": {
+     "permission": false,
+     "permissions": true
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"permissions\": [\n        {\n          \"action\": \"edit\",\n          \"resource\": \"*\",\n          \"effect\": \"deny\"\n        }\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "30050841c949f99d0f1e94bf1696388c517c17b9d57777d41e99948a8b740f2c",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "permissions-plural",
+   "family": "permissions",
+   "shape": "plural",
+   "note": "",
+   "input": {
+    "permissions": [
+     {
+      "action": "edit",
+      "resource": "*",
+      "effect": "deny"
+     }
+    ]
+   },
+   "inputSha256": "410bead3cb2d775a6ffe4433ee9716f764f1831bbb407f9465fe33601346b3d3",
+   "oracle": null,
+   "configAfter": {
+    "permissions": [
+     {
+      "action": "edit",
+      "resource": "*",
+      "effect": "deny"
+     }
+    ]
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "permissions": [
+      {
+       "action": "edit",
+       "resource": "*",
+       "effect": "deny"
+      }
+     ]
+    },
+    "keyPaths": {
+     "permission": false,
+     "permissions": true
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"permissions\": [\n        {\n          \"action\": \"edit\",\n          \"resource\": \"*\",\n          \"effect\": \"deny\"\n        }\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "30050841c949f99d0f1e94bf1696388c517c17b9d57777d41e99948a8b740f2c",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "skills-plural-list",
+   "family": "skills",
+   "shape": "plural-list",
+   "note": "",
+   "input": {
+    "skills": [
+     "./probe-skills"
+    ]
+   },
+   "inputSha256": "0bc8dd5965eeaf73c0560b559ce50e474df3d2d16f732014d4e28a6646bca526",
+   "oracle": null,
+   "configAfter": {
+    "skills": [
+     "./probe-skills"
+    ]
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "skills": [
+      "./probe-skills"
+     ]
+    },
+    "keyPaths": {
+     "skills": true,
+     "skill": false
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"skills\": [\n        \"./probe-skills\"\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "59995565d9a69cd4b4e41976058e50a078089bb62902d482b5f81b5f5066cc71",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  },
+  {
+   "case": "skills-plural-object",
+   "family": "skills",
+   "shape": "plural-object",
+   "note": "",
+   "input": {
+    "skills": {
+     "paths": [
+      "./probe-skills"
+     ]
+    }
+   },
+   "inputSha256": "46c46690e2b58f5d2a08b021ffa96ec02f4c158673f5d3f4bfbe62166ad811e9",
+   "oracle": null,
+   "configAfter": {
+    "skills": {
+     "paths": [
+      "./probe-skills"
+     ]
+    }
+   },
+   "configChangedByOpenCode": false,
+   "debugConfig": {
+    "document": "parsed",
+    "info": {
+     "skills": [
+      "./probe-skills"
+     ]
+    },
+    "keyPaths": {
+     "skills": true,
+     "skill": false
+    }
+   },
+   "serversListed": {},
+   "listedServers": [],
+   "commands": [
+    {
+     "argv": [
+      "opencode",
+      "debug",
+      "config"
+     ],
+     "exit": 0,
+     "stdout": "[\n  {\n    \"type\": \"document\",\n    \"path\": \"<TMP>/config/opencode/opencode.json\",\n    \"info\": {\n      \"skills\": [\n        \"./probe-skills\"\n      ]\n    }\n  },\n  {\n    \"type\": \"directory\",\n    \"path\": \"<TMP>/config/opencode\"\n  }\n]\n",
+     "stdoutSha256": "59995565d9a69cd4b4e41976058e50a078089bb62902d482b5f81b5f5066cc71",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "reload"
+     ],
+     "exit": 0,
+     "stdout": "Configuration reloaded\n",
+     "stdoutSha256": "2822a9fc1f6eb8167a04599900337e042bcb565b058d82fc71a01edf0458b821",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "mcp",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No MCP servers configured\n",
+     "stdoutSha256": "0d5fab47686ce20f2ce7a590422b893982aba15b15408ada0fd3a97c31ed83fd",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+     "argv": [
+      "opencode",
+      "plugin",
+      "list"
+     ],
+     "exit": 0,
+     "stdout": "No plugins found\n",
+     "stdoutSha256": "fa1e211a4cd194e24826f887071c6cff95cc424cd051c15b01133fbc8155db54",
+     "stderr": "",
+     "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+   ],
+   "serviceStop": {
+    "argv": [
+     "opencode",
+     "service",
+     "stop"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "portClosedAfterStop": true
+   },
+   "networkAttempts": [
+    "GET https://models.opencode.ai/api.json"
+   ]
+  }
+ ],
+ "verdicts": {
+  "mcp": {
+   "singular (mcp.<name>)": true,
+   "plural (mcp.servers.<name>)": true,
+   "mixed (mcp.servers.<a> beside mcp.<b>)": {
+    "probe": true,
+    "probe2": true
+   },
+   "plural-list (mcp.servers as an array)": false,
+   "singular beside a plural list": {
+    "probe": false,
+    "probe2": true
+   },
+   "same name in both shapes keeps": "plural",
+   "codemode visible in debug config": {
+    "false": false,
+    "true": false
+   },
+   "writtenByOpenCode": {
+    "mcp": {
+     "servers": {
+      "probe": {
+       "type": "local",
+       "command": [
+        "/usr/bin/true"
+       ]
+      }
+     }
+    }
+   },
+   "normalizedTo": "mcp.servers"
+  },
+  "plugins": {
+   "singular (plugin)": {
+    "plugin": false,
+    "plugins": true
+   },
+   "plural (plugins)": {
+    "plugin": false,
+    "plugins": true
+   }
+  },
+  "permissions": {
+   "singular (permission)": {
+    "permission": false,
+    "permissions": true
+   },
+   "plural (permissions)": {
+    "permission": false,
+    "permissions": true
+   }
+  },
+  "skills": {
+   "plural-list (skills: [...])": true,
+   "plural-object (skills: {paths})": true
+  },
+  "negativeControl": {
+   "mcpServers listed": false,
+   "passes": true
+  },
+  "readMeans": "mcp: the server appears in `opencode mcp list` after `reload`; other families: the key survives in the `info` that `opencode debug config` reports for the file (OpenCode normalizes what it reads); a dropped key is recorded as not read"
+ },
+ "docs": {
+  "source": "Context7 /anomalyco/opencode/v2.1.2 (queried 2026-11-24)",
+  "pages": [
+   "services/www/src/docs/content/migrate-v1.mdx",
+   "services/www/src/docs/content/mcp-servers.mdx",
+   "services/www/src/docs/content/skills.mdx",
+   "services/www/src/docs/content/build/plugins/migrate-v1.mdx"
+  ],
+  "claims": [
+   "V2 groups servers under mcp.servers; V2 does not place server names directly under mcp",
+   "the V1 config format remains supported; V1 and V2 fields may coexist at the top level",
+   "V2 replaces the plugin array with plugins and the permission map with an ordered permissions array"
+  ],
+  "status": "hypotheses; the observation above decides"
+ },
+ "limits": [
+  "one OpenCode build on one macOS machine; another build may read other shapes",
+  "read means listed or normalized by local subcommands; no session, model call or MCP tool call",
+  "the probe servers run /usr/bin/true, so `mcp list` reports them as failed: listed, not connected",
+  "plugins are local relative paths that do not exist; no plugin code was loaded",
+  "OpenCode watches parent directories of its working directory and /Library/Application Support; a system-managed configuration there, if any, could influence the result",
+  "OpenCode's own network attempts are recorded from its temporary log and were refused by the sandbox"
+ ],
+ "stopFailures": []
+}
