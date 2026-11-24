@@ -85,11 +85,13 @@ the refusal code. It reads no prompt or file content and spends no quota.
 | Statistic | Definition | Pass |
 | --- | --- | --- |
 | S1 | `ok` share of `analyze-work` calls, Wilson 95 % | lower bound ≥ 0.70 |
-| S2 | `units-cannot-answer-independence` refusals followed by an `aim` call in the same session | ≥ 80 % recovered |
+| S2 | `units-cannot-answer-independence` refusals followed by a valid `aim` call (envelope status `ok`) in the same session | ≥ 80 % recovered; 0/0 is not applicable and passes |
 | S3 | sessions that call `analyze` and never `analyze-work`, among sessions with any Agent Braid analysis call | ≤ 5 % |
 | S4 | `analyze-work` `error` outcomes | 0 |
 
-Fewer than 30 calls is `inconclusive`, and the release stays blocked. A failed or inconclusive check is
+The owner approved the S2 wording on 2026-11-24 ([record](https://github.com/jayanez/agent-braid/pull/1629#issuecomment-7123466626)): with no redirect refusal in the
+window, S2 is not applicable and passes, while S1, S3 and S4 still apply. Fewer than 30 calls is
+`inconclusive`, and the release stays blocked. A failed or inconclusive check is
 recorded and is not retried on the same window.
 
 ## Boundaries

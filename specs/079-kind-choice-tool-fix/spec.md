@@ -73,6 +73,9 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   SPEC-079 also needs a read-only check over the owner's real sessions on the pinned build
   (REQ-012). The owner approved the thresholds as proposed on 2026-11-23
   ([record](https://github.com/jayanez/agent-braid/pull/1625#issuecomment-7116233134)); they are frozen with the protocol (REQ-008) before the shadow window opens.
+  On 2026-11-24 the owner approved an S2 clarification without changing a threshold: 0/0
+  refusals is "not applicable" and passes, and "recovered" means a valid `aim` call in the same
+  session ([record](https://github.com/jayanez/agent-braid/pull/1629#issuecomment-7123466626)).
 - **Owner sign-off — T006 protocol (2026-11-23).** `evaluation-protocol.md` approved as written
   ([record](https://github.com/jayanez/agent-braid/pull/1629#issuecomment-7116233460)). T008 (300 rollouts) remains a separate owner decision.
 
@@ -166,10 +169,12 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   host transcripts' tool names, `kind` arguments and envelope status and refusal code (no prompt
   or file content, no quota). It reports: S1 the `ok` share of `analyze-work` calls (Wilson 95 %);
   S2 the count of `units-cannot-answer-independence` refusals and how many were followed in the same
-  session by an `aim` call (recovered); S3 sessions that call `analyze` and never `analyze-work`
+  session by a valid `aim` call, one whose envelope status is `ok` (recovered); S3 sessions that call `analyze` and never `analyze-work`
   (detours); S4 `analyze-work` `error` outcomes. Pass (OD-E, owner-approved 2026-11-23): S1 Wilson
   lower bound >= 0.70; at least 80 % of S2 refusals recovered; S3 <= 5 % of sessions with any Agent
-  Braid analysis call; S4 = 0. Fewer than 30 calls is inconclusive and blocks the release; it is
+  Braid analysis call; S4 = 0. With no redirect refusal in the window (0/0), S2 is not applicable and
+  passes; S1, S3 and S4 still apply (owner clarification 2026-11-24,
+  [record](https://github.com/jayanez/agent-braid/pull/1629#issuecomment-7123466626)). Fewer than 30 calls is inconclusive and blocks the release; it is
   not a pass. A failed or inconclusive check is recorded (REQ-010), not retried on the same window.
   - SC-015: Given a shadow window that meets the minimum, when the script runs, then it reports
     S1 to S4 with the preregistered verdict and reads no content beyond the listed fields.
