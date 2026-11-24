@@ -1,7 +1,8 @@
 ---
 name: setup
 description: Configure the installed Agent Braid plugin for this user and explicitly selected repositories, or diagnose its installation.
-license: CC-BY-SA-4.0
+metadata:
+  license: CC-BY-SA-4.0
 ---
 
 Use this workflow after native plugin installation or when the user asks to add or remove repositories.

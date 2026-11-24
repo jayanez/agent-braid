@@ -126,6 +126,42 @@ class SkillNamingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'skill directories'):
             check_package_names(self.root)
 
+    def test_every_packaged_skill_carries_metadata_license_only(self):
+        # SPEC-080 T014 (SC-005): all seven packaged skills, including the plugin-only ones.
+        for directory in POLICY_NAMES:
+            head = (self.plugin / 'skills' / directory / 'SKILL.md').read_text().partition('\n---\n')[0]
+            self.assertIn('\nmetadata:\n  license: CC-BY-SA-4.0', head, directory)
+            self.assertNotRegex(head, r'(?m)^license:', directory)
+            self.assertEqual(set(re.findall(r'(?m)^([a-z-]+):', head)), {'name', 'description', 'metadata'},
+                             directory)
+
+    def test_frontmatter_guards_fail_the_build_check_with_a_mutation_control_each(self):
+        # SPEC-080 T014 (SC-005). The control passes; only the guarded property differs.
+        metadata = '\nmetadata:\n  license: CC-BY-SA-4.0'
+        cases = {
+            'top-level license': (metadata + '\ncompatibility: CC-BY-SA-4.0',
+                                  metadata + '\nlicense: CC-BY-SA-4.0', 'metadata.license, not top level'),
+            'missing metadata.license': (metadata + '\n  owner: agent-braid', '\nmetadata:\n  owner: agent-braid',
+                                         'metadata.license is missing'),
+            'unknown top-level key': (metadata + '\ncompatibility: Requires a shell.', metadata + '\nallowed-tools: Bash',
+                                      'unsupported skill frontmatter field allowed-tools'),
+            'wrong metadata.license': (metadata + '\n  owner: agent-braid', '\nmetadata:\n  license: MIT',
+                                       'license must be CC-BY-SA-4.0'),
+        }
+        for directory in ('setup', 'telemetry-audit', 'plan'):
+            path = self.plugin / 'skills' / directory / 'SKILL.md'
+            original = path.read_text()
+            for label, (control, mutation, message) in cases.items():
+                with self.subTest(directory=directory, guard=label):
+                    self.assertIn(metadata + '\n', original)
+                    path.write_text(original.replace(metadata, control, 1))
+                    check_package_names(self.root)
+                    path.write_text(original.replace(metadata, mutation, 1))
+                    with self.assertRaisesRegex(ValueError, re.escape(message)):
+                        check_package_names(self.root)
+                    path.write_text(original)
+        check_package_names(self.root)
+
     def test_package_skill_rejects_unknown_canonical_name(self):
         with self.assertRaises(ValueError):
             package_skill('---\nname: agent-braid-other\n---\nbody\n')

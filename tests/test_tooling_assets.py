@@ -133,8 +133,99 @@ class ToolingAssetTests(unittest.TestCase):
             self.assertLessEqual(skill.size_bytes, 32 * 1024)
             self.assertLess(len(skill.content.splitlines()), 500)
             self.assertTrue(skill.content.startswith("---\n"))
-            self.assertIn(f"name: {skill.name}\n", skill.content.split("---", 2)[1])
-            self.assertIn("license: CC-BY-SA-4.0\n", skill.content)
+            frontmatter = skill.content.split("---", 2)[1]
+            self.assertIn(f"name: {skill.name}\n", frontmatter)
+            # SPEC-080 OD-2: the license is metadata.license, never a top-level field.
+            self.assertIn("\nmetadata:\n  license: CC-BY-SA-4.0\n", frontmatter)
+            self.assertNotRegex(frontmatter, r"(?m)^license:")
+            self.assertEqual(
+                {"name", "description", "metadata"},
+                set(re.findall(r"(?m)^([a-z-]+):", frontmatter)),
+            )
+
+    def test_inventory_license_reads_metadata_license(self) -> None:
+        inventory = tooling_assets.load_skill_bundle(source_checkout=True).inventory()
+        self.assertEqual(["CC-BY-SA-4.0"] * 5, [entry["license"] for entry in inventory["skills"]])
+
+    def _load_mutated(self, mutate):
+        """Load an installed-layout copy whose analyze skill frontmatter is ``mutate``d."""
+        with tempfile.TemporaryDirectory() as temporary:
+            package_root = Path(temporary) / "agent_braid"
+            resources_root = package_root / "tooling_assets" / "skills"
+            resources_root.parent.mkdir(parents=True)
+            shutil.copytree(SOURCE_SKILLS, resources_root)
+            path = resources_root / "agent-braid-analyze" / "SKILL.md"
+            head, separator, body = path.read_text("utf-8").partition("\n---\n")
+            mutated = mutate(head)
+            self.assertNotEqual(head, mutated, "the mutation must change the frontmatter")
+            path.write_text(mutated + separator + body, "utf-8")
+            with patch.object(tooling_assets.resources, "files", return_value=package_root):
+                return tooling_assets.load_skill_bundle()
+
+    def test_frontmatter_guards_refuse_with_a_mutation_control_each(self) -> None:
+        # SPEC-080 T014 (REQ-005 / SC-005). Each guard has a passing control that differs
+        # from the refused fixture only in the guarded property.
+        metadata = "\nmetadata:\n  license: CC-BY-SA-4.0"
+        cases = {
+            "top-level license": (
+                lambda head: head.replace(metadata, metadata + "\ncompatibility: CC-BY-SA-4.0"),
+                lambda head: head.replace(metadata, metadata + "\nlicense: CC-BY-SA-4.0"),
+                "metadata.license, not top level",
+            ),
+            "missing metadata.license": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, "\nmetadata:\n  owner: agent-braid"),
+                "metadata.license is missing",
+            ),
+            "missing metadata map": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, ""),
+                "requires name, description and metadata",
+            ),
+            "unknown top-level key": (
+                lambda head: head.replace(metadata, metadata + "\ncompatibility: Requires a shell."),
+                lambda head: head.replace(metadata, metadata + "\nallowed-tools: Bash"),
+                "unsupported skill frontmatter field allowed-tools",
+            ),
+            "wrong metadata.license": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, "\nmetadata:\n  license: MIT"),
+                "license must be CC-BY-SA-4.0",
+            ),
+            "metadata entry outside the map": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, metadata + "\ncompatibility: x\n  owner: agent-braid"),
+                "outside the metadata map",
+            ),
+            "duplicate metadata key": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, metadata + "\n  license: CC-BY-SA-4.0"),
+                "duplicate skill metadata field license",
+            ),
+            "nested metadata value": (
+                lambda head: head.replace(metadata, metadata + "\n  owner: agent-braid"),
+                lambda head: head.replace(metadata, metadata + "\n    nested: x"),
+                "unsupported skill frontmatter line",
+            ),
+        }
+        for label, (control, mutation, message) in cases.items():
+            with self.subTest(label):
+                bundle = self._load_mutated(control)
+                self.assertEqual("CC-BY-SA-4.0", bundle.skills[0].license)
+                with self.assertRaisesRegex(tooling_assets.SkillBundleError, re.escape(message)):
+                    self._load_mutated(mutation)
+
+    def test_parse_skill_frontmatter_returns_the_four_agent_skills_fields(self) -> None:
+        parsed = tooling_assets.parse_skill_frontmatter(
+            "---\nname: harness\ndescription: Read the harness.\ncompatibility: Requires a shell.\n"
+            "metadata:\n  license: CC-BY-SA-4.0\n  owner: agent-braid\n---\nbody\n",
+            "harness",
+        )
+        self.assertEqual("harness", parsed.name)
+        self.assertEqual("Read the harness.", parsed.description)
+        self.assertEqual("Requires a shell.", parsed.compatibility)
+        self.assertEqual((("license", "CC-BY-SA-4.0"), ("owner", "agent-braid")), parsed.metadata)
+        self.assertEqual("CC-BY-SA-4.0", parsed.license)
 
     def test_analyze_skill_examples_are_checked_by_the_drift_test(self) -> None:
         # Issue #1080 / SPEC-069 T008: the examples are validated and analysed in tests/test_spec069_guidance.py.

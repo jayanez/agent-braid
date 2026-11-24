@@ -1,7 +1,8 @@
 ---
 name: agent-braid-execute
 description: Use only when executing an exact prepared batch that already has a matching operator grant.
-license: CC-BY-SA-4.0
+metadata:
+  license: CC-BY-SA-4.0
 ---
 
 # Execute an already granted batch
