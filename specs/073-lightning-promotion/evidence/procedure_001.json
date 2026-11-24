@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "75dcb26919a99f3db3e2e591ff81d759589fb0205b5fe843d9bc13c2b7c6f5c4",
+  "specs/072-lightning-prompt-optimization/evidence/heldout-evaluation-record.json": "0b385e8d86e07d45d04dc7f043c52be5044e0b0b828fa01d5e95d3795ee2682d",
+  "specs/072-lightning-prompt-optimization/evidence/heldout-registration.json": "dc6ee7a772af0a9ac6e4a8044ea5db11b90951996599032f524a7cf8a210ad8c",
+  "tests/test_lightning_promote.py": "ce468e3f67b822d62a506c4679158f28a8c14373afdeb91d3ee5279db14641b2"
+ },
+ "limits": "Synthetic run store and pairs in a temporary home; the committed SPEC-072 pair is only loaded. No decision, registry write or file write is exercised here.",
+ "outcome": "passed: build_record turns a stored candidate and its SPEC-049 Registration/EvaluationRecord pair (A = A0, C = A2) into a native profile record for lightning.skill.analyze with H1 supported reported; H1 not supported is reported as no-held-out-support. Negative controls: unknown scope (unknown-scope), unstored text (candidate-not-stored), tampered stored text (digest-mismatch), text over 32 KiB (text-too-large), pair naming another candidate (candidate-mismatch), mismatched pair (registration-mismatch), arm C equal to base (no-candidate), invalid identity (invalid-profile), non-canonical record bytes (invalid-evaluation). The committed SPEC-072 pair loads and records H1 not supported.",
+ "procedure": "procedure_001",
+ "result": "OK",
+ "scenario": "SC-001",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 14
+}

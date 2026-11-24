@@ -15,6 +15,10 @@
      {
       "kind": "write",
       "resource": "f0"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u0"
@@ -24,6 +28,10 @@
      {
       "kind": "write",
       "resource": "f1"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u1"
@@ -33,6 +41,10 @@
      {
       "kind": "write",
       "resource": "f2"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u2"
@@ -42,6 +54,10 @@
      {
       "kind": "write",
       "resource": "f3"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u3"
@@ -51,6 +67,10 @@
      {
       "kind": "write",
       "resource": "f4"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u4"
@@ -60,6 +80,10 @@
      {
       "kind": "write",
       "resource": "f5"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u5"
@@ -69,6 +93,10 @@
      {
       "kind": "write",
       "resource": "f6"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u6"
@@ -78,6 +106,10 @@
      {
       "kind": "write",
       "resource": "f7"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u7"
@@ -87,6 +119,10 @@
      {
       "kind": "write",
       "resource": "f8"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u8"
@@ -96,6 +132,10 @@
      {
       "kind": "write",
       "resource": "f9"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u9"
@@ -105,6 +145,10 @@
      {
       "kind": "write",
       "resource": "f10"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u10"
@@ -114,6 +158,10 @@
      {
       "kind": "write",
       "resource": "f11"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u11"
@@ -123,6 +171,10 @@
      {
       "kind": "write",
       "resource": "f12"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u12"
@@ -132,6 +184,10 @@
      {
       "kind": "write",
       "resource": "f13"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u13"
@@ -141,6 +197,10 @@
      {
       "kind": "write",
       "resource": "f14"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u14"
@@ -150,6 +210,10 @@
      {
       "kind": "write",
       "resource": "f15"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u15"
@@ -159,6 +223,10 @@
      {
       "kind": "write",
       "resource": "f16"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u16"
@@ -168,6 +236,10 @@
      {
       "kind": "write",
       "resource": "f17"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u17"
@@ -177,6 +249,10 @@
      {
       "kind": "write",
       "resource": "f18"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u18"
@@ -186,6 +262,10 @@
      {
       "kind": "write",
       "resource": "f19"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u19"
@@ -195,6 +275,10 @@
      {
       "kind": "write",
       "resource": "f20"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u20"
@@ -204,6 +288,10 @@
      {
       "kind": "write",
       "resource": "f21"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u21"
@@ -213,6 +301,10 @@
      {
       "kind": "write",
       "resource": "f22"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u22"
@@ -222,6 +314,10 @@
      {
       "kind": "write",
       "resource": "f23"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u23"
@@ -231,6 +327,10 @@
      {
       "kind": "write",
       "resource": "f24"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u24"
@@ -240,6 +340,10 @@
      {
       "kind": "write",
       "resource": "f25"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u25"
@@ -249,6 +353,10 @@
      {
       "kind": "write",
       "resource": "f26"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u26"
@@ -258,6 +366,10 @@
      {
       "kind": "write",
       "resource": "f27"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u27"
@@ -267,6 +379,10 @@
      {
       "kind": "write",
       "resource": "f28"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u28"
@@ -276,6 +392,10 @@
      {
       "kind": "write",
       "resource": "f29"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u29"
@@ -285,6 +405,10 @@
      {
       "kind": "write",
       "resource": "f30"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u30"
@@ -294,6 +418,10 @@
      {
       "kind": "write",
       "resource": "f31"
+     },
+     {
+      "kind": "write",
+      "resource": "shared"
      }
     ],
     "id": "u31"

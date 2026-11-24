@@ -278,7 +278,8 @@ def units_cases() -> list[dict]:
     add("same resource read and written in one unit", units_request(unit("u", ("read", "a"), ("write", "./a"))),
         "accepts", "accepts", "", "valid")
     add("unit id of exactly 256 bytes", units_request(unit("i" * 256, ("write", "a"))), "accepts", "accepts", "", "valid")
-    add("exactly 32 units", units_request(*[unit(f"u{i}", ("write", f"f{i}")) for i in range(32)]),
+    # A shared write keeps the bound case on the analyzed path: disjoint units are refused (SPEC-079).
+    add("exactly 32 units", units_request(*[unit(f"u{i}", ("write", f"f{i}"), ("write", "shared")) for i in range(32)]),
         "accepts", "accepts", "", "valid")
 
     # structural mutations of the base request (schema keywords walked by the inventory)

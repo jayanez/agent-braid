@@ -1,0 +1,252 @@
+{
+ "recordVersion": "0.1.0",
+ "spec": "SPEC-049",
+ "task": "T010 (publish per-axis utility, feasibility, review and rollout dispositions)",
+ "recordedAt": "2026-11-23",
+ "sourceCommit": "76e88d44502d6147b7fc5a855975da1c742d3b70",
+ "decider": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "ownerDecision": {
+  "date": "2026-11-23",
+  "method": "Guided interactive review; the answer is the owner's selected option, quoted verbatim.",
+  "selected": "Publicar ya (Recomendado)",
+  "decision": "Publish the per-axis dispositions now on the existing evidence. Luna D5 is not awaited; if it arrives it is added later as a post-publication review."
+ },
+ "method": "Read the inputs below at sourceCommit and recomputed their SHA-256. This record restates dispositions already decided (T007, T014 closure, SPEC-050 D7) and the feasibility and review state shown by committed records. No native run, no test run, no network beyond git.",
+ "inputs": {
+  "specs/049-harness-evaluation-learning/evidence/t014.json": "ed46a74c440c1dc97a196418025f650767fe6308bfbb43ba785c0383f6562318",
+  "specs/049-harness-evaluation-learning/evidence/t007.json": "8c8718bf43813bec0688eeedf6e43535f81f4bd388035b9ff5baf6a3346f7c8b",
+  "specs/049-harness-evaluation-learning/evidence/t004.json": "0055e8596205cbcc14dfd94ed03ef5f94edfc60287c67e4043b7e47538c7fef7",
+  "specs/049-harness-evaluation-learning/evidence/t008.json": "d36f3225f4e9fc145bdedeaca8c15f75020791e9c9d7e6cc36ae3e8b9dae74b4",
+  "specs/049-harness-evaluation-learning/evidence/t009.json": "ea65ce20735357d51fe22a6d3f9208742e7783f594b46abc4c8d40563d27f8db",
+  "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json": "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1",
+  "specs/049-harness-evaluation-learning/promotion-policy.md": "6abbb5292fa001403e90258e267b9e7874a7903695dc95d5c53b1d86fbb71eab",
+  "specs/049-harness-evaluation-learning/w3-decision-packet-20261122.md": "de06348ce909b8f18bb66e9e35629d556c8a0c44059fcd96f7a5a35f06d658b9",
+  "docs/strategy/HARNESSING_BENCHMARK.md": "8dbfc5ab73938fbb47c296970ffae5c23b078f273e984da71be196c84a4930e6",
+  "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+  "specs/065-native-claude-containment/review/codex-t012-20261118.md": "8dde0c5966ef03af6ec6aedbc2323b4b8c91a88b0307effb8ef2bf41682ee736",
+  "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.json": "cf391707e0ea85b35d6e738a16b5aaa83194ad721d7925b9fdff8cecdeef6261",
+  "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.raw.json": "02ac175e12c40684fbb62c35a5a1ae85fbc743484b425e330e6afd8e32da8fb3",
+  "specs/065-native-claude-containment/reviews/owner-review-a768e6d3.json": "3ff1a75a5987f45faa3ca7ce5b43d8c27d9f4e2d174c2b16bd83d2b5e1f904ac",
+  "specs/067-assurance-profiles/evidence/review/codex-t011-20261116.json": "6a354f61c86707430e50ed6bd99cde61d4d0c2680c30d3f744e5f2fa345379da",
+  "specs/067-assurance-profiles/evidence/review/codex-t011-20261121.json": "d95103f7a9423e978096e457fe89810b8567117c193b704a5ae697ef0ff20fe3",
+  "specs/050-braid-harness-adaptation/owner-decisions-20261113.md": "f0b7e4eb2eac0da416c9df63a5da28c01415972e80851e0b754b68ed5b52e3d0",
+  "specs/050-braid-harness-adaptation/review/luna-packet-20261113.md": "8b482fe8f53a25f81248a1f718de6e32676a1befaf7bac7ebfbcc4a6198cba38"
+ },
+ "outputs": {
+  "specs/049-harness-evaluation-learning/evaluation-report.md": "0aafb6202b5d83007e62b5eb74f7bfac85791928fcdb7585b67bcdbc9515c550",
+  "specs/048-harness-variant-laboratory/program.md": "a9b457830633d8492ec39668b731c491256120dc7a06b6371a13a7a2c7c88581"
+ },
+ "dispositions": {
+  "continuity": {
+   "utility": {
+    "disposition": "inconclusive",
+    "basis": "Descriptive only under D3: one lineage (L1), 5 holdout cases for the cohort (13 correct, 1 incorrect, 1 not-attempted over 15 rows). Continuity is 1 unit with A, B and C each 1/1 (Clopper-Pearson 95% [0.025, 1]); it measures guidance-following on a described read-only checkpoint, not real long-task recovery.",
+    "evidence": [
+     "specs/049-harness-evaluation-learning/evidence/t014.json",
+     "specs/049-harness-evaluation-learning/evidence/t007.json"
+    ]
+   },
+   "feasibility": {
+    "disposition": "native route works on one machine",
+    "basis": "macOS 27.2.1 build 26B131 (arm64), Claude Code 2.1.292, Haiku (claude-haiku-4-5-20251001), subscription route, EUR 0 cash, inside SPEC-065 containment. The SPEC-065 issuance-2026-11-17 expires on 2026-12-17T22:19:29Z; after that, or on another OS build or CLI version, the route needs re-qualification. Codex stays refused as a host.",
+    "evidence": [
+     "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+     "specs/049-harness-evaluation-learning/evidence/t004.json",
+     "specs/049-harness-evaluation-learning/evidence/t014.json"
+    ]
+   },
+   "review": {
+    "disposition": "no independent review of SPEC-049 itself",
+    "codexReviews": "The only Codex review on the native route is of SPEC-065, not of SPEC-049 (see codexReviews below). A search of specs/049 found no Codex or other independent model review of SPEC-049 artifacts; the T008 pre-PR reviews were Claude subagents and are not independent.",
+    "humanReview": "Owner review of SPEC-065 approved with limits on 2026-11-21 (specs/065-native-claude-containment/reviews/owner-review-a768e6d3.json). SPEC-049 dispositions rest on owner decisions (T007, this record), not on an independent human review.",
+    "lunaD5": "requested 2026-11-23, not obtained at publication; added later as a post-publication review if it arrives"
+   },
+   "rollout": {
+    "disposition": "experimental, nothing promoted",
+    "basis": "T007 no-go for native ordinary use (missing data, not harm) and SPEC-050 D7 applied to an inconclusive T014: no activation ADR or policy. Shipped scope stays the offline experimental harness CLI (T009). Automatic promotion stays disabled (T008 deferred).",
+    "evidence": [
+     "specs/049-harness-evaluation-learning/evidence/t007.json",
+     "specs/049-harness-evaluation-learning/evidence/t008.json",
+     "specs/049-harness-evaluation-learning/evidence/t009.json",
+     "specs/050-braid-harness-adaptation/owner-decisions-20261113.md"
+    ]
+   }
+  },
+  "coordination": {
+   "utility": {
+    "disposition": "inconclusive",
+    "basis": "Descriptive only under D3: one lineage (L1), 5 holdout cases for the cohort (13 correct, 1 incorrect, 1 not-attempted over 15 rows). Coordination is 4 units: A 3/4 (1 not-attempted, L1-C02-a:A lost slot), B 3/4 (1 incorrect, L1-C02-a:B), C 4/4; noninferiority descriptive-only (repeated-within-lineage, below-D3-minimum). Arm C was selected offline on synthetic-control probes, so C 4/4 is not an arm-C effect.",
+    "evidence": [
+     "specs/049-harness-evaluation-learning/evidence/t014.json",
+     "specs/049-harness-evaluation-learning/evidence/t007.json"
+    ]
+   },
+   "feasibility": {
+    "disposition": "native route works on one machine",
+    "basis": "Same route as continuity: macOS 27.2.1 build 26B131, Claude Code 2.1.292, Haiku, subscription, EUR 0, SPEC-065 issuance-2026-11-17 expiring 2026-12-17T22:19:29Z. Units are not independent (no purge between units, T012-03), and no effort-level claim is made (T012-07).",
+    "evidence": [
+     "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+     "specs/049-harness-evaluation-learning/evidence/t004.json",
+     "specs/049-harness-evaluation-learning/evidence/t014.json"
+    ]
+   },
+   "review": {
+    "disposition": "no independent review of SPEC-049 itself",
+    "codexReviews": "As for continuity: the only Codex review on the native route is of SPEC-065; none covers SPEC-049.",
+    "humanReview": "As for continuity.",
+    "lunaD5": "requested 2026-11-23, not obtained at publication; added later as a post-publication review if it arrives"
+   },
+   "rollout": {
+    "disposition": "experimental, nothing promoted",
+    "basis": "As for continuity: T007 no-go for native ordinary use, SPEC-050 D7 experimental, T008 automatic promotion disabled.",
+    "evidence": [
+     "specs/049-harness-evaluation-learning/evidence/t007.json",
+     "specs/049-harness-evaluation-learning/evidence/t008.json",
+     "specs/050-braid-harness-adaptation/owner-decisions-20261113.md"
+    ]
+   }
+  }
+ },
+ "codexReviews": [
+  {
+   "spec": "SPEC-065",
+   "task": "T012 part 2",
+   "date": "2026-11-18",
+   "candidateCommit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
+   "scope": "native Claude containment, qualification probes and transport used by the T014 route",
+   "outcome": "19 findings (2 high, 10 medium, 6 low, 1 info): 16 confirmed, 3 partial, 0 rejected; no finding shows the 2026-11-17 issuance to be wrong; fixes deferred to the next SPEC-065 re-qualification",
+   "packet": "specs/065-native-claude-containment/review/codex-t012-20261118.md",
+   "schema": "specs/065-native-claude-containment/review/codex-t012-20261118.schema.json",
+   "raw": "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.raw.json",
+   "triage": "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.json"
+  },
+  {
+   "spec": "SPEC-067",
+   "task": "T011 (assurance profiles, tracked in the HAR.3 milestone; outside SPEC-049)",
+   "date": "2026-11-16 and 2026-11-21",
+   "outcome": "two Codex reviews with triaged findings; SPEC-067 approved by the owner on 2026-11-22 with documented limits",
+   "triage": [
+    "specs/067-assurance-profiles/evidence/review/codex-t011-20261116.json",
+    "specs/067-assurance-profiles/evidence/review/codex-t011-20261121.json"
+   ]
+  }
+ ],
+ "lunaReview": {
+  "decision": "SPEC-050 D5",
+  "packet": "specs/050-braid-harness-adaptation/review/luna-packet-20261113.md",
+  "status": "requested 2026-11-23, not obtained at publication; added later as a post-publication review if it arrives"
+ },
+ "pendingBranches": [
+  {
+   "item": "endpoint: interventions",
+   "status": "not measured on the T014 roster and window",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks and QA whose oracles can grade it",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "endpoint: rework",
+   "status": "not measured on the T014 roster and window",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks and QA whose oracles can grade it",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "endpoint: interrupted recovery",
+   "status": "not measured; T014 continuity was a described read-only checkpoint, not real long-task recovery",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks and QA whose oracles can grade it",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "endpoint: conflict precision and recall",
+   "status": "not measured; the frozen fixture oracles grade only steps done and none repeated",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks with labelled conflicts and QA",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "endpoint: false safe admissions",
+   "status": "not measured",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks and QA whose oracles can grade it",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "endpoint: useful parallelism",
+   "status": "not measured",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus tasks and QA whose oracles can grade it",
+    "SPEC-083": "registered decision rule before any outcome",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  },
+  {
+   "item": "correction and review effort",
+   "status": "not measured; no effort-level claim (T012-07)",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "per-task record of human correction and review effort (the reasoning-effort pinning in SPEC-082 is a different measure)",
+    "SPEC-083": "correction and review effort as a registered measure",
+    "SPEC-084": "per-trial records next to the job shape (REQ-005 pins reasoning effort, not human effort)"
+   }
+  },
+  {
+   "item": "costs",
+   "status": "claim-blocked: EUR 0 expected on the subscription route, no invoice observed; quota readings only, tokens unknown",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-083": "quota-cap stops among the registered stop conditions; cost reporting still to be registered",
+    "SPEC-084": "cost gate with quota readings before and after each batch (REQ-004)"
+   }
+  },
+  {
+   "item": "arm D (library ablation)",
+   "status": "not run: infeasible in the T014 window",
+   "carriedTo": "HAR.4",
+   "specs": {
+    "SPEC-082": "corpus with enough independent lineages",
+    "SPEC-083": "capability comparison with a real arm C before arm D",
+    "SPEC-084": "trial runs on the substrate"
+   }
+  }
+ ],
+ "pendingBranchesNote": "Carrying an item forward names where it belongs; none of SPEC-082, SPEC-083 or SPEC-084 registers these items as requirements yet, and each must do so before it measures them. No SPEC-049 frozen value (D1-D7, T002 freeze, T005 roster) changes.",
+ "milestoneClosure": {
+  "milestone": "HAR.2 — Braid Harness evaluation and learning",
+  "readiness": "ready to close with its actual scope",
+  "actualScope": "SPEC-049: offline deterministic evaluation, verifiers, costs, experience, profile registry and human promotion transaction (T003, T006, T011-T013); experimental read-only harness CLI (T009); deterministic synthetic-control cohort, plumbing only (T005); native pilot admitted and one native cohort of 15 slots run and closed inconclusive (T004, T014); no-go for native ordinary use on both axes (T007); automatic promotion deferred and disabled (T008); these per-axis dispositions (T010). Nothing promoted or activated. SPEC-067 is reported in its own records.",
+  "closure": "requires a separate owner yes; this record does not close the milestone"
+ },
+ "limits": [
+  "Dispositions on descriptive data: one lineage, 5 holdout cases, below the D3 minimum; not a proof that the guidance has no utility.",
+  "Units were not independent (T012-03 accepted for T014); no effort-level claim (T012-07).",
+  "Feasibility covers one machine, one OS build, one CLI version, one model and one route until the issuance expiry; it says nothing about Codex or other hosts.",
+  "No stable-candidate validation was run by this record; the module and harness test results are those in the cited task records.",
+  "No independent model or human review of SPEC-049 exists; the Codex reviews cited cover SPEC-065 and SPEC-067. Luna D5 was not obtained at publication.",
+  "Hashes bind bytes, not authenticity.",
+  "This record authorizes no execution, promotion, native unit, publication or milestone closure."
+ ],
+ "executionAuthorization": false,
+ "promotionAuthorization": false,
+ "nativeAdmission": false
+}

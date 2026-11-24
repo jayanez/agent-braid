@@ -23,6 +23,8 @@ Three specs contain 28 requirements/scenarios and 40 pending implementation/gate
 tasks (15 HAR.1, 13 HAR.2, 12 HAR.3). No implementation checkbox is completed by this planning packet. No dates,
 speedup estimates, accuracy percentages or native acceptance are invented.
 
+HAR.2 status (2026-11-23): SPEC-049 T010 published the per-axis dispositions: utility inconclusive, rollout experimental with nothing promoted, and the unmeasured items carried to HAR.4 ([t010.json](../049-harness-evaluation-learning/evidence/t010.json)). The milestone closes only after a separate owner yes.
+
 Product/lifecycle name: **Braid Harness**. Upstream Harness2/Harness² appears only in source attribution. The [capability coverage matrix](capability-coverage.md) maps every selected mechanism and lifecycle phase to implementation, validation and activation boundaries.
 
 ## Delivery order and branch conditions
