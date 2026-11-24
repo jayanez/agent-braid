@@ -1,0 +1,79 @@
+{
+  "commit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+  "reviewer": "Codex GPT-6",
+  "verdict": "findings",
+  "findings": [
+    {
+      "id": "S83-001",
+      "severity": "high",
+      "file": "specs/083-capability-regression-evals/spec.md",
+      "line": 72,
+      "claim": "The specified task-clustered t bound can declare non-inferiority with no observed variation even when five trials per task provide little evidence about the underlying success rates.",
+      "evidence": "If every task has five failures in both arms, every observed paired difference is zero, so the usual task-clustered standard error and both bootstrap spreads are zero and the lower bound is 0, yielding noninferior despite substantial uncertainty about the true rates. Specify and validate an uncertainty method that handles boundary and zero-variance binary outcomes, or make such cases inconclusive.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-002",
+      "severity": "high",
+      "file": "specs/083-capability-regression-evals/spec.md",
+      "line": 75,
+      "claim": "The bootstrap and lineage sensitivity checks do not define reproducible calculations or what constitutes a verdict disagreement.",
+      "evidence": "The same task outcomes can produce different sensitivity verdicts under percentile versus basic bootstrap intervals, different resample counts, or different lineage weighting and degrees of freedom; the seed is not required in the sealed registration, and the owner record does not say whether noninferior versus inconclusive counts as disagreement. Specify the formulas, resampling unit and count, seeded generator, lineage estimator, unavailable-check behavior, and exact verdict comparison in the registration and validation fixtures.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-003",
+      "severity": "high",
+      "file": "specs/083-capability-regression-evals/spec.md",
+      "line": 116,
+      "claim": "The minimum of 20 private-held-out tasks is incompatible with the referenced corpus's recommended size and split.",
+      "evidence": "SPEC-082 recommends about 30 corpus tasks and 20% private holdout by lineage; even 50 tasks with an approximately proportional split would provide about 10 private tasks, so the first registered comparison remains descriptive-only. Coordinate a feasible minimum private-split yield with SPEC-082, or explicitly defer verdicts until a sufficiently large eligible private corpus exists.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-004",
+      "severity": "high",
+      "file": "specs/083-capability-regression-evals/spec.md",
+      "line": 151,
+      "claim": "The five-use held-out refresh decision has no enforceable counting, storage, or exhaustion procedure.",
+      "evidence": "Two evaluators can each believe a private split has fewer than five uses, or a sixth evaluation can proceed when no replacement corpus is available, because no authoritative ledger, counting event, responsible actor, or fail-closed rule is specified. Define an atomic split-bound use ledger, count attempted or stopped evaluations consistently, assign responsibility, and prohibit further gate use after five uses or suspected leakage until an eligible refreshed split is recorded.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-005",
+      "severity": "high",
+      "file": "specs/083-capability-regression-evals/evidence/t001-owner-review.md",
+      "line": 16,
+      "claim": "The required per-task regression report conflicts with SPEC-082's aggregate-only promotion boundary and is not required to be surfaced before a candidate move.",
+      "evidence": "A candidate can fail all five trials on one task that passed all baseline trials while the other 19 tasks tie; its mean difference is only -0.05 and can meet the aggregate gate, while SPEC-085 requires only the verdict for candidate and SPEC-082 permits private outcomes to reach promotion only in aggregate. Specify a privacy-preserving mandatory human-visible regression summary and require its review or acknowledgment before the candidate move, without changing the owner's report-only decision.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-006",
+      "severity": "medium",
+      "file": "specs/083-capability-regression-evals/spec.md",
+      "line": 100,
+      "claim": "Infrastructure handling does not invalidate a task that loses all trials and does not define how reruns enter the error rate.",
+      "evidence": "With 20 tasks and five trials per arm, one task can lose all five trials to infrastructure errors while the arm-wide rate is only 5%; the specification then requires a rate for that task despite a zero denominator, contrary to SPEC-082 OD-5. Explicitly invalidate an arm-task with no valid trials and define numerator and denominator treatment for original attempts and reruns, with negative-control fixtures.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-007",
+      "severity": "medium",
+      "file": "specs/083-capability-regression-evals/validation-plan.md",
+      "line": 12,
+      "claim": "The pairing validation and minimum-sample validation prescribe different outcomes for the same four-trial case.",
+      "evidence": "Procedure 004 marks a four-trial fixture invalid, while procedure 010 and SC-010 require descriptive-only with no verdict for 20 tasks with one task at four registered trials. Distinguish an under-registered design from missing or mismatched executed trials and align both procedures and acceptance scenarios with that distinction.",
+      "confidence": "high"
+    },
+    {
+      "id": "S83-008",
+      "severity": "medium",
+      "file": "specs/083-capability-regression-evals/tasks.md",
+      "line": 62,
+      "claim": "The cross-reference task cannot satisfy its assigned whole-protocol hash-unchanged validation.",
+      "evidence": "T008 adds a line to the SPEC-049 protocol, which necessarily changes its file hash, but procedure 002 requires the protocol hash before and after to be unchanged. Validate unchanged hashes of the frozen sections and separately record the expected whole-file hash change, updating SC-002 and the assurance record accordingly.",
+      "confidence": "high"
+    }
+  ]
+}

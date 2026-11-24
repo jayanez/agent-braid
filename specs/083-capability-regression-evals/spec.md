@@ -45,15 +45,17 @@ Exclusions (MUST NOTs):
 (`capability` or `regression`). Only a regression verdict can support a move to
 `candidate` or `adopted` (SPEC-085). SPEC-049 frozen text and values stay as they are.
 
-- **SC-002:** Given a capability report and a SPEC-049 protocol hash, when a
-  promotion check reads them, then it refuses with "no regression verdict" and the
-  SPEC-049 protocol hash is unchanged.
+- **SC-002:** Given a capability report and the SPEC-049 protocol, when a promotion
+  check reads them, then it refuses with "no regression verdict"; the hashes of the
+  protocol's frozen sections are unchanged, and the dated cross-reference line of T008
+  is the only change to the whole file, with its expected hash recorded.
 
 **REQ-003 Sealed pre-registration.** A regression record fixes, before the first
 trial starts: baseline and candidate hashes, the SPEC-082 corpus manifest hash and
 split, the task list hash, trials per task, margin δ, α, estimand, uncertainty
-method, cluster level, missing-outcome rule, infrastructure-error threshold and
-rerun limit, the pinned profile, stopping rules and the reported k values. Its
+method, cluster level, the sensitivity methods with their resample count and seed,
+the confirmation-trial rule (REQ-006), missing-outcome rule, infrastructure-error threshold and rerun limit, the pinned
+profile, stopping rules and the reported k values. Its
 SHA-256 seals it. Any later change needs a new record.
 
 - **SC-003:** Given records with a missing field, a seal time after the first trial
@@ -63,31 +65,71 @@ SHA-256 seals it. Any later change needs a new record.
 **REQ-004 Paired design on a held-out split.** Baseline and candidate run the same
 tasks with the same trial count (at least 5 per task per arm), the same pinned
 model, effort, resources and host, and fresh run ids (SPEC-082). Gate tasks come from
-the SPEC-082 private held-out split.
+the SPEC-082 private held-out split. Executed trials that differ from the registration
+(one arm only, unequal counts between arms) make the comparison `invalid`; a
+registration that plans fewer trials or tasks than REQ-010 requires is
+`descriptive-only` instead (REQ-010). Each gate use is counted in an append-only use
+ledger bound to the split's manifest hash and kept with the private split (SPEC-082
+REQ-005). A use is counted when a registration is sealed against the split, whether
+its run completes, stops or is invalid. Sealing refuses once the ledger shows 5 uses
+or a recorded suspected leak, until a refreshed split with a new manifest hash is
+recorded (OD-5). The owner records suspected leaks and refreshes.
 
 - **SC-004:** Given trials where a task ran in one arm only, a profile differs
   between arms, a run id repeats, or a task is outside the held-out split, when
-  paired, then the comparison is marked `invalid` with the cause.
+  paired, then the comparison is marked `invalid` with the cause; a sixth
+  registration against one split, or one after a recorded suspected leak, refuses
+  to seal.
 
 **REQ-005 Estimand and clustered uncertainty.** Δ = mean over tasks of (candidate
 success rate − baseline success rate). The primary bound is the one-sided (1 − α)
 lower bound from the task-clustered standard error, t distribution on T − 1 degrees
-of freedom. A clustered bootstrap (resample tasks, recorded seed) is a sensitivity
-check. Trial-level standard errors are never used.
+of freedom. Trial-level standard errors are never used. The standard error used is
+the larger of the task-clustered error and a binomial floor,
+(1/T)·√Σᵢ[p̃ᶜᵢ(1 − p̃ᶜᵢ)/nᶜᵢ + p̃ᵇᵢ(1 − p̃ᵇᵢ)/nᵇᵢ], with Jeffreys-smoothed rates
+p̃ = (c + ½)/(n + 1), so that a sample with no observed spread is not read as
+certainty (owner, 2026-11-24). Two sensitivity checks, sealed in the registration:
+(1) a clustered bootstrap that resamples tasks with replacement, 10 000 resamples
+from a PCG64 generator with the sealed seed, percentile one-sided bound; (2) lineage
+clustering, which averages task differences within each SPEC-082 lineage and takes
+a t bound on L − 1 degrees of freedom over the equally weighted lineage means. Each
+check gets its own verdict under REQ-006. A check whose verdict differs from the
+primary in any way, or that cannot be computed (fewer than 2 lineages), makes the
+verdict `inconclusive` (OD-3; owner, 2026-11-24).
 
 - **SC-005:** Given a fixture with hand-computed Δ and bound, and a control where
   trial-level errors would pass but clustered errors do not, when computed, then
-  the values match within 10⁻⁶ and the control is not `noninferior`.
+  the values match within 10⁻⁶ and the control is not `noninferior`; a 20-task tie
+  at 5/5 in both arms gets the floor bound (about −0.07), and a fixture where one
+  sensitivity verdict is `inconclusive` while the primary is `noninferior` is
+  `inconclusive`.
 
 **REQ-006 Decision rule.** `noninferior` if the lower bound > −δ; `inferior` if the
 one-sided (1 − α) upper bound < −δ; otherwise `inconclusive`. `invalid` covers
 protocol breaks (REQ-004, REQ-008). A declared-effect, authority or containment
 violation is `blocked` whatever the statistic. Clause zero: `inconclusive` is a
-valid result, and it blocks promotion like `inferior`, `invalid` and `blocked`.
+valid result, and it blocks promotion like `inferior`, `invalid` and `blocked`. Every
+regression verdict carries a per-task regression summary with two grades: hard
+regressions (baseline pass^n = 1 and candidate pass@n = 0, OD-6) and soft regressions
+(candidate success rate at least 0.4 below the baseline's on that task). Each task
+appears by id when public or by salted commitment when private (SPEC-082 REQ-005).
+With 5 trials soft regressions also appear by chance (in 65 to 98 % of 20-task
+comparisons with no real change), so the registration pre-registers confirmation
+trials: every flagged task, up to 5 in order of largest drop, gets 10 more trials per
+arm with fresh run ids, inside the same registration and ledger use. A flag stands
+when the drop on all 15 trials is still at least 0.4. Confirmation results are
+reported apart and never change the verdict; above 5 flagged tasks the summary says
+so. A SPEC-085 move to `candidate` needs the owner's acknowledgement, which cites the
+verdict hash and the summary hash. The summary does not block on its own; OD-6 is
+unchanged (owner, 2026-11-24).
 
 - **SC-006:** Given one fixture per region (noninferior, inferior, inconclusive,
   invalid, blocked), when decided, then each gets its verdict and only
-  `noninferior` is marked promotion-eligible.
+  `noninferior` is marked promotion-eligible; a `noninferior` fixture with one
+  regressed task carries that task in its summary, a soft flag that does not hold on
+  its 15 confirmation trials is reported as not confirmed, the verdict is the same
+  with and without confirmation trials, and a move to `candidate` without an
+  acknowledgement citing the current verdict and summary hashes refuses.
 
 **REQ-007 pass@k and pass^k.** Per task and arm, with n trials and c successes,
 report pass@k = 1 − C(n−c, k)/C(n, k) (capability) and pass^k = C(c, k)/C(n, k)
@@ -100,11 +142,16 @@ intervals. Both classes report them; neither is a verdict.
 **REQ-008 Infrastructure errors.** Trials that SPEC-082 classifies as infrastructure
 errors count as neither success nor failure and are reported per arm. They may be
 rerun with a fresh run id up to the registered limit; a task's rate uses its valid
-trials. A per-arm rate or between-arm difference above the threshold is `invalid`.
+trials. Accounting follows SPEC-082 REQ-009: the unit is the registered trial, which
+is an infrastructure error only when every attempt is, and a rate is the number of
+infrastructure-error trials over registered trials per arm. A per-arm rate or between-arm
+difference above the threshold is `invalid`, and so is any task with no valid trial
+in either arm, whatever the rates.
 
 - **SC-008:** Given trials with infrastructure errors below and above the
   threshold, when analyzed, then none counts as a failure, all appear in the
-  infrastructure table, and the over-threshold case is `invalid`.
+  infrastructure table, and the over-threshold case is `invalid`; a task that loses
+  all five trials in one arm makes the comparison `invalid` even at a 5 % arm rate.
 
 **REQ-009 Missing outcomes.** In the primary analysis a missing non-infrastructure
 outcome (ungraded, not attempted, interrupted) is a candidate failure and a baseline
@@ -113,12 +160,18 @@ success. The report adds complete-case and best-case bounds and says if they dif
 - **SC-009:** Given a fixture with missing candidate outcomes, when decided, then
   the primary verdict uses the worst case and the three bounds are reported.
 
-**REQ-010 Minimum sample and power note.** A verdict needs T ≥ 20 tasks and 5
-registered trials per task per arm. Each record states its power assumption
-(between-task spread of differences, δ, α, T). Below the minimum it is descriptive.
+**REQ-010 Minimum sample and power note.** A verdict needs T ≥ 20 informative tasks
+from the private held-out split and 5 registered trials per task per arm. A task is
+informative when the baseline succeeds in at least one trial; with the baseline at
+0/n a candidate cannot show a regression on it (owner, 2026-11-24). Each record
+states its power assumption (between-task spread of differences, δ, α, T). Below the
+minimum it is descriptive. The first SPEC-082 corpus is expected to give 4 to 10
+private tasks (SPEC-082 REQ-013), so verdicts are deferred and reports are
+`descriptive-only` until that split reaches 20.
 
-- **SC-010:** Given 19 tasks, or 20 tasks with 4 registered trials on one, when
-  analyzed, then no verdict is issued and the report says `descriptive-only`.
+- **SC-010:** Given 19 informative tasks, 20 tasks with 4 registered trials on one,
+  or 20 tasks with the baseline at 0/5 on all of them, when analyzed, then no verdict
+  is issued and the report says `descriptive-only`.
 
 **REQ-011 Stopping rules.** The verdict is computed once, after all registered
 trials end or a registered stop fires (SPEC-049 D6 conditions, quota caps,
@@ -166,6 +219,8 @@ deferred); reanalysing T014.
   δ = 0.15 about 86 % (normal approximation; an assumption, not data).
 - **Correlated tasks.** Tasks from one lineage are not independent (OD-3).
 - **Held-out erosion.** Repeated gating on one split overfits to it (OD-5).
+- **Private split size.** The first corpus is below the 20-task minimum; verdicts
+  wait for later lineage batches (REQ-010, SPEC-082 REQ-013).
 - **Drift.** Provider model changes between arms; arms are interleaved and pinned.
 - **Hypotheses.** H1: on 20–50 tasks with 5 trials the gate is decisive for most
   candidates. H2: clustered intervals are wider than trial-level ones on real data.

@@ -1,0 +1,128 @@
+{
+ "recordVersion": "spec083-codex-review-v1",
+ "task": "SPEC-083/T002",
+ "candidateCommit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+ "reviewedCheckout": "detached worktree at 37077da8 (owner run); triage at develop e0377925, where specs/083 differs from 37077da8 only by the T002 review packet",
+ "reviewer": {
+  "tool": "codex exec -s read-only --output-schema",
+  "reportedReviewer": "Codex GPT-6",
+  "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+  "version": "codex-cli 0.171.0-alpha.13 (read at triage; the binary self-updates)",
+  "account": "operator subscription",
+  "runBy": "owner",
+  "date": "2026-11-24"
+ },
+ "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at 37077da85f3db51d1db180c4a765ec819d56ba08> --output-schema specs/083-capability-regression-evals/review/codex-t002-20261123.schema.json -o ~/Downloads/codex-083-t002.json \"$(cat specs/083-capability-regression-evals/review/codex-t002-20261123.md)\"",
+ "packet": "specs/083-capability-regression-evals/review/codex-t002-20261123.md",
+ "rawOutput": "specs/083-capability-regression-evals/evidence/review/codex-t002-20261123.raw.json",
+ "rawOutputSha256": "c0991467efcdd2db3f0bff5d9f732b6887981fda5c56758efad8059a899067a3",
+ "rawOutputNote": "Byte-identical copy of the owner's ~/Downloads/codex-083-t002.json (6241 bytes), unedited.",
+ "codexVerdict": "findings",
+ "findingCount": 8,
+ "codexSeverityCounts": {
+  "high": 5,
+  "medium": 3,
+  "low": 0,
+  "info": 0
+ },
+ "triageMethod": "Orchestrator re-read of every cited line at develop, SPEC-082 REQ-005/REQ-009/REQ-013 and the 083 T001 record; each claim treated as a hypothesis to refute; the zero-variance and floor bounds recomputed by hand (all-pass tie, T = 20: floor SE 0.0391, t(19, 0.95) = 1.729, bound -0.068). Findings that changed how an owner decision works were put to the owner interactively, with worked examples.",
+ "triage": [
+  {
+   "id": "S83-001",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "With every task at 0/5 in both arms all paired differences are 0, the clustered error and bootstrap spread are 0, and the lower bound 0 > -0.10 gives noninferior with no information.",
+   "action": "Owner rule 2026-11-24 ('Informativas + suelo binomial'): REQ-005 uses max(clustered SE, Jeffreys binomial floor); REQ-010 counts only informative tasks (baseline succeeds at least once) toward T >= 20. All-fail is descriptive-only; a 20-task 5/5 tie gets a floor bound of about -0.068 (t on 19 df). SC-005, SC-010, T003, T004 and procedures 005 and 010 updated."
+  },
+  {
+   "id": "S83-002",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "The bootstrap and lineage checks had no fixed formula, resample count, seed in the seal, lineage estimator, unavailable-check rule or definition of disagreement.",
+   "action": "REQ-003 seals the sensitivity methods and seed; REQ-005 fixes them (task bootstrap, 10 000 resamples, PCG64, percentile bound; lineage means with t on L-1 df). Owner rule 2026-11-24 ('Cualquier veredicto distinto'): any differing sensitivity verdict, or one that cannot be computed (fewer than 2 lineages), gives inconclusive."
+  },
+  {
+   "id": "S83-003",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "Same gap as S82-004: gate tasks come only from the private split and need T >= 20, while the first SPEC-082 corpus yields about 4 to 10 private tasks.",
+   "action": "Aligned with the owner's S82-004 decision: REQ-010 and Risks state that verdicts are deferred and reports descriptive-only until the private split reaches 20 (SPEC-082 REQ-013)."
+  },
+  {
+   "id": "S83-004",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "OD-5 (refresh after 5 uses) had no ledger, counting event, owner or fail-closed rule.",
+   "action": "REQ-004/SC-004, T009 and procedure_004: append-only use ledger bound to the split manifest hash, kept with the private split; a use counts at seal time whatever the run's end; sealing refuses after 5 uses or a recorded suspected leak until a refreshed split is recorded; the owner records leaks and refreshes."
+  },
+  {
+   "id": "S83-005",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "OD-6 reports per-task regressions but nothing makes them visible before a move to candidate; one task at 5/5 -> 0/5 with 19 ties gives delta -0.05 and can pass.",
+   "action": "Owner choice 2026-11-24 ('Resumen obligatorio + tu acuse'): REQ-006/SC-006 add a mandatory per-task regression summary (ids for public tasks, salted commitments for private ones) and require the owner's acknowledgement in the SPEC-085 move record; OD-6 unchanged (it does not block on its own). SPEC-085 must carry the acknowledgement field when its T001 runs. Refined the same day: graded summary with pre-registered confirmation trials (10 more per arm on up to 5 flagged tasks, verdict unchanged) and an acknowledgement bound to the verdict and summary hashes; with 5 trials soft flags appear by chance in 65-98 % of 20-task null comparisons, and 15 trials cut chance persistence to 0.06-2 % per task while confirming a 0.9 to 0.4 drop about 82 % of the time (binomial calculation)."
+  },
+  {
+   "id": "S83-006",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "REQ-008 did not invalidate a task that loses all trials in one arm (5 % arm rate, undefined task rate) and did not define rerun accounting.",
+   "action": "REQ-008/SC-008 and procedure_008: accounting follows SPEC-082 REQ-009 (registered trial unit); a task with no valid trial in either arm makes the comparison invalid whatever the rates."
+  },
+  {
+   "id": "S83-007",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "procedure_004 made a 4-trial fixture invalid while SC-010 and procedure_010 made 20 tasks with one at 4 registered trials descriptive-only.",
+   "action": "REQ-004 and procedures 004 and 010 separate an under-registered design (descriptive-only) from executed trials that differ from the registration (invalid)."
+  },
+  {
+   "id": "S83-008",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "T008 adds a dated line to the SPEC-049 protocol, so the whole-file hash must change, while SC-002 and procedure_002 required it unchanged.",
+   "action": "SC-002, T008 and procedure_002 check the frozen-section hashes unchanged and record the expected whole-file hash after the added line."
+  }
+ ],
+ "ownerDecisions": [
+  {
+   "finding": "S83-001",
+   "date": "2026-11-24",
+   "answer": "Informativas + suelo binomial (Recomendado)"
+  },
+  {
+   "finding": "S83-002",
+   "date": "2026-11-24",
+   "answer": "Cualquier veredicto distinto (Recomendado)"
+  },
+  {
+   "finding": "S83-005",
+   "date": "2026-11-24",
+   "answer": "Resumen obligatorio + tu acuse (Recomendado)"
+  },
+  {
+   "finding": "S83-005",
+   "date": "2026-11-24",
+   "answer": "Opción 2, 10 extra por brazo (Recomendado)",
+   "note": "Refines the earlier answer after an adversarial and counterfactual analysis: acknowledgement bound to verdict and summary hashes, graded summary (hard and soft), pre-registered confirmation trials (10 per arm, up to 5 tasks), read check and private titles shown only in the owner's terminal (SPEC-085)."
+  }
+ ],
+ "summary": {
+  "confirmed": 8,
+  "partial": 0,
+  "rejected": 0,
+  "appliedIn": "spec.md, tasks.md, validation-plan.md, assurance.json"
+ },
+ "followUps": [
+  "SPEC-085 T001: the candidate move record needs the owner's acknowledgement of the regression summary (S83-005)."
+ ],
+ "limits": "Independent model review, not human review or approval. It grants no authority. Findings were applied to documentation only; no code exists yet."
+}
