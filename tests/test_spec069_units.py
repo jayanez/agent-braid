@@ -168,11 +168,13 @@ class NegativeControlTests(UnitsServiceCase):
         plain = self.accepted(golden_request("t010-readme-conflict"))
         self.assertEqual(tooling_mcp._json_bytes(result), tooling_mcp._json_bytes(plain))
 
-    def test_disjoint_units_are_unknown_never_independent_candidate(self):
-        (pair,) = self.pairs(golden_request("disjoint-claimed-complete"))
-        self.assertEqual(pair["classification"], "unknown")
-        self.assertEqual(pair["constraints"], ["serialize-unless-stronger-evidence"])
-        self.assertNotIn("completenessBasis", pair)
+    def test_disjoint_units_are_redirected_never_independent_candidate(self):
+        """SPEC-079 REQ-001 supersedes the SPEC-069 ok/unknown answer for disjoint units."""
+        envelope = self.call("units", golden_request("disjoint-claimed-complete"))
+        self.assertEqual(envelope["status"], "refused", envelope["summary"])
+        self.assertTrue(envelope["summary"].endswith("[units-cannot-answer-independence]"))
+        operations = envelope["result"]["constructedRequest"]["operations"]
+        self.assertEqual({op["effects"]["coverage"]["status"] for op in operations}, {"partial"})
 
     def test_no_accepted_corpus_request_is_independent_candidate(self):
         seen = set()
@@ -181,7 +183,7 @@ class NegativeControlTests(UnitsServiceCase):
                 for pair in self.pairs(case["request"]):
                     seen.add(pair["classification"])
                     self.assertNotEqual(pair["classification"], "independent-candidate", case["id"])
-        self.assertLessEqual({"ordered", "conflicting", "unknown"}, seen)
+        self.assertLessEqual({"ordered", "conflicting"}, seen)  # disjoint units are refused (SPEC-079)
 
     def test_dependencies_order_units(self):
         (pair,) = self.pairs(golden_request("ordered"))
