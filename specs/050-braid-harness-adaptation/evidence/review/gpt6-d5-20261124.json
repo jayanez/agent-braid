@@ -1,0 +1,74 @@
+{
+ "recordVersion": "spec050-gpt6-review-v1",
+ "task": "SPEC-050/D5",
+ "candidateCommit": "e79b33b0b434514e1f0412b0240a474cf77a1310",
+ "reviewedCheckout": "develop at e79b33b0 (owner run); triage at develop e0377925, where git diff e79b33b0..e0377925 of agent_braid/harness_tools.py and tests/test_harness_tools.py is empty (in the reviewed scope only capability-report.md differs)",
+ "d5Status": "Luna unavailable; independent GPT-6 review in its place",
+ "notLunaReview": true,
+ "reviewer": {
+  "tool": "codex exec",
+  "requestedModel": "gpt-6-luna",
+  "reportedReviewer": "gpt-6 (requested gpt-6-luna, not served)",
+  "rawReviewerField": "gpt-6 (not gpt-6-luna)",
+  "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+  "version": "not recorded",
+  "account": "operator subscription",
+  "runBy": "owner",
+  "date": "2026-11-24"
+ },
+ "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -m gpt-6-luna <prompt from specs/050-braid-harness-adaptation/review/luna-packet-20261113.md> (owner run; any further flags were not captured in this record)",
+ "packet": "specs/050-braid-harness-adaptation/review/luna-packet-20261113.md",
+ "rawOutput": "specs/050-braid-harness-adaptation/evidence/review/gpt6-d5-20261124.raw.json",
+ "rawOutputSha256": "f841e20e1c990832aa0022f3ecf101fbc50a5ac66f78e27efb3ba8054118cc38",
+ "rawOutputNote": "Byte-identical copy of the owner's luna-20261121.out.json (1260 bytes), unedited. Its reviewer field self-reports that Codex did not serve the requested gpt-6-luna model.",
+ "codexVerdict": "findings",
+ "findingCount": 2,
+ "codexSeverityCounts": {
+  "critical": 0,
+  "high": 0,
+  "medium": 1,
+  "low": 1,
+  "info": 0
+ },
+ "triageMethod": "Orchestrator re-read of every cited line at develop e0377925 (harness_tools.py identical to e79b33b0), each claim treated as a hypothesis to refute. F-001 reproduced by new tests written before the fix and run red against the unchanged module with python3.13; F-002 by reading docs/development/THIRD_PARTY.md, evidence/t010.json and git history.",
+ "triage": [
+  {
+   "id": "F-001",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "At e79b33b0 run_helper (harness_tools.py:777) checked only that the executor had callable run and teardown (:793-794). isinstance(executor, ContainedExecutor) (:804) only chose which refusal codes pass through and gated nothing; executor.run(request) followed at :808. Red before the fix: through the public run_helper the deterministic double ran to a successful ToolResult, and the run() of a ContainedExecutor subclass was reached (refused only afterwards, as helper-failed). Scope limit: the executor is caller-supplied in-process code that could spawn by itself, so this is an unenforced API boundary (E3 stated as blocked while any executor was delegated to), not a sandbox escape.",
+   "action": "fixed in this PR: run_helper refuses any executor whose type is not exactly ContainedExecutor with executor-not-contained before calling any of its methods; ContainedExecutor gets __slots__ = () so an instance cannot replace run or teardown; the refusal passthrough uses type(executor) is ContainedExecutor; deterministic doubles reach the same checks only through the test-only _run_helper_double, which no shipped module calls (structural test). New tests: test_public_run_helper_refuses_a_non_contained_executor_before_run, test_contained_executor_methods_cannot_be_replaced_per_instance, test_double_entry_is_test_only, test_mutation_control_contained_executor_gate."
+  },
+  {
+   "id": "F-002",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "docs/development/THIRD_PARTY.md:59-64 has listed the Apache-2.0 adaptation agent_braid/harness_search.py since #1326 (8cf6c75f), yet capability-report.md:111-115 said it did not. evidence/t010.json has existed since #1329 (5ae9498f) and records owner decision D3 (no top-level alias; plugin/MCP exposure belongs to M4.8), yet capability-report.md:131-134 listed the T010 alias and t010.json as pending. The finding names the file THIRD_PARTY.md; its path is docs/development/THIRD_PARTY.md.",
+   "action": "fixed in this PR: the source and license delta paragraph and the T010 pending bullet now match THIRD_PARTY.md and t010.json; the same stale T010 facts (alias, t010.json) in the REQ-008 row and the founder-decision list were corrected. No other report statement changed."
+  }
+ ],
+ "summary": {
+  "confirmed": 2,
+  "partial": 0,
+  "rejected": 0,
+  "adjustedSeverityCounts": {
+   "critical": 0,
+   "high": 0,
+   "medium": 1,
+   "low": 1,
+   "info": 0
+  },
+  "fixedInThisPr": [
+   "F-001",
+   "F-002"
+  ]
+ },
+ "candidateAssessment": "One medium API-boundary finding in the E3 adapter and one low documentation staleness. Neither sets executionAuthorization or reaches an active profile; E3 stays blocked and QUALIFIED_HELPERS stays empty.",
+ "notHumanReview": true,
+ "humanReview": "pending: this is an independent model review, not human review or founder approval, and neither is claimed.",
+ "lunaReview": "not obtained: the requested gpt-6-luna model was not served. This record does not satisfy any Luna-specific requirement and is not presented as one.",
+ "executionAuthorization": false,
+ "limits": "Static, read-only model review at one commit by GPT-6 as self-reported, not Luna; triage by source reading and offline unittest execution only, no native run. Approves nothing, freezes nothing, changes no stage, profile or authorization. The D5 delta review after the native D2 wave is still pending. Structural checks are not scientific proof."
+}
