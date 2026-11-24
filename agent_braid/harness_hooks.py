@@ -14,6 +14,11 @@ C7 ``blocked`` (no containment qualification), so no hook set is ever ``implemen
 ``qualified`` or ``enabled``. Dispatch exercises the adapter logic against doubles
 only; a double is not a host, and nothing here qualifies either host.
 
+Hosts come from the native gate set (``harness_components.GATED_HOSTS`` and
+``GATED_HOST_SUPPORT``, Claude and Codex), not from the host inventory. OpenCode is
+listed in the inventory (SPEC-080 T006) but has no matrix, so OpenCode hook input
+refuses with ``unknown-host`` and hook records keep their ``hostSupport`` bytes.
+
 The event matrices are *modeled, not observed*: the contract (section 4, open
 question 3) says event schemas per host build are not yet inventoried, and no host
 was run for this task. The Claude matrix lists a small modeled subset of events;
@@ -51,7 +56,7 @@ from time import monotonic_ns
 from typing import Any, NoReturn
 
 from .harness_components import (
-    HOST_SUPPORT, HOSTS, ProfileError, _ID, _hash, _keys, _parse, _provenance, _require,
+    GATED_HOST_SUPPORT, GATED_HOSTS, ProfileError, _ID, _hash, _keys, _parse, _provenance, _require,
     derive_admission)
 from .harness_tools import MAX_INT, MAX_STRING
 from .system_one import canonical, digest, freeze, thaw
@@ -85,10 +90,10 @@ _RESULT_KEYS = {"decision", "note"}
 
 def matrix_record(host: str) -> dict:
     """Return the built-in event matrix of one host (modeled, never observed)."""
-    _require(host in HOSTS, "unknown-host")
+    _require(host in GATED_HOSTS, "unknown-host")
     modeled = _MODELED[host]
     return {"format": MATRIX_FORMAT, "host": host,
-            "observedBuild": HOST_SUPPORT[host]["observedBuild"],
+            "observedBuild": GATED_HOST_SUPPORT[host]["observedBuild"],
             "observation": "modeled-not-observed", "modeled": list(modeled),
             "unavailable": [e for e in EVENT_VOCAB if e not in modeled],
             "qualification": "unqualified", "executionAuthorization": False}
@@ -101,7 +106,7 @@ def matrix_sha256(host: str) -> str:
 
 def event_status(host: str, event: str) -> str:
     """Return ``modeled``, ``unavailable`` or ``unknown`` for this host only."""
-    _require(host in HOSTS, "unknown-host")
+    _require(host in GATED_HOSTS, "unknown-host")
     if event not in EVENT_VOCAB:
         return "unknown"
     return "modeled" if event in _MODELED[host] else "unavailable"
@@ -119,7 +124,7 @@ def verify_matrix(raw: bytes, *, expected_sha256: str) -> dict:
     value = _parse(raw)
     _require(sha256(canonical(value)).hexdigest() == expected_sha256, "matrix-drift")
     host = value.get("host")
-    _require(host in HOSTS and canonical(value) == canonical(matrix_record(host)),
+    _require(host in GATED_HOSTS and canonical(value) == canonical(matrix_record(host)),
              "matrix-forged")
     return value
 
@@ -165,7 +170,7 @@ def _body(value: dict) -> None:
              "invalid-id")
     _require(type(value["version"]) is int and value["version"] == 1, "invalid-version")
     _require(value["componentClass"] in ("C6", "C7"), "unknown-class")
-    _require(value["host"] in HOSTS, "unknown-host")
+    _require(value["host"] in GATED_HOSTS, "unknown-host")
     _require(value["host"] == "claude", "host-refused")
     _admission(value["componentClass"], value["effectClass"])
     _entries(value["entries"], value["componentClass"], value["host"])
@@ -194,7 +199,7 @@ def parse_hookset(raw: bytes) -> HookSet:
     _keys(value, _CONTRACT_KEYS)
     _require(value["format"] == FORMAT, "unsupported-version")
     _require(value["executionAuthorization"] is False, "unsupported-profile")
-    _require(canonical(value["hostSupport"]) == canonical(HOST_SUPPORT), "host-build-drift")
+    _require(canonical(value["hostSupport"]) == canonical(GATED_HOST_SUPPORT), "host-build-drift")
     _body(value)
     _require(value["matrixSha256"] == matrix_sha256(value["host"]), "matrix-forged")
     _hash(value["inputSha256"])
@@ -221,7 +226,7 @@ def compile_hookset(raw: bytes, *, expected_input_sha256: str) -> HookSet:
     _keys(value, _SPEC_KEYS)
     _require(value["format"] == SPEC_FORMAT, "unsupported-version")
     _body(value)
-    contract = {**value, "format": FORMAT, "hostSupport": thaw(HOST_SUPPORT),
+    contract = {**value, "format": FORMAT, "hostSupport": thaw(GATED_HOST_SUPPORT),
                 "matrixSha256": matrix_sha256(value["host"]),
                 "inputSha256": expected_input_sha256, "policies": dict(POLICIES),
                 "admission": _admission(value["componentClass"], value["effectClass"])}

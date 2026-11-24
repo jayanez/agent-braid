@@ -16,6 +16,11 @@ Only the Claude profile has a containment verifier (``harness_host_claude``); an
 other host refuses here. Nothing in this module launches a host, process or model,
 reads a quota or issues an admission; observations come from the trusted caller and
 every result keeps ``executionAuthorization`` false.
+
+The hosts here are the native qualification gate set, ``GATED_HOSTS`` (Claude and
+Codex), equal to ``harness_components.GATED_HOSTS``. The inventory host ``opencode``
+(SPEC-080 T006) has no decision item, observation or verdict here and refuses as any
+unlisted host does.
 """
 from __future__ import annotations
 
@@ -28,7 +33,7 @@ from typing import Any
 from . import harness_host_claude
 from .system_one import InvalidDecision, canonical, digest, parse_json
 
-HOSTS = ("claude", "codex")
+GATED_HOSTS = ("claude", "codex")  # T008 gate set; never the host inventory
 AUTHORIZED = "qualification-authorized"
 NOT_QUALIFIED = "not-qualified"
 FOUNDER_FORMAT = "spec048-founder-review-v1"
@@ -124,7 +129,7 @@ def parse_profile_decisions(raw: bytes, *, expected_sha256: str) -> dict[str, Pr
     if type(installed) is not dict:
         installed = {}
     decisions = {}
-    for host in HOSTS:
+    for host in GATED_HOSTS:
         decision = found.get(host, NOT_QUALIFIED)
         if decision == AUTHORIZED:
             reason = AUTHORIZED
@@ -181,8 +186,9 @@ class QuotaObservation:
     extra_usage_enabled: bool
 
     def __post_init__(self) -> None:
-        _require(self.host in HOSTS and all(type(v) is str and _ID.fullmatch(v) is not None
-                                            for v in (self.plan, self.route))
+        _require(self.host in GATED_HOSTS
+                 and all(type(v) is str and _ID.fullmatch(v) is not None
+                         for v in (self.plan, self.route))
                  and all(_int(v, 0, 1 << 40) for v in (self.observed_at, self.five_hour_resets_at,
                                                        self.weekly_resets_at))
                  and _percent(self.five_hour_percent) and _percent(self.weekly_percent)
@@ -275,7 +281,7 @@ def refused_verdict(decision: ProfileDecision) -> HostVerdict:
 
 def both_hosts_accepted(verdicts: Mapping[str, HostVerdict]) -> bool:
     """True only when every host has its own qualified verdict."""
-    return (isinstance(verdicts, Mapping) and set(verdicts) == set(HOSTS)
+    return (isinstance(verdicts, Mapping) and set(verdicts) == set(GATED_HOSTS)
             and all(isinstance(v, HostVerdict) and v.host == host and v.qualified
                     for host, v in verdicts.items()))
 
@@ -309,7 +315,7 @@ class HostQualificationRun:
     _last_observed_at: int = field(default=0, init=False, repr=False)
 
     def __post_init__(self) -> None:
-        _require(self.host in HOSTS and isinstance(self.caps, D2Caps)
+        _require(self.host in GATED_HOSTS and isinstance(self.caps, D2Caps)
                  and isinstance(self.decisions, Mapping)
                  and isinstance(self.decisions.get(self.host), ProfileDecision)
                  and self.decisions[self.host].host == self.host

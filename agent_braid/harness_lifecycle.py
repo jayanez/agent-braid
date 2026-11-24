@@ -16,7 +16,10 @@ calls ``ProfileRegistry.revoke_evidence`` and, for a caller-held store, T008
 ``propagate_revocation``. T009 refusals (``AutoPromotionError``) propagate unchanged.
 
 * ``install`` needs ``opt_in=True``, a human operator, a supported host (only ``claude`` has an
-  observed build; ``codex`` and anything else refuse) and an exact identity. It builds the
+  observed build; ``codex`` and anything else refuse) and an exact identity. Supported hosts
+  are the gate-set hosts (``harness_components.GATED_HOSTS``) with an observed build, so the
+  inventory host ``opencode`` (SPEC-080 T006) refuses ``unsupported-host`` even if it is
+  ever given a build. It builds the
   layout in a staging directory and renames it into place, so an interrupted install leaves
   nothing installed. Directories are 0700 and files 0600; nothing is exported.
 * ``migrate`` stages a verified, admitted (``implemented``) profile only as the next linked
@@ -79,7 +82,15 @@ FORMAT = "braid-harness-lifecycle/v0.1"
 OWNED = ".braid-harness-lifecycle"
 STAGING_PREFIX = OWNED + ".installing-"
 REMOVING_PREFIX = OWNED + ".removing-"
-SUPPORTED_HOSTS = tuple(h for h, row in hc.HOST_SUPPORT.items() if row["observedBuild"] is not None)
+
+
+def lifecycle_hosts(host_support: Any) -> tuple[str, ...]:
+    """Gate-set hosts whose inventory row carries an observed build."""
+    return tuple(h for h in hc.GATED_HOSTS
+                 if h in host_support and host_support[h]["observedBuild"] is not None)
+
+
+SUPPORTED_HOSTS = lifecycle_hosts(hc.HOST_SUPPORT)
 KINDS = ("lesson", "trace", "trial")
 EVENTS = ("installed", "migrated", "rolled-back", "drift-detected", "requalified",
           "registry-updated", "canary-begun", "canary-refused", "canary-observed",

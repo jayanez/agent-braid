@@ -1,0 +1,15 @@
+{
+ "builder": "t006_fixtures.py run against the base code, before the T006 change",
+ "builtFrom": "a631144b8f6ed6ea04365d0cdba7498e38e39d5a",
+ "executionAuthorization": false,
+ "files": {
+  "advisory-capabilities.json": "234c5664e7cf24d92bf35795d200f9a09cf92cd00d2c1c64fdffb18777c9229d",
+  "hook-matrix-claude.json": "74f65d44c2887c5bc69f5822e27cb868220450b5678d42c77249ab8b71b6aca6",
+  "hook-matrix-codex.json": "7e3543e62f60c4c3ac6a57d7b692e02ff9e74adf1b8aaaf8ac7e2b93daa40bce",
+  "hookset-v0.1.json": "301787911c0b0fbeccdbe9f2d0e5fa011aa61854769bd8b3e7fb207b55bad965",
+  "profile-v0.1-child.json": "e3ed7c5eb3289d05d71e23b7d175d97094b700b1f8ee6f3d74957367391f4c67",
+  "profile-v0.1.json": "b1c925a8513a166f20010d68024109fbbf950e903852c9dc63695dddd9349375",
+  "tool-contract-v0.1.json": "8d36ea04e741aceb1d844a3a081a1219288462e56b1389b97f9859cb704247d7"
+ },
+ "recordVersion": "spec080-t006-prechange-fixtures-v1"
+}

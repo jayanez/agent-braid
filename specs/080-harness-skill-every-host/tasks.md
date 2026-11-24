@@ -45,7 +45,7 @@ configuration or publishes before T015.
 
 ## Phase P2 — host registry and OpenCode profile
 
-- [ ] T006 (REQ-006 / SC-006): Add `opencode` to the harness host registry as unqualified with no observed build, per OD-4; keep Claude and Codex rows and gates unchanged; derived lifecycle hosts exclude OpenCode.
+- [x] T006 (REQ-006 / SC-006): Add `opencode` to the harness host registry as unqualified with no observed build, per OD-4; keep Claude and Codex rows and gates unchanged; derived lifecycle hosts exclude OpenCode.
   Classify every importer of the host lists or `HOST_SUPPORT` as inventory or gate set
   (`harness_hooks`, `harness_advisory`, `harness_lifecycle`, `harness_orchestration`,
   `harness_skills`, `harness_tools`, `harness_hosts_native`) and record the table in the
@@ -55,7 +55,10 @@ configuration or publishes before T015.
   `agent_braid/harness_components.py`, `agent_braid/harness_lifecycle.py`,
   `agent_braid/harness_hooks.py`, `agent_braid/harness_advisory.py`, their tests.
   Verification: procedure_006, then `quick`. Planned evidence:
-  `evidence/t006.json`; obtained: none.
+  `evidence/t006.json`; obtained: that file (2026-11-24): `opencode` in the inventory as
+  unqualified; `GATED_HOSTS` keeps Claude and Codex for hooks, tools, advisory,
+  lifecycle and the T008 gate; profiles move to `v0.2` and read `v0.1` as legacy;
+  pre-change records verify byte for byte; 1969 harness tests pass.
 - [ ] T007 (REQ-007 / SC-007): Observe the current OpenCode configuration shapes with one command in a temporary home (version, `plugins`, `permissions`, `mcp.servers`, `skills`); record redacted fixtures; touch no user configuration.
   Dependencies: T001. Target files: `evidence/t007-opencode-schema.json`, test
   fixtures. Verification: procedure_007. Planned evidence:
