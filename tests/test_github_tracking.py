@@ -146,12 +146,13 @@ class TrackingTests(unittest.TestCase):
         for key in moved:
             self.assertEqual(S1_5, by_key[key]["milestone"])
             self.assertEqual("open", by_key[key]["state"])
-        deferred = {key for key, name in overrides.items() if key.startswith("SPEC-077/") and name == DEFERRED}
-        self.assertEqual(set(OWNER_DECISION_W3_DEFERRED), deferred)
-        for key in deferred:
+        # SPEC-077 moved whole to Deferred (owner, 2026-11-24), so its tasks need no overrides
+        self.assertEqual(DEFERRED, config["specs"]["077-harness-mcp-readonly"]["milestone"])
+        self.assertFalse(any(key.startswith("SPEC-077/") for key in overrides))
+        for key in OWNER_DECISION_W3_DEFERRED:
             self.assertEqual(DEFERRED, by_key[key]["milestone"])
             self.assertEqual("open", by_key[key]["state"])
-        pinned = set(overrides) - moved - deferred
+        pinned = set(overrides) - moved
         self.assertEqual(98, len(pinned))
         for key in pinned:
             self.assertEqual("closed", by_key[key]["state"])
