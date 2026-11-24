@@ -10,9 +10,12 @@
   `discovery` and `holdout` keep their meaning, and `private-holdout` is added.
 - **Corpus from history.** Freeze the selection rule by hash, then inventory merged
   PRs read-only from local Git history (no network). A candidate is a merged PR whose
-  change adds or edits a test that fails at the parent commit and passes at the merge
-  commit. The SPEC-049 L1–L4 cases join as `synthetic` with their existing lineage
-  ids and D1 rules. Lineage and partition are assigned before any candidate outcome.
+  test and fixture changes, applied onto the parent tree without the code change,
+  fail for a counted reason and pass at the merge commit (REQ-003 classifies the
+  failure; network, native-host and skipped tests are excluded). The SPEC-049 L1–L4
+  cases join as `synthetic` with origin-specific provenance, their existing lineage
+  ids and D1 rules. Lineages are the connected components of recorded relation edges
+  (REQ-004). Lineage and partition are assigned before any candidate outcome.
 - **QA is deterministic where it can be.** Oracle, no-op and exploit probes run
   locally with no model. Only the exploit agent needs a model; it waits for SPEC-084
   gates or an owner admission (OD-6). Until then a task is `qa-incomplete` and is not
@@ -22,9 +25,11 @@
   summary bounds. SPEC-084 produces trial records; this spec validates them with
   synthetic fixtures only.
 - **Private split.** Stored outside the repository (OD-3, ADR 0018 precedent); the
-  public manifest carries hashes and counts. The validator scans the public tree and
-  any optimizer context for private bytes and identity hashes, extending the
-  SPEC-049 `check_context` rule. It cannot detect paraphrase.
+  public manifest carries salted commitments and counts, and private QA, review and
+  contamination details stay in the private store behind public receipts. The
+  validator scans the public tree and any optimizer context for plain identity
+  hashes, private task ids and long private lines (REQ-005), extending the SPEC-049
+  `check_context` rule. It cannot detect paraphrase.
 
 ## Constitutional check
 
@@ -38,8 +43,9 @@
 | 20 | Analysis and execution separate | No execution; `executionAuthorization` false; runs belong to SPEC-084 |
 | 23, 24 | Semantics before production | Formats and rules are reviewed before validators or tasks exist |
 
-No MUST conflict found. One SHOULD deviation is proposed under OD-4 (one human and
-one model reviewer instead of two human auditors); it needs owner acceptance.
+No MUST conflict found. One SHOULD deviation was accepted under OD-4 (T001): two
+model reviewers from different vendors with owner adjudication, instead of two human
+auditors.
 
 ## Affected files for the later code phase (named, not edited)
 

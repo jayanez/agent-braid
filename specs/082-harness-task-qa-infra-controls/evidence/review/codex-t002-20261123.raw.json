@@ -1,0 +1,97 @@
+{
+  "commit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+  "reviewer": "GPT-6",
+  "verdict": "findings",
+  "findings": [
+    {
+      "id": "S82-001",
+      "severity": "high",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 132,
+      "claim": "SC-011 rejects legitimate independent trials whenever their result bytes happen to match.",
+      "evidence": "Two fresh runs can both produce the same deterministic score file, such as a single pass value; the second would be refused as cached despite having a new run ID and workspace. Conversely, changing metadata can make a reused result's bytes differ. Bind results to run provenance and test cache isolation rather than treating byte equality as proof of reuse.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-002",
+      "severity": "high",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 75,
+      "claim": "The public-manifest and private-scan requirements contradict each other and do not define a workable leakage boundary.",
+      "evidence": "REQ-005 requires private hashes in the public manifest, while SC-005 refuses private identity hashes anywhere in the public tree; literal refusal of any private task byte would also match ordinary shared characters. Define distinct public commitments and prohibited identity hashes, and specify bounded matching units and exclusions for the scan.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-003",
+      "severity": "high",
+      "file": "specs/082-harness-task-qa-infra-controls/tasks.md",
+      "line": 78,
+      "claim": "The QA task and acceptance procedure permit passing reviews that do not follow the owner's cross-adversarial decision.",
+      "evidence": "Two labeled records without model versions or reciprocal critiques satisfy SC-008 and procedure_008, even though OD-4 requires blind Claude and Codex reviews, both cross-critiques, model/version labels and owner adjudication. Require and validate those artifacts and their ordering before qa-passed.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-004",
+      "severity": "high",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 151,
+      "claim": "The planned corpus size and split can leave SPEC-083 unable to meet its minimum gate sample even when H1 succeeds.",
+      "evidence": "If 30 QA-passing tasks each occupy a separate lineage, a 20% private split contains six tasks, while SPEC-083 requires at least 20 tasks from that split for a regression verdict. Record the private-split minimum as a separate feasibility target and plan sufficient eligible lineages or explicitly state that the initial corpus may support descriptive results only.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-005",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 65,
+      "claim": "The lineage merge rule lacks operational definitions and a deterministic resolution procedure.",
+      "evidence": "Two fixes may touch the same broad specification or use equivalent but independently constructed fixtures; reviewers could merge or separate them differently, producing different partitions and independent-unit counts. Define what constitutes a shared feature or fixture base, require transitive closure, and record relation evidence and unresolved cases before assignment.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-006",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 71,
+      "claim": "SC-004 refuses L3 assignment even after its relationship has been resolved.",
+      "evidence": "SPEC-049 D1 permits L3 to join L1 or stand alone after resolution, but SC-004 says any assigned L3 must be refused. Condition the refusal on L3 being unresolved and test both resolved outcomes.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-007",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 47,
+      "claim": "The mandatory task-record fields do not accommodate the specified synthetic SPEC-049 cases.",
+      "evidence": "A synthetic case without a fixing PR, pre-fix commit, fix commit or merge date cannot supply all fields, yet SC-002 refuses missing fields and the plan adds L1–L4 as synthetic tasks. Define origin-specific provenance fields and explicit not-applicable values, with validation for each origin.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-008",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/plan.md",
+      "line": 11,
+      "claim": "The history-selection rule does not specify how a newly added regression test is evaluated on the pre-fix state.",
+      "evidence": "When a fix introduces a test file, that test does not exist at the parent commit, so running the parent tree cannot establish that the new test fails before the fix. Specify how the test and any required fixture changes are applied to the pre-fix base, how collection or setup failures are distinguished from the intended regression, and how unsuitable network or native-host tests are excluded.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-009",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/spec.md",
+      "line": 108,
+      "claim": "The infrastructure policy leaves the unit of rerun accounting and the precedence of simultaneous stop conditions undefined.",
+      "evidence": "If one of ten original trials hits a quota stop and its reruns also fail, counting attempts yields three errors while counting original trials yields one; a quota cap can also coincide with the invalidity threshold, while SPEC-083 calls a quota-capped run inconclusive. Freeze the numerator, denominator, rerun treatment and stop-status precedence before data collection.",
+      "confidence": "high"
+    },
+    {
+      "id": "S82-010",
+      "severity": "medium",
+      "file": "specs/082-harness-task-qa-infra-controls/tasks.md",
+      "line": 78,
+      "claim": "The specified public review and contamination artifact locations can disclose private task identities or content.",
+      "evidence": "A private-task review describing an ambiguous statement or exploit, or a per-task contamination record linking a canary to its public source date, may reveal the held-out task even when task files remain outside Git. Keep detailed private QA and provenance records in the private store and define redacted public receipts that preserve auditability without task linkage.",
+      "confidence": "medium"
+    }
+  ]
+}

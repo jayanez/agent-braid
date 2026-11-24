@@ -1,0 +1,125 @@
+{
+ "recordVersion": "spec082-codex-review-v1",
+ "task": "SPEC-082/T002",
+ "candidateCommit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+ "reviewedCheckout": "detached worktree at 37077da8 (owner run); triage at develop e0377925, where git diff 37077da8..e0377925 of specs/082, specs/083 and specs/049 shows only the new T002 review packets",
+ "reviewer": {
+  "tool": "codex exec -s read-only --output-schema",
+  "reportedReviewer": "GPT-6",
+  "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+  "version": "codex-cli 0.171.0-alpha.13 (read at triage; the binary self-updates)",
+  "account": "operator subscription",
+  "runBy": "owner",
+  "date": "2026-11-24"
+ },
+ "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at 37077da85f3db51d1db180c4a765ec819d56ba08> --output-schema specs/082-harness-task-qa-infra-controls/review/codex-t002-20261123.schema.json -o ~/Downloads/codex-082-t002.json \"$(cat specs/082-harness-task-qa-infra-controls/review/codex-t002-20261123.md)\"",
+ "packet": "specs/082-harness-task-qa-infra-controls/review/codex-t002-20261123.md",
+ "rawOutput": "specs/082-harness-task-qa-infra-controls/evidence/review/codex-t002-20261123.raw.json",
+ "rawOutputSha256": "41edbc24954ed727dce82715c3c75bc4edf4f887e993bbeed82c1c310b0c5394",
+ "rawOutputNote": "Byte-identical copy of the owner's ~/Downloads/codex-082-t002.json (6694 bytes), unedited.",
+ "codexVerdict": "findings",
+ "findingCount": 10,
+ "codexSeverityCounts": {
+  "high": 4,
+  "medium": 6,
+  "low": 0,
+  "info": 0
+ },
+ "triageMethod": "Orchestrator re-read of every cited line at develop (082 spec unchanged since 37077da8) and of SPEC-083 REQ-004/REQ-010/REQ-011 and SPEC-049 D1; each claim treated as a hypothesis to refute. S82-004 changed the plan of an owner decision, so the owner chose the resolution interactively. No code run or edited.",
+ "triage": [
+  {
+   "id": "S82-001",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "SC-011 refused any result whose bytes match an earlier run's; two independent deterministic runs can write the same score file, and a reused result can differ only in metadata.",
+   "action": "REQ-011/SC-011, T014 and procedure_011: reuse is detected by provenance (register-issued nonce, run id and workspace id in the result; fresh workspace and empty caches recorded); byte-identical independent results are accepted."
+  },
+  {
+   "id": "S82-002",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "REQ-005 put hashes of private bytes in the public manifest while SC-005 refused private identity hashes in the public tree, and 'no private task byte' had no matching unit.",
+   "action": "REQ-005/SC-005, T004, T007, plan and procedure_005: public salted commitments (secret salt in the private store) versus forbidden plain identity hashes and task ids; scan unit is each private line of at least 40 characters absent from the public tree."
+  },
+  {
+   "id": "S82-003",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "SC-008 and procedure_008 accepted any two labeled records, while the T001 OD-4 (d) decision requires blind Claude and Codex reviews with model and version, two cross-critiques and owner adjudication.",
+   "action": "REQ-008/SC-008, T012 and procedure_008 now require and order those artifacts (blind hashes before either critique) before qa-passed."
+  },
+  {
+   "id": "S82-004",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "SPEC-083 REQ-004 draws gate tasks only from the private split and REQ-010 needs T >= 20; under OD-1 (20-50) and OD-7 (20 % by lineage) the private split holds about 4 to 10 tasks, so no regression verdict is reachable even when H1 holds.",
+   "action": "Owner decision 2026-11-24 ('Objetivo aparte, solo descriptivo'): REQ-013/SC-013, Risks and T016 add a separate feasibility target of 20 qa-passed private-holdout tasks; SPEC-083 stays descriptive-only until later lineage batches reach it; OD-1 and OD-7 unchanged."
+  },
+  {
+   "id": "S82-005",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "'Shared spec feature' and 'fixture base' were undefined, and no transitive closure or evidence rule existed, so two reviewers could partition differently.",
+   "action": "REQ-004, T006 and plan: operational definitions (same specs/NNN-* directory or SPEC number; same test module or fixture file), relation edges with evidence, lineages as connected components, undecidable pairs recorded as unresolved and merged."
+  },
+  {
+   "id": "S82-006",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "SC-004 refused any assigned L3, while SPEC-049 D1 keeps L3 unassigned only until its relation to L1 is resolved.",
+   "action": "SC-004, T004 and procedure_004: refusal only for an unresolved L3; resolved L3 joined to L1 or standing alone validates."
+  },
+  {
+   "id": "S82-007",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "REQ-002 required PR number, commits and merge date for every task, which synthetic SPEC-049 cases cannot supply.",
+   "action": "REQ-002/SC-002, T004 and T008: origin-specific provenance with explicit not-applicable values, each origin validated against its own field set."
+  },
+  {
+   "id": "S82-008",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "The selection rule said the test 'fails at the parent commit', but a test added by the fix does not exist there; collection or setup failures were not distinguished.",
+   "action": "REQ-003, T005 and plan: the fix's test and fixture changes are applied onto the parent tree; failure classes recorded and the counted ones frozen; collection or setup errors of the test itself never count; network, native-host and skipped tests excluded."
+  },
+  {
+   "id": "S82-009",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "OD-5 did not fix whether the 10 % counts attempts or trials, how reruns resolve, or how a quota stop combines with the threshold (SPEC-083 calls a quota-stopped run inconclusive).",
+   "action": "REQ-009/SC-009, T014 and procedure_009: unit is the registered trial (at most three attempts, outcome of the first non-infra attempt), threshold over registered trials, invalid takes precedence over a quota stop, otherwise stopped (SPEC-083 inconclusive). This reading of OD-5 is the orchestrator's; the owner may revise it before T014."
+  },
+  {
+   "id": "S82-010",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "Public corpus/reviews and corpus/contamination.json per-task rows could describe or date a private task.",
+   "action": "REQ-005, T012 and T013: private-holdout review, exploit and contamination details stay in the private store; the public tree holds receipts (counts and salted commitments)."
+  }
+ ],
+ "ownerDecisions": [
+  {
+   "finding": "S82-004",
+   "date": "2026-11-24",
+   "answer": "Objetivo aparte, solo descriptivo (Recomendado)"
+  }
+ ],
+ "summary": {
+  "confirmed": 10,
+  "partial": 0,
+  "rejected": 0,
+  "appliedIn": "spec.md, plan.md, tasks.md, validation-plan.md, assurance.json"
+ },
+ "limits": "Independent model review, not human review or approval. It grants no authority. Findings were applied to documentation only; no code exists yet."
+}
