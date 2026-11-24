@@ -504,6 +504,14 @@ def rollback_change(*, at: int, reason: str):
     return change
 
 
+def revoke_change(evidence_sha256: str, *, at: int, reason: str):
+    """The registry change of a revocation: withdraw every decision citing the evidence."""
+    def change(value: promotion.ProfileRegistry) -> promotion.ProfileRegistry:
+        return value.revoke_evidence(evidence_sha256, at=at, reason=reason)
+    change.fields = {"reason": reason, "revokedSha256": evidence_sha256}  # sealed into the digest
+    return change
+
+
 def _changed(value: promotion.ProfileRegistry, change) -> promotion.ProfileRegistry:
     try:
         return change(value)
@@ -640,6 +648,8 @@ def add_arguments(parser) -> None:
                              "restore the active text (preview unless --apply)")
     parser.add_argument("--rollback", action="store_true",
                         help="restore the previous active candidate of --scope (preview unless --apply)")
+    parser.add_argument("--revoke", metavar="SHA256",
+                        help="revoke an evidence digest; restores the previous candidate if it was cited")
     parser.add_argument("--reason", default=None,
                         help="journal reason id (default: owner-abort, owner-rollback or owner-revoke)")
     parser.add_argument("--apply", action="store_true",
@@ -700,6 +710,12 @@ def run(args) -> int:
     """Print the preview JSON and return 0; a refusal is one stderr line and exit 2."""
     try:
         at = int(time.time())
+        _require(sum(map(bool, (args.abort, args.rollback, args.revoke))) <= 1, "one-action-only")
+        if args.revoke:
+            output = _transition(args, "revoke", revoke_change(args.revoke, at=at,
+                                                               reason=args.reason or "owner-revoke"))
+            print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
+            return 0
         if args.abort:
             run_store = _run_store(args)
             reason = args.reason or "owner-abort"

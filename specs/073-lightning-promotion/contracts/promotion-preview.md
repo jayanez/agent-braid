@@ -43,6 +43,12 @@ store) and `--apply --preview-digest <d>` writes the file, then the registry; if
 registry save fails the file bytes are restored. With no prior candidate the
 rollback is refused (`no-previous`).
 
+Revocation: `lightning promote --revoke <evidence sha> --run-id <run> [--reason <id>]`
+previews withdrawing every decision that cites the evidence; when the active
+candidate is withdrawn the newest prior usable one is restored, or, with none left,
+the baseline cited by the scope's first decision. Uncited evidence is recorded as
+revoked and changes no file. Apply works as for rollback.
+
 Apply rule: `--apply --preview-digest d` recomputes the preview and writes only
 when the recomputed digest equals `d`. Right before writing, the registry and file bytes must still match
 `registrySha256Before` and `fileSha256Before` (`preview-stale` otherwise). Order:

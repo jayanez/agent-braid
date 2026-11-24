@@ -695,6 +695,105 @@ class RollbackTests(TwoPromotions):
         self.assertEqual(self.target.read_text(), TEXT)
 
 
+class RevocationTests(TwoPromotions):
+    """procedure_006 / SC-006."""
+
+    def revoke(self, sha, at=30):
+        return lp.revoke_change(sha, at=at, reason='evidence-withdrawn')
+
+    def second_decision(self):
+        value = self.registry()
+        return value.decisions[value.active]
+
+    def test_cited_evidence_revoked_restores_previous(self):
+        cited = self.second_decision()['evaluationSha256']
+        before = snapshot(self.home, self.root)
+        doc = lp.preview_transition('revoke', SCOPE, self.revoke(cited), home=self.home, root=self.root,
+                                    run=self.run)
+        self.assertEqual(snapshot(self.home, self.root), before)
+        self.assertEqual((doc['action'], doc['currentSha256'], doc['candidateSha256']), ('revoke', self.sha2, self.sha))
+        self.assertGreater(doc['diffSummary']['added'] + doc['diffSummary']['removed'], 0)
+        _, result = self.transition('revoke', self.revoke(cited))
+        self.assertEqual(result['activeSha256'], self.sha)
+        self.assertEqual(self.target.read_text(), TEXT)
+        self.assertIn(cited, self.registry().revoked)
+
+    def test_uncited_evidence_revoked_changes_no_file(self):
+        doc, result = self.transition('revoke', self.revoke('7' * 64))
+        self.assertEqual((doc['currentSha256'], doc['candidateSha256']), (self.sha2, self.sha2))
+        self.assertEqual(doc['diffSummary'], {'added': 0, 'removed': 0})
+        self.assertEqual(self.target.read_text(), TEXT2)
+        self.assertEqual(result['activeSha256'], self.sha2)
+
+    def test_evidence_cited_by_every_decision_restores_the_baseline(self):
+        first = self.registry().decisions[self.registry().previous[0]]['evaluationSha256']
+        self.transition('revoke', self.revoke(self.second_decision()['evaluationSha256']))
+        _, result = self.transition('revoke', self.revoke(first, at=40))
+        self.assertIsNone(result['activeSha256'])
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+        from agent_braid.plugin_package import check_lightning_promotions
+        path = self.root / lp.EXPORT_PATH
+        path.parent.mkdir(parents=True)
+        path.write_bytes(lp.export_bytes([self.registry()]))
+        self.assertEqual(check_lightning_promotions(self.root, release=True), [])
+
+    def test_preview_for_one_digest_cannot_apply_a_revocation_of_another(self):
+        cited = self.second_decision()['evaluationSha256']
+        doc = lp.preview_transition('revoke', SCOPE, self.revoke('7' * 64), home=self.home, root=self.root,
+                                    run=self.run)
+        self.assertEqual((doc['revokedSha256'], doc['reason']), ('7' * 64, 'evidence-withdrawn'))
+        self.refused('preview-stale', lambda: lp.apply_transition(
+            'revoke', SCOPE, self.revoke(cited), home=self.home, root=self.root, run=self.run,
+            preview_digest=doc['previewDigest']))
+        self.assertEqual(self.target.read_text(), TEXT2)
+        self.assertEqual(self.registry().revoked, frozenset())
+        other_reason = lp.revoke_change('7' * 64, at=30, reason='other-reason')
+        self.refused('preview-stale', lambda: lp.apply_transition(
+            'revoke', SCOPE, other_reason, home=self.home, root=self.root, run=self.run,
+            preview_digest=doc['previewDigest']))
+
+    def test_repeat_and_malformed_revocation_refused(self):
+        cited = self.second_decision()['evaluationSha256']
+        self.transition('revoke', self.revoke(cited))
+        self.refused('already-revoked', lambda: self.transition('revoke', self.revoke(cited, at=40)))
+        self.refused('invalid-evidence', lambda: self.transition('revoke', self.revoke('xyz', at=40)))
+
+    def test_cli_revoke_preview_and_one_action_only(self):
+        cited = self.second_decision()['evaluationSha256']
+        argv = ['lightning', 'promote', '--home', str(self.home), '--root', str(self.root), '--run-id', 'run-1']
+        out = StringIO()
+        with redirect_stdout(out), patch('sys.stderr', StringIO()):
+            self.assertEqual(main(argv + ['--revoke', cited]), 0)
+        self.assertEqual(json.loads(out.getvalue())['candidateSha256'], self.sha)
+        err = StringIO()
+        with redirect_stdout(StringIO()), patch('sys.stderr', err):
+            self.assertEqual(main(argv + ['--revoke', cited, '--rollback']), 2)
+        self.assertEqual(err.getvalue(), 'lightning promote refused (one-action-only)\n')
+        self.assertEqual(self.target.read_text(), TEXT2)
+
+
+
+class RevokeAfterOverrideTests(ApplyBase):
+    """Revoking a scope's only decision, made with an override reason, restores the baseline."""
+
+    def test_the_reason_text_is_never_restored(self):
+        reason = low_reason()
+        registration, evaluation = pair(self.sha, base_verdict='meets')
+        self.apply(self.build(registration=registration, evaluation=noninferior(evaluation)),
+                   override_reason=reason)
+        value = self.registry()
+        self.assertEqual(sorted(value.decisions[value.active]['evidenceSha256s'])[0], sha256_text(reason))
+        change = lp.revoke_change(value.decisions[value.active]['evaluationSha256'], at=30, reason='r')
+        doc = lp.preview_transition('revoke', SCOPE, change, home=self.home, root=self.root, run=self.run)
+        self.assertEqual(doc['candidateSha256'], sha256_text(BASE_TEXT))
+        self.assertEqual(doc['evidence'], [sha256_text(BASE_TEXT)])
+        lp.apply_transition('revoke', SCOPE, change, home=self.home, root=self.root, run=self.run,
+                            preview_digest=doc['previewDigest'])
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+        self.assertIsNone(self.registry().active)
+        self.assertEqual(lp.mismatches(self.root, {SCOPE: self.registry()}), [])
+
+
 MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'
 FORBIDDEN_STDLIB = {'socket', 'subprocess', 'multiprocessing', 'asyncio', 'http', 'urllib', 'ssl',
                     'ftplib', 'smtplib', 'importlib', 'ctypes', 'shutil'}
