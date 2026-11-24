@@ -23,15 +23,17 @@ configuration or publishes before T015.
 
 ## Phase P1 — skill and packaging
 
-- [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004): Write the portable `harness` skill: four frontmatter fields (OD-2), launcher resolution as in `setup`, the eight read commands, decline rules and the untrusted-data rule.
+- [x] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004): Write the portable `harness` skill: four frontmatter fields (OD-2), launcher resolution as in `setup`, the eight read commands, decline rules and the untrusted-data rule.
   Dependencies: T001 (OD-1, OD-2), T002 confirmed findings applied, T009 (frozen
   before any skill text exists). Target files:
   `integrations/agent-braid/plugin/harness/SKILL.md`. Verification: procedure_003,
-  procedure_004. Planned evidence: `evidence/t003.json`; obtained: none.
-- [ ] T004 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004): Static tests of the skill: frontmatter keys, name, command set equals the allowlist, no forbidden command, decline and untrusted-data rules; one mutation control per check.
+  procedure_004. Planned evidence: `evidence/t003.json`; obtained: that file (2026-11-24): the skill, written after the T009 freeze;
+  eight read commands, decline and untrusted-data rules, no held-out overlap.
+- [x] T004 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004): Static tests of the skill: frontmatter keys, name, command set equals the allowlist, no forbidden command, decline and untrusted-data rules; one mutation control per check.
   Dependencies: T003. Target files: `tests/test_harness_skill.py`. Verification:
   procedure_002, procedure_003, procedure_004, then `quick`. Planned evidence:
-  `evidence/t004.json`; obtained: none.
+  `evidence/t004.json`; obtained: that file (2026-11-24): 14 tests, ten mutation controls; CI is the
+  `pr` evidence (local `quick` stops at the environmental publication gate).
 - [ ] T005 (REQ-005 / SC-005): Package eight skills for Claude Code, Codex and OpenCode: build list, OpenCode entry, plugin tests and docs move from seven to eight; byte-identical skill in every layout.
   Dependencies: T003, T014. Target files: `scripts/build_native_plugin.py`,
   `integrations/agent-braid/plugin/opencode/index.js`, `agent_braid/plugin_opencode.py`,
