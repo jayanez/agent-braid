@@ -1,0 +1,86 @@
+{
+ "recordVersion": "spec080-codex-review-v1",
+ "task": "SPEC-080/T002",
+ "candidateCommit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+ "reviewedCheckout": "detached worktree at 37077da8 (owner run); triage at develop de602178, where git diff 37077da8..de602178 of every cited file (spec.md, tasks.md, tooling_assets.py, harness_hooks.py, harness_components.py, harness_advisory.py, harness_lifecycle.py, tooling_install.py) is empty",
+ "reviewer": {
+  "tool": "codex exec -s read-only --output-schema",
+  "reportedReviewer": "GPT-6 (Codex)",
+  "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+  "version": "codex-cli 0.171.0-alpha.13 (read at triage; the binary self-updates)",
+  "account": "operator subscription",
+  "runBy": "owner",
+  "date": "2026-11-24"
+ },
+ "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at 37077da85f3db51d1db180c4a765ec819d56ba08> --output-schema specs/080-harness-skill-every-host/review/codex-t002-20261123.schema.json -o ~/Downloads/codex-080-t002.json \"$(cat specs/080-harness-skill-every-host/review/codex-t002-20261123.md)\"",
+ "packet": "specs/080-harness-skill-every-host/review/codex-t002-20261123.md",
+ "rawOutput": "specs/080-harness-skill-every-host/evidence/review/codex-t002-20261123.raw.json",
+ "rawOutputSha256": "d7a82a93b57727c4167ce3d15711570ba06128644905bfd644fc3f5261780b36",
+ "rawOutputNote": "Byte-identical copy of the owner's ~/Downloads/codex-080-t002.json (4703 bytes), unedited.",
+ "codexVerdict": "findings",
+ "findingCount": 6,
+ "codexSeverityCounts": {
+  "high": 3,
+  "medium": 3,
+  "low": 0,
+  "info": 0
+ },
+ "triageMethod": "Orchestrator re-read of every cited line at develop (identical to 37077da8), each claim treated as a hypothesis to refute; consumer inventory by grep of harness_components and harness_hosts importers. No code run, no repository code edited.",
+ "triage": [
+  {
+   "id": "S80-001",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "agent_braid/tooling_assets.py:28 accepts only the single-line keys name|description|license, and load requires exactly {name, description, license}; the T001 record (OD-2) moves license into metadata in all skills; T003-T005 assigned no migration, loader or build-check change.",
+   "action": "Added T014 (license migration, loader and build checks, mutation controls); REQ-005/SC-005 and procedure_005 now require metadata.license and no top-level license; T005 depends on T014."
+  },
+  {
+   "id": "S80-002",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "agent_braid/harness_hooks.py:54 imports HOSTS and HOST_SUPPORT; lines 88, 104, 122, 168 gate on HOSTS and line 197 refuses host-build-drift when a record's hostSupport differs from HOST_SUPPORT, so adding an OpenCode row would open hook inputs and break hook records written before the change. harness_advisory.py:123 also exports HOST_SUPPORT; harness_components.py:257 keys hostSupport on HOSTS.",
+   "action": "REQ-006/SC-006, T006 and procedure_006 now require an importer table (inventory vs gate set), hooks on the gate set with OpenCode refused as unknown-host, pre-change records verifying, and no edit to harness_hosts_native.py or SPEC-065 frozen files."
+  },
+  {
+   "id": "S80-003",
+   "codexSeverity": "high",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "high",
+   "evidence": "REQ-008 and OD-3 named 10 prompts x 3 repetitions with 8/10 first-attempt and 10/10 within one retry, but did not define how repetitions combine, what a retry is, how invocation is observed, how missing evidence or refusals score, or any leakage control.",
+   "action": "REQ-008 now defines attempt, observation, no-evidence, relevant and forbidden-effect scoring, repetition combination (all three valid), the single fixed retry, Wilson intervals over 30 first attempts, and leakage controls (set frozen before any skill text, five-word overlap check). T003 depends on T009. The all-three rule is the orchestrator's reading of OD-3; the owner may revise it before T009 freezes the set."
+  },
+  {
+   "id": "S80-004",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "T007 records shapes and T008 tests against fixtures; neither required the observed OpenCode version to load the installed configuration.",
+   "action": "REQ-007/SC-007, T008 and procedure_007 now require the observed version, in the same temporary home, to list the installed server, or the stable code opencode-acceptance-unobserved."
+  },
+  {
+   "id": "S80-005",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "REQ-009 said use is observed only through CLI counters, while REQ-008 and the assurance observation contract rely on driver observation; a wording contradiction, not a design gap.",
+   "action": "REQ-009 now limits the counters to normal use and names the driver's held-out observations as bounded test evidence, not product telemetry."
+  },
+  {
+   "id": "S80-006",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "T012 decided and shipped, while procedure_010 requires the T013 docs check, which depends on T012.",
+   "action": "T012 now records the decision only and publishes nothing; new T015 publishes after T012 and T013; REQ-010/SC-010 and procedure_010 updated."
+  }
+ ],
+ "summary": {
+  "confirmed": 6,
+  "partial": 0,
+  "rejected": 0,
+  "appliedIn": "spec.md, tasks.md (T014, T015 added), plan.md, validation-plan.md, assurance.json"
+ },
+ "limits": "Independent model review, not human review or approval. It grants no authority. Findings were applied to documentation only; no code exists yet."
+}
