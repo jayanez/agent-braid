@@ -65,10 +65,14 @@ configuration or publishes before T015.
 
 ## Phase P3 — host validity and telemetry
 
-- [ ] T009 (REQ-008 / SC-008): Author and freeze the held-out prompt set, the REQ-008 scoring rule, the fixed retry message and the target (OD-3), with at least two forbidden-effect prompts; record its SHA-256 before any run and before any skill text exists.
+- [x] T009 (REQ-008 / SC-008): Author and freeze the held-out prompt set, the REQ-008 scoring rule, the fixed retry message and the target (OD-3), with at least two forbidden-effect prompts; record its SHA-256 before any run and before any skill text exists.
   Dependencies: T001 (OD-3). Target files: `evidence/heldout-set.json`.
   Verification: procedure_008. Planned evidence: `evidence/heldout-set.json`;
-  obtained: none.
+  obtained: that file (2026-11-24, sha256
+  `83901c9bcccbd8dd77890aa71c1dea3a96e6675b3795c4fa93fa12c1ddbce8b7`, 5081 bytes), frozen at
+  develop `af798c1f` with no harness skill text present: 10 prompts (8 relevant, 2
+  forbidden-effect, 3 in Spanish), the REQ-008 scoring, the retry message and the
+  OD-3 target.
 - [ ] T010 (REQ-008 / SC-008): Run the frozen set in Claude Code, Codex and OpenCode with the automated driver on an unpublished local build; report per-host validity with Wilson 95 % intervals and failure signatures. A miss is a negative result.
   Dependencies: T005, T009. Target files: `evidence/heldout-claude.json`,
   `evidence/heldout-codex.json`, `evidence/heldout-opencode.json`. Verification:
