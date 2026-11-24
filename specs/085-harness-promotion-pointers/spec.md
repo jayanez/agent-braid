@@ -61,7 +61,10 @@ changes the candidate it names; it only names another hash.
 
 **REQ-003 Owner-only moves.** A move record names a human owner actor. An agent,
 automatic-policy or missing actor is refused. The actor is self-asserted; protection
-comes from the mechanism chosen under OD-2, not from the record.
+comes from the mechanism chosen under OD-2, not from the record. Moves are written
+only by the owner-run script (OD-3). Before acting, it prints its precondition, its
+working directory and the pull request it prepares, and every interaction that asks
+the owner for a move states when, where and with which exact command to run it.
 
 - **SC-003:** Given move requests whose actor is the owner, an agent, the automatic
   policy or absent, when each is applied, then only the owner request is accepted, and
@@ -81,10 +84,17 @@ extend the stored one is refused.
 regression verdict of non-inferiority for the target hash. The verdict must be bound
 to the current `adopted` hash (or the OD-5 baseline when `adopted` is empty) and to
 the SPEC-082 corpus hash. An inconclusive, inferior, missing or stale verdict blocks.
+The move record also carries the owner's acknowledgement of the verdict's graded
+regression summary (SPEC-083 REQ-006), citing the verdict hash and the summary hash.
+The script asks the owner to type the number of hard regressions shown, and shows the
+titles of regressed private tasks only in the owner's terminal, never in the
+repository. A missing acknowledgement, a stale hash or a wrong count refuses the move.
 
 - **SC-005:** Given verdicts that are non-inferior, inconclusive, inferior, absent, or
   bound to an older `adopted` hash, when `candidate` is moved, then only the fresh
-  non-inferior verdict is accepted.
+  non-inferior verdict is accepted; with that verdict, a move without an
+  acknowledgement, with a stale summary hash or with a wrong hard-regression count
+  refuses.
 
 **REQ-006 Evidence gate for `adopted`.** Moving `adopted` requires, in addition to
 REQ-005, that `candidate` currently points to the target hash and that a T013 human
