@@ -59,10 +59,12 @@ No MUST conflict found. No SHOULD deviation recorded.
 ## Phases
 
 1. P0 review: owner review (T001) and Codex review (T002).
-2. P1 skill and packaging: skill file, static checks, build and tests (T003 to T005).
+2. P1 skill and packaging: skill file, static checks, build and tests (T003 to T005),
+   with the license migration (T014) before T005. The held-out set (T009) is frozen
+   before T003 starts.
 3. P2 host registry and OpenCode profile (T006 to T008).
-4. P3 held-out validity per host (T009, T010).
-5. P4 release decision and docs (T011, T012).
+4. P3 held-out validity per host and telemetry (T009 to T011).
+5. P4 release decision, docs and publication (T012, T013, then T015).
 
 ## Validation profile
 

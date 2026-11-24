@@ -1,0 +1,61 @@
+{
+  "commit": "37077da85f3db51d1db180c4a765ec819d56ba08",
+  "reviewer": "GPT-6 (Codex)",
+  "verdict": "findings",
+  "findings": [
+    {
+      "id": "S80-001",
+      "severity": "high",
+      "file": "specs/080-harness-skill-every-host/tasks.md",
+      "line": 25,
+      "claim": "The owner-decided license migration is absent from the implementation tasks and conflicts with the canonical skill loader.",
+      "evidence": "T001 says to move the license into metadata in all seven existing skills, but T003–T005 do not assign that migration or its loader changes. If the five canonical skills are changed as decided, agent_braid/tooling_assets.py rejects their metadata field and requires a top-level license, so the plugin build and tooling bundle fail. Add the affected skill files, loader, compatibility behavior and tests to the tasks.",
+      "confidence": "high"
+    },
+    {
+      "id": "S80-002",
+      "severity": "high",
+      "file": "specs/080-harness-skill-every-host/tasks.md",
+      "line": 44,
+      "claim": "The host registry change omits a consumer that will inherit the expanded host set.",
+      "evidence": "agent_braid/harness_hooks.py imports HOSTS and HOST_SUPPORT from harness_components and uses HOSTS to validate hook matrices and records; adding OpenCode to that tuple can make previously rejected OpenCode hook inputs pass those host checks without an explicit compatibility decision. Inventory all imported consumers, including harness_hooks.py, and specify and test whether each uses the inventory or the existing gate set.",
+      "confidence": "high"
+    },
+    {
+      "id": "S80-003",
+      "severity": "high",
+      "file": "specs/080-harness-skill-every-host/spec.md",
+      "line": 111,
+      "claim": "The held-out release gate leaves the scoring and observation protocol too ambiguous to produce a reproducible validity result.",
+      "evidence": "The specification does not say how three repetitions combine into the 8/10 and 10/10 thresholds, what a retry contains, how invocation is observed in each host, or whether a refusal without a command counts as invoking the skill. Authors can also copy skill wording into the prompts before freezing them, making discovery appear successful. Predefine per-attempt and per-prompt scoring, retry conditions, host observation and missing-evidence rules, and independent prompt authoring with leakage controls before freezing.",
+      "confidence": "high"
+    },
+    {
+      "id": "S80-004",
+      "severity": "medium",
+      "file": "specs/080-harness-skill-every-host/tasks.md",
+      "line": 49,
+      "claim": "The OpenCode observation procedure does not establish that the configuration produced by the installer is accepted and used by the observed host.",
+      "evidence": "T007 captures configuration shapes with one command and T008 tests the installer against fixtures, but neither requires submitting the resulting configuration to the observed OpenCode version or checking that its server entry is recognized. A fixture can therefore match an assumed shape while the host rejects or ignores the installed entry. Specify a version-pinned, temporary-home host validation of the actual installed configuration and fail closed when acceptance cannot be observed.",
+      "confidence": "high"
+    },
+    {
+      "id": "S80-005",
+      "severity": "medium",
+      "file": "specs/080-harness-skill-every-host/spec.md",
+      "line": 123,
+      "claim": "The telemetry requirement contradicts the separate driver-based observation required by the validity test.",
+      "evidence": "REQ-009 says use is observed only through CLI counters, but REQ-008 and the assurance observation contract require an automated driver to observe skill invocation and commands, while the counters cannot distinguish manual calls from skill calls. A literal implementation cannot satisfy both statements or measure discovery. Limit REQ-009 to production telemetry and explicitly allow bounded driver observations for the held-out test.",
+      "confidence": "high"
+    },
+    {
+      "id": "S80-006",
+      "severity": "medium",
+      "file": "specs/080-harness-skill-every-host/tasks.md",
+      "line": 74,
+      "claim": "The release task can ship before the documentation required by its own validation procedure exists.",
+      "evidence": "T012 includes shipping and uses procedure_010, which requires the T013 documentation check, but T013 depends on T012. A passing release decision can therefore be acted on before the availability documentation and release notes are checked. Separate the decision from publication and make publication depend on the completed documentation check.",
+      "confidence": "high"
+    }
+  ]
+}

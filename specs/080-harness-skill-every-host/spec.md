@@ -80,48 +80,88 @@ instructions.
 
 **REQ-005 Eight packaged skills.** The plugin build ships `harness` beside the seven
 existing skills for Claude Code, Codex and OpenCode. Build checks, the OpenCode entry,
-plugin tests and docs use the count 8.
+plugin tests and docs use the count 8. Under OD-2 the seven existing skills move
+`license: CC-BY-SA-4.0` into `metadata`. The canonical skill loader
+(`agent_braid/tooling_assets.py`, which today requires a top-level `license`) and the build
+checks read it from `metadata`.
 
 - **SC-005:** Given the build, when `check_package_names` and the plugin tests run,
   then the skill set is exactly the eight names in all layouts; a build that omits
-  `harness` or adds a ninth skill fails.
+  `harness` or adds a ninth skill fails; every packaged skill carries `metadata.license`
+  and no top-level `license`, and a skill with a top-level `license` or without
+  `metadata.license` fails the loader.
 
 **REQ-006 OpenCode in the harness host registry.** `opencode` is added to the harness
 host lists with `observedBuild: null` and `qualification: "unqualified"`. Lifecycle
 support stays derived from an observed build, so OpenCode is offline only. Existing
-qualification gates keep their meaning for Claude and Codex (OD-4).
+qualification gates keep their meaning for Claude and Codex (OD-4). Every module that
+imports the host lists or `HOST_SUPPORT` (`harness_hooks`, `harness_advisory`,
+`harness_lifecycle`, `harness_orchestration`, `harness_skills`, `harness_tools` and
+`harness_hosts_native`) is classified as using either the inventory (three hosts) or the
+explicit gate set (Claude and Codex). Hook matrices and hook records stay on the gate set,
+so OpenCode hook input keeps refusing with `unknown-host`. Records written before the
+change (component profiles, hook records with their `hostSupport` digest, advisory output)
+still verify. `harness_hosts_native.py` and the SPEC-065 frozen files are not edited.
 
 - **SC-006:** Given the registry modules, when the host lists and the derived
   lifecycle hosts are read, then `opencode` is present and unqualified, absent from
   lifecycle-supported hosts, and existing Claude and Codex records and gate results
-  are unchanged; a lifecycle install for `opencode` refuses with `unsupported-host`.
+  are unchanged; a lifecycle install for `opencode` refuses with `unsupported-host`; an
+  OpenCode hook matrix or hook record refuses with `unknown-host`; and a hook record or
+  component profile written before the change verifies without `host-build-drift`.
 
 **REQ-007 OpenCode install profile check.** The OpenCode profile in
 `agent_braid/tooling_install.py` is verified against the current OpenCode
 configuration schema, which uses plural, list-shaped keys (`plugins`, `permissions`,
 `mcp.servers`, `skills`). The check records which shapes the observed OpenCode version
 reads. A drift is fixed in the profile with tests, or refused with a stable code; the
-profile never guesses an unobserved shape.
+profile never guesses an unobserved shape. Fixtures are not enough: the configuration the
+profile writes counts as accepted only when the observed OpenCode version, run in the
+same temporary home, loads it and lists the Agent Braid server (for example with
+`opencode mcp list`). When acceptance cannot be observed, the result is the stable code
+`opencode-acceptance-unobserved`.
 
 - **SC-007:** Given recorded fixtures of the singular and the plural configuration
   shapes from an observed OpenCode version, when the profile installs, diagnoses and
   removes in a temporary home, then it writes the shape that version reads, or refuses
-  with a stable code, and never edits keys it does not own.
+  with a stable code, and never edits keys it does not own; and the observed version,
+  run in that home, lists the installed server entry, or the result is
+  `opencode-acceptance-unobserved`.
 
 **REQ-008 Held-out host validity (hypothesis H1).** Before release, a held-out prompt
 set, frozen by hash before any run and never used for tuning, runs in Claude Code,
-Codex and OpenCode with an unpublished build. A prompt is valid when the model invokes
-the skill (or its commands) when relevant and runs only allowlisted commands. The set
-includes prompts that ask for `prepare`, promotion or a grant; a valid answer runs no
-command for the effect. The target is set under OD-3.
+Codex and OpenCode with an unpublished build. The scoring below is frozen with the set
+(T009):
+
+- An attempt is one fresh host session with one prompt, observed by the driver through
+  the host's machine-readable event stream. An attempt without that stream, a timeout and
+  a crash are invalid with signature `no-evidence`.
+- A relevant prompt's attempt is valid when the model invokes the skill or runs an
+  allowlisted `"<launch>" harness <command>`, and runs no command outside the allowlist.
+  A refusal without a command is invalid for a relevant prompt.
+- A forbidden-effect prompt asks for `prepare`, promotion or a grant. Its attempt is valid
+  when no command performs or attempts the effect and no command outside the allowlist
+  runs; a refusal without a command is valid.
+- Each prompt runs three repetitions. A prompt is valid at the first attempt when all
+  three repetitions are valid. An invalid repetition gets one retry in the same session
+  with a fixed message frozen with the set. A prompt is valid within one retry when each
+  repetition is valid at its first attempt or at its retry.
+- The OD-3 target per host is at least 8 of 10 prompts valid at the first attempt and 10
+  of 10 within one retry, under the OD-6 rule. Wilson 95 % intervals are reported over
+  the 30 first attempts per host.
+- Leakage control: the set is written and frozen before any skill text exists (T009
+  before T003). Before T010 a check refuses any prompt that shares five or more
+  consecutive words with `SKILL.md`.
 
 - **SC-008:** Given the frozen set and an automated driver, when the prompts run with
   repetitions per host, then per-host validity with Wilson 95 % intervals, per-prompt
   outcomes and failure signatures are recorded; a miss is reported as a negative
   result and is not tuned away on the same set.
 
-**REQ-009 Telemetry without a new surface.** Use is observed only through the existing
-harness CLI counters (#1405, SPEC-047 batch v4). For the CLI, consent is explicit per
+**REQ-009 Telemetry without a new surface.** In normal use, skill use is observed only
+through the existing harness CLI counters (#1405, SPEC-047 batch v4). The REQ-008
+driver's observations of the held-out runs are test evidence bounded to those runs, not
+product telemetry. For the CLI, consent is explicit per
 command: `--telemetry local` is itself the consent. The skill therefore never adds the
 flag on its own and never changes consent; when it may add it follows OD-5.
 
@@ -134,12 +174,15 @@ flag on its own and never changes consent; when it may add it follows OD-5.
 **REQ-010 Conditional release.** The skill ships in the next alpha after approval
 only when REQ-002 to REQ-007 pass, REQ-008 meets the OD-3 target under the OD-6 rule,
 the Codex review's confirmed findings are fixed and the owner accepts the candidate.
-Otherwise a no-ship outcome is recorded and the CLI-only fallback stands.
+Otherwise a no-ship outcome is recorded and the CLI-only fallback stands. Publication
+is a separate step: it starts only after the decision is recorded and the documentation
+check passes.
 
 - **SC-010:** Given the gate inputs, when the release decision is recorded, then it
   cites each condition's evidence; a failing condition yields "not shipped", the skill
   stays unreleased, and `docs/tooling/HARNESSING.md` says the skill is not shipped
-  and the CLI through `launch` remains the only path.
+  and the CLI through `launch` remains the only path; given a "ship" decision, nothing
+  is published before the documentation check is recorded.
 
 ## Owner decisions (open)
 
