@@ -31,7 +31,7 @@ imply release or owner acceptance. `quick` means
 
 ## Phase P3 — reversal and reflections
 
-- [ ] T007 (REQ-005 / SC-005): rollback preview and apply. Dependencies: T005.
+- [x] T007 (REQ-005 / SC-005): rollback preview and apply. Dependencies: T005.
   Verification: procedure_005.
 - [ ] T008 (REQ-006 / SC-006): revocation preview and apply. Dependencies: T005.
   Verification: procedure_006.

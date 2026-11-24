@@ -490,6 +490,69 @@ def apply_abort(scope: str, *, home: Path | None, root: Path, run: store.RunStor
             "fileSha256After": _hex(read_target(root, scope)), "executionAuthorization": False}
 
 
+# --- rollback and revocation (REQ-005, REQ-006) ---------------------------------------
+
+
+def rollback_change(*, at: int, reason: str):
+    """The registry change of a rollback: withdraw the active profile, restore the prior one."""
+    def change(value: promotion.ProfileRegistry) -> promotion.ProfileRegistry:
+        _require(value.active is not None, "no-active-profile")
+        after = value.rollback(at=at, reason=reason)
+        _require(after.active is not None, "no-previous")
+        return after
+    change.fields = {"reason": reason}  # sealed into the preview digest
+    return change
+
+
+def _changed(value: promotion.ProfileRegistry, change) -> promotion.ProfileRegistry:
+    try:
+        return change(value)
+    except promotion.PromotionError as exc:
+        raise PromoteError(exc.reason) from None
+
+
+def preview_transition(action: str, scope: str, change, *, home: Path | None, root: Path,
+                       run: store.RunStore) -> dict:
+    """Preview a rollback or revocation; reads the registry, the target and the run store only."""
+    _require(action in ("rollback", "revoke"), "invalid-action")
+    value, raw = read_registry(home, scope)
+    _require(value.pending is None, "transaction-in-progress")
+    after = _changed(value, change)
+    candidate, text = _restored_text(value, after, run)
+    before = read_target(root, scope)
+    cited = after.decisions[after.active] if after.active else None
+    evidence = sorted(promotion._cited(cited)) if cited else [candidate]  # the named baseline
+    return seal({
+        "schema": PREVIEW_SCHEMA, "action": action, "scope": scope,
+        "targetPath": scope_entry(scope).target, "currentSha256": active_candidate(value),
+        "candidateSha256": candidate, "fileSha256Before": _hex(before),
+        "registrySha256Before": _hex(raw), "cohort": COHORT, "evidence": evidence,
+        "heldOutSupport": None, "overrideReason": None,
+        "diffSummary": _diff(before, text.encode("utf-8")), "blockers": [],
+        "requiredDecision": "human-apply", **change.fields})
+
+
+def apply_transition(action: str, scope: str, change, *, home: Path | None, root: Path,
+                     run: store.RunStore, preview_digest: str) -> dict:
+    """Write the restored text, then the registry; restore the file if the registry save fails."""
+    document = preview_transition(action, scope, change, home=home, root=root, run=run)
+    _checked(document, preview_digest)
+    value, before = _unchanged(document, home, root, scope)
+    after = _changed(value, change)
+    _, text = _restored_text(value, after, run)
+    try:
+        write_target(root, scope, text.encode("utf-8"))
+        _save(home, after)
+    except PromoteError:
+        if read_target(root, scope) != before:
+            write_target(root, scope, before)
+        raise PromoteError("apply-failed") from None
+    return {"status": "applied", "action": action, "scope": scope,
+            "candidateSha256": document["candidateSha256"], "activeSha256": active_candidate(after),
+            "registrySha256After": after.sha256,
+            "fileSha256After": _hex(read_target(root, scope)), "executionAuthorization": False}
+
+
 # --- build check (REQ-004) -------------------------------------------------------------
 
 EXPORT_FORMAT = "braid-lightning-promotion-export/v0.1"
@@ -562,7 +625,8 @@ def add_arguments(parser) -> None:
     parser.add_argument("--scope", default="lightning.skill.analyze", help="registry scope (closed map)")
     parser.add_argument("--root", type=Path, default=Path("."), help="plugin source checkout (default: .)")
     parser.add_argument("--candidate", metavar="SHA256", help="candidate text digest")
-    parser.add_argument("--run-id", required=True, help="Lightning run that stores the candidate text")
+    parser.add_argument("--run-id", required=True,
+                        help="Lightning run that stores the candidate (or restored) text")
     parser.add_argument("--registration", type=Path, help="SPEC-049 registration JSON")
     parser.add_argument("--evaluation", type=Path, help="SPEC-049 evaluation record JSON")
     parser.add_argument("--identity", type=Path,
@@ -574,7 +638,10 @@ def add_arguments(parser) -> None:
     parser.add_argument("--abort", action="store_true",
                         help="recover an interrupted promotion of --scope: drop the pending entry, "
                              "restore the active text (preview unless --apply)")
-    parser.add_argument("--reason", default=None, help="journal reason id (default: owner-abort)")
+    parser.add_argument("--rollback", action="store_true",
+                        help="restore the previous active candidate of --scope (preview unless --apply)")
+    parser.add_argument("--reason", default=None,
+                        help="journal reason id (default: owner-abort, owner-rollback or owner-revoke)")
     parser.add_argument("--apply", action="store_true",
                         help="write; requires --preview-digest (and --actor and --safety to promote)")
     parser.add_argument("--preview-digest", help="digest of the preview the human read")
@@ -618,6 +685,17 @@ def _run_store(args) -> store.RunStore:
         raise PromoteError("candidate-not-stored") from None
 
 
+def _transition(args, action: str, change) -> dict:
+    """Preview, or apply with the preview digest, a rollback or revocation."""
+    run_store = _run_store(args)
+    if not args.apply:
+        _require(args.preview_digest is None, "preview-digest-needs-apply")
+        return preview_transition(action, args.scope, change, home=args.home, root=args.root, run=run_store)
+    _require(bool(args.preview_digest), "apply-needs-digest")
+    return apply_transition(action, args.scope, change, home=args.home, root=args.root, run=run_store,
+                            preview_digest=args.preview_digest)
+
+
 def run(args) -> int:
     """Print the preview JSON and return 0; a refusal is one stderr line and exit 2."""
     try:
@@ -633,6 +711,10 @@ def run(args) -> int:
                 _require(args.preview_digest is None, "preview-digest-needs-apply")
                 output = preview_abort(args.scope, home=args.home, root=args.root, run=run_store,
                                        reason=reason, at=at)
+            print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
+            return 0
+        if args.rollback:
+            output = _transition(args, "rollback", rollback_change(at=at, reason=args.reason or "owner-rollback"))
             print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
             return 0
         record = record_from_args(args)

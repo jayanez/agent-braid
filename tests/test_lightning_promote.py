@@ -590,6 +590,111 @@ class BuildCheckTests(ApplyBase):
         self.assertIn('check_lightning_promotions(ROOT, release=not allow_dirty)', text)
 
 
+TEXT2 = '# analyze\n\nsecond candidate\n'
+
+
+class TwoPromotions(ApplyBase):
+    def setUp(self):
+        super().setUp()
+        self.apply(at=10)
+        self.sha2 = sha256_text(TEXT2)
+        self.run.write_candidate_text(self.sha2, TEXT2)
+        registration, evaluation = pair(self.sha2)
+        self.second = self.build(sha=self.sha2, registration=registration, evaluation=noninferior(evaluation))
+        self.apply(self.second, at=20)
+        self.assertEqual(self.target.read_text(), TEXT2)
+
+    def transition(self, action, change, digest=None):
+        doc = lp.preview_transition(action, SCOPE, change, home=self.home, root=self.root, run=self.run)
+        return doc, lp.apply_transition(action, SCOPE, change, home=self.home, root=self.root, run=self.run,
+                                        preview_digest=digest or doc['previewDigest'])
+
+
+class RollbackTests(TwoPromotions):
+    """procedure_005 / SC-005."""
+
+    def change(self, at=30):
+        return lp.rollback_change(at=at, reason='owner-rollback')
+
+    def test_preview_writes_nothing_and_apply_restores_previous(self):
+        before = snapshot(self.home, self.root)
+        doc = lp.preview_transition('rollback', SCOPE, self.change(), home=self.home, root=self.root, run=self.run)
+        self.assertEqual(snapshot(self.home, self.root), before)
+        self.assertEqual((doc['action'], doc['currentSha256'], doc['candidateSha256']),
+                         ('rollback', self.sha2, self.sha))
+        self.assertEqual(doc['requiredDecision'], 'human-apply')
+        self.assertIs(doc['executionAuthorization'], False)
+        result = lp.apply_transition('rollback', SCOPE, self.change(), home=self.home, root=self.root,
+                                     run=self.run, preview_digest=doc['previewDigest'])
+        self.assertEqual((result['activeSha256'], result['fileSha256After']), (self.sha, self.sha))
+        self.assertEqual(self.target.read_text(), TEXT)
+        self.assertEqual(self.registry().journal[-1]['event'], 'rolled-back')
+
+    def test_next_build_carries_the_restored_text(self):
+        from agent_braid.plugin_package import check_lightning_promotions
+        self.transition('rollback', self.change())
+        path = self.root / lp.EXPORT_PATH
+        path.parent.mkdir(parents=True)
+        path.write_bytes(lp.export_bytes([self.registry()]))
+        self.assertEqual(check_lightning_promotions(self.root, release=True), [])
+
+    def test_reason_is_sealed_and_a_change_after_the_check_is_stale(self):
+        doc = lp.preview_transition('rollback', SCOPE, self.change(), home=self.home, root=self.root, run=self.run)
+        self.assertEqual(doc['reason'], 'owner-rollback')
+        other = lp.rollback_change(at=30, reason='other-reason')
+        self.refused('preview-stale', lambda: lp.apply_transition(
+            'rollback', SCOPE, other, home=self.home, root=self.root, run=self.run,
+            preview_digest=doc['previewDigest']))
+        real, calls = lp.read_target, []
+
+        def drifting(root, scope):
+            calls.append(1)
+            # Calls 1-2 are the two previews (equal digests); call 3 is the re-read before writing.
+            return real(root, scope) + (b'drift\n' if len(calls) > 2 else b'')
+        file_before = self.target.read_bytes()
+        with patch.object(lp, 'read_target', drifting):
+            self.refused('preview-stale', lambda: self.transition('rollback', self.change()))
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(lp.active_candidate(self.registry()), self.sha2)
+        self.assertEqual(self.target.read_bytes(), file_before)
+
+    def test_rollback_with_no_previous_refused(self):
+        self.transition('rollback', self.change())
+        self.refused('no-previous', lambda: self.transition('rollback', self.change(at=40)))
+        self.assertEqual(self.target.read_text(), TEXT)
+
+    def test_rollback_without_a_registry_refused(self):
+        other = Path(self.tmp.name) / 'other-home'
+        self.refused('no-active-profile', lambda: lp.preview_transition(
+            'rollback', SCOPE, self.change(), home=other, root=self.root, run=self.run))
+
+    def test_stale_preview_and_failed_registry_save(self):
+        doc = lp.preview_transition('rollback', SCOPE, self.change(), home=self.home, root=self.root, run=self.run)
+        self.target.write_text(TEXT2 + 'edit\n')
+        self.refused('preview-stale', lambda: self.transition('rollback', self.change(), doc['previewDigest']))
+        self.target.write_text(TEXT2)
+        with patch.object(hp, 'save', side_effect=hp.PromotionError('registry-unavailable')):
+            self.refused('apply-failed', lambda: self.transition('rollback', self.change()))
+        self.assertEqual(self.target.read_text(), TEXT2)
+        self.assertEqual(lp.active_candidate(self.registry()), self.sha2)
+
+    def test_cli_rollback_preview_then_apply(self):
+        cli = CliPreviewTests('test_cli_refusal_is_one_fixed_line')
+        cli.tmp, cli.home, cli.root, cli.sha = self.tmp, self.home, self.root, self.sha
+        cli.registration, cli.evaluation = self.registration, self.evaluation
+        argv = ['lightning', 'promote', '--rollback', '--home', str(self.home), '--root', str(self.root),
+                '--run-id', 'run-1']
+        out = StringIO()
+        with redirect_stdout(out), patch('sys.stderr', StringIO()):
+            self.assertEqual(main(argv), 0)
+        digest = json.loads(out.getvalue())['previewDigest']
+        out, err = StringIO(), StringIO()
+        with redirect_stdout(out), patch('sys.stderr', err):
+            self.assertEqual(main(argv + ['--apply', '--preview-digest', digest]), 0, err.getvalue())
+        self.assertEqual(json.loads(out.getvalue())['activeSha256'], self.sha)
+        self.assertEqual(self.target.read_text(), TEXT)
+
+
 MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'
 FORBIDDEN_STDLIB = {'socket', 'subprocess', 'multiprocessing', 'asyncio', 'http', 'urllib', 'ssl',
                     'ftplib', 'smtplib', 'importlib', 'ctypes', 'shutil'}
