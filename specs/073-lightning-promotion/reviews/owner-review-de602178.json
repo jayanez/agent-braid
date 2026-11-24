@@ -1,0 +1,34 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-073",
+ "reviewedCommit": "de602178684bba28f75e708dc87471ca9a4c7b81",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided re-approval on 2026-11-24 after T002-T009 merged (PRs #1632-#1634, #1636-#1640), each reviewed twice by the coordinator with fixes verified. The owner was shown every change to the frozen files since b312076f (OD-4, OD-5, the promotion-preview and scope-map contract changes; plan.md unchanged) with a recommendation, risks and undo, and approved. Supersedes owner-review-b312076f.json, which stays as the historical T001 record.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-24",
+  "rationale": "Approve the SPEC-073 specification, plan and contracts as changed during T002-T009: OD-4 (decide() unchanged; real SPEC-072 pairs refuse with regression-not-covered; apply is proven with a synthetic noninferior fixture), OD-5 (override reason recorded as a limit id plus its SHA-256; text only in the run store), and the contract additions (new refusals, blockers, --abort recovery, re-check before writing, sealed reason and revoked digest, source-SKILL.md build check, explicit lightning-baseline limit, export v0.1). AUTOMATIC_PROMOTION stays False and nothing is promoted by this approval. T010 (owner rollback drill) and T011 (converge) remain. This approval grants no execution authority, release or publication."
+ },
+ "evidence": [
+  {
+   "path": "specs/073-lightning-promotion/spec.md",
+   "sha256": "2ab4c0edb78b0b0b0852a206684604668576d3fcb8ff5a2f52b26ec28521561a"
+  },
+  {
+   "path": "specs/073-lightning-promotion/plan.md",
+   "sha256": "d06f6dcdcd864cf353c0e41f2fa2742b3f9956a52b1332af68780beb82c187b6"
+  },
+  {
+   "path": "specs/073-lightning-promotion/contracts/promotion-preview.md",
+   "sha256": "8b20ef57f5457b7a580e6fc279cac815a79554ec513b4430d3dd13d140f25f32"
+  },
+  {
+   "path": "specs/073-lightning-promotion/contracts/scope-map.md",
+   "sha256": "f015d4d3f94ecbd0dc58aff0a1f9f8a61ab98855bdef36eddac2e75bc1b10cd6"
+  }
+ ]
+}
