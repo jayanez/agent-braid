@@ -46,40 +46,68 @@ Exclusions (each a MUST NOT):
 
 **REQ-002 Task record format.** Each task has a versioned record: id, origin
 (`repository-history` or `synthetic`), lineage, stratum (closed vocabulary, OD-2),
-family, source provenance (PR number, pre-fix and fix commits, merge date), rights
-basis, initial-state commit, task statement, oracle (fail-to-pass and pass-to-pass
-tests), reference-solution hash, resource budget, canary id, partition, QA status
-and the SHA-256 of each file. Unknown keys refuse.
+family, source provenance, rights basis, initial-state commit, task statement,
+oracle (fail-to-pass and pass-to-pass tests), reference-solution hash, resource
+budget, canary id, partition, QA status and the SHA-256 of each file. Unknown keys
+refuse. Provenance depends on origin. A `repository-history` task records the PR
+number, pre-fix and fix commits and merge date. A `synthetic` task records its
+SPEC-049 case ids, its lineage id and the path and hash of the frozen SPEC-049 record
+it comes from. A field that does not apply to the origin holds the explicit value
+`not-applicable`, and each origin is validated against its own field set.
 
 - **SC-002:** Given a record missing a field, carrying an unknown key or a wrong
-  hash, when it is validated, then it refuses with a reason code and a JSON Pointer.
+  hash, when it is validated, then it refuses with a reason code and a JSON Pointer;
+  a `synthetic` record with PR fields, or a `repository-history` record with
+  `not-applicable` provenance, also refuses.
 
 **REQ-003 Selection rule before construction.** The rule that admits a candidate
 from history is frozen by hash before any task is built. Every candidate, exclusion
-and its reason, and the observed yield are recorded.
+and its reason, and the observed yield are recorded. The rule fixes how a fix's test
+is checked on the pre-fix state: the fix's test and fixture changes, selected by a
+frozen path rule, are applied onto the parent tree without the code change. The
+candidate qualifies only when the changed test then fails and passes at the merge
+commit. Each failure is classified (assertion, error raised from code under test,
+collection or setup error), and the rule names which classes count; a collection or
+setup error of the test itself never does. Tests that need the network, a native host
+or a skip condition are excluded.
 
 - **SC-003:** Given the frozen rule and the merged-PR history, when the inventory
   runs, then every inspected PR is listed as candidate or excluded with a reason, and
   the rule hash predates the first task record.
 
 **REQ-004 Lineage and partition.** Tasks that share a fixing PR, a spec feature, a
-test fixture base or an unresolved relation share a lineage (OD-2). Partitions
+test fixture base or an unresolved relation share a lineage (OD-2). A shared spec
+feature is a change under the same `specs/NNN-*` directory or a PR title naming the
+same SPEC number. A shared fixture base is a change to the same test module or the
+same fixture file under `tests/`. Each relation is an edge with its evidence; a
+lineage is a connected component of that graph (transitive closure). A pair whose
+relation cannot be decided is recorded as unresolved and merged. Partitions
 (`discovery`, `holdout`, `private-holdout`) are assigned by lineage, stratified,
 with a recorded seed, before any candidate outcome exists. SPEC-049 D1 holds: L1 is
 never split, L3 stays unassigned until resolved, L4 is held out only if it qualifies.
 
 - **SC-004:** Given a manifest, when a lineage spans two partitions, L1 is split, L3
-  is assigned, or a partition changes after any outcome record, then validation
-  refuses.
+  is assigned while unresolved, or a partition changes after any outcome record, then
+  validation refuses; a resolved L3 that joins L1 or stands alone validates, and
+  recomputing lineages from the recorded edges gives the same components.
 
 **REQ-005 Private held-out split.** Private task bytes live outside the public
-repository (OD-3); the public manifest holds only their hashes, counts and strata.
-No optimizer context, prompt or library receives them. Their outcomes reach a
-promotion decision only in aggregate, and each use is counted.
+repository (OD-3). The public manifest holds only salted commitments (SHA-256 over a
+per-corpus secret salt kept in the private store, followed by the file bytes), counts
+and strata. Plain SHA-256 hashes of private files, private task ids and statements are
+identity data and never enter the public tree. No optimizer context, prompt or library
+receives private bytes. Their outcomes reach a promotion decision only in aggregate,
+and each use is counted. Detailed QA, review, exploit and contamination records of
+private tasks stay in the private store; the public tree holds only receipts (counts
+per status and salted commitments). The scan looks for plain identity hashes, private
+task ids, and every private-file line of at least 40 characters that does not occur in
+the public tree at the corpus commit; shorter lines and lines shared with the public
+tree are excluded. It cannot detect paraphrase.
 
 - **SC-005:** Given the public tree and an optimizer context, when they are
-  scanned, then no private task byte or identity hash appears, and the use count
-  matches the recorded evaluations.
+  scanned, then no private identity hash, task id or scanned private line appears,
+  private tasks appear only as salted commitments and receipts, and the use count
+  matches the recorded evaluations; a planted private line or plain hash is found.
 
 **REQ-006 Oracle passes and no-op fails.** The reference solution applied to the
 initial state passes the verifier in 3 of 3 fresh runs; the unchanged initial state
@@ -97,13 +125,20 @@ repaired and QA reruns.
 - **SC-007:** Given a task, when each probe and the exploit agent run, then every
   one fails, and a planted weak verifier is caught by at least one probe.
 
-**REQ-008 Two reviewers.** Each task has two independent review records (statement
-clarity, solvability, no solution leak, oracle checks outcome, rights). Disagreement
-needs an adjudication record (OD-4); a majority is not a consensus.
+**REQ-008 Cross adversarial review (OD-4).** Each task has two blind review records
+(statement clarity, solvability, no solution leak, oracle checks outcome, rights): one
+from Claude in a Claude Code subagent and one from Codex (`codex exec -s read-only`
+pinned to the corpus commit). Each is labeled `model` with its model id and version,
+and both hashes are recorded before either reviewer sees the other report. Then each
+model writes a cross-critique that cites the other report's hash. The owner settles
+every disagreement in an adjudication record labeled `human`; a majority is not a
+consensus.
 
-- **SC-008:** Given a task, when it is marked `qa-passed`, then two distinct review
-  records exist, each labeled human or model, and any disagreement has an
-  adjudication.
+- **SC-008:** Given a task, when it is marked `qa-passed`, then both blind reviews,
+  both cross-critiques and an adjudication for each disagreement exist, with labels,
+  model ids, versions and hashes, and the blind hashes predate both critiques; a
+  missing artifact, a critique recorded before both blind reviews, or a model review
+  labeled `human` refuses.
 
 **REQ-009 Infrastructure errors kept separate.** A trial outcome is one of `pass`,
 `fail`, `infra-error` (closed subclasses: setup, provider, quota-stop, runtime-crash,
@@ -111,11 +146,20 @@ verifier-crash, config-drift) or `not-attempted`. Classification follows a rule
 frozen before data. An infra error never counts as 0 or as a pass; it leaves the
 agent-outcome denominator, is reported with its count, and bounds the rate both ways.
 An agent that exceeds its registered time budget is a `fail`. Reruns use fresh run
-ids and are all kept; the job validity threshold is OD-5.
+ids and are all kept; the job validity threshold is OD-5. Accounting, frozen before
+data: the unit is the registered trial; a trial has at most three attempts (the first
+and two reruns); its outcome is that of its first attempt that is not an infra error;
+it is an `infra-error` only when every attempt is, with the last attempt's subclass.
+The OD-5 threshold divides infra-error trials by registered trials. Precedence: a job
+over the threshold, or with a task that lost all its trials, is `invalid` whatever
+else stopped it; otherwise a quota stop leaves the remaining trials `not-attempted`
+and the job `stopped`, which SPEC-083 reports as `inconclusive`.
 
 - **SC-009:** Given a synthetic job with injected infra errors, when trial records
   are summarized, then infra errors are counted apart, excluded from the agent
-  denominator, shown in the bounds, and over the threshold the job is `invalid`.
+  denominator, shown in the bounds, and over the threshold the job is `invalid`; a
+  trial with one infra attempt and a later pass counts once, as a pass; a quota stop
+  over the threshold is `invalid`, and under it `stopped`.
 
 **REQ-010 Pinned and recorded configuration.** Each trial records requested and
 observed model id, reasoning effort, host and agent versions, CPU, memory, disk,
@@ -127,10 +171,16 @@ timeout, network policy and image digest when used. A mismatch is `config-drift`
 
 **REQ-011 Fresh run ids, no cache reuse.** Each trial has a new run id from a
 register, a fresh workspace and no reused result, session or cache (the SWE-bench
-`run_id` hazard).
+`run_id` hazard). Reuse is detected by provenance, not by byte equality: at start the
+register issues a nonce to the trial, and the result record carries the run id,
+workspace id and nonce. The workspace path has never been used, and host and session
+caches are empty at start, which is recorded. Independent trials may produce identical
+result bytes.
 
-- **SC-011:** Given a trial whose run id is already registered, or a result whose
-  bytes match an earlier run's, when it is recorded, then it refuses.
+- **SC-011:** Given a trial whose run id is already registered, or a result whose run
+  id or nonce does not match its trial or whose nonce was issued to another trial,
+  when it is recorded, then it refuses; two independent trials with byte-identical
+  score files are both accepted.
 
 **REQ-012 Contamination record.** Each task carries a canary id and records its
 public source date against each model's stated knowledge cutoff. Reports say the
@@ -140,10 +190,15 @@ canary is a detection aid and not a guarantee; no task is called contamination-f
   canary, source date and cutoff relation, and the limitation text is present.
 
 **REQ-013 No authority and handoff.** The frozen corpus manifest is handed to
-SPEC-083 and SPEC-084 by hash. No record here authorizes execution.
+SPEC-083 and SPEC-084 by hash. No record here authorizes execution. A SPEC-083
+regression verdict needs at least 20 `qa-passed` tasks in `private-holdout`, a
+feasibility target separate from H1 (owner, 2026-11-24). Under OD-1 and OD-7 the first
+corpus gives about 4 to 10 such tasks, so SPEC-083 reports `descriptive-only` until
+later batches of new lineages reach 20; OD-1 and OD-7 are unchanged.
 
 - **SC-013:** Given the freeze record, when it is inspected, then it lists hashes,
-  counts per partition, stratum and lineage, QA status per task, and
+  counts per partition, stratum and lineage, QA status per task, the `qa-passed`
+  count in `private-holdout` against the 20-task target, and
   `executionAuthorization: false`.
 
 ## Owner decisions (open)
@@ -177,6 +232,8 @@ pointers (SPEC-085); telemetry (SPEC-086); native cohorts; automatic promotion.
 ## Risks
 
 - Yield: few merged PRs may have a clean fail-to-pass test; H1 may fail.
+- Private split size: 20 % of 20–50 tasks is below SPEC-083's 20-task minimum, so
+  the first corpus supports descriptive results only (REQ-013).
 - One repository couples tasks; inference counts lineages, not tasks.
 - History is public, so models may have seen fixes; the private split limits
   optimizer leakage only. Repeated held-out use still leaks through selection.
