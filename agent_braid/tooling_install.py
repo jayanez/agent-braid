@@ -617,7 +617,19 @@ def _oc_build(name: str, server: dict, old_entry) -> bytes:
     return json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False).encode("utf-8")
 
 
+def _oc_shadowed(raw: bytes | None, name: str) -> bool:
+    """True when a plural ``mcp.servers.<name>`` exists: OpenCode 2.1.4 reads ``mcp.<name>`` and
+    ``mcp.servers.<name>`` alike and keeps the plural entry for one name (SPEC-080 T007)."""
+    servers = _oc_load(raw)[2].get("mcp", {}).get("servers") if raw is not None else None
+    return isinstance(servers, dict) and name in servers
+
+
 def _oc_insert(raw, name, new_entry, old_entry, entry, receipt):
+    if name == "servers":
+        raise _invalid("the server name 'servers' is OpenCode's mcp.servers container (SPEC-080 T007)")
+    if _oc_shadowed(raw, name):
+        raise _refusal("opencode", "unowned_collision",
+                       f"mcp.servers.{name} exists; OpenCode keeps it over mcp.{name} (SPEC-080 T007)")
     created = bool(receipt.get("createdMcp")) if receipt and entry is not None else False
     after, created = _oc_edit(raw, name, new_entry, created_container=created)
     _oc_load(after)
@@ -1228,6 +1240,8 @@ def _opencode_doctor(selection: Selection) -> dict:
             current = _oc_entry(raw, selection.name) if raw is not None else None
             result["ownedEntry"] = {"status": "ok" if current == receipt["entry"].encode() else
                                     "missing" if current is None else "modified"}
+            if result["ownedEntry"]["status"] == "ok" and _oc_shadowed(raw, selection.name):
+                result["ownedEntry"] = {"status": "shadowed", "code": "unowned_collision"}
             states = {}
             for relative, digest in receipt["files"].items():
                 data = _read(skills / relative)

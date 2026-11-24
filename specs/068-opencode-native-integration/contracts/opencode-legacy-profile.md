@@ -68,8 +68,8 @@ the owned entry and owned skills.
 | Code | Condition |
 |---|---|
 | `ambiguous_configuration` | `opencode.json` and `opencode.jsonc` both exist in the scope |
-| `invalid_configuration` | JSONC does not parse, root is not an object, or `mcp` is not an object |
-| `unowned_collision` | `mcp.<name>` or an owned skill exists without a matching receipt |
+| `invalid_configuration` | JSONC does not parse, root is not an object, `mcp` is not an object, or `<name>` is `servers` (SPEC-080 T008) |
+| `unowned_collision` | `mcp.<name>` or an owned skill exists without a matching receipt, or `mcp.servers.<name>` exists, which OpenCode 2.1.4 keeps over `mcp.<name>` (SPEC-080 T008) |
 | `changed_digest` | The configuration or an owned skill changed since preview or since the receipt |
 | existing lifecycle codes | Unchanged |
 
