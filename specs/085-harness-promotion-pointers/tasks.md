@@ -7,10 +7,12 @@ records the owner decisions. `executionAuthorization` is false throughout.
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1 to OD-7 in a dated record.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1 to OD-7 in a dated record.
   Dependencies: none. Target files: `specs/085-harness-promotion-pointers/evidence/`.
   Verification: procedure_001. Planned evidence: `evidence/t001-owner-review.md`;
-  obtained: none.
+  obtained: that record (2026-11-24). Every decision took the recommended option;
+  OD-3 adds that each interaction states when, where and how to run the owner script.
+  REQ-005 now requires the bound regression acknowledgement from SPEC-083 S83-005.
 - [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage each finding (confirmed, fixed, rejected with reason).
   Dependencies: this PR merged. Target files: `specs/085-harness-promotion-pointers/review/`.
   Verification: procedure_010. Planned evidence: `evidence/t002-codex-review.json`
