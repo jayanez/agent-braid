@@ -682,11 +682,21 @@ class Scenario:
         self.executor = DoubleExecutor(m, **behaviour)
         self.clock = clock or FakeClock(step=1)
 
-    def run(self, label="notes", **over):
+    def _kwargs(self, over):
         kwargs = {"exec_record": self.record, "executor": self.executor,
                   "checker": e3_checker, "files": {NOTES_PATH: NOTES}, "clock": self.clock}
         kwargs.update(over)
-        return self.m.run_helper(self.allow, self.contract.tool_id, {"label": label}, **kwargs)
+        return kwargs
+
+    def run(self, label="notes", **over):
+        """The test-only double entry: the same adapter checks, any injected executor."""
+        return self.m._run_helper_double(self.allow, self.contract.tool_id, {"label": label},
+                                         **self._kwargs(over))
+
+    def run_public(self, label="notes", **over):
+        """The public entry: only ``ContainedExecutor`` itself reaches ``run()``."""
+        return self.m.run_helper(self.allow, self.contract.tool_id, {"label": label},
+                                 **self._kwargs(over))
 
 
 class SubprocessAdapterTests(unittest.TestCase):
@@ -738,14 +748,15 @@ class SubprocessAdapterTests(unittest.TestCase):
                 return self.m.ExecOutcome(0, b'{"count": 3, "ok": true}',
                                           artifacts={REPORT: b"notes:3"})
         s.executor = Two(ht)
-        result = ht.run_helper(s.allow, s.contract.tool_id, {"label": "notes", "n": 7},
-                               exec_record=s.record, executor=s.executor, checker=e3_checker,
-                               files={NOTES_PATH: NOTES}, clock=FakeClock(1))
+        result = ht._run_helper_double(
+            s.allow, s.contract.tool_id, {"label": "notes", "n": 7}, exec_record=s.record,
+            executor=s.executor, checker=e3_checker, files={NOTES_PATH: NOTES},
+            clock=FakeClock(1))
         self.assertEqual(s.executor.requests[0].argv, (HELPER_PATH, "notes", "7"))
         self.assertEqual(thaw(result.output)["count"], 3)
-        self.refuses("argument-injection", ht.run_helper, s.allow, s.contract.tool_id,
-                     {"label": "notes", "n": -7}, exec_record=s.record, executor=s.executor,
-                     checker=e3_checker, files={NOTES_PATH: NOTES})
+        self.refuses("argument-injection", ht._run_helper_double, s.allow,
+                     s.contract.tool_id, {"label": "notes", "n": -7}, exec_record=s.record,
+                     executor=s.executor, checker=e3_checker, files={NOTES_PATH: NOTES})
 
     def test_exec_record_is_drafted_bound_and_grants_nothing(self):
         s = Scenario()
@@ -779,13 +790,62 @@ class SubprocessAdapterTests(unittest.TestCase):
             params = set(inspect.signature(fn).parameters)
             self.assertFalse(params & {"qualified", "pins", "qualified_helpers", "allow"}, fn)
         s = Scenario()
-        self.refuses("helper-not-qualified", s.run, executor=ht.ContainedExecutor())
+        self.refuses("helper-not-qualified", s.run_public, executor=ht.ContainedExecutor())
 
     def test_mutation_control_pinned_helper_reaches_only_the_containment_refusal(self):
         pin = repr({(HELPER_PATH, sha256(HELPER_BYTES).hexdigest())})
         m = mutant("QUALIFIED_HELPERS: frozenset[tuple[str, str]] = frozenset()",
                    f"QUALIFIED_HELPERS: frozenset[tuple[str, str]] = frozenset({pin})")
-        self.refuses("containment-not-wired", Scenario(m).run, executor=m.ContainedExecutor())
+        self.refuses("containment-not-wired", Scenario(m).run_public,
+                     executor=m.ContainedExecutor())
+
+    # --- only the contained executor reaches run() (GPT-6 D5 review, F-001) ----
+    def test_public_run_helper_refuses_a_non_contained_executor_before_run(self):
+        class Spawner(ht.ContainedExecutor):
+            """A subclass that would launch a child; it must never be called."""
+
+            def __init__(self):
+                self.calls = []
+
+            def run(self, request):
+                self.calls.append("run")
+                raise AssertionError("run() reached")
+
+            def teardown(self, request):
+                self.calls.append("teardown")
+                return {"processesRemaining": 0, "artifactsRemoved": 0}
+
+        s = Scenario()
+        spawner = Spawner()
+        for executor in (s.executor, spawner):
+            with self.subTest(executor=type(executor).__name__):
+                self.refuses("executor-not-contained", s.run_public, executor=executor)
+        self.assertEqual((s.executor.requests, s.executor.teardowns), ([], 0))
+        self.assertEqual(spawner.calls, [])
+
+    def test_contained_executor_methods_cannot_be_replaced_per_instance(self):
+        executor = ht.ContainedExecutor()
+        with self.assertRaises(AttributeError):
+            executor.run = lambda request: None  # type: ignore[method-assign]
+        with self.assertRaises(AttributeError):
+            executor.teardown = lambda request: None  # type: ignore[method-assign]
+
+    def test_double_entry_is_test_only(self):
+        """No shipped module may reach the double entry; only tests call it."""
+        package = MODULE.parent
+        users = sorted(p.name for p in package.rglob("*.py")
+                       if "_run_helper_double" in p.read_text(encoding="utf-8"))
+        self.assertEqual(users, ["harness_tools.py"])
+        tree = ast.parse(MODULE.read_text(encoding="utf-8"))
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call) and
+                 getattr(n.func, "id", None) == "_run_helper_double"]
+        self.assertEqual(len(calls), 1)  # only from run_helper, after the gate
+        self.assertNotIn("_run_helper_double", getattr(ht, "__all__", ()))
+
+    def test_mutation_control_contained_executor_gate(self):
+        self.mutation_accepts(
+            '_require(type(executor) is ContainedExecutor, "executor-not-contained")', "pass",
+            lambda m: lambda: Scenario(m).run_public(), "executor-not-contained")
 
     def test_double_cannot_spoof_a_containment_refusal(self):
         self.refuses("helper-failed",
@@ -885,12 +945,16 @@ class SubprocessAdapterTests(unittest.TestCase):
         for spec, tool in ((make_spec(), "count-words"),
                            (make_e3_spec(effectClass="E4"), "count-words-e3")):
             with self.subTest(effect=spec["effectClass"]):
-                self.refuses("effect-blocked", ht.run_helper, allowlist_for(spec), tool,
-                             {"label": "x"}, exec_record=s.record, executor=s.executor,
+                self.refuses("effect-blocked", ht._run_helper_double, allowlist_for(spec),
+                             tool, {"label": "x"}, exec_record=s.record, executor=s.executor,
                              checker=e3_checker, files={NOTES_PATH: NOTES})
-        self.refuses("tool-not-allowlisted", ht.run_helper, s.allow, "other", {"label": "x"},
-                     exec_record=s.record, executor=s.executor, checker=e3_checker,
-                     files={NOTES_PATH: NOTES})
+                self.refuses("effect-blocked", ht.run_helper, allowlist_for(spec), tool,
+                             {"label": "x"}, exec_record=s.record,
+                             executor=ht.ContainedExecutor(), checker=e3_checker,
+                             files={NOTES_PATH: NOTES})
+        self.refuses("tool-not-allowlisted", ht._run_helper_double, s.allow, "other",
+                     {"label": "x"}, exec_record=s.record, executor=s.executor,
+                     checker=e3_checker, files={NOTES_PATH: NOTES})
         self.assertEqual(s.executor.requests, [])
 
     def test_e3_contract_still_never_runs_in_process(self):
@@ -1098,9 +1162,9 @@ class SubprocessAdapterTests(unittest.TestCase):
             allow = m.compile_allowlist([m.compile_contract(
                 json.dumps(make_spec()).encode(),
                 expected_input_sha256=sha256(canonical(make_spec())).hexdigest())])
-            return lambda: m.run_helper(allow, "count-words", {"label": "x"},
-                                        exec_record=s.record, executor=s.executor,
-                                        checker=e3_checker, files={NOTES_PATH: NOTES})
+            return lambda: m._run_helper_double(allow, "count-words", {"label": "x"},
+                                                exec_record=s.record, executor=s.executor,
+                                                checker=e3_checker, files={NOTES_PATH: NOTES})
         self.mutation_accepts(
             '_require(contract.data["effectClass"] == "E3", "effect-blocked")', "pass", build,
             "effect-blocked")

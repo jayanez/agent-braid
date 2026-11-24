@@ -21,7 +21,12 @@ exec record (``braid-harness-exec/v0.1``) bound to an E3 tool contract states th
 helper path and SHA-256, a whole-element argv template, a literal environment,
 limits and ``network: none``. The adapter builds the request, checks injection,
 exit, wall time, output, artifacts and network reports, calls a distinct checker and
-always verifies teardown. Only deterministic doubles exercise it.
+always verifies teardown. The public ``run_helper`` accepts only ``ContainedExecutor``
+itself (exact type, so no subclass) and refuses any other executor with
+``executor-not-contained`` before calling any of its methods. Deterministic doubles
+exercise the same checks only through the test-only ``_run_helper_double``, which no
+shipped module calls (a test enforces this). Python privacy is a convention: this is an
+API boundary, not a sandbox, and an in-process caller can always spawn by itself.
 ``ContainedExecutor``, the real executor, refuses every helper whose pin is not in
 the constant ``QUALIFIED_HELPERS`` (empty until a SPEC-065 re-qualification) and,
 even when pinned, refuses because spawning is wired only inside that qualified
@@ -686,8 +691,11 @@ class ContainedExecutor:
 
     A helper may run only when its ``(path, sha256)`` pin is in ``QUALIFIED_HELPERS``
     and only inside the SPEC-065 qualified containment, which this module does not
-    wire. Both refusals happen before any process exists.
+    wire. Both refusals happen before any process exists. ``__slots__`` stops an
+    instance from replacing ``run`` or ``teardown``.
     """
+
+    __slots__ = ()
 
     def run(self, request: ExecRequest) -> ExecOutcome:
         if (request.helper_path, request.helper_sha256) not in QUALIFIED_HELPERS:
@@ -778,12 +786,29 @@ def run_helper(allowlist: ToolAllowlist, tool_id: str, input_value: Mapping[str,
                exec_record: HelperExec, executor: Any, checker: Callable,
                files: Mapping[str, bytes],
                clock: Callable[[], int] = monotonic_ns) -> ToolResult:
-    """Run one pinned E3 helper through ``executor`` under the drafted section 13 contract.
+    """Run one pinned E3 helper under the drafted section 13 contract.
 
-    ``executor`` has ``run(request) -> ExecOutcome`` and ``teardown(request)``. Offline
-    it is a deterministic double; ``ContainedExecutor`` refuses every helper until a
-    pin is qualified. ``checker(input, output, artifacts)`` must be a distinct callable
-    returning exactly ``True``. Teardown always runs and must report no process left.
+    ``executor`` must be a ``ContainedExecutor`` (exact type); anything else is refused
+    with ``executor-not-contained`` before any of its methods is called, so an injected
+    executor cannot reach native effects here. ``ContainedExecutor`` refuses every
+    helper until a pin is qualified. ``checker(input, output, artifacts)`` must be a
+    distinct callable returning exactly ``True``. Teardown always runs and must report
+    no process left.
+    """
+    _require(type(executor) is ContainedExecutor, "executor-not-contained")
+    return _run_helper_double(allowlist, tool_id, input_value, exec_record=exec_record,
+                              executor=executor, checker=checker, files=files, clock=clock)
+
+
+def _run_helper_double(allowlist: ToolAllowlist, tool_id: str,
+                       input_value: Mapping[str, Any], *, exec_record: HelperExec,
+                       executor: Any, checker: Callable, files: Mapping[str, bytes],
+                       clock: Callable[[], int] = monotonic_ns) -> ToolResult:
+    """Test-only entry: the ``run_helper`` checks against any injected executor.
+
+    Offline tests pass a deterministic double that computes and never spawns. Not part
+    of the public surface: ``run_helper`` is its only caller in shipped code, after the
+    contained-executor gate. A double cannot pass a containment refusal through.
     """
     contract = _allowlisted(allowlist, tool_id)
     _require(contract.data["effectClass"] == "E3", "effect-blocked")
@@ -801,7 +826,7 @@ def run_helper(allowlist: ToolAllowlist, tool_id: str, input_value: Mapping[str,
     _typed(data["input"], input_value, "invalid-input", "input-budget-exceeded")
     frozen_input = freeze(input_value)
     request = _request(contract, record, frozen_input, files)
-    contained = isinstance(executor, ContainedExecutor)
+    contained = type(executor) is ContainedExecutor
     try:
         start = clock()
         try:

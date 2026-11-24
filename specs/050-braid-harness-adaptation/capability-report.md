@@ -75,7 +75,7 @@ CI on the PR head is the `pr`-profile evidence.
 | REQ-005 / SC-005 depth/width refinement | T007 `harness_search` (#1293) | Yes. Equal-budget arms on synthetic doubles. Depth or width above 1/1 needs a contract amendment. | No | No | Native concurrency (exact effect profile); any utility comparison needs native cohorts (SPEC-049/T014) |
 | REQ-006 / SC-006 curation under drift | T003; T008 `harness_curation` (#1275); T011 | Yes. The held-out temporal comparison is synthetic, with caller-declared families. | No | No | Held-out native families (SPEC-049/T014); retention duration decision (contract sections 10 and 12) |
 | REQ-007 / SC-007 governed automatic promotion | T009 `harness_auto_promotion` (#1312, [t009.json](evidence/t009.json)); T011 lifecycle canary and stops; SPEC-049/T008 `deferred` | Yes, disabled by default. The production policy abstains with `pending-endpoints` (rule 12). | No | No | Owner decision on pending endpoints; a separately adopted policy, ADR and operator decision for any activation |
-| REQ-008 / SC-008 opt-in product capability | T010 `harness_advisory`, partial (#1292); T011 `harness_lifecycle` (#1317, [t011.json](evidence/t011.json)); T002, T004-T006 and T009 as consumers | Partial. A read-only advisory module CLI and an offline lifecycle library. | No | No | T010 top-level alias (owner decision, change to pinned `tests/test_harness_cli.py`, SPEC-049 re-freeze); plugin/MCP exposure is excluded here (M4.8); `evidence/t010.json`; human workflow usability observation |
+| REQ-008 / SC-008 opt-in product capability | T010 `harness_advisory` (#1292, [t010.json](evidence/t010.json), closed under owner decision D3); T011 `harness_lifecycle` (#1317, [t011.json](evidence/t011.json)); T002, T004-T006 and T009 as consumers | Partial. A read-only advisory module CLI and an offline lifecycle library. | No | No | Plugin/MCP exposure is excluded here (M4.8); human workflow usability observation |
 
 ## Held-out per-axis regressions
 
@@ -108,11 +108,11 @@ Apache-2.0 ([`LICENSES/Harness2-Apache-2.0.txt`](../../LICENSES/Harness2-Apache-
 | `harness_hooks.py` (T005) | Original, AGPL-3.0-only. No upstream bytes, although T005's acceptance says "Adapt applicable hook/schema validation"; the same deviation as T003. |
 | `harness_components`, `_tools`, `_orchestration`, `_curation`, `_auto_promotion`, `_lifecycle`, `_advisory` | Original, AGPL-3.0-only. No third-party source is recorded. |
 
-Delta to resolve: the THIRD_PARTY.md section on Braid Harness names only the SPEC-048
-seams (`harness_manifest`, `harness_surface`, `harness_admission`). It defers the rest to
-"each module identifies its actual adaptation", so it does not list `harness_search.py`.
-This report records that gap. It does not edit the file. `NOTICE` describes the harness2
-adaptation generically, which is consistent with both.
+The THIRD_PARTY.md section on Braid Harness names the SPEC-048 seams (`harness_manifest`,
+`harness_surface`, `harness_admission`) and, since #1326, the SPEC-050 Apache-2.0 adapted
+file `harness_search.py`; it records the other harness modules as original
+AGPL-3.0-only code. `NOTICE` describes the harness2 adaptation generically, which is
+consistent with both.
 
 ## Review scope
 
@@ -125,13 +125,11 @@ needs separate authorization and its own record (SPEC-049/T010).
 
 - **Founder or owner decisions:**
   - tolerating pending endpoints (T009);
-  - the T010 top-level alias;
   - retention duration;
   - any activation policy, ADR and operator decision.
-- **T010 (partial):**
-  - top-level alias;
-  - `evidence/t010.json`;
-  - the plugin/MCP surface, which is M4.8 and excluded from this task.
+- **T010 (closed 2026-11-13 under owner decision D3, [t010.json](evidence/t010.json)):** no
+  top-level alias is delivered; plugin/MCP exposure, if wanted, belongs to M4.8 under its
+  own versioned contract.
 - **T004 (closed offline-only, 2026-11-23, [t004.json](evidence/t004.json)):** the E3
   subprocess adapter exists against deterministic doubles only (#1437); adoption of the
   section 13 E3 draft, a SPEC-065 re-qualification that pins the helpers and one contained
