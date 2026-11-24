@@ -161,6 +161,11 @@ fails, the spec closes with a recorded "not adopted" outcome. That is a valid re
 
 No collector, backend or dashboard; no new SPEC-047 metric; no backend compatibility claim.
 
+Future paths, noted only and not designed here (owner, 2026-11-24): content capture
+needs its own specification and consent and never includes `private-holdout` tasks
+(SPEC-082); `gen_ai.evaluation.*` events need their own specification and would
+carry a SPEC-083 verdict with its bounded claim text, never a bare score.
+
 ## Risks
 
 - The conventions change before v0.1 ships; the pin limits the blast radius.
