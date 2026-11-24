@@ -1,0 +1,87 @@
+{
+  "title": "SPEC-086 OTel GenAI harness telemetry T002 Codex review answer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "commit",
+    "reviewer",
+    "verdict",
+    "findings"
+  ],
+  "properties": {
+    "commit": {
+      "type": "string",
+      "description": "Full 40-hex commit reviewed"
+    },
+    "reviewer": {
+      "type": "string",
+      "description": "Codex model name as reported"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "no-actionable-findings",
+        "findings"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "severity",
+          "file",
+          "line",
+          "claim",
+          "evidence",
+          "confidence"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "S86-001 onward"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "description": "Repository-relative path"
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "1-based line, or null for a file-level finding"
+          },
+          "claim": {
+            "type": "string",
+            "description": "The defect, one sentence"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Concrete scenario (situation -> wrong result) and minimal fix"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
