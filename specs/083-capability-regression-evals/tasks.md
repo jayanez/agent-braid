@@ -15,17 +15,23 @@ No task here runs trials, launches a host, issues a grant or moves a promotion l
   bootstrap and lineage clustering as sensitivity checks; infrastructure limits as in
   SPEC-082; private split refreshed after 5 gate uses; per-task regressions reported
   only in v0.1.
-- [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage
+- [x] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage
   each finding (confirmed, fixed, rejected with reason). Independent model review,
   not human review. Dependencies: this PR merged. Target files:
   `specs/083-capability-regression-evals/evidence/review/`. Verification:
-  procedure_001. Planned evidence: `evidence/t002-codex-review.json` and its raw
-  output; obtained: none.
+  procedure_001. Planned evidence: `evidence/review/codex-t002-20261123.json` and its
+  raw output; obtained: both (2026-11-24, raw sha256 `c0991467…`). Eight findings, all
+  confirmed and applied (S83-001 to S83-008); the owner chose the rules for S83-001
+  (informative tasks and a binomial floor), S83-002 (any differing sensitivity
+  verdict is `inconclusive`) and S83-005 (mandatory regression summary with owner
+  acknowledgement).
 
 ## Phase P1 — contract and fixtures
 
 - [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007): Write the protocol contract: registration and report record formats,
-  mandatory fields, estimand, uncertainty method, decision table and claim text.
+  mandatory fields, estimand, uncertainty method with the binomial floor and
+  informative-task rule, the sealed sensitivity methods, the use ledger, the
+  regression summary, decision table and claim text.
   Dependencies: T001 (OD-1 to OD-4), T002 confirmed findings applied. Target files:
   `specs/083-capability-regression-evals/contracts/regression-protocol.md`.
   Verification: procedure_002, procedure_003 and procedure_006 applied as a contract
@@ -33,8 +39,10 @@ No task here runs trials, launches a host, issues a grant or moves a promotion l
   obtained: none.
 - [ ] T004 (REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007 REQ-008 / SC-008 REQ-009 / SC-009 REQ-010 / SC-010): Author hand-computed fixtures: one per verdict region,
   pass@k and pass^k values, a trial-level-versus-clustered control, missing-outcome
-  bounds, infrastructure errors below and above threshold, and the minimum-sample
-  edge (19 tasks; 4 trials). Dependencies: T003. Target files:
+  bounds, infrastructure errors below and above threshold, a task with no valid
+  trial in one arm, the minimum-sample edge (19 informative tasks; 4 trials; baseline
+  all 0/5), an all-pass tie, a differing sensitivity verdict, a regressed task with
+  and without acknowledgement, and a sixth ledger use. Dependencies: T003. Target files:
   `specs/083-capability-regression-evals/fixtures/`. Verification: procedure_005 to
   procedure_010 (expected values only).
   Planned evidence: `evidence/t004-fixtures.json` with fixture hashes; obtained: none.
@@ -64,13 +72,15 @@ No task here runs trials, launches a host, issues a grant or moves a promotion l
   changes. Dependencies: T001, founder decision record. Target files:
   `specs/049-harness-evaluation-learning/evaluation-protocol.md`. Verification:
   procedure_002. Planned evidence: `evidence/t008-crossref.json` with before and
-  after hashes of the frozen sections; obtained: none.
+  after hashes of the frozen sections (unchanged) and the expected whole-file hash
+  after the added line; obtained: none.
 
 ## Phase P3 — first registration and verdict
 
 - [ ] T009 (REQ-003 / SC-003 REQ-004 / SC-004 REQ-010 / SC-010): Owner seals the first
   regression record on the SPEC-082 corpus: δ, α, T, k, cluster level, thresholds,
-  power assumption and pinned profile. No trial runs. Dependencies: T006, SPEC-082
+  power assumption, sensitivity seed and pinned profile; the use ledger shows fewer
+  than 5 uses. No trial runs. Dependencies: T006, SPEC-082
   corpus frozen, OD-1 to OD-5 decided. Target files:
   `specs/083-capability-regression-evals/evidence/registration/`. Verification:
   procedure_003 and procedure_010. Planned evidence:

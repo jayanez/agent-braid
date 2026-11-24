@@ -163,7 +163,7 @@
           "planned_evidence": "Candidate-bound procedure record (evidence/t007.json; evidence/t008-crossref.json): command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/083-capability-regression-evals/validation-plan.md",
           "test_name": "procedure_002",
-          "then": "it refuses with \"no regression verdict\" and the SPEC-049 protocol hash is unchanged.",
+          "then": "it refuses with \"no regression verdict\"; the hashes of the protocol's frozen sections are unchanged, and the dated cross-reference line of T008 is the only change to the whole file, with its expected hash recorded.",
           "when": "a promotion check reads them"
         }
       ],
@@ -183,7 +183,7 @@
           "when": "validated"
         }
       ],
-      "text": "Sealed pre-registration. A regression record fixes, before the first trial starts: baseline and candidate hashes, the SPEC-082 corpus manifest hash and split, the task list hash, trials per task, margin \u03b4, \u03b1, estimand, uncertainty method, cluster level, missing-outcome rule, infrastructure-error threshold and rerun limit, the pinned profile, stopping rules and the reported k values. Its SHA-256 seals it. Any later change needs a new record."
+      "text": "Sealed pre-registration. A regression record fixes, before the first trial starts: baseline and candidate hashes, the SPEC-082 corpus manifest hash and split, the task list hash, trials per task, margin \u03b4, \u03b1, estimand, uncertainty method, cluster level, the sensitivity methods with their resample count and seed, missing-outcome rule, infrastructure-error threshold and rerun limit, the pinned profile, stopping rules and the reported k values. Its SHA-256 seals it. Any later change needs a new record."
     },
     {
       "id": "REQ-004",
@@ -195,11 +195,11 @@
           "planned_evidence": "Candidate-bound procedure record (evidence/t006.json): command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/083-capability-regression-evals/validation-plan.md",
           "test_name": "procedure_004",
-          "then": "the comparison is marked `invalid` with the cause.",
+          "then": "the comparison is marked `invalid` with the cause; a sixth registration against one split, or one after a recorded suspected leak, refuses to seal.",
           "when": "paired"
         }
       ],
-      "text": "Paired design on a held-out split. Baseline and candidate run the same tasks with the same trial count (at least 5 per task per arm), the same pinned model, effort, resources and host, and fresh run ids (SPEC-082). Gate tasks come from the SPEC-082 private held-out split."
+      "text": "Paired design on a held-out split. Baseline and candidate run the same tasks with the same trial count (at least 5 per task per arm), the same pinned model, effort, resources and host, and fresh run ids (SPEC-082). Gate tasks come from the SPEC-082 private held-out split. Executed trials that differ from the registration (one arm only, unequal counts between arms) make the comparison `invalid`; a registration that plans fewer trials or tasks than REQ-010 requires is `descriptive-only` instead (REQ-010). Each gate use is counted in an append-only use ledger bound to the split's manifest hash and kept with the private split (SPEC-082 REQ-005). A use is counted when a registration is sealed against the split, whether its run completes, stops or is invalid. Sealing refuses once the ledger shows 5 uses or a recorded suspected leak, until a refreshed split with a new manifest hash is recorded (OD-5). The owner records suspected leaks and refreshes."
     },
     {
       "id": "REQ-005",
@@ -211,11 +211,11 @@
           "planned_evidence": "Candidate-bound procedure record (evidence/t004-fixtures.json; evidence/t006.json): command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/083-capability-regression-evals/validation-plan.md",
           "test_name": "procedure_005",
-          "then": "the values match within 10\u207b\u2076 and the control is not `noninferior`.",
+          "then": "the values match within 10\u207b\u2076 and the control is not `noninferior`; a 20-task tie at 5/5 in both arms gets the floor bound (about \u22120.07), and a fixture where one sensitivity verdict is `inconclusive` while the primary is `noninferior` is `inconclusive`.",
           "when": "computed"
         }
       ],
-      "text": "Estimand and clustered uncertainty. \u0394 = mean over tasks of (candidate success rate \u2212 baseline success rate). The primary bound is the one-sided (1 \u2212 \u03b1) lower bound from the task-clustered standard error, t distribution on T \u2212 1 degrees of freedom. A clustered bootstrap (resample tasks, recorded seed) is a sensitivity check. Trial-level standard errors are never used."
+      "text": "Estimand and clustered uncertainty. \u0394 = mean over tasks of (candidate success rate \u2212 baseline success rate). The primary bound is the one-sided (1 \u2212 \u03b1) lower bound from the task-clustered standard error, t distribution on T \u2212 1 degrees of freedom. Trial-level standard errors are never used. The standard error used is the larger of the task-clustered error and a binomial floor, (1/T)\u00b7\u221a\u03a3\u1d62[p\u0303\u1d9c\u1d62(1 \u2212 p\u0303\u1d9c\u1d62)/n\u1d9c\u1d62 + p\u0303\u1d47\u1d62(1 \u2212 p\u0303\u1d47\u1d62)/n\u1d47\u1d62], with Jeffreys-smoothed rates p\u0303 = (c + \u00bd)/(n + 1), so that a sample with no observed spread is not read as certainty (owner, 2026-11-24). Two sensitivity checks, sealed in the registration: (1) a clustered bootstrap that resamples tasks with replacement, 10 000 resamples from a PCG64 generator with the sealed seed, percentile one-sided bound; (2) lineage clustering, which averages task differences within each SPEC-082 lineage and takes a t bound on L \u2212 1 degrees of freedom over the equally weighted lineage means. Each check gets its own verdict under REQ-006. A check whose verdict differs from the primary in any way, or that cannot be computed (fewer than 2 lineages), makes the verdict `inconclusive` (OD-3; owner, 2026-11-24)."
     },
     {
       "id": "REQ-006",
@@ -227,11 +227,11 @@
           "planned_evidence": "Candidate-bound procedure record (evidence/t006.json; evidence/t010-verdict.json): command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/083-capability-regression-evals/validation-plan.md",
           "test_name": "procedure_006",
-          "then": "each gets its verdict and only `noninferior` is marked promotion-eligible.",
+          "then": "each gets its verdict and only `noninferior` is marked promotion-eligible; a `noninferior` fixture with one regressed task carries that task in its summary, and a move to `candidate` without the owner's acknowledgement of the summary refuses.",
           "when": "decided"
         }
       ],
-      "text": "Decision rule. `noninferior` if the lower bound > \u2212\u03b4; `inferior` if the one-sided (1 \u2212 \u03b1) upper bound < \u2212\u03b4; otherwise `inconclusive`. `invalid` covers protocol breaks (REQ-004, REQ-008). A declared-effect, authority or containment violation is `blocked` whatever the statistic. Clause zero: `inconclusive` is a valid result, and it blocks promotion like `inferior`, `invalid` and `blocked`."
+      "text": "Decision rule. `noninferior` if the lower bound > \u2212\u03b4; `inferior` if the one-sided (1 \u2212 \u03b1) upper bound < \u2212\u03b4; otherwise `inconclusive`. `invalid` covers protocol breaks (REQ-004, REQ-008). A declared-effect, authority or containment violation is `blocked` whatever the statistic. Clause zero: `inconclusive` is a valid result, and it blocks promotion like `inferior`, `invalid` and `blocked`. Every regression verdict carries a per-task regression summary: the tasks with baseline pass^n = 1 and candidate pass@n = 0 (OD-6), as a count plus each task's id when public or its salted commitment when private (SPEC-082 REQ-005). A SPEC-085 move to `candidate` needs the owner's acknowledgement of that summary in the move record. The summary does not block on its own; OD-6 is unchanged (owner, 2026-11-24)."
     },
     {
       "id": "REQ-007",
@@ -259,11 +259,11 @@
           "planned_evidence": "Candidate-bound procedure record (evidence/t006.json; evidence/t010-verdict.json): command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/083-capability-regression-evals/validation-plan.md",
           "test_name": "procedure_008",
-          "then": "none counts as a failure, all appear in the infrastructure table, and the over-threshold case is `invalid`.",
+          "then": "none counts as a failure, all appear in the infrastructure table, and the over-threshold case is `invalid`; a task that loses all five trials in one arm makes the comparison `invalid` even at a 5 % arm rate.",
           "when": "analyzed"
         }
       ],
-      "text": "Infrastructure errors. Trials that SPEC-082 classifies as infrastructure errors count as neither success nor failure and are reported per arm. They may be rerun with a fresh run id up to the registered limit; a task's rate uses its valid trials. A per-arm rate or between-arm difference above the threshold is `invalid`."
+      "text": "Infrastructure errors. Trials that SPEC-082 classifies as infrastructure errors count as neither success nor failure and are reported per arm. They may be rerun with a fresh run id up to the registered limit; a task's rate uses its valid trials. Accounting follows SPEC-082 REQ-009: the unit is the registered trial, which is an infrastructure error only when every attempt is, and a rate is the number of infrastructure-error trials over registered trials per arm. A per-arm rate or between-arm difference above the threshold is `invalid`, and so is any task with no valid trial in either arm, whatever the rates."
     },
     {
       "id": "REQ-009",
@@ -295,7 +295,7 @@
           "when": "analyzed"
         }
       ],
-      "text": "Minimum sample and power note. A verdict needs T \u2265 20 tasks and 5 registered trials per task per arm. Each record states its power assumption (between-task spread of differences, \u03b4, \u03b1, T). Below the minimum it is descriptive."
+      "text": "Minimum sample and power note. A verdict needs T \u2265 20 informative tasks from the private held-out split and 5 registered trials per task per arm. A task is informative when the baseline succeeds in at least one trial; with the baseline at 0/n a candidate cannot show a regression on it (owner, 2026-11-24). Each record states its power assumption (between-task spread of differences, \u03b4, \u03b1, T). Below the minimum it is descriptive. The first SPEC-082 corpus is expected to give 4 to 10 private tasks (SPEC-082 REQ-013), so verdicts are deferred and reports are `descriptive-only` until that split reaches 20."
     },
     {
       "id": "REQ-011",
