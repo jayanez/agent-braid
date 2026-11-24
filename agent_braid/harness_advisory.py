@@ -23,8 +23,8 @@ from pathlib import Path
 import re
 
 from .harness_cli import CliRefusal, _evidence, _file_diff, _hash, _read, _registry_status
-from .harness_components import (CLASSES, HOST_SUPPORT, ROOTS, ProfileError, derive_admission,
-                                 parse_profile, verify_profile)
+from .harness_components import (CLASSES, GATED_HOST_SUPPORT, ROOTS, ProfileError,
+                                 derive_admission, parse_profile, verify_profile)
 from .harness_promotion import PromotionError
 
 CONTRACT = "braid-harness-advisory/v0.1"
@@ -120,7 +120,7 @@ def _capabilities() -> dict:
         classes.append({"class": name, "root": ROOTS[name], "admission": state, "blocker": blocker})
     return {"supportedContractVersions": list(VERSIONS), "commands": list(COMMANDS),
             "componentClasses": classes,
-            "hosts": {host: dict(row) for host, row in HOST_SUPPORT.items()},
+            "hosts": {host: dict(row) for host, row in GATED_HOST_SUPPORT.items()},
             "effects": "none", "pluginOrMcpSurface": "unchanged",
             "providerLimitations": list(_PROVIDER_LIMITATIONS)}
 

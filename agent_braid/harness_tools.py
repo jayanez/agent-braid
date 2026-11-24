@@ -60,7 +60,7 @@ import re
 import unicodedata
 
 from .harness_components import (
-    HOST_SUPPORT, PROTECTED_COMPONENTS, ProfileError, _ID, _hash, _keys, _parse,
+    GATED_HOST_SUPPORT, PROTECTED_COMPONENTS, ProfileError, _ID, _hash, _keys, _parse,
     _path, _provenance, _require, derive_admission)
 from .system_one import canonical, digest, freeze, thaw
 
@@ -216,7 +216,7 @@ def parse_contract(raw: bytes) -> ToolContract:
     _require(value["format"] == FORMAT, "unsupported-version")
     _require(value["componentClass"] == "C5", "unknown-class")
     _require(value["host"] == "claude", "host-refused")
-    _require(canonical(value["hostSupport"]) == canonical(HOST_SUPPORT), "host-build-drift")
+    _require(canonical(value["hostSupport"]) == canonical(GATED_HOST_SUPPORT), "host-build-drift")
     _body(value)
     _hash(value["inputSha256"])
     _require(canonical(value["policies"]) == canonical(POLICIES), "unsupported-profile")
@@ -243,7 +243,7 @@ def compile_contract(raw: bytes, *, expected_input_sha256: str) -> ToolContract:
     _body(value)
     contract = {**value, **{
         "format": FORMAT, "componentClass": "C5", "host": "claude",
-        "hostSupport": thaw(HOST_SUPPORT), "inputSha256": expected_input_sha256,
+        "hostSupport": thaw(GATED_HOST_SUPPORT), "inputSha256": expected_input_sha256,
         "policies": dict(POLICIES), "admission": _admission(value["effectClass"])}}
     return parse_contract(canonical(contract))
 

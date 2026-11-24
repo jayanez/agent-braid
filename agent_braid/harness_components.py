@@ -2,10 +2,10 @@
 """SPEC-050/T002 versioned component registry and compatibility compiler.
 
 Compiles one task-local component inventory into an immutable ``ComponentProfile``
-(``braid-harness-profile/v0.1``, frozen in specs/050-braid-harness-adaptation/
-contracts/interface.md). The module is pure: it reads no file, starts no process,
-opens no network connection and issues no grant. Every record keeps
-``executionAuthorization`` false.
+(``braid-harness-profile/v0.2``; ``v0.1``, frozen in specs/050-braid-harness-adaptation/
+contracts/interface.md, is read as legacy, see below). The module is pure: it reads no
+file, starts no process, opens no network connection and issues no grant. Every record
+keeps ``executionAuthorization`` false.
 
 The compiler, not the input, decides the admission state (contract section 2):
 hooks, plugins/tool loops and delegated roles (C6 to C8) start ``blocked``, so does
@@ -35,6 +35,27 @@ Model, effort and route may be selected only from a caller-supplied approved lis
 bound to a trusted full SHA-256. A matching hash proves byte identity of that list,
 never who approved it. Declared file hashes bind metadata only; the importer must
 check actual bytes (``harness_surface``).
+
+Host inventory and gate set (SPEC-080 REQ-006, OD-4 option a). ``HOSTS`` and
+``HOST_SUPPORT`` are the inventory: Claude, Codex and OpenCode. OpenCode has no
+observed build and is ``unqualified``, so it is offline only. ``GATED_HOSTS`` and
+``GATED_HOST_SUPPORT`` are the native qualification gate set, Claude and Codex, with
+the rows they had before OpenCode was listed. Every gate reads the gate set: hook
+matrices and hook records (``harness_hooks``), tool contracts (``harness_tools``), the
+advisory ``capabilities`` host rows (``harness_advisory``), the lifecycle hosts
+(``harness_lifecycle``) and the T008 host-profile gate (``harness_hosts``, its own
+``GATED_HOSTS``). Those records keep their formats and bytes, so records written
+before the change verify unchanged.
+
+Only the component profile carries the inventory. ``compile_inventory`` writes
+``braid-harness-profile/v0.2`` with one ``hostSupport`` row per inventory host.
+``parse_profile`` also reads ``braid-harness-profile/v0.1`` as legacy: such a record
+must carry exactly the gate-set rows, and it is returned with its own bytes and hash,
+never rewritten as ``v0.2``. Each format accepts only its own row set, so a ``v0.1``
+record with an OpenCode row, or a ``v0.2`` record without one, refuses. A ``v0.2``
+child may name a ``v0.1`` parent. The host refusal order is unchanged: a host outside
+the inventory is ``unknown-host``, any listed host other than Claude is
+``host-refused``.
 """
 from __future__ import annotations
 
@@ -49,12 +70,14 @@ from .harness_manifest import DEFAULT_LIMITS, NATIVE_BUILD
 from .harness_surface import _PROTECTED as PROTECTED_COMPONENTS, SurfaceError, normalize_rel
 from .system_one import InvalidDecision, canonical, digest, freeze, parse_json, thaw
 
-FORMAT = "braid-harness-profile/v0.1"
+FORMAT = "braid-harness-profile/v0.2"
+LEGACY_FORMAT = "braid-harness-profile/v0.1"
 INVENTORY_FORMAT = "braid-harness-inventory/v0.1"
 STATES = ("implemented", "qualified", "enabled", "blocked", "excluded")
 CLASSES = ("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8")
 EFFECTS = ("E0", "E1", "E2", "E3", "E4", "E5")
-HOSTS = ("claude", "codex")
+HOSTS = ("claude", "codex", "opencode")  # inventory; gates use GATED_HOSTS
+GATED_HOSTS = ("claude", "codex")  # native qualification gate set (OD-4)
 OPS = ("add", "inherit", "override", "delete")
 ROUTES = ("offline", "subscription")
 # Registry conventions (not observed host schemas): inert text under one root per class.
@@ -68,8 +91,13 @@ LIMITS = {key: DEFAULT_LIMITS[key] for key in (
     "maxContextEntries", "maxContextBytes")}
 SCHEMAS = {"tools": [], "events": [], "roles": []}
 # Host rows at the contract freeze: Claude observed, Codex not installed; neither qualified.
+# OpenCode (SPEC-080 T006): listed with no observed build, unqualified, offline only.
 HOST_SUPPORT = {"claude": {"observedBuild": NATIVE_BUILD, "qualification": "unqualified"},
-                "codex": {"observedBuild": None, "qualification": "unqualified"}}
+                "codex": {"observedBuild": None, "qualification": "unqualified"},
+                "opencode": {"observedBuild": None, "qualification": "unqualified"}}
+GATED_HOST_SUPPORT = {host: dict(HOST_SUPPORT[host]) for host in GATED_HOSTS}
+# The host rows each readable profile format must carry, exactly.
+_HOST_ROWS = {FORMAT: HOST_SUPPORT, LEGACY_FORMAT: GATED_HOST_SUPPORT}
 MAX_VERSION = 1_000_000
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _COMMIT = re.compile(r"[0-9a-f]{40}\Z")
@@ -246,7 +274,7 @@ def parse_profile(raw: bytes) -> ComponentProfile:
     """Parse strict bounded UTF-8 JSON and revalidate every compiler invariant."""
     value = _parse(raw)
     _keys(value, _PROFILE_KEYS)
-    _require(value["format"] == FORMAT, "unsupported-version")
+    _require(value["format"] in _HOST_ROWS, "unsupported-version")
     _require(value["executionAuthorization"] is False, "unsupported-profile")
     component_class, effect_class = value["componentClass"], value["effectClass"]
     _require(component_class in CLASSES, "unknown-class")
@@ -254,11 +282,12 @@ def parse_profile(raw: bytes) -> ComponentProfile:
     _require(value["host"] == "claude", "host-refused")
     _require(type(value["version"]) is int and 1 <= value["version"] <= MAX_VERSION,
              "invalid-version")
-    _keys(value["hostSupport"], set(HOSTS))
+    support = _HOST_ROWS[value["format"]]
+    _keys(value["hostSupport"], set(support))
     for host, row in value["hostSupport"].items():
         _keys(row, {"observedBuild", "qualification"})
         _require(row["qualification"] == "unqualified", "state-escalation")
-        _require(row == HOST_SUPPORT[host], "host-build-drift")
+        _require(row == support[host], "host-build-drift")
     rows = _rows(value["inventory"], ops=False)
     paths = [r["path"] for r in rows]
     deleted = value["deleted"]

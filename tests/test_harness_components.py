@@ -66,11 +66,13 @@ class ComponentProfileTests(unittest.TestCase):
     def test_compiles_immutable_non_enabled_profile(self):
         profile = _compile(make_inventory())
         data = profile.to_dict()
-        self.assertEqual(data["format"], "braid-harness-profile/v0.1")
+        self.assertEqual(data["format"], "braid-harness-profile/v0.2")  # SPEC-080 T006
         self.assertEqual(data["admission"], {"state": "implemented", "blocker": None})
         self.assertIs(data["executionAuthorization"], False)
         self.assertEqual(data["hostSupport"]["claude"]["qualification"], "unqualified")
         self.assertEqual(data["hostSupport"]["codex"]["observedBuild"], None)
+        self.assertEqual(data["hostSupport"]["opencode"],
+                         {"observedBuild": None, "qualification": "unqualified"})
         with self.assertRaises(FrozenInstanceError):
             profile.data = {}
         with self.assertRaises(TypeError):
@@ -216,7 +218,7 @@ class ComponentProfileTests(unittest.TestCase):
         self.refuses("invalid-version", make_inventory(version=0))
         self.refuses("invalid-version", make_inventory(version=True))
         profile = _compile(make_inventory()).to_dict()
-        profile["format"] = "braid-harness-profile/v0.2"
+        profile["format"] = "braid-harness-profile/v0.3"
         with self.assertRaises(hc.ProfileError) as caught:
             hc.parse_profile(canonical(profile))
         self.assertEqual(caught.exception.reason, "unsupported-version")

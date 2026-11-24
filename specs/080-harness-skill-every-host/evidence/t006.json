@@ -1,0 +1,379 @@
+{
+ "recordVersion": "spec080-task-evidence-v1",
+ "spec": "SPEC-080",
+ "task": "T006",
+ "requirement": "REQ-006 / SC-006 (as amended by the T002 review, finding S80-002)",
+ "decision": "OD-4 option a (evidence/t001-owner-review.md)",
+ "procedure": "procedure_006",
+ "baseCommit": "a631144b8f6ed6ea04365d0cdba7498e38e39d5a",
+ "candidateCommit": "ec7fd7bdb587b0b53d89d411ae65550fa1b901e5",
+ "candidateNote": "candidateCommit holds every code, test and fixture change; this record is added by the next commit on the same branch.",
+ "importerInventory": {
+  "method": "grep -rn for HOSTS, HOST_SUPPORT, SUPPORTED_HOSTS, harness_components and harness_hosts over agent_braid, scripts and tests at the base commit; each use read in place. No CodeGraph index exists in this worktree.",
+  "table": [
+   {
+    "module": "harness_components",
+    "symbol": "HOSTS",
+    "line": 79,
+    "classification": "inventory",
+    "reason": "Defines the inventory host list (claude, codex, opencode)."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "GATED_HOSTS",
+    "line": 80,
+    "classification": "gate set",
+    "reason": "New explicit native qualification gate set (claude, codex), OD-4 option a."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "HOST_SUPPORT",
+    "line": 95,
+    "classification": "inventory",
+    "reason": "Registry rows; opencode added with observedBuild null, qualification unqualified."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "GATED_HOST_SUPPORT",
+    "line": 98,
+    "classification": "gate set",
+    "reason": "Copies of the claude and codex rows exactly as before the change."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "_HOST_ROWS / parse_profile",
+    "line": 277,
+    "classification": "inventory (v0.2) and gate set (v0.1 legacy)",
+    "reason": "braid-harness-profile/v0.2 must carry the three inventory rows; v0.1 is read as legacy and must carry exactly the two gate rows; bytes and hash are kept, never upgraded."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "HOSTS (parse_profile, compile_inventory host check)",
+    "line": 281,
+    "classification": "inventory",
+    "reason": "Host vocabulary check (unknown-host); the gate is the next line, host == claude (host-refused), unchanged. An opencode profile is therefore host-refused, not unknown-host."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "HOST_SUPPORT['claude'] (compile_inventory)",
+    "line": 406,
+    "classification": "gate set",
+    "reason": "Claude build pin only; unchanged."
+   },
+   {
+    "module": "harness_components",
+    "symbol": "HOST_SUPPORT (compile_inventory output)",
+    "line": 436,
+    "classification": "inventory",
+    "reason": "New profiles are written as v0.2 with the three inventory rows (OD-4 option a)."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOSTS, GATED_HOST_SUPPORT (import)",
+    "line": 59,
+    "classification": "gate set",
+    "reason": "Was HOSTS, HOST_SUPPORT. Hook matrices and hook records stay on the gate set."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOSTS (matrix_record)",
+    "line": 93,
+    "classification": "gate set",
+    "reason": "OpenCode has no matrix; refuses unknown-host."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOST_SUPPORT (matrix_record observedBuild)",
+    "line": 96,
+    "classification": "gate set",
+    "reason": "Matrix bytes unchanged."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOSTS (event_status)",
+    "line": 109,
+    "classification": "gate set",
+    "reason": "OpenCode refuses unknown-host."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOSTS (verify_matrix)",
+    "line": 127,
+    "classification": "gate set",
+    "reason": "A forged OpenCode matrix refuses matrix-forged."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOSTS (_body)",
+    "line": 173,
+    "classification": "gate set",
+    "reason": "OpenCode hook spec or record refuses unknown-host."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOST_SUPPORT (parse_hookset)",
+    "line": 202,
+    "classification": "gate set",
+    "reason": "host-build-drift digest compares the two gate rows, so pre-change hook records verify."
+   },
+   {
+    "module": "harness_hooks",
+    "symbol": "GATED_HOST_SUPPORT (compile_hookset)",
+    "line": 229,
+    "classification": "gate set",
+    "reason": "New hook records keep the same hostSupport bytes."
+   },
+   {
+    "module": "harness_tools",
+    "symbol": "GATED_HOST_SUPPORT (import)",
+    "line": 63,
+    "classification": "gate set",
+    "reason": "Was HOST_SUPPORT. braid-harness-tool/v0.1 contracts keep the gate rows; no format bump was decided for them."
+   },
+   {
+    "module": "harness_tools",
+    "symbol": "GATED_HOST_SUPPORT (parse_contract)",
+    "line": 219,
+    "classification": "gate set",
+    "reason": "Pre-change tool contracts verify without host-build-drift."
+   },
+   {
+    "module": "harness_tools",
+    "symbol": "GATED_HOST_SUPPORT (compile_contract)",
+    "line": 246,
+    "classification": "gate set",
+    "reason": "New contracts keep the same hostSupport bytes."
+   },
+   {
+    "module": "harness_advisory",
+    "symbol": "GATED_HOST_SUPPORT (import)",
+    "line": 26,
+    "classification": "gate set",
+    "reason": "Was HOST_SUPPORT."
+   },
+   {
+    "module": "harness_advisory",
+    "symbol": "GATED_HOST_SUPPORT (_capabilities hosts)",
+    "line": 123,
+    "classification": "gate set",
+    "reason": "braid-harness-advisory/v0.1 capabilities output stays byte-identical (fixture); profile-inventory still echoes each profile's own hostSupport."
+   },
+   {
+    "module": "harness_lifecycle",
+    "symbol": "hc.GATED_HOSTS (lifecycle_hosts)",
+    "line": 89,
+    "classification": "gate set",
+    "reason": "New guard: lifecycle hosts are gate-set hosts with an observed build, so opencode is excluded even if it ever gets a build."
+   },
+   {
+    "module": "harness_lifecycle",
+    "symbol": "hc.HOST_SUPPORT (SUPPORTED_HOSTS)",
+    "line": 93,
+    "classification": "inventory",
+    "reason": "Rows are read from the inventory; the derivation filters to the gate set. Result unchanged: ('claude',)."
+   },
+   {
+    "module": "harness_lifecycle",
+    "symbol": "SUPPORTED_HOSTS (_check_state, install)",
+    "line": 311,
+    "classification": "gate set",
+    "reason": "State check (311) and install (555) refuse opencode with unsupported-host."
+   },
+   {
+    "module": "harness_hosts",
+    "symbol": "GATED_HOSTS",
+    "line": 36,
+    "classification": "gate set",
+    "reason": "Renamed from HOSTS; T008 host-profile gate. No importer read harness_hosts.HOSTS."
+   },
+   {
+    "module": "harness_hosts",
+    "symbol": "GATED_HOSTS (parse_profile_decisions, QuotaObservation, both_hosts_accepted, HostQualificationRun)",
+    "line": 132,
+    "classification": "gate set",
+    "reason": "Uses at 132, 189, 284, 318; values unchanged (claude, codex)."
+   },
+   {
+    "module": "harness_hosts_native",
+    "symbol": "harness_hosts (module; HostQualificationRun, QuotaObservation, parse_profile_decisions)",
+    "line": 35,
+    "classification": "gate set",
+    "reason": "Imports neither HOSTS nor HOST_SUPPORT; reaches the gate set only through harness_hosts. Not edited."
+   },
+   {
+    "module": "harness_orchestration",
+    "symbol": "none",
+    "line": 34,
+    "classification": "no host-list use",
+    "reason": "Imports EFFECTS, ComponentProfile and helpers only; reads no host list or host rows."
+   },
+   {
+    "module": "harness_skills",
+    "symbol": "none",
+    "line": 38,
+    "classification": "no host-list use",
+    "reason": "Imports verify_profile and constants; its host gate is the literal pdata['host'] == 'claude'; accepts v0.1 and v0.2 profiles through verify_profile."
+   }
+  ],
+  "guard": "tests/test_harness_host_inventory.py::InventoryTests.test_every_host_list_importer_is_classified walks every agent_braid module and fails if a module reads HOSTS, HOST_SUPPORT, GATED_HOSTS or GATED_HOST_SUPPORT outside this table."
+ },
+ "compatibilityMechanism": {
+  "profile": "FORMAT = braid-harness-profile/v0.2; LEGACY_FORMAT = v0.1. _HOST_ROWS maps each format to the exact row set it must carry (v0.2: three inventory rows; v0.1: two gate rows). A v0.1 record is returned with its own canonical bytes and hash.",
+  "otherRecords": "Hook sets, hook matrices, tool contracts and advisory capabilities keep their formats and read the gate set, so their bytes are unchanged; no format bump.",
+  "documentedIn": "agent_braid/harness_components.py module docstring; short notes in harness_hooks, harness_lifecycle and harness_hosts docstrings."
+ },
+ "preChangeFixtures": {
+  "directory": "tests/fixtures/harness_t006",
+  "builtFrom": "a631144b8f6ed6ea04365d0cdba7498e38e39d5a",
+  "builder": "scratch script run against the base code before any change; tests/fixtures/harness_t006/manifest.json lists each file's sha256",
+  "files": {
+   "advisory-capabilities.json": "234c5664e7cf24d92bf35795d200f9a09cf92cd00d2c1c64fdffb18777c9229d",
+   "hook-matrix-claude.json": "74f65d44c2887c5bc69f5822e27cb868220450b5678d42c77249ab8b71b6aca6",
+   "hook-matrix-codex.json": "7e3543e62f60c4c3ac6a57d7b692e02ff9e74adf1b8aaaf8ac7e2b93daa40bce",
+   "hookset-v0.1.json": "301787911c0b0fbeccdbe9f2d0e5fa011aa61854769bd8b3e7fb207b55bad965",
+   "profile-v0.1-child.json": "e3ed7c5eb3289d05d71e23b7d175d97094b700b1f8ee6f3d74957367391f4c67",
+   "profile-v0.1.json": "b1c925a8513a166f20010d68024109fbbf950e903852c9dc63695dddd9349375",
+   "tool-contract-v0.1.json": "8d36ea04e741aceb1d844a3a081a1219288462e56b1389b97f9859cb704247d7"
+  }
+ },
+ "filesChanged": {
+  "agent_braid/harness_advisory.py": "f5d57b5b9b106d03af6ae53ee6dd76ee58ed625428950390ff33ee576711ae86",
+  "agent_braid/harness_components.py": "96683ea05e1fe10b077e1cda514f44ca9503e03d37d9080bbda83133123d832c",
+  "agent_braid/harness_hooks.py": "9ac33965db84e6ad6bfe1c20f710582e347f6b5a75ed9bb360a84deeca290ed4",
+  "agent_braid/harness_hosts.py": "e06aa13a4f2775137af387d49d349dd93d1b4776c03f4ed9699413ab70d7b985",
+  "agent_braid/harness_lifecycle.py": "865aafdb9e1c58bb3abeb4adaa45e793539b1c931cba2e1342360009efa2a3a9",
+  "agent_braid/harness_tools.py": "4ada2d0adb6d5127ff1393a3e032223ea8ca00b7f934766b96c5f0e41aeeab17",
+  "tests/fixtures/harness_t006/advisory-capabilities.json": "234c5664e7cf24d92bf35795d200f9a09cf92cd00d2c1c64fdffb18777c9229d",
+  "tests/fixtures/harness_t006/hook-matrix-claude.json": "74f65d44c2887c5bc69f5822e27cb868220450b5678d42c77249ab8b71b6aca6",
+  "tests/fixtures/harness_t006/hook-matrix-codex.json": "7e3543e62f60c4c3ac6a57d7b692e02ff9e74adf1b8aaaf8ac7e2b93daa40bce",
+  "tests/fixtures/harness_t006/hookset-v0.1.json": "301787911c0b0fbeccdbe9f2d0e5fa011aa61854769bd8b3e7fb207b55bad965",
+  "tests/fixtures/harness_t006/manifest.json": "9f1f444c36261b7fcda91c12a57ede978072b230e821e3708cd5b9d8272c6264",
+  "tests/fixtures/harness_t006/profile-v0.1-child.json": "e3ed7c5eb3289d05d71e23b7d175d97094b700b1f8ee6f3d74957367391f4c67",
+  "tests/fixtures/harness_t006/profile-v0.1.json": "b1c925a8513a166f20010d68024109fbbf950e903852c9dc63695dddd9349375",
+  "tests/fixtures/harness_t006/tool-contract-v0.1.json": "8d36ea04e741aceb1d844a3a081a1219288462e56b1389b97f9859cb704247d7",
+  "tests/test_harness_advisory.py": "48220e7616722cc93264d9f0d42e8d863455997a4873e8de948a2c127b0cf701",
+  "tests/test_harness_components.py": "c2361b9651dbbc50deaca7b657a04b05d38f6895bbfbf7f754c2e18d0ec0e61f",
+  "tests/test_harness_host_inventory.py": "fe37cc1e67a9e1c61940734d518dae816f07abbe4d375ade4cbdeb829647e256"
+ },
+ "commands": [
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+   "at": "base",
+   "result": "Ran 1944 tests, OK (skipped=3)"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest -v tests.test_harness_host_inventory",
+   "at": "base code plus the new tests and fixtures (tests first)",
+   "result": "Ran 25 tests, FAILED (failures=12, errors=5); the 8 passing tests are invariants that already held (OpenCode hook refusals, lifecycle refusal, pre-change tool contract and advisory output, fixture manifest)"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+   "at": "candidate before amending the three format tests",
+   "result": "Ran 1969 tests, FAILED (failures=3): the v0.1 output assertion and the two tests that used v0.2 as the unsupported future format; amended to v0.2 output and v0.3 future"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+   "at": "candidate",
+   "result": "Ran 1969 tests, OK (skipped=3): 1944 pre-existing plus 25 new"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_host_inventory",
+   "at": "candidate",
+   "result": "Ran 25 tests, OK"
+  },
+  {
+   "command": ".venv-speckit/bin/python -m unittest tests.test_har_t008_unit tests.test_har_t014_cohort tests.test_lightning_runner tests.test_orchestration_governance tests.test_lightning_cli tests.test_spec075_boundaries",
+   "at": "candidate",
+   "result": "Ran 131 tests, OK"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m scripts.validate_spec_kit",
+   "at": "candidate",
+   "result": "failed only on the local object store check: 'public repository contains unreachable objects' (git fsck --unreachable over the shared clone, not a tracked file)"
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 <scratchpad>/sk_full.py <worktree> (validate_spec_kit.check with only the fsck unreachable-object probe stubbed)",
+   "at": "candidate",
+   "result": "all gates passed"
+  }
+ ],
+ "controls": [
+  {
+   "guard": "harness_hosts.GATED_HOSTS",
+   "test": "InventoryTests.test_t008_gate_mutation_control",
+   "mutation": "add opencode to GATED_HOSTS",
+   "observed": "QuotaObservation('opencode', ...) is accepted by the mutant; the real module refuses invalid-observation"
+  },
+  {
+   "guard": "harness_lifecycle.lifecycle_hosts gate filter",
+   "test": "LifecycleTests.test_lifecycle_gate_mutation_control",
+   "mutation": "iterate hc.HOST_SUPPORT instead of hc.GATED_HOSTS",
+   "observed": "an observed OpenCode build makes opencode lifecycle-supported in the mutant"
+  },
+  {
+   "guard": "harness_hooks gate-set import",
+   "test": "HookTests.test_hook_gate_mutation_control",
+   "mutation": "bind GATED_* to the inventory HOST_SUPPORT and HOSTS",
+   "observed": "pre-change hook record refuses host-build-drift; matrix_record('opencode') raises KeyError instead of unknown-host"
+  },
+  {
+   "guard": "harness_tools gate-set import",
+   "test": "ToolAndAdvisoryTests.test_tool_gate_mutation_control",
+   "mutation": "bind GATED_HOST_SUPPORT to HOST_SUPPORT",
+   "observed": "pre-change tool contract refuses host-build-drift"
+  },
+  {
+   "guard": "harness_advisory gate-set import",
+   "test": "ToolAndAdvisoryTests.test_advisory_gate_mutation_control",
+   "mutation": "bind GATED_HOST_SUPPORT to HOST_SUPPORT",
+   "observed": "capabilities output differs from the pre-change fixture"
+  },
+  {
+   "guard": "v0.1 legacy reading",
+   "test": "ProfileTests.test_legacy_reading_mutation_control",
+   "mutation": "drop LEGACY_FORMAT from _HOST_ROWS",
+   "observed": "pre-change profile refuses unsupported-version"
+  },
+  {
+   "guard": "v0.1 exact gate rows",
+   "test": "ProfileTests.test_legacy_rows_mutation_control",
+   "mutation": "map LEGACY_FORMAT to the three inventory rows",
+   "observed": "a v0.1 record carrying an OpenCode row is accepted (silent upgrade) by the mutant; the real module refuses invalid-profile"
+  },
+  {
+   "guard": "importer classification",
+   "test": "InventoryTests.test_every_host_list_importer_is_classified",
+   "mutation": "none (structural check)",
+   "observed": "fails on any unclassified reader of the host lists"
+  }
+ ],
+ "results": {
+  "opencodeInInventory": "HOSTS and HOST_SUPPORT list opencode with observedBuild null and qualification unqualified",
+  "lifecycleHosts": "SUPPORTED_HOSTS == ('claude',); install(host='opencode') refuses unsupported-host",
+  "hooks": "matrix_record, event_status, compile_hookset and parse_hookset refuse opencode with unknown-host",
+  "preChangeRecords": "both v0.1 profiles, the hook record, both hook matrices, the tool contract and the advisory capabilities output verify or compare byte for byte",
+  "claudeCodexGates": "every pre-existing harness test passes unchanged except the three format assertions named above"
+ },
+ "limits": [
+  "Offline only: no host, model or OpenCode binary was run; OpenCode stays unqualified and offline only.",
+  "The pre-change fixtures are synthetic records compiled by the base code, not records from real use; no real profile, hook or tool record was found to replay.",
+  "braid-harness-tool/v0.1 contracts and braid-harness-hooks/v0.1 records keep two host rows; listing OpenCode there would need its own format decision.",
+  "The advisory capabilities output still shows two host rows (frozen v0.1 contract); showing OpenCode there would need a contract bump.",
+  "The SPEC-050 contract text (contracts/interface.md) still names braid-harness-profile/v0.1; it is frozen and was not edited.",
+  "Unrelated: validate_spec_kit fails in this clone only on unreachable git objects; the stubbed run passes. CI is the pr-profile evidence.",
+  "Test counts come from one local run on macOS with Python 3.13; not a clean-room reproduction."
+ ],
+ "notEdited": [
+  "agent_braid/harness_hosts_native.py",
+  "agent_braid/harness_containment_macos.py",
+  "agent_braid/harness_lab.py",
+  "agent_braid/harness_host_claude.py",
+  "agent_braid/harness_transport_claude.py",
+  "agent_braid/harness_quota.py",
+  "scripts/har_t008_launch.sh",
+  "scripts/har_t009_launch.sh",
+  "scripts/har_t008_unit.py",
+  "specs/080-harness-skill-every-host/tasks.md"
+ ],
+ "executionAuthorization": false
+}
