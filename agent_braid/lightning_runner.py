@@ -420,11 +420,14 @@ def check_protocol_freeze(root: Path) -> str:
     return actual
 
 
-_PINNED_BUILD = (
+# Run with the pinned worktree first on sys.path, so its own driver and build script are imported.
+_PINNED_IMPORT = (
     'import json, sys\n'
     'from pathlib import Path\n'
     'sys.path.insert(0, sys.argv[1])\n'
     'from scripts import spec069_native_runs as driver\n'
+)
+_PINNED_BUILD = _PINNED_IMPORT + (
     "plugin, record = driver.build_candidate('final', Path(sys.argv[2]), Path(sys.argv[3]), False)\n"
     "print(json.dumps({'plugin': str(plugin), 'record': record}))\n"
 )
@@ -435,17 +438,26 @@ def build_pinned_plugin(commit: str, work: Path, cache: Path) -> Path:
     its own build script, so no byte of this checkout enters the measured plugin. The worktree is always removed."""
     root = checkout_root()
     source = work / 'pinned-source'
-    subprocess.run(['git', '-C', str(root), 'worktree', 'add', '--detach', str(source), commit],
-                   check=True, capture_output=True)
     try:
+        step = 'worktree at the freeze commit'
+        subprocess.run(['git', '-C', str(root), 'worktree', 'add', '--detach', str(source), commit],
+                       check=True, capture_output=True, text=True)
+        step = 'build'
         built = subprocess.run([sys.executable, '-I', '-c', _PINNED_BUILD, str(source), str(work / 'pinned'), str(cache)],
                                cwd=source, check=True, capture_output=True, text=True)
         value = json.loads(built.stdout.strip().splitlines()[-1])
         if value['record'].get('sourceCommit') != commit:
             raise RunnerError('The pinned plugin was not built from the freeze commit', 'protocol-hash-mismatch')
         return Path(value['plugin'])
+    except subprocess.CalledProcessError as exc:
+        detail = (exc.stderr or '').strip()[-2000:]
+        raise RunnerError(f'Pinned plugin {step} failed: {detail}', 'source-unavailable') from exc
     finally:
-        subprocess.run(['git', '-C', str(root), 'worktree', 'remove', '--force', str(source)], capture_output=True)
+        removed = subprocess.run(['git', '-C', str(root), 'worktree', 'remove', '--force', str(source)],
+                                 capture_output=True)
+        if removed.returncode != 0:  # never leave a registered worktree behind
+            shutil.rmtree(source, ignore_errors=True)
+            subprocess.run(['git', '-C', str(root), 'worktree', 'prune'], capture_output=True)
 
 
 def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, prompt_set: str = 'development',
@@ -488,6 +500,9 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     prompt_sha = v2_sha if prompt_set in HELDOUT else reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set])
     cases = {c['id']: c for c in json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']}
     work = plan(config, prompt_set, root, case_ids=case_ids, repetitions=repetitions)
+    if prompt_set in PINNED and work['withinBudget'] < work['planned']:  # a partial v4 run would use its one score
+        raise RunnerError(f"A {prompt_set} run needs a budget of {work['planned']} rollouts, not "
+                          f"{work['maxRollouts']}", 'config-range')
     label = 'pipeline-only' if fake_hosts else 'host-run'
 
     if resume:

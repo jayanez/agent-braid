@@ -6,6 +6,7 @@ Fake hosts only; no model is contacted, no plugin is built and no quota is spent
 """
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -42,7 +43,7 @@ class V4Root(unittest.TestCase):
         with (self.root / path).open('ab') as handle:
             handle.write(b'\n')
 
-    def run_fake(self, root=None, repetitions=3, max_rollouts=2, **kwargs):
+    def run_fake(self, root=None, repetitions=3, max_rollouts=300, **kwargs):
         cfg = config.build({'rollout': {'repetitions': repetitions, 'hosts': ['claude-code']},
                             'budget': {'maxRollouts': max_rollouts}})
         target = root or ROOT
@@ -124,6 +125,21 @@ class FreezeGateTests(V4Root):
                 self.run_fake(self.root)
             self.assertEqual(caught.exception.code, 'protocol-not-frozen')
 
+    def test_a_bound_file_edited_with_its_recorded_digest_is_refused(self):
+        """F2: the record is anchored by FREEZE_SHA256, so rewriting a digest to match an edit does not pass."""
+        path = v4.PROMPT_FILES['v4-test']
+        self.edit(path)
+        record = json.loads((self.root / v4.FREEZE).read_text())
+        record['files'][path] = freeze.sha256(self.root, path)
+        (self.root / v4.FREEZE).write_text(freeze.render(record))
+        with self.assertRaises(runner.RunnerError) as caught:
+            self.run_fake(self.root)
+        self.assertEqual(caught.exception.code, 'protocol-not-frozen')
+        self.assertIn('FREEZE-v4.json differs', str(caught.exception))
+
+    def test_the_anchor_is_the_merged_record(self):
+        self.assertEqual(freeze.sha256(ROOT, v4.FREEZE), v4.FREEZE_SHA256)
+
     def test_the_plan_refuses_a_broken_freeze_too(self):
         self.edit(v4.PROMPT_FILES['v4-test'])
         cfg = config.build({'rollout': {'repetitions': 3, 'hosts': ['claude-code']}, 'budget': {'maxRollouts': 300}})
@@ -143,14 +159,24 @@ class RunnerTests(V4Root):
                     self.run_fake(**kwargs)
                 self.assertEqual(caught.exception.code, code)
 
+    def test_a_budget_below_the_whole_split_is_refused_before_anything(self):
+        """F1: a v4 run that would stop at unit-cap is refused, so it cannot use the candidate's one score."""
+        for budget in (1, 120, 299):
+            with self.subTest(budget):
+                with self.assertRaises(runner.RunnerError) as caught:
+                    self.run_fake(max_rollouts=budget)
+                self.assertEqual(caught.exception.code, 'config-range')
+                self.assertFalse(self.home.exists())
+
     def test_the_split_is_scored_once_and_may_resume(self):
         status = self.run_fake()
-        self.assertEqual(status['hosts']['claude-code']['rollouts'], 2)
+        self.assertEqual(status['hosts']['claude-code']['rollouts'], 300)
+        self.assertIsNone(status['stop'])
         self.assertEqual(status['label'], 'pipeline-only')
         with self.assertRaises(runner.RunnerError) as caught:
             self.run_fake()
         self.assertEqual(caught.exception.code, 'test-already-scored')
-        self.assertEqual(self.run_fake(max_rollouts=3, run_id=status['runId'], resume=True)['runId'], status['runId'])
+        self.assertEqual(self.run_fake(run_id=status['runId'], resume=True)['runId'], status['runId'])
 
     def test_a_real_run_builds_the_plugin_from_the_pinned_commit(self):
         """OD-D: the measured plugin is the freeze commit, not whatever the checkout holds."""
@@ -163,9 +189,13 @@ class RunnerTests(V4Root):
             seen.append(commit)
             raise Stop
 
-        cfg = config.build({'rollout': {'repetitions': 3, 'hosts': ['claude-code']}, 'budget': {'maxRollouts': 1}})
         with patch.object(runner, 'build_pinned_plugin', pinned), patch.object(runner, 'parent_gate', lambda env: None), \
                 patch('scripts.spec069_native_runs.build_candidate', side_effect=AssertionError('checkout build')):
+            small = config.build({'rollout': {'repetitions': 3, 'hosts': ['claude-code']}, 'budget': {'maxRollouts': 1}})
+            with self.assertRaises(runner.RunnerError) as caught:  # F1: refused before any build
+                runner.run(self.home, small, prompt_set='v4-test', environ=base.CLEAN_ENV)
+            self.assertEqual((caught.exception.code, seen), ('config-range', []))
+            cfg = config.build({'rollout': {'repetitions': 3, 'hosts': ['claude-code']}, 'budget': {'maxRollouts': 300}})
             with self.assertRaises(Stop):
                 runner.run(self.home, cfg, prompt_set='v4-test', environ=base.CLEAN_ENV)
         self.assertEqual(seen, [v4.FREEZE_COMMIT])
@@ -194,13 +224,56 @@ class RunnerTests(V4Root):
         def failing(argv, **kwargs):
             calls.append(argv)
             if argv[0] == sys.executable:
-                raise subprocess.CalledProcessError(1, argv)
+                raise subprocess.CalledProcessError(1, argv, stderr='pip: no matching distribution\n')
             return subprocess.CompletedProcess(argv, 0, '', '')
 
         calls.clear()
-        with patch.object(runner.subprocess, 'run', failing), self.assertRaises(subprocess.CalledProcessError):
+        with patch.object(runner.subprocess, 'run', failing), self.assertRaises(runner.RunnerError) as caught:
             runner.build_pinned_plugin(v4.FREEZE_COMMIT, work, cache)
+        self.assertEqual(caught.exception.code, 'source-unavailable')
+        self.assertIn('build failed: pip: no matching distribution', str(caught.exception))
         self.assertEqual(calls[-1][-4:], ['worktree', 'remove', '--force', source])
+
+    def test_a_failed_worktree_add_or_remove_still_cleans_up(self):
+        """F3: `worktree add` is inside the try; a failed remove falls back to deleting the folder and pruning."""
+        import subprocess
+        calls = []
+
+        def broken(argv, **kwargs):
+            calls.append(argv)
+            if 'add' in argv:
+                raise subprocess.CalledProcessError(128, argv, stderr='fatal: invalid reference\n')
+            return subprocess.CompletedProcess(argv, 1 if 'remove' in argv else 0, '', '')
+
+        with patch.object(runner.subprocess, 'run', broken), self.assertRaises(runner.RunnerError) as caught:
+            runner.build_pinned_plugin(v4.FREEZE_COMMIT, self.root / 'work', self.root / 'cache')
+        self.assertEqual(caught.exception.code, 'source-unavailable')
+        self.assertIn('worktree at the freeze commit failed: fatal: invalid reference', str(caught.exception))
+        self.assertEqual([c[-2:] for c in calls[1:]], [['--force', str(self.root / 'work' / 'pinned-source')],
+                                                        ['worktree', 'prune']])
+
+    @unittest.skipUnless(subprocess.run(['git', '-C', str(ROOT), 'cat-file', '-e', f'{v4.FREEZE_COMMIT}^{{commit}}'],
+                                        capture_output=True).returncode == 0, 'the freeze commit is not in this clone')
+    def test_the_pinned_driver_imports_from_a_real_worktree(self):
+        """F4, not mocked: the pinned worktree's own driver loads and exposes build_candidate (no build, no host)."""
+        source = self.root / 'pinned-source'
+        subprocess.run(['git', '-C', str(ROOT), 'worktree', 'add', '--detach', str(source), v4.FREEZE_COMMIT],
+                       check=True, capture_output=True)
+        self.addCleanup(subprocess.run, ['git', '-C', str(ROOT), 'worktree', 'prune'], capture_output=True)
+        self.addCleanup(subprocess.run, ['git', '-C', str(ROOT), 'worktree', 'remove', '--force', str(source)],
+                        capture_output=True)
+        probe = runner._PINNED_IMPORT + (
+            'import inspect\n'
+            "print(json.dumps({'file': str(Path(driver.__file__).resolve()), 'root': str(driver.ROOT.resolve()),"
+            " 'params': list(inspect.signature(driver.build_candidate).parameters), 'arms': list(driver.ARMS)}))\n")
+        done = subprocess.run([sys.executable, '-I', '-c', probe, str(source)], cwd=source, check=True,
+                              capture_output=True, text=True)
+        value = json.loads(done.stdout.strip().splitlines()[-1])
+        self.assertEqual(value['file'], str((source / 'scripts/spec069_native_runs.py').resolve()))
+        self.assertEqual(value['root'], str(source.resolve()))
+        self.assertEqual(value['params'], ['arm', 'work', 'build_cache', 'allow_dirty'])
+        self.assertIn('final', value['arms'])
+        self.assertTrue(runner._PINNED_BUILD.startswith(runner._PINNED_IMPORT))
 
     def test_a_pinned_build_from_another_commit_is_refused(self):
         import subprocess

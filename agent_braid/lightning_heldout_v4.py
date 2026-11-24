@@ -20,6 +20,9 @@ PROMPT_FILES = {'v4-test': f'{SPEC}/prompts/v4-test.json'}
 PROTECTED = ('v4-test',)
 FREEZE = f'{SPEC}/prompts/FREEZE-v4.json'
 FREEZE_COMMIT = '331a384eeed0c52d39186ce64fc8344f4a23a759'  # the develop commit T007 froze (#1643)
+# sha256 of FREEZE-v4.json as merged in #1643: the record is anchored, so a bound file cannot be edited together
+# with its recorded digest.
+FREEZE_SHA256 = '11193a6a97bce33eb0a66f64534983eb6b80e42d08c688fa4b256a3c528f36bd'
 SKILL = 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
 TEST_MARKER = '.V4T-'  # rollout ids of the v4 test split
 
@@ -35,6 +38,8 @@ def load_freeze(root: Path) -> dict:
     path = root / FREEZE
     if not path.is_file():
         raise FreezeError('The v4 split is not frozen; v4 runs are refused', 'protocol-not-frozen')
+    if sha256(path) != FREEZE_SHA256:
+        raise FreezeError('FREEZE-v4.json differs from the record merged at the v4 freeze', 'protocol-not-frozen')
     record = json.loads(path.read_text())
     if (record.get('schema') != definition.SCHEMA or set(record.get('files') or {}) != set(definition.BOUND)
             or set(record.get('closedRecords') or {}) != set(definition.RECORDS)):
