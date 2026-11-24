@@ -54,7 +54,7 @@ Exclusions (MUST NOTs):
 trial starts: baseline and candidate hashes, the SPEC-082 corpus manifest hash and
 split, the task list hash, trials per task, margin δ, α, estimand, uncertainty
 method, cluster level, the sensitivity methods with their resample count and seed,
-missing-outcome rule, infrastructure-error threshold and rerun limit, the pinned
+the confirmation-trial rule (REQ-006), missing-outcome rule, infrastructure-error threshold and rerun limit, the pinned
 profile, stopping rules and the reported k values. Its
 SHA-256 seals it. Any later change needs a new record.
 
@@ -109,17 +109,27 @@ one-sided (1 − α) upper bound < −δ; otherwise `inconclusive`. `invalid` co
 protocol breaks (REQ-004, REQ-008). A declared-effect, authority or containment
 violation is `blocked` whatever the statistic. Clause zero: `inconclusive` is a
 valid result, and it blocks promotion like `inferior`, `invalid` and `blocked`. Every
-regression verdict carries a per-task regression summary: the tasks with baseline
-pass^n = 1 and candidate pass@n = 0 (OD-6), as a count plus each task's id when
-public or its salted commitment when private (SPEC-082 REQ-005). A SPEC-085 move to
-`candidate` needs the owner's acknowledgement of that summary in the move record. The
-summary does not block on its own; OD-6 is unchanged (owner, 2026-11-24).
+regression verdict carries a per-task regression summary with two grades: hard
+regressions (baseline pass^n = 1 and candidate pass@n = 0, OD-6) and soft regressions
+(candidate success rate at least 0.4 below the baseline's on that task). Each task
+appears by id when public or by salted commitment when private (SPEC-082 REQ-005).
+With 5 trials soft regressions also appear by chance (in 65 to 98 % of 20-task
+comparisons with no real change), so the registration pre-registers confirmation
+trials: every flagged task, up to 5 in order of largest drop, gets 10 more trials per
+arm with fresh run ids, inside the same registration and ledger use. A flag stands
+when the drop on all 15 trials is still at least 0.4. Confirmation results are
+reported apart and never change the verdict; above 5 flagged tasks the summary says
+so. A SPEC-085 move to `candidate` needs the owner's acknowledgement, which cites the
+verdict hash and the summary hash. The summary does not block on its own; OD-6 is
+unchanged (owner, 2026-11-24).
 
 - **SC-006:** Given one fixture per region (noninferior, inferior, inconclusive,
   invalid, blocked), when decided, then each gets its verdict and only
   `noninferior` is marked promotion-eligible; a `noninferior` fixture with one
-  regressed task carries that task in its summary, and a move to `candidate`
-  without the owner's acknowledgement of the summary refuses.
+  regressed task carries that task in its summary, a soft flag that does not hold on
+  its 15 confirmation trials is reported as not confirmed, the verdict is the same
+  with and without confirmation trials, and a move to `candidate` without an
+  acknowledgement citing the current verdict and summary hashes refuses.
 
 **REQ-007 pass@k and pass^k.** Per task and arm, with n trials and c successes,
 report pass@k = 1 − C(n−c, k)/C(n, k) (capability) and pass^k = C(c, k)/C(n, k)

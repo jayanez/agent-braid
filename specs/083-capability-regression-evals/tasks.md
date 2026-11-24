@@ -41,8 +41,9 @@ No task here runs trials, launches a host, issues a grant or moves a promotion l
   pass@k and pass^k values, a trial-level-versus-clustered control, missing-outcome
   bounds, infrastructure errors below and above threshold, a task with no valid
   trial in one arm, the minimum-sample edge (19 informative tasks; 4 trials; baseline
-  all 0/5), an all-pass tie, a differing sensitivity verdict, a regressed task with
-  and without acknowledgement, and a sixth ledger use. Dependencies: T003. Target files:
+  all 0/5), an all-pass tie, a differing sensitivity verdict, hard and soft
+  regressions with confirmation trials that confirm and that clear the flag, an
+  acknowledgement with a stale hash, and a sixth ledger use. Dependencies: T003. Target files:
   `specs/083-capability-regression-evals/fixtures/`. Verification: procedure_005 to
   procedure_010 (expected values only).
   Planned evidence: `evidence/t004-fixtures.json` with fixture hashes; obtained: none.

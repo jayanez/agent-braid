@@ -65,7 +65,7 @@
    "verdict": "CONFIRMED",
    "adjustedSeverity": "high",
    "evidence": "OD-6 reports per-task regressions but nothing makes them visible before a move to candidate; one task at 5/5 -> 0/5 with 19 ties gives delta -0.05 and can pass.",
-   "action": "Owner choice 2026-11-24 ('Resumen obligatorio + tu acuse'): REQ-006/SC-006 add a mandatory per-task regression summary (ids for public tasks, salted commitments for private ones) and require the owner's acknowledgement in the SPEC-085 move record; OD-6 unchanged (it does not block on its own). SPEC-085 must carry the acknowledgement field when its T001 runs."
+   "action": "Owner choice 2026-11-24 ('Resumen obligatorio + tu acuse'): REQ-006/SC-006 add a mandatory per-task regression summary (ids for public tasks, salted commitments for private ones) and require the owner's acknowledgement in the SPEC-085 move record; OD-6 unchanged (it does not block on its own). SPEC-085 must carry the acknowledgement field when its T001 runs. Refined the same day: graded summary with pre-registered confirmation trials (10 more per arm on up to 5 flagged tasks, verdict unchanged) and an acknowledgement bound to the verdict and summary hashes; with 5 trials soft flags appear by chance in 65-98 % of 20-task null comparisons, and 15 trials cut chance persistence to 0.06-2 % per task while confirming a 0.9 to 0.4 drop about 82 % of the time (binomial calculation)."
   },
   {
    "id": "S83-006",
@@ -107,6 +107,12 @@
    "finding": "S83-005",
    "date": "2026-11-24",
    "answer": "Resumen obligatorio + tu acuse (Recomendado)"
+  },
+  {
+   "finding": "S83-005",
+   "date": "2026-11-24",
+   "answer": "Opción 2, 10 extra por brazo (Recomendado)",
+   "note": "Refines the earlier answer after an adversarial and counterfactual analysis: acknowledgement bound to verdict and summary hashes, graded summary (hard and soft), pre-registered confirmation trials (10 per arm, up to 5 tasks), read check and private titles shown only in the owner's terminal (SPEC-085)."
   }
  ],
  "summary": {
