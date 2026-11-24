@@ -14,6 +14,16 @@ Decision: refuse with redirect. A refusal is a signal the host must act on in-tu
 `unknown` was already ignored. Risk: a model that does not recover in-turn fails its first attempt;
 measured, not assumed.
 
+Disjoint means no dependency and no resource shared by two units with a write-like effect
+(`analysis.WRITE_LIKE`): exactly the declarations whose pre-change report has only `unknown` pairs.
+Sharing a `call` or an `emit`/`read` target is disjoint too. Limits recorded with the T001 review:
+- Disjoint `units` declarations with partial coverage are refused as well. That follows OD-A, but v4
+  holds no partial `units` case, so the cost of the second (`aim`) call for that host behaviour is
+  not measured.
+- The T001 change to `tests/test_spec069_units.py` and `scripts/spec069_generate_corpus.py` means their
+  sha256 no longer match the values recorded in SPEC-069 `evidence/procedure_004`, `005`, `006` and
+  `014`. Those closed records are not edited; they describe the pre-SPEC-079 files.
+
 ## R3 — Digest line
 
 Decision: rewrite. "aim needs sha256:<64 hex> digests" reads as a precondition the host cannot meet

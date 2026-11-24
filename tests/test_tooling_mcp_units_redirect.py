@@ -46,15 +46,30 @@ class UnitsRedirectTests(unittest.TestCase):
         return value
 
     def test_disjoint_units_are_refused(self):
-        for value in (DISJOINT,
-                      request(unit("a", ("read", "README.md"), ("write", "a.txt")),
-                              unit("b", ("read", "README.md"), ("write", "b.txt")),
-                              unit("c", ("emit", "events/c"))),):
-            envelope = self.call("units", value)
-            self.assertEqual(envelope["status"], "refused", envelope["summary"])
-            self.assertTrue(envelope["summary"].endswith(f"[{CODE}]"), envelope["summary"])
-            self.assertNotIn("report", envelope["result"])
-            self.assertEqual(envelope["evidenceRefs"], [])
+        """SC-001: every declaration whose pre-change report has only `unknown` pairs is refused.
+
+        Sharing a resource conflicts only through a write-like effect (`analysis.WRITE_LIKE`), so units
+        that share a `call` or an `emit`/`read` target are disjoint too.
+        """
+        cases = {
+            "different writes": DISJOINT,
+            "shared read": request(unit("a", ("read", "README.md"), ("write", "a.txt")),
+                                   unit("b", ("read", "README.md"), ("write", "b.txt")),
+                                   unit("c", ("emit", "events/c"))),
+            "call/call": request(unit("a", ("call", "api/x")), unit("b", ("call", "api/x"))),
+            "emit/read": request(unit("a", ("emit", "events/x")), unit("b", ("read", "events/x"))),
+        }
+        for label, value in cases.items():
+            with self.subTest(label):
+                with patch.object(ToolingService, "_analyze_work", lambda s, a: _pre_change_units(s, a)):
+                    before = self.call("units", value)
+                self.assertEqual({pair["classification"] for pair in before["result"]["report"]["interactions"]},
+                                 {"unknown"})
+                envelope = self.call("units", value)
+                self.assertEqual(envelope["status"], "refused", envelope["summary"])
+                self.assertTrue(envelope["summary"].endswith(f"[{CODE}]"), envelope["summary"])
+                self.assertNotIn("report", envelope["result"])
+                self.assertEqual(envelope["evidenceRefs"], [])
 
     def test_refusal_reason_reaches_the_observation(self):
         observation = type("Observation", (), {"reason": None})()
@@ -73,6 +88,8 @@ class UnitsRedirectTests(unittest.TestCase):
                              unit("c", ("delete", "a.txt"))),
             "single unit": request(unit("a", ("write", "a.txt"))),
             "alias overlap": request(unit("a", ("write", "README.md")), unit("b", ("write", "./README.md"))),
+            "call/transform": request(unit("a", ("call", "api/x")), unit("b", ("transform", "api/x"))),
+            "emit/deploy": request(unit("a", ("emit", "events/x")), unit("b", ("deploy", "events/x"))),
         }
         for label, value in cases.items():
             with self.subTest(label):
@@ -84,6 +101,9 @@ class UnitsRedirectTests(unittest.TestCase):
                     fake.return_value.hex = "0" * 32
                     before = self.call("units", value)
                 self.assertEqual(after["status"], "ok", after["summary"])
+                if len(value["units"]) > 1:
+                    self.assertNotEqual({pair["classification"] for pair in after["result"]["report"]["interactions"]},
+                                        {"unknown"})
                 self.assertEqual(tooling_mcp._json_bytes(after), tooling_mcp._json_bytes(before))
 
     def test_validation_refusal_first(self):
