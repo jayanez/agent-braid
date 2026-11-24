@@ -86,3 +86,16 @@ recorded. `executionAuthorization` stays false throughout.
   `docs/tooling/HARNESSING.md` only if feasible. Dependencies: T011 T013.
   Target files: `docs/tooling/HARNESSING.md`. Verification: procedure_014.
   Planned evidence: `evidence/t014-report.json`; obtained: none.
+
+## Phase P7 — carried from SPEC-050 T004
+
+- [ ] T015 (REQ-003 / SC-003 REQ-009 / SC-009 REQ-011 / SC-011): Qualify deterministic helpers natively: pin helper hashes, run one contained helper on the macOS shadow or in a Harbor container, and adopt SPEC-050 `contracts/interface.md` §13.
+  Carried from SPEC-050 T004, closed offline-only on 2026-11-23
+  (`../050-braid-harness-adaptation/evidence/t004.json`). Refs: REQ-003 / SC-003 (pinned
+  helper `(path, sha256)` pairs, nothing floating), REQ-009 / SC-009 (a helper run on the
+  macOS host under ADR 0035 containment), REQ-011 / SC-011 (`executionAuthorization` false,
+  owner go before the run). Dependencies: the SPEC-084 feasibility gates (T003 to T007,
+  feasible), SPEC-050 T004, and a SPEC-065 re-qualification that adds the pinned helpers to
+  the exec allow-list. Target files: none planned (helper pins, run record and §13
+  adoption record). Verification: procedure_015.
+  Planned evidence: `evidence/t015.json`; obtained: none.
