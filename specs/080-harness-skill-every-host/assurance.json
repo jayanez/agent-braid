@@ -10,7 +10,7 @@
     23,
     24
   ],
-  "assumptions": "The plugin launch keeps exposing the harness CLI read commands as merged (SPEC-049 T009). The setup skill keeps defining how the installed launch path is resolved. Host models have shell access to run the launch. The OpenCode plural configuration keys come from vendor documentation read once on 2026-11-22 and are unverified until T007.",
+  "assumptions": "The plugin launch keeps exposing the harness CLI read commands as merged (SPEC-049 T009). The setup skill keeps defining how the installed launch path is resolved. Host models have shell access to run the launch. The OpenCode plural configuration keys came from vendor documentation read once on 2026-11-22; T007 (2026-11-24) observed that OpenCode 2.1.4 reads both the singular and the plural shapes.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -255,7 +255,7 @@
           "when": "the profile installs, diagnoses and removes in a temporary home"
         }
       ],
-      "text": "OpenCode install profile check. The OpenCode profile in `agent_braid/tooling_install.py` is verified against the current OpenCode configuration schema, which uses plural, list-shaped keys (`plugins`, `permissions`, `mcp.servers`, `skills`). The check records which shapes the observed OpenCode version reads. A drift is fixed in the profile with tests, or refused with a stable code; the profile never guesses an unobserved shape. Fixtures are not enough: the configuration the profile writes counts as accepted only when the observed OpenCode version, run in the same temporary home, loads it and lists the Agent Braid server (for example with `opencode mcp list`). When acceptance cannot be observed, the result is the stable code `opencode-acceptance-unobserved`."
+      "text": "OpenCode install profile check. The OpenCode profile in `agent_braid/tooling_install.py` is verified against the OpenCode configuration shapes the observed version reads. Vendor documentation names plural, list-shaped keys (`plugins`, `permissions`, `mcp.servers`, `skills`); OpenCode 2.1.4 reads both the singular and the plural shapes (T007, 2026-11-24). The check records which shapes the observed OpenCode version reads. A drift is fixed in the profile with tests, or refused with a stable code; the profile never guesses an unobserved shape. Fixtures are not enough: the configuration the profile writes counts as accepted only when the observed OpenCode version, run in the same temporary home, loads it and lists the Agent Braid server (for example with `opencode mcp list`). When acceptance cannot be observed, the result is the stable code `opencode-acceptance-unobserved`."
     },
     {
       "id": "REQ-008",
