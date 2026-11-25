@@ -40,15 +40,15 @@
     ".specify/scripts/python/setup_tasks.py": "9133333ba0971723d165d5575493404b43ec8d227e96ddbd3a9f63ad2cf174fe",
     ".specify/templates/checklist-template.md": "70bbc48e884fab372ffb09e83e78ff983e28b69caebf8cd9964a02b6836683ac",
     ".specify/templates/constitution-template.md": "6cdd477d2aec384fbc78f587f759969d744a912500aace81611b49945972db15",
-    ".specify/templates/plan-template.md": "f1b8abbcaba2673d07c932b2bfdb4b6a3aa7b531c2c85c7ece88a1b1d1e8652b",
-    ".specify/templates/spec-template.md": "0ec723a27e48c14a744dd99036f6e80f11dc81e4de3c14acb43176c3d6bcb99d",
-    ".specify/templates/tasks-template.md": "246e1420ca0f06145f9c78b44e8265ac676106c816fcc9629167a68c44b0d517"
+    ".specify/templates/plan-template.md": "a66c6167d32284580a66f336098bf5bc5f03dc7cc5dc1fe97dcfcb9b6acd61e8",
+    ".specify/templates/spec-template.md": "f88dc81a6288f49ae0c836d01ae876366d9b7f75c14e8c0b8a65460c0b48e8bc",
+    ".specify/templates/tasks-template.md": "c6141ba271b5bf14e728e5f9fac15d38126e968613d54568b1b4e21b22c2ddba"
   },
   "sources": {
     ".specify/templates/overrides/constitution-template.md": "6cdd477d2aec384fbc78f587f759969d744a912500aace81611b49945972db15",
     ".specify/templates/overrides/guardrails.md": "3ad68cf50fb4fdf25783caeaba15dff54a0104495ea03157de5ef9a906bbea17",
-    ".specify/templates/overrides/plan-template.md": "f1b8abbcaba2673d07c932b2bfdb4b6a3aa7b531c2c85c7ece88a1b1d1e8652b",
-    ".specify/templates/overrides/spec-template.md": "0ec723a27e48c14a744dd99036f6e80f11dc81e4de3c14acb43176c3d6bcb99d",
+    ".specify/templates/overrides/plan-template.md": "a66c6167d32284580a66f336098bf5bc5f03dc7cc5dc1fe97dcfcb9b6acd61e8",
+    ".specify/templates/overrides/spec-template.md": "f88dc81a6288f49ae0c836d01ae876366d9b7f75c14e8c0b8a65460c0b48e8bc",
     ".specify/templates/overrides/speckit.analyze.md": "ef862da8881f3f55be84293d37ac2bdefd4e4ca2448221672d6b749aa82c8ab0",
     ".specify/templates/overrides/speckit.checklist.md": "ef6c70cd6141d769e40140ac460f24ed450f1c1d99f4b8cc9f567f0cb47ce723",
     ".specify/templates/overrides/speckit.clarify.md": "9efb32de2428c25dd3192c6173f0695d427891afca14d9383c6a3b006931131e",
@@ -59,7 +59,7 @@
     ".specify/templates/overrides/speckit.specify.md": "3fa1d0dd28fd9ac516723520278deb0f7dabc5a8bde5fb5ebfcfe0555f8ddc3e",
     ".specify/templates/overrides/speckit.tasks.md": "34d952c4ac59fca06e1fe66e8582dde3836495283d845410bbbe1ad379926ac1",
     ".specify/templates/overrides/speckit.taskstoissues.md": "64df7e515d54181b36687411fba1eb9bbb3b13be31e7b13f10fa15e140d7462e",
-    ".specify/templates/overrides/tasks-template.md": "246e1420ca0f06145f9c78b44e8265ac676106c816fcc9629167a68c44b0d517",
+    ".specify/templates/overrides/tasks-template.md": "c6141ba271b5bf14e728e5f9fac15d38126e968613d54568b1b4e21b22c2ddba",
     "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
     "scripts/spec_kit.py": "8960768ed158dce74be18d21905bb099be6c3a7e0e4879c2d735a3702851891f"
   },

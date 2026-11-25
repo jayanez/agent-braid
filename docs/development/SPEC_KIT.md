@@ -111,6 +111,45 @@ labels, class/group coverage, calibration and total cost. These are review
 questions and planning obligations. Rendering and structural validation do
 not verify consent, label quality, statistical validity or a positive result.
 
+## Specification conventions
+
+Every new `spec.md` carries the sections below, in addition to the template's
+purpose, authorities, requirements and scientific boundaries. A refined existing
+spec keeps its current headings and adds each section it lacks. Where an
+equivalent section exists under another name, such as "Owner decisions (open)"
+for open questions, keep that heading and add one line that starts with the
+section name from the table, for example "Open questions: OD-1, OD-2".
+
+| Section | Content | Rule when nothing applies |
+|---|---|---|
+| Non-functional requirements | Operational and quality constraints, each with its REQ ID. | Record an open question for the owner; do not invent a constraint. |
+| Security and privacy | Each obligation about secrets, credentials or personal data as its own REQ with MUST or MUST NOT. | Write "No security or privacy obligation applies:" and the reason. |
+| Terminology | Terms the feature introduces and the allowed values of each enumeration. Shared terms follow the root `TERMINOLOGY.md`. | Write "No feature-specific terms." |
+| Risks and assumptions | One entry per line, starting with "Risk:" or "Assumption:", naming the REQ affected, or the task once tasks exist. | Record an open question for the owner. |
+| Exit criteria | The evidence required to consider verification complete. | Record an open question for the owner. |
+| Open questions | Each unresolved decision as a question with its owner. | Write "No unresolved questions." |
+
+Rules:
+
+- Every MUST or MUST NOT obligation has its own `REQ-###` ID, including
+  exclusions. A new REQ needs scenarios in `assurance.json` like any other
+  requirement. Refining an existing spec appends new REQ numbers and never
+  renumbers existing ones.
+- Plans and tasks name each dependency by ID in the text: "depends on T002",
+  "requires REQ-001". The task line format does not change:
+  `- [ ] T001: text`, optionally `- [ ] T001 (tags): text`, as parsed by
+  `scripts/sync_github_tracking.py`.
+- Content comes from the spec, plan and tasks. When a section has no source,
+  record an open question for the owner. Never write filler.
+
+The owner adopted these conventions on 2026-11-25. SpecTorque, an external
+heuristic checker, was used as an aid: it detects practices by text patterns, so
+its score shows that a section exists, not that its content is correct. The
+score does not decide a convention. A SpecTorque practice that conflicts with a
+convention in this document goes to owner review, and this section changes only
+by owner decision. Do not edit a spec to silence a finding that is an engine
+false positive.
+
 ## Assurance record
 
 SPEC-045's draft assurance retains the historical synthetic software snapshot.
