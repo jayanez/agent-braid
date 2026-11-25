@@ -12,7 +12,7 @@ structure and traceability. This record authorizes no code, no run and no execut
 | Other exclusions | Covered as far as their text reaches: REQ-003 and SC-003 (read commands only), REQ-004 (decline rules), REQ-006 (OpenCode unqualified, Claude and Codex rows unchanged), REQ-009 (consent). |
 | REQ-007 wording | Corrected to the observation of T007: OpenCode 2.1.4 reads both the singular and the plural shapes. The REQ text and the assumption in `assurance.json` were updated to match; scope and scenario are unchanged. |
 | Non-functional requirements | No performance or availability requirement applies. The plan's target of under 80 lines for `SKILL.md` stays plan guidance, not a requirement. |
-| Open questions | None remain. |
+| Open questions | None remained at the owner round. The review of 2026-11-26 added one: whether the Pi, ThinkRail and native-session exclusion needs a requirement. |
 
-Limits: the owner decides as owner, not as an independent reviewer. `assurance.json`
-text changed, so its authority snapshot must be regenerated before any freeze.
+Limits: the owner decides as owner, not as an independent reviewer. The `assurance.json` text changed; its authority snapshot hashes only the authority
+documents and is unaffected.

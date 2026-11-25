@@ -2,7 +2,7 @@
 
 **Milestone:** HAR.3 — Braid Harness adaptation and integration.
 
-**Status:** draft (assurance stage). The first PR (#1515) was documentation only.
+**Status:** draft. The first PR (#1515) was documentation only.
 Tasks T001 to T004 and T006 to T009 have obtained evidence (see `tasks.md`);
 nothing is packaged for release or published. It implements
 [ADR 0044](../../docs/adr/0044-harness-portability-tiers-skill-surface.md) (Accepted 2026-11-23),
@@ -16,17 +16,17 @@ through the plugin's `launch`, but no agent can discover it: the plugin ships se
 fixed skills and no harness MCP tool (ADR 0043 rejected). This specification adds one
 portable, read-only Agent Skill named `harness` to the plugin for all three hosts, adds
 OpenCode to the harness host registry as unqualified and offline only, and checks the
-OpenCode install profile against the current OpenCode configuration schema.
+OpenCode install profile against the configuration shapes the observed OpenCode
+version reads.
 
 This is engineering. Whether host models invoke the skill and stay inside its
 commands is a hypothesis (H1) that REQ-008 tests. A negative or inconclusive result is
 valid: the CLI-only fallback then stands.
 
-Actors: the owner, who reviews and accepts the release candidate
-(REQ-001, REQ-010); host models in Claude Code, Codex and OpenCode, which read the skill and run
+Actors: the owner, who reviews the spec (REQ-001) and accepts or rejects the release
+candidate (REQ-010); host models in Claude Code, Codex and OpenCode, which read the skill and run
 its commands (REQ-003, REQ-004, REQ-008); the automated driver that runs the held-out
-set (REQ-008); the independent Codex reviewer of T002 (REQ-010); and plugin users, who
-install the build with the skill (REQ-005). The skill gives none of them execution
+set (REQ-008); and the independent Codex reviewer of T002 (REQ-001, REQ-010). The skill gives none of them execution
 authority.
 
 In scope: the skill file and its command allowlist (REQ-002 to REQ-004), packaging
@@ -46,13 +46,14 @@ reaches:
   The consent change is covered by REQ-009.
 - No new MCP tool. ADR 0043 stays Rejected. This is a scope statement with no
   requirement (owner, 2026-11-26).
-- OpenCode MUST NOT become qualified or supported for native lifecycle, and the Claude
-  and Codex rows MUST NOT change (REQ-006, SC-006).
-- No Pi or ThinkRail packaging (SPEC-081) and no native harness sessions. Scope
-  statement.
+- No host qualification. OpenCode MUST NOT become qualified or supported for native
+  lifecycle, and the Claude and Codex rows MUST NOT change (REQ-006, SC-006).
+- No Pi or ThinkRail packaging (SPEC-081) and no native harness sessions. No
+  requirement covers this; see "Open questions".
 - No edit to global host instructions, user configuration or permissions. Scope
-  statement (owner, 2026-11-26); REQ-007 covers only keys the OpenCode profile does not
-  own, and the header of `tasks.md` repeats the limit.
+  statement (owner, 2026-11-26); REQ-007 and SC-007 cover only keys the OpenCode profile
+  does not own, and the header of `tasks.md` repeats the limit for user host
+  configuration.
 - The skill carries no execution authority: `executionAuthorization` stays `false`.
   The skill must state it (REQ-003), and SC-003 checks that the text names it.
 
@@ -130,10 +131,11 @@ still verify. `harness_hosts_native.py` and the SPEC-065 frozen files are not ed
 
 **REQ-007 OpenCode install profile check.** The OpenCode profile in
 `agent_braid/tooling_install.py` is verified against the OpenCode
-configuration shapes the observed version reads. Vendor documentation names plural,
-list-shaped keys (`plugins`, `permissions`, `mcp.servers`, `skills`); OpenCode 2.1.4
-reads both the singular and the plural shapes (T007, 2026-11-24). The check records which shapes the observed OpenCode version
-reads. A drift is fixed in the profile with tests, or refused with a stable code; the
+configuration shapes the observed version reads. Vendor documentation read on
+2026-11-22 named plural keys (`plugins`, `permissions`, `mcp.servers`, `skills`);
+OpenCode 2.1.4 reads both the singular and the plural shapes, but not `mcp.servers`
+as a list (T007, 2026-11-24). The check records which shapes the observed OpenCode
+version reads. A drift is fixed in the profile with tests, or refused with a stable code; the
 profile never guesses an unobserved shape. Fixtures are not enough: the configuration the
 profile writes counts as accepted only when the observed OpenCode version, run in the
 same temporary home, loads it and lists the Agent Braid server (for example with
@@ -217,11 +219,11 @@ reopen a decision through a dated amendment.
 - **OD-3 Validity target.** The SPEC-077 shape: 10 held-out prompts × 3 repetitions per
   host, at least 2 forbidden-effect prompts, at least 8/10 valid at the first attempt
   and 10/10 within one retry. Fixed before the set is frozen.
-- **OD-4 Host registry compatibility.** Keep the native qualification gates on an
+- **OD-4 Host registry compatibility.** Option (a): keep the native qualification gates on an
   explicit Claude and Codex set and add OpenCode only to the inventory host lists;
   `braid-harness-profile` moves to `v0.2` for three-row records and `v0.1` records are
   read as legacy.
-- **OD-5 Telemetry flag.** The skill adds `--telemetry local` only when the user asks
+- **OD-5 Telemetry flag.** Option (a): the skill adds `--telemetry local` only when the user asks
   for local telemetry in the current request; consent stays per command. Most skill use
   stays unobserved, and the counters cannot tell skill-initiated calls from manual ones.
 - **OD-6 Partial validity.** The skill ships only if all three hosts meet the target.
@@ -232,14 +234,16 @@ reopen a decision through a dated amendment.
 
 ## Open questions
 
-No unresolved questions.
+- Is the exclusion of Pi and ThinkRail packaging and of native harness sessions a
+  scope statement, or does it need a requirement? Owner: the owner.
 
 ## Non-functional requirements
 
 No performance or availability requirement applies: this spec defines a skill, a registry
 row and checks. The plan targets under 80 lines for `SKILL.md` as guidance; it is not a
 requirement and no scenario checks it (owner, 2026-11-26). The numeric limits are in
-the scoring of REQ-008 and in OD-3. Constraints on data and authority are under "Security and privacy".
+the scoring of REQ-008 and in OD-3. Constraints on data and authority are under
+"Security and privacy".
 
 ## Security and privacy
 
@@ -248,7 +252,7 @@ the scoring of REQ-008 and in OD-3. Constraints on data and authority are under 
   false: see REQ-003.
 - The skill never changes telemetry consent, and the counters store no record, path,
   hash or argument: see REQ-009.
-- The OpenCode profile never edits keys it does not own: see REQ-007.
+- The OpenCode profile never edits keys it does not own: see SC-007.
 
 ## Terminology
 
@@ -275,8 +279,8 @@ Values named in this spec:
 - Profile format (OD-4): `braid-harness-profile` `v0.2`; `v0.1` read as legacy.
 - Prompt kinds (REQ-008): relevant, forbidden-effect.
 - Attempt failure signature named in REQ-008: `no-evidence`.
-- Stable refusal codes named: `unsupported-host`, `unknown-host` (REQ-006),
-  `opencode-acceptance-unobserved` (REQ-007); `host-build-drift` is the code a
+- Stable codes named: the refusals `unsupported-host` and `unknown-host` (REQ-006);
+  the result code `opencode-acceptance-unobserved` (REQ-007); `host-build-drift` is the code a
   pre-change record must not raise (REQ-006).
 - Telemetry flag and counters: `--telemetry local`; `harness-*` operation counts
   (REQ-009).
@@ -309,8 +313,8 @@ harness is useful (SPEC-049 T014 was inconclusive; D7 keeps it experimental).
 - Assumption: the `setup` skill keeps defining how the installed launch path is
   resolved (REQ-003).
 - Assumption: host models have shell access to run the launch (REQ-003, REQ-008).
-- Assumption: the OpenCode observation of T007 holds for OpenCode 2.1.4 only; later
-  versions are not observed (REQ-007, T007).
+- Assumption: the T007 observation (OpenCode 2.1.4 on one macOS machine) represents
+  the OpenCode build users run; another build can read other shapes (REQ-007, T007).
 
 ## Exit criteria
 

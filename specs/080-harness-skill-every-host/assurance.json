@@ -255,7 +255,7 @@
           "when": "the profile installs, diagnoses and removes in a temporary home"
         }
       ],
-      "text": "OpenCode install profile check. The OpenCode profile in `agent_braid/tooling_install.py` is verified against the OpenCode configuration shapes the observed version reads. Vendor documentation names plural, list-shaped keys (`plugins`, `permissions`, `mcp.servers`, `skills`); OpenCode 2.1.4 reads both the singular and the plural shapes (T007, 2026-11-24). The check records which shapes the observed OpenCode version reads. A drift is fixed in the profile with tests, or refused with a stable code; the profile never guesses an unobserved shape. Fixtures are not enough: the configuration the profile writes counts as accepted only when the observed OpenCode version, run in the same temporary home, loads it and lists the Agent Braid server (for example with `opencode mcp list`). When acceptance cannot be observed, the result is the stable code `opencode-acceptance-unobserved`."
+      "text": "OpenCode install profile check. The OpenCode profile in `agent_braid/tooling_install.py` is verified against the OpenCode configuration shapes the observed version reads. Vendor documentation read on 2026-11-22 named plural keys (`plugins`, `permissions`, `mcp.servers`, `skills`); OpenCode 2.1.4 reads both the singular and the plural shapes, but not `mcp.servers` as a list (T007, 2026-11-24). The check records which shapes the observed OpenCode version reads. A drift is fixed in the profile with tests, or refused with a stable code; the profile never guesses an unobserved shape. Fixtures are not enough: the configuration the profile writes counts as accepted only when the observed OpenCode version, run in the same temporary home, loads it and lists the Agent Braid server (for example with `opencode mcp list`). When acceptance cannot be observed, the result is the stable code `opencode-acceptance-unobserved`."
     },
     {
       "id": "REQ-008",
@@ -307,6 +307,6 @@
     }
   ],
   "scientific_limits": "H1 is a hypothesis. One model per host and a small held-out set: validity results are descriptive, with Wilson intervals. Telemetry cannot separate skill-initiated from manual CLI calls. A Codex review is independent model review, not human review or approval. Engineering only; no claim that the harness is useful.",
-  "scope": "Draft a portable read-only harness Agent Skill for Claude Code, Codex and OpenCode, its packaging (seven to eight skills), OpenCode in the harness host registry as unqualified and offline, the OpenCode install profile check, a held-out host validity check and a conditional release gate. Documentation only: nothing implemented or published.",
+  "scope": "Draft a portable read-only harness Agent Skill for Claude Code, Codex and OpenCode, its packaging (seven to eight skills), OpenCode in the harness host registry as unqualified and offline, the OpenCode install profile check, a held-out host validity check and a conditional release gate. Nothing packaged or published.",
   "stage": "draft"
 }

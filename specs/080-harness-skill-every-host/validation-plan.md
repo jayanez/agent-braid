@@ -1,6 +1,6 @@
 # SPEC-080: Validation plan
 
-Status: draft; no procedure has obtained evidence. Each procedure records the exact
+Status: draft; some procedures have obtained evidence, recorded per task in `tasks.md`. Each procedure records the exact
 candidate commit, input hashes, command, exit, outcome and limits. Passing checks do
 not prove safety or utility and are not approval.
 
