@@ -217,8 +217,9 @@ later batches of new lineages reach 20; OD-1 and OD-7 are unchanged.
 
 ## Owner decisions
 
-The owner decided OD-1 to OD-7 on 2026-11-23 (T001). The options considered are in
-the [owner review record](evidence/t001-owner-review.md). On 2026-11-24 (T002,
+The owner decided OD-1 to OD-7 on 2026-11-23 (T001). The chosen answers are in the
+[owner review record](evidence/t001-owner-review.md); the options offered are in
+this file as merged in #1515 (`f0793dfd`). On 2026-11-24 (T002,
 S82-004) the owner added a separate private-holdout target in REQ-013; OD-1 and OD-7
 are unchanged. On 2026-11-25 the owner settled the points in the
 [refinement record](evidence/owner-decisions-20261125.md). A confirmed finding may
@@ -290,7 +291,7 @@ Values named in this spec:
 Trials, containers, Harbor (SPEC-084); telemetry (SPEC-086); native cohorts.
 Verdicts and promotion are excluded under "Purpose and scope".
 
-## Risks and assumptions
+## Risks
 
 - Risk: few merged PRs may have a clean fail-to-pass test, so H1 may fail (REQ-003).
 - Risk: 20 % of 20–50 tasks is below SPEC-083's 20-task minimum, so the first corpus
@@ -303,6 +304,8 @@ Verdicts and promotion are excluded under "Purpose and scope".
 - Risk: a model reviewer may share blind spots with the agents under test (REQ-008).
 - Risk: infra classification could be chosen after seeing data; the rule is frozen
   before data (REQ-009).
+## Assumptions
+
 - Assumption: local Git history holds merged PRs whose tests fail at the parent commit
   and pass at the merge commit (REQ-003).
 - Assumption: the SPEC-049 `harness_verification` partitions and D1–D3 rules stay as
