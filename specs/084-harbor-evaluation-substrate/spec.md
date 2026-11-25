@@ -32,8 +32,8 @@ Exclusions (each is a MUST NOT):
   run any job, trial or native session.
 - Harbor's default metric (a mean with missing rewards counted as 0) MUST NOT be used
   as a verdict or as an input to promotion.
-- No credential, token or secret MUST enter any image, layer, exported job config,
-  trajectory or committed evidence.
+- A credential, token or secret MUST NOT enter any image, layer, exported job
+  config, trajectory or committed evidence.
 - No paid route: cash spend MUST stay at EUR 0.
 - The substrate MUST NOT grant execution authority, promote a candidate or move a
   SPEC-085 pointer. `executionAuthorization` is false on every record.
