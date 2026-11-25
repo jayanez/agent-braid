@@ -2,8 +2,8 @@
 
 Stable task IDs. Completion requires obtained evidence. `quick` means
 `.venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick`.
-No task here runs an agent, model or container except T011, and T011 only under
-SPEC-084 or a separate owner admission (OD-6). `executionAuthorization` stays false.
+No task here runs an agent, model or container except T011 (exploit agent, only under
+SPEC-084, OD-6) and the read-only model reviews of T002 and T012 (OD-4). `executionAuthorization` stays false.
 
 ## Phase P0 — review
 
@@ -83,7 +83,7 @@ SPEC-084 or a separate owner admission (OD-6). `executionAuthorization` stays fa
   obtained: none.
 - [ ] T011 (REQ-007 / SC-007): Run the exploit agent per task in the venue chosen under OD-6; if no venue is
   available, record every task as `qa-incomplete`. Dependencies: T010, OD-6, SPEC-084
-  gates or an owner admission record. Target files: `evidence/t011-exploit-agent/`.
+  gates. Target files: `evidence/t011-exploit-agent/`.
   Verification: procedure_007. Planned evidence: `evidence/t011-exploit-agent.json`;
   obtained: none.
 - [ ] T012 (REQ-008 / SC-008): Run the OD-4 cross adversarial review per task: blind Claude and Codex reviews with model ids and versions, hashes recorded before either sees the other, two cross-critiques and an owner adjudication for each disagreement.

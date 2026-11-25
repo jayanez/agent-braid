@@ -9,7 +9,7 @@
     23,
     24
   ],
-  "assumptions": "Local Git history of this repository contains merged PRs whose tests fail at the parent commit and pass at the merge commit. The SPEC-049 harness_verification partitions and D1-D3 rules stay as merged. SPEC-084 or an owner admission will provide a venue for the exploit agent; if not, tasks stay qa-incomplete. Infra-error classes can be decided from recorded logs by a rule frozen before data.",
+  "assumptions": "Local Git history of this repository contains merged PRs whose tests fail at the parent commit and pass at the merge commit. The SPEC-049 harness_verification partitions and D1-D3 rules stay as merged. SPEC-084 will provide a venue for the exploit agent; if not, tasks stay qa-incomplete. Infra-error classes can be decided from recorded logs by a rule frozen before data.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -114,7 +114,7 @@
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "None. executionAuthorization is false on every record; nothing here runs an agent, model or container. The exploit-agent check runs only under SPEC-084 after its gates or under a separate owner admission.",
+  "execution_contract": "None. executionAuthorization is false on every record; nothing here runs an agent, model or container. The exploit-agent check runs only under SPEC-084 after its gates.",
   "human_review": "pending",
   "hypotheses": "H1: this repository's history yields at least 20 tasks that pass the oracle, no-op, exploit and review checks. A lower yield is a valid feasibility result.",
   "observation_contract": "What task records, QA records, review records and trial records state, with their hashes; hashes bind bytes, not authenticity; review records are labeled human or model; a canary is a detection aid, not a contamination guarantee.",
@@ -163,11 +163,11 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t003.json, specs/082-harness-task-qa-infra-controls/evidence/t004.json, specs/082-harness-task-qa-infra-controls/evidence/t008-tasks.json.",
           "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
           "test_name": "procedure_002",
-          "then": "it refuses with a reason code and a JSON Pointer; a `synthetic` record with PR fields, or a `repository-history` record with `not-applicable` provenance, also refuses.",
+          "then": "it refuses with a reason code and a JSON Pointer; a `synthetic` record with PR fields, a `repository-history` record with `not-applicable` provenance, or a record with any other origin also refuses.",
           "when": "it is validated"
         }
       ],
-      "text": "Task record format. Each task has a versioned record: id, origin (`repository-history` or `synthetic`), lineage, stratum (closed vocabulary, OD-2), family, source provenance, rights basis, initial-state commit, task statement, oracle (fail-to-pass and pass-to-pass tests), reference-solution hash, resource budget, canary id, partition, QA status and the SHA-256 of each file. Unknown keys refuse. Provenance depends on origin. A `repository-history` task records the PR number, pre-fix and fix commits and merge date. A `synthetic` task records its SPEC-049 case ids, its lineage id and the path and hash of the frozen SPEC-049 record it comes from. A field that does not apply to the origin holds the explicit value `not-applicable`, and each origin is validated against its own field set."
+      "text": "Task record format. Each task has a versioned record: id, origin (`repository-history` or `synthetic`), lineage, stratum (closed vocabulary, OD-2), family, source provenance, rights basis, initial-state commit, task statement, oracle (fail-to-pass and pass-to-pass tests), reference-solution hash, resource budget, canary id, partition, QA status (`pending`, `qa-incomplete`, `qa-passed`, `rejected` or `withdrawn`) and the SHA-256 of each file. Unknown keys refuse. Origin is a closed vocabulary: any other value refuses. Provenance depends on origin. A `repository-history` task records the PR number, pre-fix and fix commits and merge date. A `synthetic` task records its SPEC-049 case ids, its lineage id and the path and hash of the frozen SPEC-049 record it comes from. A field that does not apply to the origin holds the explicit value `not-applicable`, and each origin is validated against its own field set."
     },
     {
       "id": "REQ-003",
@@ -347,6 +347,6 @@
     }
   ],
   "scientific_limits": "Engineering formats and procedures; no harness verdict. Tasks from one repository are coupled; inference must count lineages, not tasks. Public source history may be in model pretraining; the private split limits optimizer leakage only. Repeated held-out use leaks through selection. A model reviewer is independent model review, not human review. A Codex review is not human review or approval.",
-  "scope": "Draft documentation-only specification of the task record, corpus manifest, lineage and partition rules, private held-out split, per-task QA (oracle, no-op, exploit probes, exploit agent, two reviewers), infrastructure-error taxonomy, pinned configuration, fresh run ids and contamination record for harness evaluation. Nothing implemented or run.",
+  "scope": "Draft documentation-only specification of the task record, corpus manifest, lineage and partition rules, private held-out split, per-task QA (oracle, no-op, exploit probes, exploit agent, two blind model reviews with owner adjudication), infrastructure-error taxonomy, pinned configuration, fresh run ids and contamination record for harness evaluation. Nothing implemented or run.",
   "stage": "draft"
 }

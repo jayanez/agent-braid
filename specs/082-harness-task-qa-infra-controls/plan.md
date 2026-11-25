@@ -18,7 +18,7 @@
   (REQ-004). Lineage and partition are assigned before any candidate outcome.
 - **QA is deterministic where it can be.** Oracle, no-op and exploit probes run
   locally with no model. Only the exploit agent needs a model; it waits for SPEC-084
-  gates or an owner admission (OD-6). Until then a task is `qa-incomplete` and is not
+  gates (OD-6). Until then a task that passed the local checks is `qa-incomplete` and is not
   handed to SPEC-083 regression use.
 - **Infra controls are record rules.** This spec defines the trial record, the closed
   infra-error taxonomy, the frozen classification rule, the run-id register and the
