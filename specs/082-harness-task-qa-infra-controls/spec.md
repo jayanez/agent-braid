@@ -18,24 +18,36 @@ Engineering only; no claim about any harness candidate. That this repository's
 history yields at least 20 QA-passing tasks is hypothesis H1; a low yield is a valid
 feasibility result.
 
+Actors: the owner, who reviews and adjudicates; the two model reviewers,
+Claude and Codex; and the consumers of the corpus, SPEC-083 and SPEC-084. No end user
+interacts with these records. The requirements that name each actor are REQ-001,
+REQ-008 and REQ-013.
+
 In scope:
 
 - a corpus of 20–50 real-failure tasks from this repository's history (merged-PR
   regression fixes, SPEC-049 lineages L1–L4), with public and private held-out splits;
 - per-task QA in the Terminal-Bench 2.0 style: oracle passes, exploits fail, two
-  reviewers;
+  blind model reviews with owner adjudication (OD-4);
 - infrastructure controls: infra errors apart from agent outcomes, pinned and
   recorded configuration, fresh run ids; a contamination record.
 
-Exclusions (each a MUST NOT):
+Scope limits: the first PR (#1515) ran no agent, model, container or harness session.
+Only T011 runs the exploit agent, under SPEC-084 (OD-6). This spec changes no frozen
+SPEC-049 record, D2–D3 rule or T005 roster, and defines no record that grants,
+promotes or activates anything; promotion belongs to SPEC-085.
 
-- MUST NOT run any agent, model, container or harness session in the first PR; the
-  exploit agent runs only under SPEC-084 or an owner admission (OD-6).
-- MUST NOT compute or report a harness verdict; statistics belong to SPEC-083.
-- MUST NOT relabel repository-history or synthetic tasks as native user sessions.
-- MUST NOT place private held-out task bytes in the public repository or its history.
-- MUST NOT change a frozen SPEC-049 record, the D1–D3 rules, or the T005 roster.
-- MUST NOT grant, promote, activate or authorize execution.
+Exclusions, each covered by the requirement named:
+
+- A task record MUST NOT carry a harness verdict; statistics belong to SPEC-083
+  (REQ-002: a verdict field is an unknown key and refuses).
+- A repository-history or synthetic task MUST NOT be relabeled as a native user
+  session (REQ-002: origin is a closed vocabulary).
+- Private held-out task bytes MUST NOT enter the public repository or its history
+  (REQ-005; Git history is scanned by procedure_005).
+- The SPEC-049 D1 split rules (L1 never split, L3 unassigned until resolved, L4 held
+  out only if it qualifies) MUST NOT change (REQ-004, SC-004).
+- A record MUST NOT authorize execution (REQ-013).
 
 ## Requirements and acceptance scenarios
 
@@ -48,8 +60,10 @@ Exclusions (each a MUST NOT):
 (`repository-history` or `synthetic`), lineage, stratum (closed vocabulary, OD-2),
 family, source provenance, rights basis, initial-state commit, task statement,
 oracle (fail-to-pass and pass-to-pass tests), reference-solution hash, resource
-budget, canary id, partition, QA status and the SHA-256 of each file. Unknown keys
-refuse. Provenance depends on origin. A `repository-history` task records the PR
+budget, canary id, partition, QA status (`pending`, `qa-incomplete`, `qa-passed`,
+`rejected` or `withdrawn`) and the SHA-256 of each file. Unknown keys refuse. Origin
+is a closed vocabulary: any other value refuses. Provenance depends on origin. A
+`repository-history` task records the PR
 number, pre-fix and fix commits and merge date. A `synthetic` task records its
 SPEC-049 case ids, its lineage id and the path and hash of the frozen SPEC-049 record
 it comes from. A field that does not apply to the origin holds the explicit value
@@ -57,8 +71,8 @@ it comes from. A field that does not apply to the origin holds the explicit valu
 
 - **SC-002:** Given a record missing a field, carrying an unknown key or a wrong
   hash, when it is validated, then it refuses with a reason code and a JSON Pointer;
-  a `synthetic` record with PR fields, or a `repository-history` record with
-  `not-applicable` provenance, also refuses.
+  a `synthetic` record with PR fields, a `repository-history` record with
+  `not-applicable` provenance, or a record with any other origin also refuses.
 
 **REQ-003 Selection rule before construction.** The rule that admits a candidate
 from history is frozen by hash before any task is built. Every candidate, exclusion
@@ -201,44 +215,109 @@ later batches of new lineages reach 20; OD-1 and OD-7 are unchanged.
   count in `private-holdout` against the 20-task target, and
   `executionAuthorization: false`.
 
-## Owner decisions (open)
+## Owner decisions
 
-- **OD-1 Corpus size.** 20, 30 or 50 candidates. Recommended: build about 30 and
-  freeze whatever passes QA in 20–50; below 20 is a feasibility result.
-- **OD-2 Lineage and stratum rules.** (a) one PR = one lineage; (b) conservative
-  merge by shared PR, spec, fixture base or unresolved relation. Strata: SPEC-049
-  `continuity` and `coordination`, plus `repair` for single-change fixes. Recommended:
-  (b) and the three strata, never pooled.
-- **OD-3 Private split storage.** (a) local private store outside the repository,
-  hashes committed, as in ADR 0018; (b) encrypted file in the repository; (c) no
-  private split. Recommended: (a).
-- **OD-4 Second reviewer.** Options were (a) two humans; (b) owner plus an
-  independent model review labeled as model; (c) owner only. Decided on 2026-11-23
-  (T001): (d) cross adversarial review. Claude and Codex review each task blind, then
-  critique each other's report. The owner adjudicates every disagreement. This is
-  recorded as a deviation from Terminal-Bench 2.0's two human auditors.
-- **OD-5 Infra policy.** Recommended: at most 2 reruns per trial; a job is `invalid`
-  when infra errors exceed 10 % of trials or a task loses all trials.
-- **OD-6 Exploit-agent venue.** (a) SPEC-084 after its gates; (b) an owner-admitted
-  local run; (c) skip, so tasks stay `qa-incomplete`. Recommended: (a), else (c).
-- **OD-7 Split proportions.** Recommended by lineage: 40 % discovery, 40 % holdout,
-  20 % private-holdout.
+The owner decided OD-1 to OD-7 on 2026-11-23 (T001). The options considered are in
+the [owner review record](evidence/t001-owner-review.md). On 2026-11-24 (T002,
+S82-004) the owner added a separate private-holdout target in REQ-013; OD-1 and OD-7
+are unchanged. On 2026-11-25 the owner settled the points in the
+[refinement record](evidence/owner-decisions-20261125.md). A confirmed finding may
+reopen a decision through a dated amendment.
+
+- **OD-1 Corpus size.** Build about 30 candidates and freeze those that pass QA,
+  between 20 and 50. Below 20 is a feasibility result.
+- **OD-2 Lineage and stratum rules.** Conservative merge by shared PR, spec, fixture
+  base or unresolved relation. Strata: SPEC-049 `continuity` and `coordination`, plus
+  `repair` for single-change fixes, never pooled.
+- **OD-3 Private split storage.** A local private store outside the repository, with
+  only salted commitments in the repository, as in ADR 0018.
+- **OD-4 Second reviewer.** Cross adversarial review: Claude and Codex review each
+  task blind, then critique each other's report, and the owner adjudicates every
+  disagreement. This deviates from Terminal-Bench 2.0's two human auditors.
+- **OD-5 Infra policy.** At most 2 reruns per trial. A job is `invalid` when infra
+  errors exceed 10 % of trials or a task loses all trials.
+- **OD-6 Exploit-agent venue.** SPEC-084 after its gates. If SPEC-084 is infeasible,
+  tasks stay `qa-incomplete`.
+- **OD-7 Split proportions.** By lineage: 40 % discovery, 40 % holdout, 20 %
+  private-holdout.
+
+## Open questions
+
+- Does the owner approve adding `private-holdout` to `harness_verification.py`
+  (plan.md)? Deferred to T003.
+
+## Non-functional requirements
+
+No performance or availability requirement applies: this spec defines formats and
+procedures. Numeric limits are in REQ-005, REQ-006, REQ-009, REQ-013 and OD-1, OD-5,
+OD-7. Privacy constraints are under "Security and privacy".
+
+## Security and privacy
+
+- Private held-out bytes, plain identity hashes, private task ids and the secret salt
+  stay outside the public tree: see REQ-005.
+- No record authorizes execution: see REQ-013.
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Lineage: a connected component of the task relation graph (REQ-004).
+- Oracle: the fail-to-pass and pass-to-pass tests of a task (REQ-002).
+- No-op check: the verifier run on the unchanged initial state (REQ-006).
+- Canary id: an identifier carried by each task as a contamination detection aid, not
+  a guarantee (REQ-012).
+- Salted commitment: SHA-256 over the per-corpus secret salt followed by the file
+  bytes (REQ-005).
+
+Values named in this spec:
+
+- Origin: `repository-history`, `synthetic`.
+- Stratum: `continuity`, `coordination`, `repair`.
+- Partition: `discovery`, `holdout`, `private-holdout`. L3 stays unassigned until
+  resolved (REQ-004).
+- QA status (closed): `pending` (built, no QA check yet), `qa-incomplete` (a QA
+  check not yet passed or not runnable, for example the exploit agent under OD-6),
+  `qa-passed`, `rejected`, `withdrawn` (private store deleted).
+- Trial outcome: `pass`, `fail`, `infra-error`, `not-attempted`.
+- Infra-error subclass: `setup`, `provider`, `quota-stop`, `runtime-crash`,
+  `verifier-crash`, `config-drift`.
+- Job state named in REQ-009: `invalid`, `stopped`.
+- Review label: `model`, `human`.
 
 ## Non-goals
 
-Statistics or verdicts (SPEC-083); trials, containers, Harbor (SPEC-084); promotion
-pointers (SPEC-085); telemetry (SPEC-086); native cohorts; automatic promotion.
+Trials, containers, Harbor (SPEC-084); telemetry (SPEC-086); native cohorts.
+Verdicts and promotion are excluded under "Purpose and scope".
 
-## Risks
+## Risks and assumptions
 
-- Yield: few merged PRs may have a clean fail-to-pass test; H1 may fail.
-- Private split size: 20 % of 20–50 tasks is below SPEC-083's 20-task minimum, so
-  the first corpus supports descriptive results only (REQ-013).
-- One repository couples tasks; inference counts lineages, not tasks.
-- History is public, so models may have seen fixes; the private split limits
-  optimizer leakage only. Repeated held-out use still leaks through selection.
-- A model reviewer may share blind spots with the agents under test.
-- Post hoc infra classification; the rule is frozen before data.
+- Risk: few merged PRs may have a clean fail-to-pass test, so H1 may fail (REQ-003).
+- Risk: 20 % of 20–50 tasks is below SPEC-083's 20-task minimum, so the first corpus
+  supports descriptive results only (REQ-013).
+- Risk: one repository couples tasks, so inference counts lineages, not tasks
+  (REQ-004).
+- Risk: history is public, so models may have seen fixes. The private split limits
+  optimizer leakage only, and repeated held-out use still leaks through selection
+  (REQ-005, REQ-012).
+- Risk: a model reviewer may share blind spots with the agents under test (REQ-008).
+- Risk: infra classification could be chosen after seeing data; the rule is frozen
+  before data (REQ-009).
+- Assumption: local Git history holds merged PRs whose tests fail at the parent commit
+  and pass at the merge commit (REQ-003).
+- Assumption: the SPEC-049 `harness_verification` partitions and D1–D3 rules stay as
+  merged (REQ-004).
+- Assumption: SPEC-084 provides a venue for the exploit agent; otherwise tasks stay
+  `qa-incomplete` (REQ-007).
+- Assumption: infra-error classes can be decided from recorded logs by a rule frozen
+  before data (REQ-009).
+
+## Exit criteria
+
+Verification is complete when each of procedure_001 to procedure_013 in the
+[validation plan](validation-plan.md) has obtained evidence, passing or failing, recorded against its task
+in [tasks.md](tasks.md), and the T016 freeze record exists. A yield below 20
+`qa-passed` tasks completes verification as a feasibility result (H1).
 
 ## Dependencies
 
