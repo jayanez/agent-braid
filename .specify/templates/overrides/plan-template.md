@@ -15,6 +15,9 @@ not a reason to change the population after labels are seen.
 
 ## Design and compatibility
 
+State each dependency with the ID it affects, for example "REQ-003 depends on
+the ledger schema", and what happens when the dependency fails.
+
 ## Validation strategy
 
 Map requirement → scenario → test → evidence. Include negative controls and
