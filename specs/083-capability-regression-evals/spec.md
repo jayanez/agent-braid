@@ -22,16 +22,30 @@ In scope: pre-registration record, estimand, uncertainty method, decision rule,
 pass@k and pass^k, infrastructure errors, missing outcomes, minimum sample, a power
 note and stopping rules.
 
-Exclusions (MUST NOTs):
+Actors: the owner, who reviews (REQ-001), seals registrations (T009), records
+suspected leaks and refreshes the split (REQ-004) and acknowledges regression
+summaries (REQ-006); SPEC-084 or the existing laboratory, which run the trials under
+their own admission (T010); and SPEC-085, which reads verdicts for a promotion
+decision (REQ-002, REQ-006).
+No end user interacts with these records.
 
-- MUST NOT change any frozen SPEC-049 value (D1–D7) or the T002 freeze record.
-- MUST NOT present a capability result or a regression verdict as a utility or
-  superiority claim; D3 and the SPEC-049 axes still govern those.
-- MUST NOT use Harbor's default mean metric as a verdict.
-- MUST NOT promote, activate, grant or launch anything; a verdict is evidence for a
-  human decision (SPEC-085), not authority.
-- MUST NOT feed held-out outcomes to any optimizer (SPEC-049 REQ-009), and MUST NOT
-  add interim analyses, optional stopping or post-hoc margins.
+Scope limits: this spec promotes, activates, grants and launches nothing. A verdict
+is evidence for a human decision (SPEC-085), not authority (`assurance.json`
+`execution_contract`).
+
+Exclusions, each covered by the requirement named:
+
+- A frozen SPEC-049 value (D1–D7) or the SPEC-049 T002 freeze record MUST NOT change
+  (REQ-002; SC-002 hashes the protocol's frozen sections).
+- A capability result or a regression verdict MUST NOT be presented as a utility or
+  superiority claim; D3 and the SPEC-049 axes still govern those (REQ-002, REQ-007,
+  REQ-012).
+- A verdict MUST NOT come from Harbor's default mean metric (REQ-005 and REQ-006
+  define the only estimand and decision rule).
+- Held-out outcomes MUST NOT reach any optimizer (SPEC-049 REQ-009).
+- An interim analysis or optional stopping MUST NOT occur (REQ-011).
+- A margin MUST NOT be chosen or changed after any outcome of the comparison is seen
+  (REQ-003 fixes it before the first trial; OD-1 fixes δ = 0.10).
 
 ## Requirements and acceptance scenarios
 
@@ -190,21 +204,78 @@ claims keep the D3 lineage minimum.
   independent lineages, when a superiority claim is drafted from it, then the check
   refuses it and the report shows the bounded claim text.
 
-## Owner decisions (open)
+## Owner decisions
 
-- **OD-1 Margin and α.** Options: δ = 0.10, 0.15 (SPEC-049 D4) or 0.05; α one-sided
-  0.05 (D3) or 0.025. Recommended: δ = 0.10, α = 0.05, fixed before the first record.
-- **OD-2 Primary uncertainty method.** Analytic task-clustered error (deterministic)
-  or clustered bootstrap. Recommended: analytic primary, bootstrap as sensitivity.
-- **OD-3 Cluster level.** Task, or the SPEC-082 lineage group when tasks share a
-  lineage. Recommended: task primary, lineage as sensitivity; disagreement makes
-  the verdict `inconclusive`.
-- **OD-4 Infrastructure thresholds.** Recommended: at most 10 % of trials per arm,
-  at most 5 points between arms, at most 2 reruns per trial (as SPEC-082 OD-5).
-- **OD-5 Held-out reuse.** Every gate use is logged. Recommended: refresh the
-  private split after 5 gate uses or any suspected leak. Alternative: no cap.
-- **OD-6 Per-task regressions.** Tasks with baseline pass^n = 1 and candidate
-  pass@n = 0. Recommended: report only in v0.1. Alternative: any such task blocks.
+The owner decided OD-1 to OD-6 on 2026-11-23 (T001). The chosen answers are in the
+[owner review record](evidence/t001-owner-review.md); the options offered are in
+this file as merged in #1515 (`f0793dfd`). On 2026-11-24 (T002) the
+owner chose the rules for S83-001, S83-002 and S83-005; they are now part of
+requirements REQ-005, REQ-006 and REQ-010. On 2026-11-25 the owner settled the points in the
+[refinement record](evidence/owner-decisions-20261125.md). A confirmed finding may
+reopen a decision through a dated amendment.
+
+- **OD-1 Margin and α.** δ = 0.10 and one-sided α = 0.05, fixed before the first
+  registration record.
+- **OD-2 Primary uncertainty method.** Analytic task-clustered error as primary;
+  clustered bootstrap as a sensitivity check.
+- **OD-3 Cluster level.** Task as primary; SPEC-082 lineage as a sensitivity check. A
+  sensitivity verdict that differs from the primary makes the verdict `inconclusive`.
+- **OD-4 Infrastructure thresholds.** At most 10 % of trials per arm, at most 5
+  points between arms, at most 2 reruns per trial, as SPEC-082 OD-5.
+- **OD-5 Held-out reuse.** Every gate use is logged. The private split is refreshed
+  after 5 gate uses or any suspected leak.
+- **OD-6 Per-task regressions.** A task with baseline pass^n = 1 and candidate
+  pass@n = 0 is reported in the verdict. In v0.1 it does not block on its own.
+
+## Open questions
+
+- Does the founder approve the dated SPEC-049 cross-reference line (T008)? Owner:
+  founder.
+
+## Non-functional requirements
+
+No performance or availability requirement applies: this spec defines a protocol and
+its records. Determinism: the bootstrap seed and its 10 000 resamples are sealed
+(REQ-003, REQ-005), and fixtures match hand values within 10⁻⁶ (SC-005).
+
+## Security and privacy
+
+- A private task appears in a regression summary only by salted commitment: see
+  REQ-006 and SPEC-082 REQ-005.
+- The use ledger stays with the private split: see REQ-004.
+- Held-out outcomes do not reach an optimizer: see SPEC-049 REQ-009.
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Capability eval: a descriptive report of what a candidate can do (pass@k); never a
+  gate (REQ-002).
+- Regression eval: a paired non-inferiority comparison against a baseline that gates
+  promotion (REQ-002).
+- Registration: the sealed record that fixes a regression comparison before its
+  first trial (REQ-003).
+- Informative task: a task on which the baseline succeeds in at least one trial
+  (REQ-010).
+- Hard regression: baseline pass^n = 1 and candidate pass@n = 0 on a task (REQ-006).
+- Soft regression: candidate success rate at least 0.4 below the baseline's on a task
+  (REQ-006).
+- Gate use: one registration sealed against a private split (REQ-004).
+- pass@k and pass^k: per-task capability and reliability measures over k of n trials
+  (REQ-007).
+
+Values named in this spec:
+
+- Class: `capability`, `regression`.
+- Verdict: `noninferior`, `inferior`, `inconclusive`, `invalid`, `blocked`.
+- Report without a verdict: `descriptive-only` (REQ-010).
+- Trial outcome: success, failure, infrastructure error, missing (REQ-008, REQ-009).
+- Missing outcome: ungraded, not attempted, interrupted (REQ-009).
+- Missing-outcome bound: primary (worst case), complete-case, best-case (REQ-009).
+- Cluster level: task (primary), lineage (sensitivity) (REQ-005).
+- Regression grade: hard, soft; a soft flag is confirmed or not confirmed (REQ-006).
+- Stop cause: SPEC-049 D6 condition, quota cap, infrastructure threshold (REQ-011).
+- SPEC-085 labels read here: `candidate`, `adopted` (REQ-002).
 
 ## Non-goals
 
@@ -214,17 +285,39 @@ deferred); reanalysing T014.
 
 ## Risks
 
-- **Low power.** With T = 30 and an assumed between-task standard deviation of
+- Risk: low power. With T = 30 and an assumed between-task standard deviation of
   differences of 0.3, a true Δ = 0 passes δ = 0.10 about 57 % of the time and
-  δ = 0.15 about 86 % (normal approximation; an assumption, not data).
-- **Correlated tasks.** Tasks from one lineage are not independent (OD-3).
-- **Held-out erosion.** Repeated gating on one split overfits to it (OD-5).
-- **Private split size.** The first corpus is below the 20-task minimum; verdicts
-  wait for later lineage batches (REQ-010, SPEC-082 REQ-013).
-- **Drift.** Provider model changes between arms; arms are interleaved and pinned.
-- **Hypotheses.** H1: on 20–50 tasks with 5 trials the gate is decisive for most
-  candidates. H2: clustered intervals are wider than trial-level ones on real data.
-  Either may fail; a failure is a result.
+  δ = 0.15 about 86 % (normal approximation; an assumption, not data) (REQ-010).
+- Risk: tasks from one lineage are not independent (REQ-005, OD-3).
+- Risk: repeated gating on one split overfits to it (REQ-004, OD-5).
+- Risk: the first corpus is below the 20-task minimum, so verdicts wait for later
+  lineage batches (REQ-010, SPEC-082 REQ-013).
+- Risk: provider models drift between arms; arms are interleaved and pinned (pinning:
+  REQ-004).
+
+## Assumptions
+
+- Assumption: SPEC-049's frozen protocol (D1–D7) stays unchanged and is amended by
+  reference only (REQ-002).
+- Assumption: SPEC-082 supplies a corpus of 20–50 real-failure tasks with lineage, a
+  private held-out split and an infrastructure-error classification (REQ-004,
+  REQ-005, REQ-008, REQ-010).
+- Assumption: trials are run by SPEC-084 or the existing laboratory under their own
+  admission; this spec runs none (T010).
+- Assumption: the power note takes a between-task standard deviation of paired
+  differences of 0.3; no data estimates it yet (REQ-010).
+
+Hypotheses. H1: on 20–50 tasks with 5 trials the gate is decisive for most
+candidates. H2: clustered intervals are wider than trial-level ones on real data.
+Either can fail; a failure is a result.
+
+## Exit criteria
+
+Verification is complete when each of procedure_001 to procedure_012 in the
+[validation plan](validation-plan.md) has obtained evidence recorded against its task
+in [tasks.md](tasks.md), and T010 has recorded the first regression verdict
+(`noninferior`, `inferior`, `inconclusive`, `invalid` or `blocked`). A
+`descriptive-only` report is not a verdict and does not close T010 (REQ-010).
 
 ## Dependencies
 
