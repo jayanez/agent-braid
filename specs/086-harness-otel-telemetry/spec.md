@@ -169,7 +169,7 @@ body (OD-5; plan, Approach).
   endpoint is refused before any connection is opened, the redirect is not followed,
   and each refused batch stays pending.
 
-**REQ-015 Spans do not promote or grant.** No command MUST turn a span, a backend
+**REQ-015 Spans do not promote or grant.** A command MUST NOT turn a span, a backend
 dashboard or a score into a promotion or a grant.
 
 - **SC-016:** Given span files with every outcome class and a pending export, when the

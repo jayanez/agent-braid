@@ -397,7 +397,7 @@
           "when": "the trace, export and audit commands run"
         }
       ],
-      "text": "Spans do not promote or grant. No command MUST turn a span, a backend dashboard or a score into a promotion or a grant."
+      "text": "Spans do not promote or grant. A command MUST NOT turn a span, a backend dashboard or a score into a promotion or a grant."
     }
   ],
   "scientific_limits": "Engineering, not a research protocol. The OTel GenAI conventions are status Development and may change; conformance is to one pinned revision only. H1 is checked on committed fixtures only; no claim of compatibility with any backend. A loopback receipt shows attribute names, not backend behavior. A Codex review is independent model review, not human review or approval.",
