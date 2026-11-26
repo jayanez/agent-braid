@@ -172,9 +172,17 @@ file MUST NOT contain a secret.
   owner signs in in their own terminal and no key enters chat, the repository or a
   file.
 
+**REQ-015 No raw session data in the repository.** The raw session JSONL MUST NOT
+enter the repository; only a redacted shape with hashes is committed.
+
+- **SC-016:** Given the capture script and a capture run, when the repository and the
+  committed summary are inspected, then the raw session JSONL is outside the
+  repository and only a redacted shape with hashes is committed.
+
 ## Owner decisions (open)
 
-Open questions: OD-1 to OD-7, all open until T001 records the owner review.
+Open questions: OD-1 to OD-7, all open until T001 records the owner review; OQ-1
+below, owner pending.
 
 - **OD-1 Channel.** (a) Git install from `plugin-dist` with the bundled runtime, as
   SPEC-068 D3; (b) npm package; (c) local path only. Recommended: (a) first, since it
@@ -193,6 +201,10 @@ Open questions: OD-1 to OD-7, all open until T001 records the owner review.
   T004, cited by ADR 0044 portability tiers.
 - **OD-7 Release.** Recommended: the first alpha after alpha.10 whose candidate
   passes REQ-008.
+- **OQ-1 Check for REQ-012.** Which procedure shows that no MCP tool was added, the
+  `agent-braid-plugin/v0.2` and `agent-braid-tooling/v0.2` contracts are unchanged and
+  no npm publication happened? No source defines it; procedure_010 is a placeholder.
+  Owner: the owner.
 
 ## Non-functional requirements
 
@@ -209,7 +221,7 @@ real configuration (REQ-013).
 - Authority: Pi has no permission layer; Agent Braid adds none and no host approval
   is an operator grant (REQ-007, REQ-010).
 - Private data: raw session JSONL stays outside the repository; only a redacted shape
-  with hashes is committed (REQ-002).
+  with hashes is committed (REQ-015, REQ-002).
 - Host configuration: observation never writes the owner's real configuration
   (REQ-013); the installer writes only receipt-owned entries (REQ-005).
 
@@ -234,28 +246,15 @@ Native harness sessions, Harbor evaluation (SPEC-084), any Pi model or provider
 configuration, ACP integration (the ThinkRail–ACP relation is unverified), new MCP
 tools, and changes to Gentle AI or its configuration.
 
-## Risks
-
-- **No permission layer (YOLO).** Any Pi tool call runs with the user's rights.
-  Agent Braid cannot add a sandbox; REQ-007 states the limit.
-- **Unverified facts.** Pi core MCP support, configuration paths and the ThinkRail
-  import order are unverified. REQ-002 may contradict them; SC-003 handles it.
-- **Gentle AI coexistence.** A configurator that rewrites host configuration may
-  remove or duplicate Agent Braid entries. REQ-006 detects it; Agent Braid never
-  edits Gentle AI-owned entries.
-- **Double skills and drift.** ThinkRail imports Claude and Codex skills, so each
-  skill may appear twice; ThinkRail is an incubator (v0.4.0), so pinned observations
-  may expire.
-- **Credentials.** A Pi run needs a model provider. The capture uses the owner's
-  own sign-in in their terminal; no key enters chat, the repository or a file.
-
 ## Risks and assumptions
 
-Risk: the no-permission-layer limit (YOLO) leaves isolation to the operator (REQ-007, T010).
-Risk: unverified Pi and ThinkRail facts may be contradicted by the capture (REQ-002, T004).
-Risk: a multi-host configurator such as Gentle AI may remove or rewrite Agent Braid entries (REQ-006, T009).
-Risk: ThinkRail imports Claude and Codex skills, so skills may appear twice, and the incubator version may expire pinned observations (REQ-006, T011).
-Risk: a Pi run needs a model provider credential (REQ-014, T003).
+Risks and assumptions: one entry per line; each names the REQ or task it affects.
+
+Risk: no permission layer (YOLO). Any Pi tool call runs with the user's rights; Agent Braid cannot add a sandbox, and REQ-007 states the limit (REQ-007, T010).
+Risk: unverified facts. Pi core MCP support, configuration paths and the ThinkRail import order are unverified; REQ-002 may contradict them and SC-003 handles it (REQ-002, T004).
+Risk: Gentle AI coexistence. A configurator that rewrites host configuration may remove or duplicate Agent Braid entries; REQ-006 detects it, and Agent Braid never edits Gentle AI-owned entries (REQ-006, T009).
+Risk: double skills and drift. ThinkRail imports Claude and Codex skills, so each skill may appear twice; ThinkRail is an incubator (v0.4.0), so pinned observations may expire (REQ-006, T011).
+Risk: credentials. A Pi run needs a model provider; the capture uses the owner's own sign-in in their terminal, and no key enters chat, the repository or a file (REQ-014, T003).
 Assumption: Pi and ThinkRail facts come from vendor documentation read once on 2026-11-22 and hold only until REQ-002 observes them (REQ-002, T004).
 Assumption: the `agent-braid-plugin/v0.2` server and the seven packaged skills stay as released; the SPEC-080 harness skill is added only if SPEC-080 has merged (REQ-003, T006).
 Assumption: the owner runs the capture in a disposable profile with their own sign-in (REQ-002, T004).
@@ -265,7 +264,8 @@ Assumption: the owner runs the capture in a disposable profile with their own si
 Verification is complete when each of procedure_001 to procedure_009 in the
 [validation plan](validation-plan.md) has obtained evidence, passing or failing,
 recorded against its task in [tasks.md](tasks.md), and the release decision (T012)
-exists. A no-go is a valid outcome (REQ-008).
+exists. procedure_010 (REQ-012) has no defined method until OQ-1 is answered. A no-go
+is a valid outcome (REQ-008).
 
 ## Dependencies
 
