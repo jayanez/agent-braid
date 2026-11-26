@@ -86,4 +86,57 @@ Existing runtime/grants, AIM, plugin, System 1, forecasting and local telemetry 
 
 ## Evidence and unresolved questions
 
-Obtained acceptance evidence: none. The upstream audit supports design motivation, not these acceptance scenarios. Pending decisions: exact numerical limits, supported containment backend/OS/host versions, permissioned native sources, native route feasibility, evaluation size/margins and candidate-specific promotion. Tasks order these decisions before dependent execution. See plan.md, tasks.md and assurance.json.
+Obtained acceptance evidence: none. The upstream audit supports design motivation, not these acceptance scenarios. Decided: the offline profile limits (`offline-adoption.json`), the native caps (`evidence/founder-decisions-20261106.json` D2, carried to `founder-decisions-20261120.json`) and the Claude host and containment (SPEC-065 issuance of 2026-11-17, Claude 2.1.292, Haiku, subscription route, EUR 0; T008-11). Still pending: full-feature limits, Codex containment, host and native route, later permissioned native sources, evaluation size and margins, and candidate-specific promotion. Tasks order these decisions before dependent execution. Open questions: see [Open questions](#open-questions). See plan.md, tasks.md and assurance.json.
+
+## Non-functional requirements
+
+The recorded operational constraints are in REQ-007 (frozen limits, visible counts, wall time, process and resource usage, additional cash spend capped at EUR 0), REQ-006 (resume without duplicate effects) and REQ-009 (frozen context budgets). The offline profile is frozen in `offline-adoption.json` (native, model, child, network and retry counts 0, extra cash 0 EUR, admission maximum 300 seconds). The native caps are frozen in `evidence/founder-decisions-20261106.json` D2 (30 minutes per unit, at most 10% of the 5-hour window, at most 15% weekly, stop when weekly use exceeds 80%, EUR 0). Limits for the full feature are not fixed, see OQ-1. No performance or availability requirement is recorded, see OQ-2.
+
+## Security and privacy
+
+- Protected layers and executable content stay outside the editable surface: REQ-001.
+- Candidate admission is operator-scoped and no existing runtime grant is widened: REQ-003.
+- Undeclared filesystem, credential, process or network access is denied or stopped: REQ-004.
+- Hidden grading material is excluded from context and untrusted text is labeled: REQ-009.
+- Observations are redacted before export and unobservable outcomes cannot become success: REQ-010.
+- Retention of private observations has no stated period or purge rule, see OQ-3.
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Base: the immutable starting harness against which variants are compared (REQ-001, REQ-002).
+- Candidate: a proposed task-local harness variant (REQ-001, REQ-003).
+- Probe: one isolated trial of a candidate (REQ-004, REQ-005).
+- Keep-base: the decision to retain the base instead of a candidate (REQ-005).
+- Laboratory admission: the operator-adopted, independently enforced envelope that lets a probe run (REQ-003).
+
+Values named in this spec:
+
+- Round outcomes (REQ-005): candidate, keep-base, inconclusive, refused.
+- Evidence classes (Scientific boundaries): synthetic, native, human, economic.
+- Hosts (Purpose and scope): Codex and Claude, each through a separately qualified adapter.
+
+## Risks and assumptions
+
+- Risk: small contrastive harness changes may not improve either primary outcome at acceptable complete cost (REQ-005).
+- Risk: unknown provider build identity can be mistaken for a pinned build (REQ-002).
+- Risk: worktree or model instruction alone could be mistaken for containment (REQ-004).
+- Risk: unobservable outcomes could be recorded as completed success (REQ-010).
+- Assumption: the Claude profile is qualified with limits through SPEC-065 and Codex native qualification is not done (REQ-004, T008).
+- Assumption: existing runtime, AIM, plugin, System 1, forecasting and telemetry contracts stay unchanged, as stated in Scientific boundaries and compatibility; REQ-003 covers grants only (REQ-003).
+
+## Exit criteria
+
+Verification is complete when each of procedure_req_001 to procedure_req_010 in the [validation plan](validation-plan.md) has obtained evidence, passing or failing, recorded against its task in [tasks.md](tasks.md). Human acceptance of the feature stays pending. T008 closed with Codex refused, as its acceptance allows (OQ-6). A negative, inconclusive or infeasible result completes verification as a finding.
+
+## Open questions
+
+Each is unresolved and owned by the founder. Owner answers of 2026-11-26 are in [evidence/owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
+
+- OQ-1 (REQ-007, REQ-004, REQ-005): what limits apply to the full feature beyond the offline profile and the native caps already decided, what are the Codex containment backend, OS and host versions, and what are the evaluation size and margins (also SPEC-049)?
+- OQ-2: does this feature need a performance or availability requirement? None is recorded.
+- OQ-3 (REQ-010): what retention period and purge rule apply to private observations, and does it need its own MUST requirement? `assurance.json` is bound to a preserved public draft tag, so a new requirement needs a separately reviewed re-snapshot.
+- OQ-4 (REQ-003, REQ-004): which later permissioned native sources apply, and is Codex route feasibility pursued? The Claude route is decided (subscription only, EUR 0, T008-11 in `evidence/founder-decisions-20261120.json`) and Codex is refused and not installed.
+- OQ-5 (REQ-005): what candidate-specific promotion decision applies?
+- OQ-6 (T008): does HAR.1 acceptance need Codex qualification, given T008 closed with Codex refused?
