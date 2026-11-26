@@ -49,5 +49,6 @@ domains remain unchanged. Feature-local ADR proposal references current authorit
 Review planned interfaces and evidence gates before implementation. Source-rights/yield,
 deployment envelope, paid/model/training budget and promotion are separate decisions.
 Planning review does not authorize collection/training, execution or release.
+Open questions: see [spec.md Open questions](spec.md#open-questions).
 
 Publication base and reviewed authority drift: [context](../028-system-one-core/delivery/publication-context.md).
