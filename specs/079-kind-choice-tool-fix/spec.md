@@ -181,6 +181,59 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   - SC-016: Given fewer than 30 `analyze-work` calls, when the script runs, then the verdict is
     `inconclusive` and the release stays blocked (negative control).
 
+## Non-functional requirements
+
+Operational and quality constraints, each with its source:
+
+- Redirect message at most 400 characters; the attached envelope is outside the cap (REQ-002).
+- Compact `analyze-work` definition within the SPEC-069 D12 cap of 1,500 tokens; the `analyze`
+  description stays within the cap (REQ-003, REQ-004).
+- Refusal order unchanged: the existing validation refusal comes first (REQ-001, SC-003).
+- Spend of EUR 0 on the subscription route (OD-C; [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md)); one
+  gate run of 100 prompts x 3 repetitions = 300 rollouts (OD-B, REQ-009).
+- Shadow window of at least 14 days and at least 30 `analyze-work` calls, read-only (REQ-012).
+
+## Security and privacy
+
+This section adds no REQ. It cites existing requirements and the owner's decision to cite
+rather than add REQs ([owner decisions](evidence/owner-decisions-20261126.md)):
+
+- The refusal adds no authority: the redirect never grants execution authority and never
+  fabricates coverage (REQ-002); `executionAuthorization` stays false
+  (`assurance.json` `execution_contract`).
+- The shadow check reads only local telemetry cells and transcript tool names, `kind`
+  arguments, envelope status and refusal code, never prompt or file content (REQ-012).
+- Frozen protocol files stay untouched and no quota is spent before the freeze and the
+  owner's yes (REQ-011).
+- Subscription route only, EUR 0, no API keys and no paid routes (OD-C;
+  [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md); Out of scope above).
+- The zero-prompt review uses redacted transcripts (plan.md, Validation strategy; T009).
+
+## Terminology
+
+- **Disjoint `units` request:** a `kind: units` request whose constructed records have no
+  declared dependency and no resource shared with a write-like effect (REQ-001).
+- **Write-like effect:** the analyzer's `write`, `transform`, `delete` or `deploy`; `read`,
+  `call` and `emit` are not (REQ-001).
+- **Redirect:** the `refused` response with code `units-cannot-answer-independence`, a
+  message and the constructed AIM envelope (OD-A, REQ-002).
+- **Kinds:** `aim` and `units` are the `analyze-work` request kinds this spec compares; `git`
+  is named only as a request kind left unchanged (Purpose and scope: AIM, git and report schemas unchanged).
+- **Held-out set v4:** the fresh 100-prompt split of REQ-006, in seven classes:
+  disjoint-parallel, overlap-write, dependency-order, read-only shared, kind-choice probes,
+  analyze-tempting, git-branch (tasks.md T004).
+- **Gate 0:** the no-rollout check of REQ-007. **OD-1 gate:** the gate of OD-B.
+- **Passing prompt:** at least 2 of 3 valid first attempts (OD-B).
+- **`validFirstAttempt` / `validWithinRetry`:** per-trial scorer outcomes; the second allows
+  one retry after a refusal (H4, REQ-009).
+- **Zero-prompt review:** the owner classifies each 0/3 prompt as `model` or `instrument`
+  (plan.md; T009).
+- **Shadow check:** the real-session check of REQ-012 (OD-E); statistics S1 to S4 and
+  verdicts pass, failed or inconclusive.
+- **Hypothesis outcomes:** supported, not supported or inconclusive (tasks.md T010).
+- **Pinned build:** the unreleased plugin commit the run installs (OD-D).
+- Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md).
+
 ## Scientific boundaries and compatibility
 
 Hypotheses (preregistered in REQ-008; none is a completion condition):
@@ -216,5 +269,48 @@ Planned and obtained evidence are kept in `assurance.json`. Tracking:
 milestone [BL.2c #36](https://github.com/jayanez/agent-braid/milestone/36),
 epic #1503, tasks T001–T010 as #1504–#1513. OD-A to OD-D are
 decided; OD-E's thresholds and the T006 protocol were approved on 2026-11-23. No open questions remain at draft stage; the class plan and prompt
-authoring are planning work (plan.md), not owner decisions.
+authoring are planning work (plan.md), not owner decisions. The owner's yes for T008
+(300 rollouts), the zero-prompt classification (T009) and the release (T010) are pending
+gates, not open questions (plan.md, Human review and unresolved decisions).
 Feasibility failure, null and inconclusive outcomes are valid reports.
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects. Sources: [research.md](research.md) and
+`assurance.json` (`assumptions`, `scientific_limits`).
+
+- Risk: The mechanism (models ignoring `unknown`) is inferred from transcripts, not tested
+  (REQ-001, research.md R1).
+- Risk: A host that does not recover in-turn fails its first attempt; this is measured, not
+  assumed (REQ-009, H4, research.md R2).
+- Risk: Disjoint `units` declarations with partial coverage are refused too, and v4 has no such
+  case, so the cost of the extra `aim` call is not measured (REQ-001, research.md R2).
+- Risk: The T001 change to `tests/test_spec069_units.py` and `scripts/spec069_generate_corpus.py`
+  leaves the sha256 values in SPEC-069 `evidence/procedure_004`, `005`, `006` and `014` stale;
+  those closed records are not edited (T001, research.md R2).
+- Risk: Attributing the `analyze`-only failures to the digest line is a hypothesis (REQ-003, H3,
+  research.md R3).
+- Risk: One host, model and synthetic split, correlated repetitions and template clustering;
+  comparisons with v3-test are descriptive only (REQ-009, `assurance.json` `scientific_limits`).
+- Risk: v4 independence rests on mechanical leakage checks, since the author may have seen some
+  earlier wording (REQ-006, T004, research.md R7).
+- Assumption: The SPEC-069 scorer and fixture workspace are reused unchanged, and the SPEC-078
+  fact generator, Gate 0 and analysis are reused by import (REQ-006, REQ-007, REQ-009;
+  `assurance.json` `assumptions`).
+- Assumption: Hosts other than `claude-code` and models other than `claude-sonnet-5-5` are out
+  of scope (OD-C, Out of scope).
+
+## Exit criteria
+
+Verification is complete when the obtained evidence for SC-001 to SC-016 listed in the
+[validation plan](validation-plan.md) exists and the T010 converge record is written. Present
+today: `evidence/gate0-v4-report.json` (REQ-007) and `prompts/FREEZE-v4.json` (REQ-008).
+Planned and absent: `evidence/gate-v4-report.json` (T008, REQ-009), the owner's zero-prompt
+review record under `reviews/` (T009), the shadow report and the release record (T010, REQ-005,
+REQ-012). A missed gate is a valid completion when recorded (REQ-010). An inconclusive shadow
+check (fewer than 30 calls) is recorded but blocks the release record (REQ-012, T010, SC-016),
+so the release record stays absent in that case. Passing checks are not approval.
+
+## Open questions
+
+No unresolved questions; see [Evidence and unresolved questions](#evidence-and-unresolved-questions).
