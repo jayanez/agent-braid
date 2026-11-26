@@ -6,6 +6,6 @@ section is derived from `spec.md`, `plan.md`, `tasks.md`, `validation-plan.md` a
 [2026-11-01 owner decision](../owner-decision-20261101-real-use-acceptance.md). No
 REQ ID, scenario or task changed.
 
-Open questions left in `spec.md` (owner: the founder): numeric non-functional limits,
-ADR 0021 adoption, exact host versions and installation scope, provider budget and
-source rights, independent review and founder acceptance.
+Open questions left in `spec.md` are those the spec and plan already list: ADR 0021
+adoption, exact host versions and installation scope, provider budget and source
+rights, independent review and founder acceptance.

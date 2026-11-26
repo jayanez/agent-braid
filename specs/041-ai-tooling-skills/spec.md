@@ -105,8 +105,7 @@ requirements; none is new.
   migration and versioning review during implementation; existing AIM, runtime,
   grant and verifier contracts remain unchanged (Scientific boundaries section).
 - Evidence fidelity: chat and export retain actual outcomes and unknowns (REQ-006).
-- Numeric limits (latency, size, cost) have no source in this spec; see
-  [Open questions](#open-questions).
+- This spec sets no numeric limit (latency, size, cost).
 
 ## Security and privacy
 
@@ -115,7 +114,7 @@ requirements; none is new.
   (REQ-008).
 - No secret or grant-store edit and no bypass instruction (REQ-004).
 - No model-issued grant: a plan discloses the absent operator authority (REQ-003).
-- No execution from analysis or from evidence export (REQ-002, REQ-006).
+- No execution from analysis (REQ-002).
 - The five skills neither enable nor collect telemetry (SPEC-047 boundary below).
 - Observational receipts are derived and redacted receipts, not raw transcripts
   ([validation plan](validation-plan.md), amendment 2026-10-31).
@@ -174,15 +173,14 @@ Deferred. Passing structural checks or technical clauses is not approval.
 
 ## Open questions
 
-- Numeric non-functional limits: whether any latency, size or cost limit applies to
-  the skills. Owner: the founder.
-- Technical contract and ADR 0021 adoption (proposed). Owner: the founder (T010).
-- Exact host versions and installation scope for original procedures. Owner: the
-  founder (T001).
-- Provider budget and source rights for registered capture. Owner: the founder
-  (T009).
-- Independent technical review and founder acceptance of the whole spec. Owner: the
-  founder (T010).
+The required decisions are listed in
+[Evidence and unresolved questions](#evidence-and-unresolved-questions) and in the
+plan section "Human review and unresolved decisions":
+
+- Technical contract and ADR 0021 adoption (proposed).
+- Exact host versions and installation scope.
+- Provider budget and source rights for capture.
+- Independent review and founder acceptance.
 
 ## Additive SPEC-047 boundary — pending candidate
 
