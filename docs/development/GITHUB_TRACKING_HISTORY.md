@@ -15,7 +15,7 @@ Moved from the *Source of truth and stable IDs* section.
   this reconciles historical tracking without changing the published source
   record or making a new review decision.
   `SPEC-011` T001–T007 are checked against [merged PR #3](https://github.com/jayanez/agent-braid/pull/3);
-  T008 and human review remain open. 
+  T008 and human review remain open.
 
   SPEC-045/T007's [adopted disposition](../../specs/045-local-forecasting-capabilities/t007-disposition.md)
   retains seven completed FC.2 tasks and one cancelled/partial task. Issue/Project
