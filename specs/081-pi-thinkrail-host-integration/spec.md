@@ -31,19 +31,20 @@ In scope:
   the host lists that name supported hosts;
 - Pi in the harness host registry as unqualified and offline only.
 
-Exclusions (each is a MUST NOT):
+Exclusions (each is a requirement with its own REQ ID):
 
-- No native harness sessions for Pi or ThinkRail. Evaluation through Harbor's `pi`
-  adapter belongs to SPEC-084.
+- No native harness sessions for Pi or ThinkRail (REQ-009). Evaluation through
+  Harbor's `pi` adapter belongs to SPEC-084.
 - No new Agent Braid authority. A Pi package, extension, host approval or ThinkRail
   per-call approval is never an operator grant. `executionAuthorization` stays
-  false on every advisory result.
+  false on every advisory result (REQ-010).
 - No change to the bytes Codex, Claude Code or OpenCode read from the shared
-  plugin artifact, other than added entries in inventory and provenance.
+  plugin artifact, other than added entries in inventory and provenance (REQ-011).
 - No new MCP tool; no change to the `agent-braid-plugin/v0.2` or
-  `agent-braid-tooling/v0.2` contracts; no npm publication without OD-1.
+  `agent-braid-tooling/v0.2` contracts; no npm publication without OD-1 (REQ-012).
 - No write to the owner's real Pi, ThinkRail or Gentle AI configuration during
-  observation; no secret in the repository, an image or a capture file.
+  observation (REQ-013); no secret in the repository, an image or a capture file
+  (REQ-014).
 
 ## Requirements and acceptance scenarios
 
@@ -126,7 +127,54 @@ release that carries Pi follows alpha.10 and an explicit owner decision.
   is observed, contradicted or `unobserved`; any contradiction blocks release; and
   the release record cites the owner decision. A no-go is a valid outcome.
 
+**REQ-009 No native harness sessions.** The integration MUST NOT start native harness
+sessions for Pi or ThinkRail. Evaluation through Harbor's `pi` adapter belongs to
+SPEC-084.
+
+- **SC-010:** Given the harness host registry, when a native Pi or ThinkRail harness
+  session is requested, then it refuses and Pi stays unqualified and offline only.
+
+**REQ-010 No new Agent Braid authority.** A Pi package, extension, host approval or
+ThinkRail per-call approval MUST NOT be treated as an operator grant, and
+`executionAuthorization` MUST stay false on every advisory result.
+
+- **SC-011:** Given a Pi package, extension, host approval or ThinkRail per-call
+  approval, when an advisory result and the packaged text are inspected, then none is
+  treated as an operator grant and `executionAuthorization` is false.
+
+**REQ-011 Other hosts' bytes unchanged.** The integration MUST NOT change the bytes
+Codex, Claude Code or OpenCode read from the shared plugin artifact, other than added
+entries in inventory and provenance.
+
+- **SC-012:** Given a build with the Pi target and the same build without it, when the
+  files read by Codex, Claude Code and OpenCode are compared, then they are
+  byte-identical, except added entries in inventory and provenance.
+
+**REQ-012 No new tool, contract or publication.** The integration MUST NOT add an MCP
+tool, MUST NOT change the `agent-braid-plugin/v0.2` or `agent-braid-tooling/v0.2`
+contracts, and MUST NOT publish to npm without OD-1.
+
+- **SC-013:** Given the built candidate, when its MCP tools and contracts are compared
+  with the previous release, then no tool is added, both contracts are unchanged and
+  no npm publication happens without OD-1.
+
+**REQ-013 No write to real host configuration.** Observation MUST NOT write to the
+owner's real Pi, ThinkRail or Gentle AI configuration.
+
+- **SC-014:** Given a capture run in a disposable profile, when the owner's real
+  configuration is compared before and after, then no file of it changed.
+
+**REQ-014 No secret in committed material.** The repository, an image and a capture
+file MUST NOT contain a secret.
+
+- **SC-015:** Given the capture script and its committed summary, when the repository,
+  an image and the capture files are scanned for secrets, then none is found; the
+  owner signs in in their own terminal and no key enters chat, the repository or a
+  file.
+
 ## Owner decisions (open)
+
+Open questions: OD-1 to OD-7, all open until T001 records the owner review.
 
 - **OD-1 Channel.** (a) Git install from `plugin-dist` with the bundled runtime, as
   SPEC-068 D3; (b) npm package; (c) local path only. Recommended: (a) first, since it
@@ -145,6 +193,40 @@ release that carries Pi follows alpha.10 and an explicit owner decision.
   T004, cited by ADR 0044 portability tiers.
 - **OD-7 Release.** Recommended: the first alpha after alpha.10 whose candidate
   passes REQ-008.
+
+## Non-functional requirements
+
+No performance or availability requirement is declared. The operational and quality
+constraints this spec states are: a disposable profile and private raw output
+(REQ-002), byte-identical files for the other hosts (REQ-003, REQ-011), a read-only
+diagnosis that writes nothing (REQ-006) and observation that never writes the owner's
+real configuration (REQ-013).
+
+## Security and privacy
+
+- Secrets: none in the repository, an image or a capture file; the owner signs in in
+  their own terminal and no key enters chat (REQ-014; Credentials risk below).
+- Authority: Pi has no permission layer; Agent Braid adds none and no host approval
+  is an operator grant (REQ-007, REQ-010).
+- Private data: raw session JSONL stays outside the repository; only a redacted shape
+  with hashes is committed (REQ-002).
+- Host configuration: observation never writes the owner's real configuration
+  (REQ-013); the installer writes only receipt-owned entries (REQ-005).
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Terms this spec introduces:
+
+- Pi: the pi coding agent, `earendil-works/pi`, npm `@earendil-works/pi-coding-agent`.
+- ThinkRail: the JetBrains incubator IDE that runs Pi in-process.
+- Pi package: a `package.json` declaring `skills` (and `extensions` only if OD-4 says
+  so) that `pi install` loads (REQ-003).
+- Capture row: one observation of REQ-002 in the matrix. Allowed values: observed,
+  contradicted, `unobserved` (REQ-002, REQ-008).
+- Install channels (OD-1): Git install from `plugin-dist`, npm package, local path.
+- Fallback without Pi core MCP (OD-3): skills plus the plugin `launch` CLI, a Pi
+  extension that bridges MCP, or stop.
+- Harness host registry tier: unqualified and offline only for Pi (REQ-005, REQ-009).
 
 ## Non-goals
 
@@ -166,6 +248,24 @@ tools, and changes to Gentle AI or its configuration.
   may expire.
 - **Credentials.** A Pi run needs a model provider. The capture uses the owner's
   own sign-in in their terminal; no key enters chat, the repository or a file.
+
+## Risks and assumptions
+
+Risk: the no-permission-layer limit (YOLO) leaves isolation to the operator (REQ-007, T010).
+Risk: unverified Pi and ThinkRail facts may be contradicted by the capture (REQ-002, T004).
+Risk: a multi-host configurator such as Gentle AI may remove or rewrite Agent Braid entries (REQ-006, T009).
+Risk: ThinkRail imports Claude and Codex skills, so skills may appear twice, and the incubator version may expire pinned observations (REQ-006, T011).
+Risk: a Pi run needs a model provider credential (REQ-014, T003).
+Assumption: Pi and ThinkRail facts come from vendor documentation read once on 2026-11-22 and hold only until REQ-002 observes them (REQ-002, T004).
+Assumption: the `agent-braid-plugin/v0.2` server and the seven packaged skills stay as released; the SPEC-080 harness skill is added only if SPEC-080 has merged (REQ-003, T006).
+Assumption: the owner runs the capture in a disposable profile with their own sign-in (REQ-002, T004).
+
+## Exit criteria
+
+Verification is complete when each of procedure_001 to procedure_009 in the
+[validation plan](validation-plan.md) has obtained evidence, passing or failing,
+recorded against its task in [tasks.md](tasks.md), and the release decision (T012)
+exists. A no-go is a valid outcome (REQ-008).
 
 ## Dependencies
 

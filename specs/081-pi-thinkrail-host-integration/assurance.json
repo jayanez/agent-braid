@@ -279,6 +279,102 @@
         }
       ],
       "text": "Native observation and conditional release. The built candidate is observed in Pi and ThinkRail in disposable profiles before release. The first release that carries Pi follows alpha.10 and an explicit owner decision."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "the harness host registry and the Pi and ThinkRail integration",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_006",
+          "then": "the request refuses and Pi stays unqualified and offline only.",
+          "when": "the registry is asked for a native Pi or ThinkRail harness session"
+        }
+      ],
+      "text": "No native harness sessions. The integration MUST NOT start native harness sessions for Pi or ThinkRail. Evaluation through Harbor's `pi` adapter belongs to SPEC-084."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a Pi package, extension, host approval or ThinkRail per-call approval is present",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "none is treated as an operator grant and `executionAuthorization` is false on every advisory result.",
+          "when": "an advisory result and the packaged text are inspected"
+        }
+      ],
+      "text": "No new Agent Braid authority. A Pi package, extension, host approval or ThinkRail per-call approval MUST NOT be treated as an operator grant, and `executionAuthorization` MUST stay false on every advisory result."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a build with the Pi target and the same build without it",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_004",
+          "then": "they are byte-identical, except added entries in inventory and provenance.",
+          "when": "the files read by Codex, Claude Code and OpenCode are compared"
+        }
+      ],
+      "text": "Other hosts' bytes unchanged. The integration MUST NOT change the bytes Codex, Claude Code or OpenCode read from the shared plugin artifact, other than added entries in inventory and provenance."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "the built candidate",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_005",
+          "then": "no MCP tool is added, `agent-braid-plugin/v0.2` and `agent-braid-tooling/v0.2` are unchanged, and no npm publication happens without OD-1.",
+          "when": "its MCP tools and contracts are compared with the previous release"
+        }
+      ],
+      "text": "No new tool, contract or publication. The integration MUST NOT add an MCP tool, MUST NOT change the `agent-braid-plugin/v0.2` or `agent-braid-tooling/v0.2` contracts, and MUST NOT publish to npm without OD-1."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a capture run in a disposable profile",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "no file of it changed.",
+          "when": "the owner's real Pi, ThinkRail and Gentle AI configuration is compared before and after"
+        }
+      ],
+      "text": "No write to real host configuration. Observation MUST NOT write to the owner's real Pi, ThinkRail or Gentle AI configuration."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "the capture script and its committed summary",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/081-pi-thinkrail-host-integration/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "none is found; the owner signs in in their own terminal and no key enters chat, the repository or a file.",
+          "when": "the repository, an image and the capture files are scanned for secrets"
+        }
+      ],
+      "text": "No secret in committed material. The repository, an image and a capture file MUST NOT contain a secret."
     }
   ],
   "scientific_limits": "Engineering observations for single pinned versions on one operator machine; they do not generalize to other versions or platforms, establish safety or utility, or qualify Pi for native harness sessions. A Codex review is independent model review, not human review or approval.",
