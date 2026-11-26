@@ -2,13 +2,24 @@
 
 **Milestone:** HAR.3 — Braid Harness adaptation and integration
 
-**Status:** draft planning. All implementation, native qualification, policy adoption and activation remain pending.
+**Status:** draft. Tasks T001–T011 are closed (T001 froze the contract; T002–T011 merged offline-only implementations) and T012 is open; native qualification, policy adoption and activation remain pending. `executionAuthorization` is false for every record these modules produce.
 
 ## Purpose and scope
 
 Extend Braid Harness through versioned task-local component profiles, measured deeper/wider refinement, interaction-aware delegated workflows, governed automatic-promotion software and opt-in product lifecycle integration.
 
-HAR.1/HAR.2 establish the bounded foundation and two-axis evidence. This milestone gives advanced capabilities explicit implementation ownership rather than leaving them as untracked future suggestions. Existing Codex/Claude and EUR 0 extra spend remain constraints. Deterministic engineering and native acceptance remain distinct; unsupported profiles cannot be activated.
+HAR.1/HAR.2 establish the bounded foundation and two-axis evidence. This milestone gives advanced capabilities explicit implementation ownership rather than leaving them as untracked future suggestions. Existing Codex/Claude and EUR 0 extra spend remain constraints (EUR 0 and the quota ceilings: REQ-009). Deterministic engineering and native acceptance remain distinct; unsupported profiles cannot be activated.
+
+Actors: the owner (founder), who decides and approves (owner-decisions records of 2026-11-08, 2026-11-13 and 2026-11-16, and the founder review in T012); independent model reviewers, Codex or Claude Code (D5, T012); the operator who opts in to install a profile and whose authority a promotion needs (T011, REQ-007); the human who observes workflow usability (T011, D6); and the consumer of the advisory contract, the opt-in module CLI (T010, D3); REQ-008 also names a plugin/MCP consumer, which does not exist (D3, E2).
+
+Exclusions and the requirement that covers each (partial coverage is stated):
+
+- Unsupported profiles MUST NOT be activated: REQ-001 covers refusal when the registry validates an unsupported profile. Activation of a promotion is covered by REQ-007. No requirement defines activation of other profile classes (see Open questions).
+- Spend beyond the reused ceilings and EUR 0 MUST NOT occur: REQ-009.
+- Canonical authorities, existing runtime grants, provider permissions and global host configuration MUST NOT change, and existing plugin, telemetry, forecasting and System 1 acceptance MUST NOT widen: REQ-010.
+- A new task-local executable or tool-loop profile MUST NOT run without an adopted effect contract and actual containment qualification: REQ-002 covers executable content running only in separately qualified containment; no requirement covers the adopted effect contract (see Open questions).
+- Native promotion MUST NOT activate without a separately adopted exact policy and operator authority: REQ-007.
+- Syntactic validation, a simulated sandbox, model confidence or issue closure MUST NOT be taken as proof of semantic safety: REQ-003 covers syntax validity for hook and plugin effects only; the rest is a scientific boundary below.
 
 ## Authorities
 
@@ -64,12 +75,117 @@ Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Planned
 
 Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Planned evidence only; obtained evidence: none.
 
+### REQ-009 — Keep native effort within the reused cost ceilings
+
+**SC-009 (spec only, see OQ-15):** Given a native unit or cohort is admitted under any profile, when it runs, then every unit MUST stay within 30 minutes of wall time, every session within 10 % of the 5-hour quota window and the cohort within 15 % of the weekly quota window, and the work MUST NOT incur additional cash beyond EUR 0; the further limits (cohort size, stop rule) are in [contracts/interface.md](contracts/interface.md) section 6.
+
+Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned evidence only; obtained evidence: none. Source: owner decision 3 of 2026-11-08.
+
+### REQ-010 — Do not widen existing authority
+
+**SC-010 (spec only, see OQ-15):** Given a component profile is compiled, installed, migrated or operated, when the work completes or refuses, then canonical authorities, existing runtime grants, provider permissions and global host configuration MUST remain unchanged, and existing plugin, telemetry, forecasting and System 1 acceptance MUST NOT widen.
+
+Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Planned evidence only; obtained evidence: none.
+
 ## Scientific boundaries and compatibility
 
 Deeper search, reusable workflows and automatic selection may fail to improve either primary axis. Registered equal-budget comparisons and complete costs must precede useful-native or economic claims. No generic model confidence, syntactic validation, simulated sandbox or issue closure proves semantic safety.
 
-Canonical authorities, existing runtime grants, provider permissions and global host configuration remain immutable. A new task-local executable or tool-loop profile requires an adopted effect contract and actual containment qualification. This spec cannot widen existing plugin, telemetry, forecasting or System 1 acceptance.
+Canonical authorities, existing runtime grants, provider permissions and global host configuration remain immutable (REQ-010). A new task-local executable or tool-loop profile requires an adopted effect contract and actual containment qualification. This spec cannot widen existing plugin, telemetry, forecasting or System 1 acceptance (REQ-010).
 
 ## Evidence and unresolved decisions
 
-Obtained acceptance evidence: none. Per-profile feasibility, supported host/OS/builds, admission limits, native source yield and future automatic-policy adoption remain pending and ordered in tasks.md. Capability closure requires implemented and reviewed scope; a no-go assessment leaves blocked implementation tasks visible.
+Obtained acceptance evidence: none recorded in `assurance.json` for any scenario. Offline task evidence exists: merged modules and tests for T002–T011 (T001 froze the contract), `evidence/t004.json`, `evidence/t009.json` to `evidence/t012.json`, `evidence/integration/portfolio-20261112.json` and the independent model review record `evidence/review/gpt6-d5-20261124.json`. It supports implemented-offline claims only; none of it qualifies or activates a profile. Per-profile feasibility, supported host/OS/builds, admission limits, native source yield and future automatic-policy adoption remain pending and ordered in tasks.md. Capability closure requires implemented and reviewed scope; a no-go assessment leaves blocked implementation tasks visible.
+
+Open questions: OQ-1 to OQ-18, in the section of that name below.
+
+## Owner decisions
+
+Decided. The chosen answers are in the owner decision records in this folder, which state the option chosen for each point, except the 2026-11-23 answer on D6, which is in the T012 note of `tasks.md`; the options offered for E1 are in [effect-contract-decision.md](effect-contract-decision.md), and for the other points the records restate the chosen option only. None of these decisions authorizes native execution, adopts an ADR or activates anything.
+
+- 2026-11-08 ([owner-decisions-20261108.md](owner-decisions-20261108.md)): freeze the T001 contract now with SPEC-049/T005 open; the feature-local ADR stays a proposal; the SPEC-049 D2 caps are reused for every profile; hooks, plugins/tool loops and delegated roles are blocked from the start.
+- 2026-11-13 ([owner-decisions-20261113.md](owner-decisions-20261113.md)): D1 tolerate no pending endpoints; D2 native chain, amended the same day to start now; D3 no top-level alias and T010 closed; D4 lifecycle retention is 30 days; D5 Luna review now over the merged offline portfolio, with a delta review after the native evidence (amended on 2026-11-26: any independent Codex or Claude Code model); D6 usability observation after the native wave; D7 activation policy and ADR when SPEC-049/T014 has results.
+- 2026-11-16 ([owner-decisions-20261116.md](owner-decisions-20261116.md)): E1 E3 effect contract drafted and the adapter implemented against deterministic doubles; E2 read-only MCP contract specified under its own spec and published only if D7 does not close the harness as experimental; E3 Codex reviews and verifies through repository packets, native Codex qualification becomes tasks in a later milestone.
+- 2026-11-23 ([evidence/t004.json](evidence/t004.json)): T004 closed offline-only; the native remainder moved to SPEC-084/T015.
+- 2026-11-23 (`tasks.md`, T012 note): D6 usability observation rescheduled to after alpha.10, with the SPEC-080 `harness` skill, about 20–30 guided minutes.
+- D7 was applied by SPEC-049 T007: the harness stays experimental and nothing is promoted ([evaluation report](../049-harness-evaluation-learning/evaluation-report.md)).
+- 2026-11-26 ([evidence/owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)): REQ-009 and REQ-010 added; independent model review stays required, by a Codex or Claude Code model.
+
+## Open questions
+
+Each is unresolved and owned by the founder unless another owner is named.
+
+- OQ-1 (REQ-002, REQ-003): should the adopted effect contract for a new executable or tool-loop profile have its own requirement? Today only the qualified-containment half is covered.
+- OQ-2 (REQ-001): should activation of a non-promotion profile have a requirement? Today REQ-001 covers refusal at validation only.
+- OQ-3 (D5, T012): Does the 2026-11-24 review by a Codex-run GPT-6 model, obtained instead of Luna over the merged offline portfolio at e79b33b0, meet D5 as amended on 2026-11-26? The delta review after the native evidence is pending. Owner: founder.
+- OQ-4 (T012): When are human review and founder approval of the portfolio recorded? Owner: founder.
+- OQ-5 (T011, D6): When does the human usability observation run? The 2026-11-23 owner answer in the T012 note of `tasks.md` schedules it after alpha.10 with the SPEC-080 `harness` skill, about 20–30 guided minutes. Owner: founder.
+- OQ-6 (T004, E1): Are the contract section 13 E3 draft adopted, a SPEC-065 re-qualification that pins the helpers done and one contained helper run recorded? Owner: SPEC-084/T015.
+- OQ-7 (T005): What are the observed hook and event schemas per host build (contract section 12, question 3)? The current matrices are placeholders.
+- OQ-8 (C3, C8): What is the pinned hash for `core/prompts.py`, and does `core/proposer.py` pass its fit review (contract section 12, question 4)?
+- OQ-9 (REQ-002): What are the per-class CPU, RSS and disk caps for E3 helpers (contract section 12, question 2)? They need a qualified containment.
+- OQ-10 (T001): Which ADR number does the proposal take at adoption (contract section 12, question 5)? Its "next available" note is out of date.
+- OQ-11 (REQ-002, REQ-003, REQ-004): Does the owner approve the provisional module-local limits: maxOps 64, timeoutMs 10000, input 16 KiB and writes 256 KiB (T004); the T005 hook and plugin bounds; MAX_ROLES 8 and the 256 KiB artifact ceiling (T006)? The search ceilings of depth 1 and width 1 are frozen in contract v0.1 section 6 and change only by versioned amendment (T007). Owner: founder.
+- OQ-12 (D1, T009): D1 ties the revisit of tolerating pending endpoints to SPEC-049/T014 measuring them, but T014 closed without measuring them and they moved to HAR.4 (SPEC-082 to SPEC-084). Does the revisit move with them? T009 still abstains with `pending-endpoints`. Owner: founder.
+- OQ-13 (REQ-008, E2): E2 publishes the read-only MCP contract only if D7 does not close the harness as experimental, and D7 was applied with the harness kept experimental. Does the owner confirm that the contract is therefore not published? Owner: founder.
+- OQ-14 (E3): Which later milestone receives the native Codex qualification tasks? Owner: founder.
+- OQ-15 (REQ-009, REQ-010): Which task carries these two requirements? No task carries their tags, so no task owns their verification yet, and `assurance.json` holds no SC-009 or SC-010: its bytes are bound to the preserved public draft candidate and a changed record does not inherit that validation route (SPEC_KIT.md, "Assurance record"). Adding the scenarios needs a separately reviewed re-snapshot of the record. Owner: orchestrator with the founder.
+- OQ-16: Does this feature need a performance or availability requirement? None is recorded in this spec. Owner: founder.
+- OQ-17 (REQ-008, D4): Do the 30-day lifecycle retention (D4) and the contract section 10 export rule (secret inventory, no personal or credential material) each need their own MUST requirement? Owner: founder.
+- OQ-18 (T011, D4): Does the 30-day lifecycle retention of D4 also set retention and purge for lessons, traces and trial data (contract section 12, question 1)? Owner: founder.
+
+## Non-functional requirements
+
+The recorded operational constraints are REQ-009 (native time, quota and cash ceilings) and REQ-010 (no widening of existing authority). Context budgets for lazy loading are stated in REQ-002 and bounded costs in REQ-005. The module-local limits of T004 to T006 are provisional, see OQ-11; the search ceilings are frozen in contract section 6. No performance or availability requirement is recorded, see OQ-16.
+
+## Security and privacy
+
+- Private export controls for lifecycle and CLI operation: REQ-008.
+- Executable content runs only in separately qualified containment, never from prompt permission alone: REQ-002.
+- Hooks and plugins deny recursive privilege expansion: REQ-003.
+- Existing grants, provider permissions and global host configuration stay unchanged: REQ-010.
+- Retention of lifecycle records is 30 days, followed by a human purge that keeps the digest receipt (D4, T011). REQ-008 names private export controls but no retention requirement, so D4 is not covered by a requirement; see OQ-17.
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Component profile: a versioned task-local inventory of guidance, memory, skills, tools, hooks, delegated roles or plugins (REQ-001).
+- Protected layer: an immutable layer that local rules cannot weaken (REQ-001).
+- Serial reference: the serial execution against which delegated workflows are checked (REQ-004).
+- Keep-base decision: a recorded decision to keep the base instead of a variant (REQ-005).
+- Admission state: the per-class, host and profile-version state recorded by the contract (T001).
+- `executionAuthorization`: the record field that is false for advice and for every record these modules produce (T010, T011).
+
+Values named in this spec:
+
+- Component kinds named in REQ-001: guidance, memory, skills, tools, hooks, delegated roles, plugins. The contract inventories classes C1 to C12 (contract section 3).
+- Admission states named in T001 and contract section 2: implemented, qualified, enabled, blocked, excluded.
+- Effect classes of contract section 7: E0, E1, E2, E3, E4, E5 (E5 is excluded for every profile).
+- Refinement variants named in REQ-005: sequential-depth, parallel-width, one-round.
+- Drift states named in REQ-006: stale, contradictory, oversized, inapplicable.
+- Promotion evaluation states named in REQ-007: shadow, canary; T009 adds disabled and stopped, and `active` is unreachable.
+- Product consumers named in REQ-008: CLI, plugin/MCP.
+- Lifecycle events named in REQ-008: installation, migration, operation, drift, uninstall.
+- Hosts: `claude` (pinned 2.1.292) is the only host the offline modules accept, and it is not qualified; `codex` is refused for task-local components (T002, T005): it is not installed in the contained lab, and its native qualification is deferred to a later milestone (E3).
+- Dispositions seen in evidence, not a closed list: `offline-only` (T004), `implemented-offline-not-activated` (T011), `validated-offline-with-explicit-gaps` (T012).
+
+## Risks
+
+- Risk: deeper search, reusable workflows and automatic selection may fail to improve either primary axis (REQ-005, REQ-007).
+- Risk: source yield and hidden provider revisions limit inference (REQ-005).
+- Risk: structural tests are not semantic or human approval (REQ-008).
+- Risk: an internally consistent forged report is not detected by the promotion engine, and actor, checker, ledgers, spend, incident flag and tick are caller-asserted (REQ-007, T009).
+- Risk: the trust registry is hygiene on self-asserted ids, cue conflict is normalized-string only and held-out lists are caller-declared, so the temporal comparison is synthetic (REQ-006, T008).
+- Risk: the host event matrices are placeholders modeled but not observed (REQ-003, T005).
+- Risk: the SPEC-065 qualification covers one host build and needs requalification when the build changes (REQ-008).
+
+## Assumptions
+
+- Assumption: sources are owner-controlled and hosts are qualified local hosts only (REQ-001, REQ-002).
+- Assumption: authorities are immutable and policies are frozen (REQ-001, REQ-010).
+- Assumption: no provider permission, containment support or positive utility is inferred (REQ-002, REQ-005, REQ-008).
+
+## Exit criteria
+
+Verification is complete when each of procedure_req_001 to procedure_req_010 in the [validation plan](validation-plan.md) has obtained evidence, passing or failing, recorded against its task in [tasks.md](tasks.md), and T012 is closed. REQ-009 and REQ-010 first need a task that carries their tags (OQ-15). T012 closes when its acceptance in tasks.md is met and these are recorded: the delta independent model review after the native evidence, human review and founder approval of the portfolio, the human usability observation (D6) and a stable `pr`-profile result. A negative, inconclusive or infeasible result completes verification as a finding and leaves blocked implementation tasks visible; it does not close a task by relabeling.
