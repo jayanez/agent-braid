@@ -296,6 +296,54 @@
         }
       ],
       "text": "Conditional publication: only with SPEC-049 T014 results, a D7 outcome that does not close the harness as experimental, REQ-009 passed, the Codex review resolved and owner acceptance; otherwise a recorded no-publish outcome."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "the implemented candidate and both tool listings",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/077-harness-mcp-readonly/validation-plan.md",
+          "test_name": "procedure_010",
+          "then": "the portable listing equals its v0.2 tool set and no host instruction, configuration, permission or HARNESSING.md claim file changed.",
+          "when": "the candidate diff and the listings are inspected"
+        }
+      ],
+      "text": "Surfaces and configuration left untouched. The four tools are plugin-owned and are not added to the portable agent-braid-tooling server; global host instructions, host configuration, host permissions and docs/tooling/HARNESSING.md claims are not changed before publication."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "workspace-relative paths, sha256 values and every refusal path",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/077-harness-mcp-readonly/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "no result contains a submitted value, an absolute host path or contents outside the view fields.",
+          "when": "each tool is called"
+        }
+      ],
+      "text": "Results carry no submitted values or host paths. No result, success or refusal, contains a submitted argument value, an absolute host path or file contents beyond the CLI view's own fields."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a host that approved the tool call",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/077-harness-mcp-readonly/validation-plan.md",
+          "test_name": "procedure_012",
+          "then": "the result keeps executionAuthorization false and the call has no effect.",
+          "when": "the call runs"
+        }
+      ],
+      "text": "Host approval grants nothing. Host tool approval does not change any invariant of the contract: no effect, no authority, same tool set."
     }
   ],
   "scientific_limits": "H1 (trivial arguments reach the D4 validity target on all three hosts) is a hypothesis REQ-009 may refute. Three hosts with one model each; validity results are descriptive. A Codex review is independent model review, not human review or approval.",

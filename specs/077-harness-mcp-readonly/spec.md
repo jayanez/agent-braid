@@ -6,8 +6,10 @@ decision D3 of [SPEC-050](../050-braid-harness-adaptation/owner-decisions-202611
 named M4.8, which is the AIM request-authoring milestone, a loose fit; D3's
 requirement of its own versioned contract stands).
 
-**Status:** draft. Contract only; nothing is implemented or published by this
-specification's first PR. Publication is conditional (REQ-010).
+**Status:** closed, not published (2026-11-22, T008). Contract only; nothing is implemented or published by this
+specification's first PR. Publication is conditional (REQ-010). Closed as "not
+published" on 2026-11-22 (T008; [evidence/t008-publication.json](evidence/t008-publication.json)).
+The contract stays as design history.
 
 ## Purpose and scope
 
@@ -185,6 +187,81 @@ specification closes with a recorded no-publish outcome; that is a valid result.
   it cites each condition's evidence, and a failing condition yields "not published"
   with the implementation left unreleased.
 
+## Requirements: exclusions and result content
+
+**REQ-011 Surfaces and configuration left untouched.** The four tools MUST be
+plugin-owned and MUST NOT be added to the portable `agent-braid-tooling` server.
+The implementation MUST NOT change global host instructions, host configuration,
+host permissions or the claims of `docs/tooling/HARNESSING.md` before publication.
+
+- **SC-011:** Given the implemented candidate and both tool listings, when the diff
+  and the listings are inspected, then the portable listing equals its `v0.2` tool
+  set and no host instruction, configuration, permission or `HARNESSING.md` claim
+  file changed.
+
+**REQ-012 Results carry no submitted values or host paths.** A result, success or
+refusal, MUST NOT contain a submitted argument value, an absolute host path or file
+contents beyond the CLI view's own fields (contract, section 2, invariant 5).
+
+- **SC-012:** Given workspace-relative paths, `sha256` values and every refusal path,
+  when each tool is called, then no result contains a submitted value, an absolute
+  host path or contents outside the view fields.
+
+**REQ-013 Host approval grants nothing.** Host tool approval MUST NOT change any
+invariant of the contract: no effect, no authority and the same tool set (contract,
+section 2, invariant 6).
+
+- **SC-013:** Given a host that approved the tool call, when the call runs, then the
+  result keeps `executionAuthorization` `false` and the call has no effect.
+
+## Non-functional requirements
+
+Operational and quality constraints, each with its source:
+
+- Tool description at most 2,048 UTF-8 bytes (REQ-004).
+- Serialized result at most 65,536 bytes, never truncated; input bounds of 1 MiB per
+  record, 256 evidence files, 1,024 entries and depth 4 (REQ-007).
+- Refusal message at most 1,024 characters (REQ-008).
+- Read-only: no write, lock, clock, host, model, network or subprocess (REQ-003).
+- Result equal to the CLI view for the same input bytes (REQ-006).
+- Host validity target: at least 8 of 10 prompts valid at the first attempt and 10 of
+  10 within one refusal-guided retry, per host, unless OD-2 revises it (REQ-009).
+
+## Security and privacy
+
+- Every result carries `executionAuthorization: false`; no promotion, activation or
+  grant (REQ-003).
+- Paths stay under the registered source root, without following links; missing,
+  link, special-file and outside-root cases return one identical refusal (REQ-005).
+- Refusals never echo argument values; unknown keys appear only as `<key:digest8>`
+  (REQ-008).
+- No result holds a submitted value, an absolute host path or extra file contents
+  (REQ-012).
+- Host tool approval is not an operator grant (REQ-013).
+- No change to host instructions, configuration or permissions (REQ-011).
+- A matched `sha256` binds bytes, not authenticity (Observation contract, below).
+
+## Terminology
+
+- **Harness views:** the four advisory views `capabilities`, `registry-status`,
+  `evaluation-summary` and `evidence` of the `agent-braid harness` CLI (REQ-002).
+- **Tools:** `harness-capabilities`, `harness-registry-status`,
+  `harness-evaluation-summary` and `harness-evidence` (REQ-002).
+- **Result contract:** `agent-braid-harness-mcp/v0.1`, carried as `harnessContract`;
+  the plugin envelope stays `agent-braid-plugin/v0.2` (OD-1).
+- **Plugin facade:** the native plugin MCP server; the portable server is
+  `agent-braid-tooling` (REQ-011).
+- **Structural refusal:** arguments do not match the schema; reasons are
+  `invalid-argument`, `unknown-argument` and `missing-argument` (REQ-008).
+- **Semantic refusal:** the input file or its content is refused; reasons are the
+  CLI's fixed codes (for example `input-unreadable`, `output-too-large`,
+  `unknown-workspace`); the list is defined by the CLI and the contract, section 6
+  (REQ-006, REQ-008).
+- **Refusal pointer:** an RFC 6901 JSON Pointer into the call arguments, empty when
+  no argument applies (REQ-008).
+- **Held-out set:** the frozen prompt set of REQ-009.
+- Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md).
+
 ## Scientific boundaries and compatibility
 
 - **Hypotheses.** H1: tools with trivial flat arguments and the schema in the
@@ -203,7 +280,8 @@ specification closes with a recorded no-publish outcome; that is a valid result.
 ## Evidence and unresolved questions
 
 Planned and obtained evidence are separate in [assurance.json](assurance.json).
-Owner decisions the contract needs:
+Open questions: see [Open questions](#open-questions). Owner decisions the contract
+needs:
 
 - **OD-1 Surface and version.** Recommended: plugin facade only, additive under
   `agent-braid-plugin/v0.2`, own result contract `agent-braid-harness-mcp/v0.1`; no
@@ -217,5 +295,45 @@ Owner decisions the contract needs:
   count as `other`. Recommended: add the four names in the same batch-schema change
   as the harness CLI telemetry track, so the schema bumps once.
 - **OD-5 Release.** Which release carries the surface if the gate passes.
-- **OD-6 ADR 0043.** Stays Proposed until the gate; accepted or rejected with the
-  publication decision.
+- **OD-6 ADR 0043.** Rejected 2026-11-22 (T008, [evidence/t008-publication.json](evidence/t008-publication.json)).
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects. Sources: [research.md](research.md)
+limits R1 to R6 and the assumptions above.
+
+- Risk: "Additive" under `agent-braid-plugin/v0.2` is a contract reading, not a host
+  observation; installed verifiers that count plugin tools change (REQ-002, T005).
+- Risk: Simple arguments do not guarantee validity; the held-out run may refute H1
+  (REQ-009, T007).
+- Risk: Hosts truncate long tool output silently near the output cap, which would hide
+  entries without a marker (REQ-007).
+- Risk: Races with a concurrent writer inside the user's own workspace are outside the
+  threat model, as for the CLI (research.md R3).
+- Risk: Until the SPEC-047 operation names are added, harness MCP calls are invisible
+  as such in telemetry (OD-4, T005).
+- Risk: Three hosts with one model each; validity results are descriptive (REQ-009,
+  T007).
+- Assumption: The plugin facade keeps requiring an explicit registered `workspaceId`
+  (REQ-005, T003).
+- Assumption: The SPEC-049 T009 CLI views stay as merged (REQ-006).
+- Assumption: No CLI-versus-MCP baseline exists (SPEC-044 T005 never ran); the
+  surface choice rests on counterfactual analysis ([Clarifications](#clarifications)).
+
+## Exit criteria
+
+Closed: the "not published" record
+[evidence/t008-publication.json](evidence/t008-publication.json) (T008, REQ-010) and
+the Codex contract review record (T002) exist. If the surface is reopened,
+verification is complete when the obtained evidence listed in the
+[validation plan](validation-plan.md) exists for procedures 001 to 012, which cover
+SC-001 to SC-013, and a new publication decision is recorded. Passing checks are not
+approval.
+
+## Open questions
+
+- OD-1 to OD-5 (listed under
+  [Evidence and unresolved questions](#evidence-and-unresolved-questions)): undecided;
+  they moved to Deferred with T001 (T008 record, 2026-11-22). Owner: the founder, if
+  the surface is reopened.
+- OD-6 ADR 0043: decided, rejected (T008, 2026-11-22). No open question.

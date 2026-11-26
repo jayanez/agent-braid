@@ -64,8 +64,11 @@ is fitted. The held-out validity run (REQ-009) is a measurement with a frozen se
 | REQ-006 | SC-006 | `tests/test_harness_mcp.py::test_cli_parity` | `evidence/t004.json` |
 | REQ-007 | SC-007 | `tests/test_harness_mcp.py::test_output_bound` | `evidence/t004.json` |
 | REQ-008 | SC-008 | `tests/test_harness_mcp.py::test_refusal_pointer_and_redaction` | `evidence/t004.json` |
-| REQ-009 | SC-009 | validation-plan procedure_009 (three hosts) | `evidence/heldout-*.json` |
-| REQ-010 | SC-010 | validation-plan procedure_010 | `evidence/t008-publication.json` |
+| REQ-009 | SC-009 | validation-plan procedure_007 (three hosts) | `evidence/heldout-*.json` |
+| REQ-010 | SC-010 | validation-plan procedure_008 | `evidence/t008-publication.json` |
+| REQ-011 | SC-011 | validation-plan procedure_010 | `evidence/t003.json` |
+| REQ-012 | SC-012 | validation-plan procedure_011 | `evidence/t004.json` |
+| REQ-013 | SC-013 | validation-plan procedure_012 | `evidence/t004.json` |
 
 Negative controls: each guard (link refusal, `..`, cap, pointer redaction, tool-set
 exactness) has a test that fails when the guard is removed (mutation check recorded in

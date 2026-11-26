@@ -15,3 +15,6 @@ not prove safety or utility and are not approval.
 | procedure_007 | SC-009 | automated driver, 10 prompts × 3 repetitions per host (T007) | target of OD-2 met per host | a forbidden-effect prompt answered with a harness call presented as the effect |
 | procedure_008 | SC-010 | publication decision record (T008) | each gate condition cites evidence | publication with T014 missing or D7 closing the harness |
 | procedure_009 | SC-010 | docs and capability-field update tests (T009) | `pluginOrMcpSurface` matches the published state | field reports a surface that is not published |
+| procedure_010 | SC-011 | candidate diff and listing review (T003) | portable `agent-braid-tooling` listing unchanged; no host instruction, configuration, permission or `HARNESSING.md` claim changed | a harness tool on the portable server or a host file edited |
+| procedure_011 | SC-012 | `tests.test_harness_mcp` result-content check (T004) | no result holds a submitted value, an absolute host path or contents outside the view | a refusal or view echoing a submitted value or host path |
+| procedure_012 | SC-013 | `tests.test_harness_mcp` host-approval check (T004) | `executionAuthorization` false and no effect after host approval | approval treated as an operator grant |

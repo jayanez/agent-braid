@@ -21,16 +21,17 @@ No task here launches a native host, issues a grant or publishes before T008.
 
 ## Phase P1 — implementation (unpublished)
 
-- [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005): Implement the adapter and the four plugin-owned tools. Dependencies: T001 (OD-1,
+- [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005 REQ-011 / SC-011): Implement the adapter and the four plugin-owned tools. Dependencies: T001 (OD-1,
   OD-3), T002 confirmed findings applied to the contract. Target files:
   `agent_braid/harness_mcp.py`, `agent_braid/plugin_mcp.py`. Frozen harness files
-  untouched. `harness capabilities` keeps `pluginOrMcpSurface: "none"`.
-  Verification: procedure_003. Planned evidence: `evidence/t003.json`.
-- [ ] T004 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007 REQ-008 / SC-008): Tests: exact tool set, no effects,
+  untouched; the portable server and host configuration are not changed (REQ-011).
+  `harness capabilities` keeps `pluginOrMcpSurface: "none"`.
+  Verification: procedure_003, procedure_010. Planned evidence: `evidence/t003.json`.
+- [ ] T004 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007 REQ-008 / SC-008 REQ-012 / SC-012 REQ-013 / SC-013): Tests: exact tool set, no effects,
   flat schema in description, path containment, CLI parity (differential), output
-  bound, refusal pointer and redaction; one mutation control per guard. Target file:
-  `tests/test_harness_mcp.py`. Dependencies: T003. Verification: procedure_004, then
-  `quick`. Planned evidence: `evidence/t004.json`.
+  bound, refusal pointer and redaction, result content, host approval; one mutation control per guard. Target file:
+  `tests/test_harness_mcp.py`. Dependencies: T003. Verification: procedure_004, procedure_011,
+  procedure_012, then `quick`. Planned evidence: `evidence/t004.json`.
 - [ ] T005 (REQ-002 / SC-002 REQ-007 / SC-007): Update installed verifiers and plugin
   tests that count plugin tools; telemetry names per OD-4. Dependencies: T003, OD-4.
   Verification: procedure_005. Planned evidence: `evidence/t005.json`.
