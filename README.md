@@ -51,11 +51,10 @@ what it reads, writes and creates, and under which conditions — so conflicts,
 dependencies and safe orderings are computed rather than guessed.
 
 Agent Braid also supports an opt-in **System One** decision layer in shadow mode:
-a fast, on-device layer that is meant to answer routine coordination questions
-from Agent Braid's own work history, while the exact analysis above (System 2)
-keeps the final say. Today it only records structural decision episodes beside
-each analysis so the owner can measure it; it has no learned model yet, never
-changes a result and never grants authority.
+a fast, on-device layer meant to answer routine coordination questions from Agent
+Braid's own work history, while the exact analysis above (System 2) keeps the final
+say. It records structural decision episodes beside each analysis, never changes a
+result and never grants authority. Its current state is in [STATUS](docs/STATUS.md).
 
 ## ✨ What Agent Braid gives you
 
@@ -77,20 +76,18 @@ changes a result and never grants authority.
   own loop.
 - **Try a decision layer without trusting it.** The opt-in System One shadow mode
   records one structural episode per analysis on this machine, with no names or
-  paths, and reports counts only. Its reference backend abstains: there is no
-  learned model, accuracy or calibration claim yet, and confidence never grants
-  authority. See [System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md).
+  paths, and reports counts only. Confidence never grants authority. See [System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md).
 - **Study agent harnesses offline.** The experimental Braid Harness laboratory
-  records, verifies and compares harness variants on deterministic fixtures, with
-  no native host, no paid route and no promotion without a human decision. See
+  records, verifies and compares harness variants, with no paid route and no
+  promotion without a human decision. See
   [Harnessing](docs/tooling/HARNESSING.md).
 - **Improve agent guidance from rewards, under human control.** Braid Lightning,
   adapted from [microsoft/agent-lightning](https://github.com/microsoft/agent-lightning)
   (MIT), is an opt-in reinforcement-learning layer that will optimize the guidance
   Agent Braid gives agents from recorded rollouts and verifiable rewards, on your
   host subscription with no extra spend, and promote nothing without a human
-  decision. Today you can enable and configure it (`plugin setup --lightning lab`,
-  `lightning init`); rollouts and optimization are specified and planned. See
+  decision. Enable it with `plugin setup --lightning lab` and configure it with
+  `lightning init`; what has run so far is in [STATUS](docs/STATUS.md). See
   [Braid Lightning](docs/tooling/LIGHTNING.md).
 - **Stay local and minimal.** The core uses only Python's standard library.
   Decision diagnostics, workload forecasting and usage telemetry are opt-in, off
@@ -102,7 +99,7 @@ simulator for workloads with external effects, and evaluation contracts for
 measuring real owned work. A read-only activity viewer, **Loom**, runs on
 loopback (`agent-braid view serve`): a live dashboard of Claude Code sessions and
 subagents, the analysis plans and their predicted collisions, and an Explore 3D
-view. Plan maps work the same from Codex and OpenCode; their live sessions, OpenTelemetry ingest, recording and export are still in development. They share the same
+view. Which hosts feed live sessions is in the [viewer guide](docs/tooling/VIEWER.md#hosts). They share the same
 rule as everything else: none of them can authorize execution on its own.
 
 ## 🚀 Quick start
@@ -252,13 +249,10 @@ install from "Use the CLI directly" below (`agent-braid` is `.venv/bin/agent-bra
 there); steps 2 and 3 also need the tutorial fixture that defines `$DEMO_DIR`, and
 can be re-run independently.*
 
-**Status of this install path.** Install, update, removal and reinstall have been
-observed in Claude Code and Codex, and install, interactive skill and command use,
-update and removal in OpenCode, on macOS arm64 (records in
-[specs/046-native-ai-plugins](specs/046-native-ai-plugins/) and the
-[OpenCode native observation](specs/068-opencode-native-integration/evidence/native-observation.json)).
-Linux execution has not been observed. Always install the latest release; the commands
-above do.
+**Status of this install path.** Which host and platform combinations have been
+observed, and which have not, is recorded with dates and evidence in
+[STATUS](docs/STATUS.md#native-plugin-release). Always install the latest release;
+the commands above do.
 
 <details>
 <summary><strong>Use the CLI directly (Python 3.12+)</strong></summary>
@@ -392,7 +386,7 @@ or experimental, and none of it can authorize execution.
 2. **Attempt.** Context assembly feeds a deterministic fixture runner with `simulated` containment. A native Claude backend (SPEC-065) is built but refuses until it is qualified.
 3. **Record.** Each attempt writes a hash-chained journal and observation records with loss and privacy accounting.
 4. **Evaluate.** Verifiers and cost reconciliation produce an evaluation report (`harness evaluation-summary`, `harness compare`).
-5. **No promotion yet.** No verdict promotes or activates a profile; the human promotion step is not delivered. See [Harnessing](docs/tooling/HARNESSING.md).
+5. **Promote by human decision only.** No verdict promotes or activates a profile by itself. State of the promotion step: [STATUS](docs/STATUS.md). See [Harnessing](docs/tooling/HARNESSING.md).
 
 </details>
 
@@ -407,9 +401,9 @@ or experimental, and none of it can authorize execution.
 
 1. **Opt in.** `plugin setup --lightning lab` records consent; the MCP server never starts a run.
 2. **Configure.** `agent-braid lightning init` is a wizard modelled on Agent Lightning's trainer configuration, simplified (no Kubernetes, no GPU trainer): target guidance, hosts, algorithm, budgets and trace consent, with EUR 0 spend, the subscription route and human promotion fixed.
-3. **Roll out and reward (BL.1, delivered with fake hosts).** Headless host runs are scored by verifiable rewards only; any `*_API_KEY` is refused.
-4. **Optimize (BL.2, negative result).** GEPA (primary) and APO propose guidance candidates; a preregistered frozen held-out evaluation decides, and a null result is valid. The first run (2026-11-13, Claude Code) found no improvement: no arm met D4 on held-out, so H1 is not supported and no candidate goes to promotion.
-5. **Promote (BL.3, planned; no candidate yet).** Only a human decision through the HAR profile registry ships a candidate, with rollback. Weight-level GRPO on a local GPU is deferred (ADR 0042). See [Braid Lightning](docs/tooling/LIGHTNING.md) and the [program](specs/070-braid-lightning-foundations/program.md).
+3. **Roll out and reward (BL.1).** Headless host runs are scored by verifiable rewards only; any `*_API_KEY` is refused.
+4. **Optimize (BL.2).** GEPA (primary) and APO propose guidance candidates; a preregistered frozen held-out evaluation decides, and a null result is valid.
+5. **Promote (BL.3).** Only a human decision through the HAR profile registry ships a candidate, with rollback. Weight-level GRPO on a local GPU is deferred (ADR 0042). Results to date are in [STATUS](docs/STATUS.md). See [Braid Lightning](docs/tooling/LIGHTNING.md) and the [program](specs/070-braid-lightning-foundations/program.md).
 
 </details>
 
@@ -432,7 +426,7 @@ shows the same lanes in depth.
 3. **See plans.** The plugin's `analyze-work` reports appear as plan maps: operations in dependency order, with "may collide", "must wait" and "independent" pairs. No time is invented for a plan.
 4. **Explore.** The Explore 3D view shows the same lanes in depth, with camera presets and fly-to-selected.
 
-The viewer is read-only, keeps no access log and makes no speedup claim; every event carries `executionAuthorization: false`. Plan maps work the same from Claude Code, Codex and OpenCode; live threads come from Claude Code only for now, with Codex and OpenCode planned ([hosts](docs/tooling/VIEWER.md#hosts)). OpenTelemetry ingest, recording and export are not available yet. Guide: [docs/tooling/VIEWER.md](docs/tooling/VIEWER.md); spec: [SPEC-061](specs/061-activity-viewer/spec.md).
+The viewer is read-only, keeps no access log and makes no speedup claim; every event carries `executionAuthorization: false`. Supported hosts and limits: [hosts](docs/tooling/VIEWER.md#hosts). Guide: [docs/tooling/VIEWER.md](docs/tooling/VIEWER.md); spec: [SPEC-061](specs/061-activity-viewer/spec.md).
 
 </details>
 
@@ -482,12 +476,12 @@ command's required artifacts, destinations and acknowledgements.
 
 System One shadow mode is off by default. After `plugin setup --system-one shadow` (or `python -m agent_braid.tooling_mcp --system-one shadow` for the standalone server) and a reconnect, each successful `analyze-work` call also appends one closed-vocabulary structural episode to `~/.local/share/agent-braid/system-one/`, with 30 UTC dates retained and no upload; the write runs on a background worker, off the request path, and is dropped when that worker is busy. Episodes include structural features (per-side effect kinds, resource classes and path-shape counts) and per-repository salted pseudonymous resource hashes; the salt and episodes stay on this machine and `system-one purge` removes both. Every MCP envelope stays byte-identical, the reference backend only abstains, and no execution authority changes.
 
-The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
-are `0.2.0-draft`; the package version is `0.1.0a2`. The native plugin is versioned
-separately: the latest release is on the [tags page](https://github.com/jayanez/agent-braid/tags)
-and in the plugin badge above, and the rollback target is in
-[NATIVE_PLUGINS.md](docs/tooling/NATIVE_PLUGINS.md); `plugin-status` reports
-the package as `version` and the plugin as `pluginVersion`. The public CLI does not
+The analyzer/runtime contract is `0.1.0-alpha` and AIM and certificate contracts
+are `0.2.0-draft`. The Python package version is in [pyproject.toml](pyproject.toml).
+The native plugin is versioned separately: the latest release is on the
+[tags page](https://github.com/jayanez/agent-braid/tags) and in the plugin badge
+above, and the rollback target is in [NATIVE_PLUGINS.md](docs/tooling/NATIVE_PLUGINS.md);
+`plugin-status` reports the package as `version` and the plugin as `pluginVersion`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.
 
@@ -532,7 +526,7 @@ demonstrate a useful parallel speedup, and the project says so. The
 | Turn on optional local diagnostics | [Telemetry](docs/tooling/TELEMETRY.md) · [System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md) · [Forecast operations](docs/forecast/OPERATIONS.md) |
 | Reproduce experiments | [Bounded laboratory](research/lab/README.md) · [Experiment protocol](docs/experiments/PROTOCOL.md) · [External reproduction](docs/releases/EXTERNAL_REPRODUCTION.md) |
 | Explore the research programme | [Research](RESEARCH.md) · [Mathematical foundations](MATHEMATICAL_FOUNDATIONS.md) · [References](research/REFERENCES.md) |
-| Follow progress and direction | [Project status](docs/STATUS.md) · [Roadmap](ROADMAP.md) · [Open-tooling strategy](docs/strategy/OPEN_TOOLING_STRATEGY.md) |
+| Follow progress and direction | [Project status](docs/STATUS.md) · [Roadmap](ROADMAP.md) · [Documentation map](docs/README.md) · [Open-tooling strategy](docs/strategy/OPEN_TOOLING_STRATEGY.md) |
 | Contribute under the project rules | [Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Terminology](TERMINOLOGY.md) |
 
 ## 🤝 Contributing
@@ -554,7 +548,7 @@ report vulnerabilities.
 
 ```text
 agent_braid/   Analyzer, Git replay, structured exchange, private runtime and MCP
-docs/          Architecture, ADRs, operational guides, theory and release records
+docs/          Architecture, ADRs, operational guides, theory and release records (map: docs/README.md)
 examples/      Portable fixtures, positive/negative controls and runtime tutorial
 research/      Finite laboratory, hypotheses, benchmarks, counterexamples and radar
 schemas/       Versioned machine-readable contracts

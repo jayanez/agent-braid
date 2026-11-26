@@ -1,9 +1,11 @@
 # Roadmap
 
 The roadmap follows evidence, not calendar promises. Milestones are exit-criterion driven.
-
-The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all
-44 specs to the 19 registered GitHub milestones. Titles follow `ID — Capability`;
+This file holds the plan. Current state, with dates and evidence, is in
+[docs/STATUS.md](docs/STATUS.md) (counts of specs and milestones: its
+[current-state section](docs/STATUS.md#current-state--2026-11-26)); the
+[spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps every
+spec to its GitHub milestone. Titles follow `ID — Capability`;
 track prefixes do not establish an implementation sequence. Historical closure
 records retain their original names, scope and decisions.
 
@@ -216,7 +218,7 @@ Synthetic-only T002/#182 trainer/inference and T004/#184 verifier-boundary
 software is complete, with 115 focused controls passing and a final clean-clone
 reproduction recorded. The software is not wired into the CLI and does not adapt
 real feeds; zero real pairs are admitted. T001/#181, T007/#188, T003/#183 and
-T005/#185 remain open, as do parent #180 and milestone 9. A score remains
+T005/#185 remain open (open work sits in Deferred #24 since the closure of milestone 9 on 2026-10-31, #803). A score remains
 heuristic; the deterministic verifier alone supplies bounded exchange
 evidence. No external service or third-party model is integrated, and none ever will be (owner direction 2026-11-01); Laya and Jev are design references only (see the System 1 track below).
 
@@ -317,23 +319,16 @@ SPEC-039–044 completion. See [installation](docs/tooling/NATIVE_PLUGINS.md) an
 [alignment](specs/046-native-ai-plugins/m45-alignment.md). This extension does not
 close M4.5 or satisfy its pending registered native/human evaluation.
 
-**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
-M4. The original six-spec portfolio, its two evaluation follow-ups, the 19 native-plugin
-tasks, ten telemetry tasks, ten SPEC-054 naming tasks and eleven draft SPEC-060
-portable prompt name tasks now total 131 obligations across ten source specs:
-102 checked and 29 open, with three historically closed parents, the closed
-SPEC-054 parent and six open parents.
-These are source states, not a remote issue readback.
-SPEC-039/040/042 retain their recorded bounded acceptance; remote issue state is
-tracked separately. Candidate-bound local technical procedures and
-fresh package checks have passed in their recorded domains. Native Codex/Claude
-acceptance, human interpretation, remaining founder decisions and milestone closure remain
-pending. Telemetry remains default-off and pilot **NO-GO**; SPEC-044/T017,
-SPEC-044/T018 and SPEC-047/T010 remain open. [Existing Luna review and integration
-provenance](specs/047-local-technical-telemetry/integration-review.md) retain their
-exact candidate scope. ADR 0025 remains proposed. The owner selected Codex and
-Claude Code for v1 on 2026-10-08. This work does not accept ADR 0021 or change
-M4's historical G4 NO-GO.
+**Status:** [milestone 19](https://github.com/jayanez/agent-braid/milestone/19), adjacent
+to M4; its state and task counts are in [STATUS](docs/STATUS.md#milestones-on-github-2026-11-26)
+(closed 2026-10-31, #799 and #800, with remaining specs mapped to Deferred #24).
+SPEC-039/040/042 retain their recorded bounded acceptance. Native Codex/Claude
+acceptance and human interpretation are not recorded. Telemetry remains default-off
+and pilot **NO-GO**; SPEC-044/T017, SPEC-044/T018 and SPEC-047/T010 remain open.
+[Existing Luna review and integration provenance](specs/047-local-technical-telemetry/integration-review.md)
+retain their exact candidate scope. ADR 0025 status is in [the ADR](docs/adr/0025-local-technical-telemetry.md).
+The owner selected Codex and Claude Code for v1 on 2026-10-08. This work does not
+accept ADR 0021 or change M4's historical G4 NO-GO.
 
 **Objective:** make the existing bounded analysis, planning, execution, recovery
 and evidence capabilities discoverable and usable through these two local hosts.
@@ -391,8 +386,9 @@ runtime effect is admitted by this program.
 [SPEC-053](specs/053-claude-transcript-trace-adapter/spec.md),
 [SPEC-057](specs/057-claude-orchestration-advisory/spec.md),
 [SPEC-058](specs/058-claude-orchestration-guard/spec.md) and
-[SPEC-059](specs/059-claude-orchestration-ledger/spec.md). No remote milestone,
-issue or Project record exists yet; publication requires a separate owner
+[SPEC-059](specs/059-claude-orchestration-ledger/spec.md). As of 2026-11-26 no remote milestone,
+issue or Project record exists (GitHub milestones API; `github-tracking.json`
+`unpublished_milestones`); publication requires a separate owner
 authorization. Extra cash spend is EUR 0.
 
 **Objective:** make Agent Braid's read-only interaction evidence available at the
@@ -550,7 +546,7 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 
 | Milestone / track | Implementation or next package | Exit boundary |
 |---|---|---|
-| M3.5 | [SPEC-019 synthetic software completion](specs/019-native-predictor/software-completion.md) | T002/T004 synthetic software and T006/T008/T009/T010 closed; zero real pairs admitted. T001/T007 source admission and protocol, T003 real evaluation, and T005 review remain open before any real-workload model; #180 and milestone 9 remain open |
+| M3.5 | [SPEC-019 synthetic software completion](specs/019-native-predictor/software-completion.md) | T002/T004 synthetic software and T006/T008/T009/T010 closed; zero real pairs admitted. T001/T007 source admission and protocol, T003 real evaluation, and T005 review remain open before any real-workload model; open work sits in Deferred #24 (milestone 9 closed 2026-10-31, #803) |
 | M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Registered synthetic capture completed on frozen candidate `b85f7e5`; three admitted independent blocks were negative, the dependency-chain block was an order control, and five blocks were excluded by pinned caps. Owner approved a bounded T006 interpretation: no useful-speedup claim or parallel performance default for measured families. Historical SPEC-021 G4 NO-GO is preserved. See the [decision packet](specs/022-m4-utility-followup/decision-packet.md) |
 | M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and stable/capture reviews bound candidate `e66f9a1`; registered capture completed with 20 valid treatments, six finite negative serial/parallel ratios, and mandatory fresh verification. Tracked-tree checks do not establish semantic/native-code validity; real-source recovery controls were not run. Founder accepted bounded M4 engineering/evaluation completion with negative utility on 2026-10-09. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). |
 | M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Read-only assessments implemented; founder recorded NO-GO/defer for all three capabilities within bounded M4 alpha. No capability adopted or granted; any future adoption requires a separate reviewed contract and authority |
@@ -580,20 +576,17 @@ or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/
 [ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); milestone #26,
 human review pending) resumes the deferred work in stages. S1.5a is merged and ships
 in plugin `0.1.0-alpha.5` and later, so Agent Braid now supports an opt-in System One
-decision layer in shadow mode. The owner's one-week shadow session (T030) runs
-2026-11-02 to 2026-11-09 and produced its redacted receipt (25 episodes, 142 pairs, all
-`abstained`; counts only, no utility claim). S1.5a was closed on 2026-11-10 by the owner
-(T005 freeze, T021 overhead receipt, T031 converge, T032 closure review) and S1.5b started.
-On 2026-11-14 the S1.5b sibling-pair feasibility check (B0) came out INFEASIBLE (3015
-labelled pairs, only 4 that System 2 classifies `unknown`), so S1.5d (T301–T303) is
-Deferred under the owner's Wilson GO rule (D3) and the track continues on a reviewable
-fast route (REQ-402, [ADR 0034 addendum](docs/adr/0034-system-one-shadow-advisory-boundary.md)):
-a rule-based DP-1 advise (T404, #1375; promotion registry plumbing #1374) and a merge-outcome
-join with automatic rollback to `shadow` at the first real conflict on an advised-independent
-pair (T405, #1389). The owner's go/no-go packet (T406) is due 2026-11-28, `advise` goes
-live 2026-11-30 only on a recorded go, and a mandatory review on 2026-12-31 ends the go.
-On 2026-11-16 the data were 29 shadow episodes and 0 joined outcomes (the `runtime-state`
-source is refused with `path-outside-admitted`); a read-only weekly count task counts them.
+decision layer in shadow mode. S1.5a was closed on 2026-11-10 by the owner and S1.5b started.
+Plan from the owner decisions of 2026-11-14: the sibling-pair feasibility check (B0)
+came out INFEASIBLE, so S1.5d (T301–T303) is Deferred under the Wilson GO rule (D3)
+and the track continues on a reviewable fast route (REQ-402,
+[ADR 0034 addendum](docs/adr/0034-system-one-shadow-advisory-boundary.md)): a
+rule-based DP-1 advise with promotion-registry plumbing and a merge-outcome join with
+automatic rollback to `shadow` at the first real conflict on an advised-independent
+pair. The owner's go/no-go packet (T406) is due 2026-11-28, `advise` goes live
+2026-11-30 only on a recorded go, and a mandatory review on 2026-12-31 ends the go.
+Merged work, shadow-week counts and the latest episode counts are in the S1.5 row of
+[STATUS](docs/STATUS.md#evidence-boundaries-by-milestone).
 The stages are:
 
 - **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
@@ -616,7 +609,7 @@ SPEC-034–037 in one dedicated milestone: permissioned numeric workload telemet
 an optional local Chronos-2 adapter, prospective forecast and complete-cost
 parallelism evaluation, and separate read-only/shadow integration plus exact
 capability promotion/rollback. Four specs and 33 implementation/gate tasks are
-drafts with human review pending; no model or workload experiment has run.
+drafts with human review pending (milestone 18 closed 2026-10-31, #803); no model or workload experiment has run as of 2026-11-26 (STATUS).
 
 The target is to learn when and where admitted preparation is economically
 worthwhile on Agent Braid's own permissioned workloads. Initial choices retain
@@ -637,17 +630,14 @@ recorded above. Current GitHub tracking is shown in the [live M4 milestone](http
 ## HAR — Braid Harness
 
 [The Braid Harness program](specs/048-harness-variant-laboratory/program.md) runs in
-three milestones: HAR.1 — Braid Harness laboratory (#21, SPEC-048, 15 of 15 tasks
-done; T008 closed 2026-11-20 with the Claude profile qualified with limits and Codex
-refused), HAR.2 — Braid Harness evaluation and learning
-(#22, SPEC-049, 8 of 13 done), and HAR.3 — Braid Harness adaptation and integration
-(#23, SPEC-050, planning). Native Claude containment (SPEC-065, ADR 0035) is
-qualified on one machine from 2026-11-17 until 2026-12-17 and was approved by the owner
-on 2026-11-21 with documented limits (review record bound to `a768e6d3`); assurance profiles (SPEC-067) were
-approved by the owner on 2026-11-22 with documented limits (review record bound to `2b48a5d6`; T012/T013 open). Users get the experimental,
-offline `agent-braid harness` CLI described in [Harnessing](docs/tooling/HARNESSING.md);
-the native cohort (SPEC-049 T014) was inconclusive, so under D7 the harness stays
-experimental and nothing is promoted or activated (owner, 2026-11-22). Both long-task continuity and precise, efficient coordination are primary
+three milestones plus HAR.4: HAR.1 — Braid Harness laboratory (#21, SPEC-048),
+HAR.2 — Braid Harness evaluation and learning (#22, SPEC-049) and HAR.3 — Braid
+Harness adaptation and integration (#23, SPEC-050). Their task counts, dates and
+evidence are in the Harness rows of [STATUS](docs/STATUS.md#evidence-boundaries-by-milestone).
+Native Claude containment (SPEC-065, ADR 0035) is qualified on one machine until
+2026-12-17 (STATUS). Users get the experimental `agent-braid harness` CLI described in
+[Harnessing](docs/tooling/HARNESSING.md); under owner decision D7 (2026-11-22) the
+harness stays experimental and nothing is promoted or activated. Both long-task continuity and precise, efficient coordination are primary
 outcomes. Automatic isolated trials, initial human promotion, synthetic controls,
 advanced component/search capabilities and separately governed future automatic
 promotion are planned. Additional cash spend is capped at EUR 0.
@@ -730,14 +720,9 @@ CLI subscription route only (extra cash spend EUR 0), first target the
 | BL.2b — Lightning held-out re-evaluation | [SPEC-078](specs/078-lightning-heldout-v2/spec.md) | HELD-04 guidance fix, preregistered held-out v2, Gate 0, A0 first, bounded optimization only if A0 misses |
 | Deferred | [SPEC-076](specs/076-lightning-local-grpo/spec.md) | local GPU GRPO ([ADR 0042](docs/adr/0042-braid-lightning-local-weight-training.md)) |
 
-**Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1 closed on 2026-11-11 (SPEC-071 approved by the owner, review record bound to `39a427ae`; real Claude Code baseline 16/30 inside the T010 interval, zero paid-route observations); BL.2 complete on 2026-11-13 with a **negative
-result** (SPEC-072 T001–T013 done and converged; on the frozen held-out set A0
-25/30, A1 APO 23/30, A2 GEPA 24/30 in Claude Code, all missing D4, so H1 is not
-supported; specification draft, human review pending); BL.3 (SPEC-073) has no
-candidate to promote from BL.2; BL.4 closed on 2026-11-14 (SPEC-074 T001–T011 done, frozen on `develop` by #1378);
-BL.5 closed on 2026-11-17 (SPEC-075 T001–T013 done, frozen by #1408; export off by default,
-terms gate closed); SPEC-074 and SPEC-075 approved by the owner on 2026-11-17 (review records
-bound to `a5a7235c` and `21926de6`). BL.0 delivered the
-experimental `agent-braid lightning init|validate|status|purge` commands and
-`plugin setup --lightning`. BL.1 and BL.2 added subscription-route host runs and
-optimizer calls in the laboratory; nothing is promoted or released.
+**Status:** per-milestone state, dates and results are in the Optimization rows of
+[STATUS](docs/STATUS.md#evidence-boundaries-by-milestone) and the
+[GitHub milestones](docs/STATUS.md#milestones-on-github-2026-11-26). BL.0 delivered
+the experimental `agent-braid lightning init|validate|status|purge` commands and
+`plugin setup --lightning`; BL.1 and BL.2 added subscription-route host runs and
+optimizer calls in the laboratory. As of 2026-11-26 nothing is promoted or released.
