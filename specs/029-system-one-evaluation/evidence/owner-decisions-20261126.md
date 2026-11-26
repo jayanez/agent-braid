@@ -11,6 +11,6 @@ The spec was refined for structure under the 2026-11-25 conventions in
 Derived without a question:
 
 - Status line aligned with `assurance.json` (stage `draft`, human review pending) and `tasks.md` (T001–T009 open, T010–T027 done as bounded lots).
-- Terminology, Risks and assumptions, Exit criteria and Open questions OQ-1 to OQ-6 written from spec.md, plan.md, research.md, data-model.md, tasks.md, evaluation-protocol.md, the checklist and the 2026-11-01 note that SPEC-066 absorbs T001–T009 for the owned population.
+- Terminology, Risks and assumptions, Exit criteria and Open questions OQ-1 to OQ-7 written from spec.md, plan.md, research.md, data-model.md, tasks.md, evaluation-protocol.md, the checklist and the 2026-11-01 note that SPEC-066 absorbs T001–T009 for the owned population.
 
 Limits: the owner decides as owner, not as an independent reviewer.

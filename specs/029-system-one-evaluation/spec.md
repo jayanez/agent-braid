@@ -80,7 +80,7 @@ SPEC-029 defines no latency, memory or cost threshold (see [Open questions](#ope
 ## Security and privacy
 
 - Source ownership, consent and privacy are registered before fitting, and unknown rights keep training blocked: see REQ-001.
-- Private text is omitted from decision traces by default; access and retention are explicit ([data-model.md](data-model.md)). The pre-fit gate in REQ-001 covers retention of source content only for registered sources.
+- Private text is omitted from decision traces by default; access and retention are explicit ([data-model.md](data-model.md)). Source retention is registered per source before collecting labels ([evaluation-protocol.md](evaluation-protocol.md)).
 - No security or privacy obligation beyond REQ-001 is normative. The plan and protocol also state: no `trust_remote_code`, no automatic network dependency, no copied reference weights or data, no hidden effect-authority inference, no paid teacher or System 2 runs until a budget is explicit, and SPEC-019 source windows and private seals stay private. Per the owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md), these are scope statements, not requirements.
 
 ## Terminology
@@ -112,7 +112,7 @@ Values named in this spec:
 - Risk: methods with different latency or coverage are compared unfairly; refusals, absent labels and fallback cost are included (REQ-003, T007).
 - Risk: thresholds are selected on test results, or sparse strata give unsupported estimates (REQ-004, T006).
 - Risk: near duplicates or reversed instructions inflate scores; failures stay in reports (REQ-005, T003, T004).
-- Risk: synthetic conformance cases are read as real utility or as source yield (REQ-006; research.md).
+- Risk: synthetic conformance cases are read as real utility or as source yield (REQ-005; research.md).
 - Assumption: local context is trusted and the existing deterministic verifiers are unchanged; no workload corpus, training budget or device coverage is assumed (`assurance.json` assumptions; OQ-1 to OQ-3).
 - Assumption: SPEC-066 absorbs the open T001–T009 for the owned population, with its amended label rubric replacing two-blind-reviewer labelling (tasks.md note of 2026-11-01; [SPEC-066](../066-system-one-shadow/spec.md)).
 
@@ -135,3 +135,4 @@ Tests, procedures and feature evidence do not substitute for human review, scien
 - OQ-4: What latency, memory and cost thresholds apply? Owner: owner; none is defined in SPEC-029, and the draft targets under Non-functional requirements freeze at pre-fit review (T005, T008).
 - OQ-5: Which final base-model rights apply to the artifact the owner builds? Owner: owner (Clarifications and unresolved decisions; SPEC-030).
 - OQ-6: When is remote delivery authorized? Owner: owner; tracked separately from feature acceptance.
+- OQ-7: What is the per-capability promotion decision? Owner: owner; promotion is outside SPEC-029 and is decided in SPEC-033 (T008; CHK-013).
