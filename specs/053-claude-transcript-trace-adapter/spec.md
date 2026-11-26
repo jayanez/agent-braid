@@ -121,7 +121,7 @@ Transcripts contain prompts, file contents, command output and possibly secrets.
 - Source rights and provider-terms confirmation are pending; no approval is inferred from the draft (REQ-002).
 - Fail-closed rejection of breaches before analysis, and no network access (REQ-007).
 - A read of a path outside the worktree emits no read effect and no read version (REQ-004).
-- No execution, grant, merge or promotion (Purpose and scope, out of scope; Article 20). `executionAuthorization` false in every artifact and exclusive owner-only creation of outputs are task-level statements (T016, T027), not bound to a REQ.
+- No execution, grant, merge or promotion (Purpose and scope, out of scope; Article 20). `executionAuthorization` false (T016, T027) and exclusive owner-only creation of outputs (T016 only) are task-level statements, not bound to a REQ.
 - No real transcript enters the repository; tests use synthetic fixtures only ([validation plan](validation-plan.md), common controls; T010).
 - Limit: no detection of arbitrary secrets is claimed, and secrets in file names stay undetected (T014, T020).
 
@@ -211,15 +211,7 @@ Obtained evidence: none. G0 is not frozen, no run exists and the decision record
 
 Settled by the Clarifications above and no longer open: the measure that binds C3 (revision 3: attribution coverage of changes computed by the probe; the call-share unknown rate and Git-level shares are descriptive only); the meaning of "R1" (the commit-level SPEC-052 gate release); where adoption track AT-2026-006 is recorded (`research/adoption/2026-09-initial-triage.json`); the base-blob integer representation for `readVersions` and the edit-versus-separate-module question (plan RS-1 and RS-2); the size bounds; and that an inconclusive G0 never passes and any further attempt is a new preregistration whose start is the founder's separate decision.
 
-Genuinely open:
-
-- OQ-1: Founder confirmation of the review amendments to C1, C2 and the order of evaluation, which happens at freezing. Owner: the founder, at freezing.
-- OQ-2: Renewal of the founder signature of the source and budget decision against the final revision 3 bytes (recorded after merge; this change adds no renewal), including the provider-terms confirmation (pending, not asserted). Owner: the founder (T001).
-- OQ-3: The transcript line schema and tool-name inventory, unconfirmed until the founder's pre-freeze layout and tool-name census (T002); the `-v1` pin follows it. Owner: the founder (T002).
-- OQ-4: Whether a canonical ADR is required for a new mapper plus admission kind (SPEC-023 REQ-008): SPEC-023's owner and the founder, at the start of PR5. Owner: SPEC-023's owner and the founder, at the start of PR5.
-- OQ-5: Host verification HV-1 and the Bash constraint that REQ-009 depends on, and two reviewed SPEC-052 amendments, both planning amendments approved by the founder on 2026-10-24: the one additional explicit launcher subcommand `analyze-claude-transcripts` in the REQ-016 allowlist for gate v2, and the validated path tokens that the transcript arguments need (plan, gate-result-v2 contract); otherwise the transcript part of the gate is no-go. Owner: the founder records the host receipts (T030); the sources name no owner for the SPEC-052 amendments.
-- OQ-6: Spec-owner and founder confirmation of the bounded reading of SC-010. Owner: the spec owner and the founder.
-- OQ-7: Two mapper design questions kept open for the T009 re-plan, neither decided here: whether a loss should set coverage `unknown` as SPEC-023 does (in the analyzer `partial` and `unknown` give identical pair labels, so the departure in RS-3 changes the label only), and whether a write request with no result record (interrupted or truncated transcript) should emit an `unknown` effect instead of being dropped as failed (the G0 probe counts it as an unknown writer in its descriptive call-share rate and attributes no file to it, so product and experiment differ today). Owner: the sources name none; both are decided at the T009 re-plan.
+Genuinely open: see [Open questions](#open-questions).
 
 ## Risks and assumptions
 
@@ -242,9 +234,9 @@ Each entry names the REQ or task it affects.
 
 ## Exit criteria
 
-Verification is complete when the following exist, each as obtained evidence in `assurance.json` and not merely as a passing check:
+Verification is complete when the following exist. Obtained evidence is recorded in `assurance.json` only from commands that actually ran:
 
-- REQ-001 and REQ-002: the structural checks pass, `tests/test_claude_workflow_g0_proposal.py` and `scripts/validate_claude_workflow_g0_proposal.py`, both present. A structural pass is not a result.
+- REQ-001 and REQ-002: the structural checks pass, `tests/test_claude_workflow_g0_proposal.py` and `scripts/validate_claude_workflow_g0_proposal.py`, both present. A structural pass is not a G0 result.
 - G0: a frozen preregistration, the run and a recorded disposition of `g0-pass`, `g0-fail` or `g0-inconclusive` in a founder decision record (T003, T006). The G0 evidence report and its record under `specs/053-claude-transcript-trace-adapter/evidence/` are planned (T005) and absent today; that directory holds only [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
 - REQ-003 to REQ-010: planned and absent until G0 passes; each needs the obtained evidence listed in its procedure in the [validation plan](validation-plan.md), plus the SPEC-023 owner's review (REQ-008, T021).
 - On `g0-fail` or `g0-inconclusive`: the closure or blocked record of T007, T008 and T033; either completes the protocol without supporting H-CW1.
@@ -253,4 +245,12 @@ Today `obtained_evidence` is empty and human review is pending. Passing checks a
 
 ## Open questions
 
-Open questions: OQ-1 to OQ-7, listed under [Evidence and unresolved questions](#evidence-and-unresolved-questions), each with its owner as the sources name it.
+Each is unresolved; the owner is the one the sources name.
+
+- OQ-1: Founder confirmation of the review amendments to C1, C2 and the order of evaluation, which happens at freezing. Owner: the founder, at freezing.
+- OQ-2: Renewal of the founder signature of the source and budget decision against the final revision 3 bytes (recorded after merge; this change adds no renewal), including the provider-terms confirmation (pending, not asserted). Owner: the founder (T001).
+- OQ-3: The transcript line schema and tool-name inventory, unconfirmed until the founder's pre-freeze layout and tool-name census (T002); the `-v1` pin follows it. Owner: the founder (T002).
+- OQ-4: Whether a canonical ADR is required for a new mapper plus admission kind (SPEC-023 REQ-008): SPEC-023's owner and the founder, at the start of PR5. Owner: SPEC-023's owner and the founder, at the start of PR5.
+- OQ-5: Host verification HV-1 and the Bash constraint that REQ-009 depends on, and two reviewed SPEC-052 amendments, both planning amendments approved by the founder on 2026-10-24: the one additional explicit launcher subcommand `analyze-claude-transcripts` in the REQ-016 allowlist for gate v2, and the validated path tokens that the transcript arguments need (plan, gate-result-v2 contract); otherwise the transcript part of the gate is no-go. Owner: the founder records the host receipts (T030); the sources name no owner for the SPEC-052 amendments.
+- OQ-6: Spec-owner and founder confirmation of the bounded reading of SC-010. Owner: the spec owner and the founder.
+- OQ-7: Two mapper design questions kept open for the T009 re-plan, neither decided here: whether a loss should set coverage `unknown` as SPEC-023 does (in the analyzer `partial` and `unknown` give identical pair labels, so the departure in RS-3 changes the label only), and whether a write request with no result record (interrupted or truncated transcript) should emit an `unknown` effect instead of being dropped as failed (the G0 probe counts it as an unknown writer in its descriptive call-share rate and attributes no file to it, so product and experiment differ today). Owner: the sources name none; both are decided at the T009 re-plan.
