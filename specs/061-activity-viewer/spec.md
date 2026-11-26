@@ -69,7 +69,7 @@ any host permission or tool decision.
 
 ## Deliveries and checkpoint
 
-VIS.1 is one milestone with two deliveries and, since 2026-11-04, a third (VIS.1c, below):
+VIS.1 is one milestone with two deliveries (VIS.1a, VIS.1b) and three amendment deliveries: VIS.1c (2026-11-04), VIS.1d (2026-11-05) and VIS.1e (host parity, 2026-11-05), each below:
 
 - **VIS.1a — coordination slice:** owner-run host probes and an artifact census
   first, then the contract, coordination adapters (analysis, plans, scheduler,
@@ -121,7 +121,7 @@ never-collect categories in memory and, on explicit request, on disk. Each
 deviation is listed in the
 [deviation table](contracts/ui-security-privacy.md#deviations-from-the-never-collect-list).
 
-## Owner decisions requested (pending T001)
+## Owner decisions (accepted in T001)
 
 Accepted without changes in T001 on 2026-11-01.
 
@@ -192,7 +192,7 @@ Effects: OD-V2, OD-V4, OD-V5 and OD-V6 are accepted as recommended. OD-V1 is cha
 detected (browser or desktop-app locale, then a language-tag hint from the `view serve` process locale, then
 English), with a manual choice remembered per viewer. The ADR 0033 amendment is accepted and applied to
 `docs/adr/0033-vendored-threejs-mit-boundary.md`, so REQ-017's gate G2 is met. The privacy review (T052) and
-the host probe (T053) are authorised and not yet done; contract v0.2 stays a draft until T052 concludes.
+the host probe (T053) were authorised and not yet done as of 2026-11-04; contract v0.2 stayed a draft until T052 concluded. T052 and T053 are done per [tasks.md](tasks.md).
 
 ## VIS.1d amendment (2026-11-05)
 
@@ -917,7 +917,7 @@ events from real repository computations and rendered them; it is design input i
 
 ## Non-functional requirements
 
-No latency, throughput or CPU threshold is stated in this specification; the
+No throughput or CPU threshold is stated in this specification; the only time bounds are those listed below, and the
 constraints it does state, each cited to the REQ that covers it (owner decision in
 [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)):
 
@@ -968,7 +968,7 @@ Shared terms, such as Braid, follow the root [TERMINOLOGY.md](../../TERMINOLOGY.
 - Risk: the stable ingest token outlives a viewer run (Ingest token amendment; REQ-004).
 - Risk: the printed hook command names an absolute interpreter path (Hook command amendment; REQ-012).
 - Risk: no screen-reader evidence exists until the VoiceOver passes of T066 and T073 are recorded (REQ-021, REQ-026).
-- Risk: REQ-016 to REQ-029 are not in `assurance.json`, so they have no scenarios there until T037 or T066 records them (T037, T066).
+- Risk: REQ-016 to REQ-029 are not in `assurance.json`, so they have no scenarios there until the closure task of each delivery records them (T037, T066, T074).
 - Risk: if the T035 date passes without a VIS.1a slice, VIS.1 closes as Deferred (Deliveries and checkpoint; T035).
 
 ## Exit criteria
