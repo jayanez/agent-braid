@@ -3,8 +3,11 @@
 **Milestone:** BL.3 — Lightning promotion (GitHub milestone created by the
 reviewed tracking reconciliation after merge).
 
-**Status:** draft. `human_review` is pending; this specification grants no
-execution authority and adopts no automatic promotion.
+**Status:** draft (`assurance.json`: stage `draft`, human review `approved` by
+[owner-review-de602178.json](reviews/owner-review-de602178.json), 2026-11-24).
+T001–T009 are done with `evidence/procedure_001.json` to `procedure_008.json`;
+T010 (the owner's rollback drill) and T011 (converge) are open. This
+specification grants no execution authority and adopts no automatic promotion.
 
 ## Purpose and scope
 
@@ -32,15 +35,18 @@ In scope:
 - optional short GEPA reflections (at most 512 characters each) proposed to
   `ExperienceStore.add`, which stay quarantined until a human activates them.
 
-Exclusions:
+Exclusions (scope statements; no REQ covers them literally, per the owner decision
+recorded in `evidence/owner-decisions-20261126.md`; REQ-002 and REQ-008 are cited
+only where their text covers part of an exclusion):
 
-- Any automatic decision, begin or commit: `AUTOMATIC_PROMOTION` stays `False`.
+- Any automatic decision, begin or commit: `AUTOMATIC_PROMOTION` stays `False`
+  (REQ-002 refuses an automatic actor).
 - Running optimization or evaluation (SPEC-071, SPEC-072); content traces
   (SPEC-074); dataset export (SPEC-075); weight training (SPEC-076).
 - Publication of a plugin release, tags or plugin-dist pushes without the
   owner's explicit yes.
 - Changes to `analyze`, `analyze-work`, `prepare`, `execute`, `recover`, grants,
-  telemetry or System One.
+  telemetry or System One (REQ-008 bounds the write set of the module).
 
 ## Authorities
 
@@ -170,3 +176,91 @@ digest, and rollback is tested.
 Additive. Registry and experience-store formats are unchanged. The build check
 applies only to scopes with a registry, so existing builds are unchanged until a
 promotion is committed.
+
+Open questions: see [Open questions](#open-questions).
+
+## Non-functional requirements
+
+No performance or availability requirement applies in this spec. Operational and
+quality constraints it states:
+
+- Text limit: a promoted text stays within the mapped file's limit, 32 KiB for
+  `lightning.skill.analyze` (OD-1; REQ-001).
+- Atomicity and reversibility: the file write is atomic and `abort` restores the
+  previous state on failure (T005, plan risks); rollback and revocation restore the
+  previous digest (REQ-005, REQ-006).
+- Determinism: the preview digest binds the registry bytes and target file bytes
+  (REQ-003).
+- Dependencies: Python standard library and Agent Braid modules only (REQ-008).
+- Build behaviour: a release build refuses a mismatch and a local build warns (OD-2;
+  REQ-004).
+
+## Security and privacy
+
+- The module opens no socket, launches no process and writes only the registry
+  file, the run store and the mapped file: see REQ-008.
+- Only a human actor decides; an automatic actor is refused: see REQ-002.
+- Reflections pass poison screening and the 512-character limit, and stay
+  quarantined: see REQ-007.
+- The working registry stays in the private plugin home and is never committed;
+  only the export is committed (OD-3).
+- An override reason is recorded in the registry as its SHA-256 only; the text
+  stays in the preview and the run store (OD-5; REQ-001).
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Terms this
+spec uses:
+
+- Scope: a registry key mapped to one skill file, for example
+  `lightning.skill.analyze` (P3, OD-1; REQ-001).
+- Preview digest: the digest that binds a preview to the registry and file bytes it
+  was computed from (REQ-003).
+- Native cohort: the cohort of candidates evaluated on native host rollouts (P2).
+- Owner override reason: the human reason that allows an apply without H1
+  `supported` (OD-5; REQ-001).
+- Export: the committed registry copy read by release builds (OD-3).
+
+Values named in this spec:
+
+- Cohort: `native` for Lightning profiles; `decide()` accepts `synthetic` and
+  `native` (research.md).
+- Scope map: `lightning.skill.analyze` only; any other scope is refused with
+  `unknown-scope` (OD-1).
+- Build severity: release build refuses; local developer build warns (OD-2).
+- Refusal ids named here: `unknown-scope`, `no-held-out-support`,
+  `automatic-promotion-disabled`, `preview-stale`, `regression-not-covered`,
+  `lightning-promotion-mismatch`, `no-previous`
+  ([promotion-preview](contracts/promotion-preview.md) is the full list).
+
+## Risks and assumptions
+
+- Risk: a promoted text regresses host behaviour; mitigated by one-command rollback
+  and the native cohort only (REQ-005).
+- Risk: registry and file diverge after a crash; mitigated by begin/commit with an
+  atomic rename and abort (REQ-002, T005).
+- Risk: a hand edit of `SKILL.md` bypasses the registry; the build check refuses
+  release builds (REQ-004).
+- Risk: a reflection carries an injected instruction; mitigated by poison screening
+  and quarantine (REQ-007).
+- Assumption: SPEC-072 emits a winner with candidate text, evaluation and cost
+  report digests compatible with `decide()` (REQ-001).
+- Assumption: skill texts fit the scope map limits (REQ-001).
+- Assumption: runtime stays standard-library only (REQ-008).
+
+## Exit criteria
+
+Milestone exit, from Success criteria: an owner decide → begin → commit is
+recorded, a rebuilt plugin carries the promoted digest, and rollback is tested
+(T010; REQ-002, REQ-004, REQ-005). Verification is complete when T011 closes: each
+of SC-001 to SC-008 has obtained evidence bound in `assurance.json`, and `quick` is
+green ([tasks.md](tasks.md)).
+
+## Open questions
+
+- OQ-1: When does the owner run the T010 drill (decide → begin → commit, rebuild,
+  rollback) from [drill.md](drill.md)? Owner: founder.
+- OQ-2: Is the obtained evidence of `evidence/procedure_001.json` to
+  `procedure_008.json` bound into `assurance.json` before T011? Today every
+  scenario lists none, and `assurance.json` is under the approved review. Owner:
+  founder.

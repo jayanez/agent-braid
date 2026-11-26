@@ -1,6 +1,7 @@
 # SPEC-073: Validation plan
 
-Status (draft): no procedure has obtained evidence. Deterministic procedures
+Status (draft): procedures 001–008 have obtained evidence under `evidence/`
+(`assurance.json` does not bind it yet; see spec OQ-2); procedure_009 awaits the owner run (T010). Deterministic procedures
 run with `.venv-speckit/bin/python -m unittest` on targeted modules, against
 temporary plugin homes and a copied plugin tree.
 
