@@ -3,14 +3,27 @@
 **Track:** VIS.1 — Activity viewer (independent track; never a gate of the core,
 of M4.x or of HAR)
 
-**Status:** draft specification, accepted by owner review T001 on 2026-11-01
-([review record](owner-review-20261101.json), frozen candidate `530a5f39`). The
-decisions below were requested in the planning session of 2026-10-31 and accepted
-in that review. [ADR 0032](../../docs/adr/0032-activity-viewer-companion.md)
-(companion boundary) and [ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md)
-(vendored third-party code, Three.js pinned at r186) were accepted on 2026-11-01,
-so the ADR gates for implementation and vendoring are met. Nothing is implemented
-by this change.
+**Status:** `assurance.json` has stage `draft` and `human_review` approved
+([review record](owner-review-vis1a-closure-20261103.json)); it lists REQ-001 to
+REQ-015 only. Owner reviews: T001 accepted 2026-11-01
+([review record](owner-review-20261101.json), frozen candidate `530a5f39`); VIS.1a
+closure accepted 2026-11-03 (reviewed commit `62a44fb7`); VIS.1d closure accepted
+2026-11-05 ([review record](owner-review-vis1d-closure-20261105.json), reviewed
+commit `9b3a93a5`), with the T073 VoiceOver pass pending. The decisions below were
+requested in the planning session of 2026-10-31 and accepted in the T001 review.
+[ADR 0032](../../docs/adr/0032-activity-viewer-companion.md) (companion boundary)
+and [ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md) (vendored
+third-party code, Three.js pinned at r186) were accepted on 2026-11-01. Per
+[tasks.md](tasks.md): the VIS.1a slice is done except T009, T031, T033 and T035
+(go/no-go); the VIS.1b tasks (T014, T018, T021, T022, T027, T039) are open; VIS.1c
+has T050 to T062 and T067 done and T063 to T066 open; VIS.1d has T068 to T072 and
+T074 done and T073 and T075 open; VIS.1e has T076 done and T077 to T086 open; the
+closure tasks T036 and T037 stay open until the VIS.1b closure. Each acceptance
+binds its reviewed commit only, and later changes need a new review. No
+screen-reader evidence, host verification of Codex or release is claimed. The
+review records name commits, not a `spec.md` hash; this refinement changes the
+structure, wording and traceability of `spec.md`, adds no requirement and
+changes no scope.
 
 ## Purpose and scope
 
@@ -56,7 +69,7 @@ any host permission or tool decision.
 
 ## Deliveries and checkpoint
 
-VIS.1 is one milestone with two deliveries and, since 2026-11-04, a third (VIS.1c, below):
+VIS.1 is one milestone with two deliveries (VIS.1a, VIS.1b) and three amendment deliveries: VIS.1c (2026-11-04), VIS.1d (2026-11-05) and VIS.1e (host parity, 2026-11-05), each below:
 
 - **VIS.1a — coordination slice:** owner-run host probes and an artifact census
   first, then the contract, coordination adapters (analysis, plans, scheduler,
@@ -108,7 +121,7 @@ never-collect categories in memory and, on explicit request, on disk. Each
 deviation is listed in the
 [deviation table](contracts/ui-security-privacy.md#deviations-from-the-never-collect-list).
 
-## Owner decisions requested (pending T001)
+## Owner decisions (accepted in T001)
 
 Accepted without changes in T001 on 2026-11-01.
 
@@ -179,7 +192,7 @@ Effects: OD-V2, OD-V4, OD-V5 and OD-V6 are accepted as recommended. OD-V1 is cha
 detected (browser or desktop-app locale, then a language-tag hint from the `view serve` process locale, then
 English), with a manual choice remembered per viewer. The ADR 0033 amendment is accepted and applied to
 `docs/adr/0033-vendored-threejs-mit-boundary.md`, so REQ-017's gate G2 is met. The privacy review (T052) and
-the host probe (T053) are authorised and not yet done; contract v0.2 stays a draft until T052 concludes.
+the host probe (T053) were authorised and not yet done as of 2026-11-04; contract v0.2 stayed a draft until T052 concluded. T052 and T053 are done per [tasks.md](tasks.md).
 
 ## VIS.1d amendment (2026-11-05)
 
@@ -901,3 +914,85 @@ and `assurance.json`. A throwaway spike (scratchpad only, 2026-10-31) produced 8
 events from real repository computations and rendered them; it is design input in
 [research.md](research.md), not evidence. Open decisions are listed in
 [plan.md](plan.md#human-review-and-unresolved-decisions).
+
+## Non-functional requirements
+
+No throughput or CPU threshold is stated in this specification; the only time bounds are those listed below, and the
+constraints it does state, each cited to the REQ that covers it (owner decision in
+[owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)):
+
+- Local only: the server binds `127.0.0.1` or `::1`, and the CSP names no remote origin (REQ-004, REQ-010).
+- Resource limits: 256 strands, 4 096 crossings, 64 waves, 1 024 grants, 8 subscribers, 32 connections, a 10-second socket timeout, OTLP bodies at most 1 MiB and hook bodies at most 256 KiB (REQ-004).
+- Event size: lines at most 16 KiB; a file with more than 50 000 events is refused; a recording holds at most 49 999 events plus one gap (REQ-001, REQ-007).
+- Watching: at most 8 roots, 4 096 files, 16 MiB per file, polled every 500 ms; plugin report copies kept 30 days within 64 MiB (REQ-006); the plugin copy is also capped at 1,500 copies (REQ-013).
+- Determinism: adapter output, export output and frame rendering are byte-identical for the same input (REQ-002, REQ-008, REQ-011); replay and live views of the same events give identical models (REQ-006).
+- Compatibility: Python 3.12+, standard library only, with Three.js vendored as static content ([plan.md](plan.md); Scientific boundaries and compatibility); v0.1 files stay valid under v0.2 (REQ-022).
+- Interface quality: contrast 4.5:1 for text and 3:1 for graphics, no horizontal scroll at 320 CSS px and 200 % zoom, animations under 300 ms and interruptible, reduced motion honoured (REQ-021); the essential task fits 1440 x 900 without scrolling (REQ-020, REQ-024); "Frame all" restores the framing in under 400 ms (SC-018, REQ-018).
+
+## Security and privacy
+
+Each obligation is already stated in the REQ cited; no new REQ is added.
+The deviations from the SPEC-057 never-collect list are in the
+[deviation table](contracts/ui-security-privacy.md#deviations-from-the-never-collect-list).
+
+- Prompt text, message text, tool input, tool output and file content are dropped before storage; only allowlisted attributes keep values, and identifiers are salted per server session (REQ-005).
+- Free text rejects control characters and bidirectional overrides; `evidenceRef` paths are relative (REQ-001).
+- Two credentials with separate rights; no credential remains in a URL, an access log or printed host configuration (REQ-004, REQ-012).
+- The viewer takes no part in a host decision: decision hook events are refused and hook responses have an empty body (REQ-004, REQ-005).
+- Effort data stays in memory unless `--record-effort` is passed; export omits it by default and replaces absolute-path-like values (REQ-007, REQ-008).
+- Tool duration is memory only, omitted from default export (REQ-022).
+- Files are created exclusively with owner-only permissions and without following symbolic links (REQ-007, REQ-008).
+- `executionAuthorization` is fixed to `false` and the server exposes no route that executes, schedules, grants or writes to a repository (REQ-001, REQ-004).
+
+## Terminology
+
+Shared terms, such as Braid, follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Feature terms:
+
+- Loom: working name of the viewer, command `agent-braid view` (Authorities; plan.md OD-3).
+- Event kinds: the closed list of REQ-001.
+- `verification`: `rehashed`, `unverified`, `derived` (REQ-001).
+- Gap reasons: `subagent-usage-unattributed`, `stream-truncated`, `shape-unpinned`, `source-unsupported`, `ring-evicted`, `host-unverified`, `not-observed` (REQ-003).
+- Surfaces: `web`, `mod`, `tui`, `mcp-app`; matrix statuses `planned`, `hv-pending`, `verified`, `unobserved` (REQ-011).
+- Lane state: running, waiting, finished, unknown (REQ-017).
+- `waitingBasis`: declared or observed (REQ-022).
+- Predicted conflict versus observed collision (REQ-017, REQ-023).
+- Deliveries: VIS.1a to VIS.1e (Deliveries and checkpoint and the amendments).
+
+## Risks and assumptions
+
+- Assumption: hosts keep exporting OTLP HTTP/JSON and posting hooks as documented on 2026-10-31, and the viewer runs on the same machine as the hosts (`assurance.json` assumptions; REQ-005, REQ-014).
+- Assumption: the Claude desktop browser pane loads loopback pages; T032 recorded it with console errors unobserved, to be rechecked at T035 (REQ-014).
+- Risk: a host path may not match its documentation; it is then removed and marked `not-matching` (REQ-014). T031 is partial, with Codex token-usage names unobserved, and T033 is open.
+- Risk: the viewer holds never-collect categories in memory and, on request, on disk (REQ-005, REQ-007; deviation table).
+- Risk: the braid picture is read as a safety ordering or permission to interleave (REQ-010; Scientific boundaries and compatibility).
+- Risk: the stable ingest token outlives a viewer run (Ingest token amendment; REQ-004).
+- Risk: the printed hook command names an absolute interpreter path (Hook command amendment; REQ-012).
+- Risk: no screen-reader evidence exists until the VoiceOver passes of T066 and T073 are recorded (REQ-021, REQ-026).
+- Risk: REQ-016 to REQ-029 are not in `assurance.json`, so they have no scenarios there until the closure task of each delivery records them (T037, T066, T074).
+- Risk: if the T035 date passes without a VIS.1a slice, VIS.1 closes as Deferred (Deliveries and checkpoint; T035).
+
+## Exit criteria
+
+Verification is complete when the evidence below exists. Obtained so far, all present in `evidence/`: `census-20261101.json`, `hv-t030-20261101.json`, `hv-t031-20261101.json` (partial), `hv-t032-20261101.json`, `hv-t053-20261104.json`, `vendor-threejs-20261102.json`, `vis1a-local-tests-20261103.json` and `vis1a-fixes-tests-20261103.json`; the VIS.1d audit records [audit-2026-11-05.md](vis1d/audit-2026-11-05.md) and [a11y-2026-11-05.md](vis1d/a11y-2026-11-05.md) with captures in `vis1d/evidence/`.
+
+- Each scenario SC-001 to SC-029 has a verification line in its REQ (procedures in [validation-plan.md](validation-plan.md) for REQ-001 to REQ-015, tasks for REQ-016 to REQ-029); `assurance.json` covers REQ-001 to REQ-015 only (T037, T066).
+- Host probes: `evidence/hv-t033-<date>.json` is planned (T033) and absent; `evidence/hv-t031-<date>.json` is to be rerun (T031).
+- VIS.1b: no evidence exists; its tasks are open and wait for T035 (T014 to T039).
+- `evidence/checkpoint-<date>.md` is planned (T035) and absent.
+- The VoiceOver pass of T073 and T066 is planned and absent (SC-021, SC-026).
+- Closure records exist for VIS.1a ([owner-review-vis1a-closure-20261103.json](owner-review-vis1a-closure-20261103.json)) and VIS.1d ([owner-review-vis1d-closure-20261105.json](owner-review-vis1d-closure-20261105.json)); the VIS.1b, VIS.1c and VIS.1e closures are not recorded (T036, T037, T066).
+
+Passing tests do not show that the viewer shortens locating hazards (Q-VIS1).
+
+## Open questions
+
+Only what the sources leave open; all belong to the owner. Task states are as [tasks.md](tasks.md) records them.
+
+- Q-VIS1: does seeing the braid shorten the time to find a hazard or conflicting pair? It is not a requirement (Scientific boundaries and compatibility).
+- T035: keep, re-scope or close as Deferred VIS.1b and VIS.2 to VIS.4, by 2027-01-31; owner note 2026-11-05: decide after real use, with a review reminder on 2026-11-19.
+- Public name: decide before VIS.1 release notes (plan.md OD-3).
+- T063 and T064: paused until the owner resumes them; F4 (effort per lane) not before T035 (OD-V3).
+- VoiceOver passes of T066 and T073.
+- T031 rerun and T033 Codex Desktop MCP Apps rendering.
+- T075: opt-in viewer usage telemetry, open.
+- VIS.1e: Codex and OpenCode probes T077 and T078, privacy review T079, and the T085 gate on where viewer skills live (options (a) and (b); the recommendation is (a)).
