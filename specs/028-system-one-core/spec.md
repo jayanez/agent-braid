@@ -4,7 +4,7 @@
 
 Engineering foundation for a local, non-generative, typed decision API with a deterministic reference backend. This milestone does not ship a pretrained general-purpose model.
 
-Status: draft planning, human review pending. Dependencies: None; preserve SPEC-018/019/020/021 boundaries.
+Status: `assurance.json` stage `validated` for bounded synthetic software checks, `human_review` pending. Task status as of 2026-11-26 (`tasks.md`): T001–T008 are checked for the bounded engineering lot (heading "Obtained engineering evidence (2026-10-07)", which names T001–T007 as bound by `evidence/luna-core-cli.json`, the focused test log and `evidence/offline-wheel.json`; T008 closed the packet, with `evidence/technical-delivery.json` as its record); T009 is a documentary contract freeze checked by founder decision of 2026-10-31; T010 and T011 are checked as bounded engineering lots (2026-10-20 documentary reconciliation). Dependencies: None; preserve SPEC-018/019/020/021 boundaries.
 Milestone: S1.0 — Decision contracts. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
@@ -53,13 +53,88 @@ hardware, paid/training budgets, final base-model rights and per-capability prom
 No dataset, hardware support or approval has been invented. Remote delivery authorization
 is tracked separately from feature acceptance.
 
+Open questions: see [Open questions](#open-questions).
+
 ## Evidence and unresolved questions
 
 Source inspection is in the analysis manifest; planned validation is in
 [validation-plan.md](validation-plan.md). Feature/model/workload acceptance evidence:
-none. All obtained_evidence arrays are empty and human_review is pending. Passing
+none. Each scenario's obtained_evidence holds one synthetic software check; human_review is pending. Passing
 planning validators establishes artifact structure, not implementation or utility.
 
 ## Current documentary reconciliation — 2026-10-20
 
 [Corpus status](corpus-status.md) links the complete S1.x evidence history, obtained bounded results, proposed implementation tasks and remaining gates. Historical planning wording below/above is not a denial of later source research or an acceptance of its implementation. The master assurance remains historical/draft; no approval or activation is inferred.
+
+## Non-functional requirements
+
+SPEC-028 defines no promotion threshold for latency, memory or cost (see [Open questions](#open-questions), OQ-4). The limits below are stated in the sources; those in [contracts/decision-api.md](contracts/decision-api.md) are a draft envelope and those in [contracts/stdlib-v1.md](contracts/stdlib-v1.md) a provisional profile, both feature-local and not adopted authority:
+
+- Input bounds: 1 MiB canonical JSON (raw bytes checked before parsing), 1 to 32 questions, 2 to 32 options per choice or score, at most 64 UTF-8 bytes per identifier, nesting depth 16 (REQ-002; decision-api.md; stdlib-v1.md).
+- Budgets: the caller supplies integer ceilings `maxInputBytes`, `maxQuestions`, `maxOptions`, `maxTokens` and `deadlineMs` (at most 5,000 ms); booleans are not numeric budgets and there are no implicit defaults (REQ-002; stdlib-v1.md).
+- Admission and deadline: one active neural evaluation, queue bound 8, request deadline 5 s, zero retries by default; admission, queue time, model load, tokenization and compute all count toward the deadline (REQ-006; decision-api.md).
+- Numeric: distributions are finite, nonnegative and sum to 1 within 1e-6; head, softmax and calibration run in fp32 or stronger (REQ-001, REQ-003; decision-api.md).
+- Determinism: ties use stable option-ID ordering (REQ-006; decision-api.md).
+- Hard compute deadlines need a killable worker boundary; a Python thread timeout cannot stop GPU work. Backend memory and token caps must be frozen per device before use (decision-api.md; no REQ covers it).
+- Runtime: Python 3.12+, standard library for the core, the optional ML package isolated from core import paths (plan.md; REQ-005 covers only the no-ML default path).
+
+## Security and privacy
+
+- Advice cannot mint certificates, grants, verified statuses or execution permission; `executionAuthorization` remains false: see REQ-004.
+- Malformed, unknown-version, non-finite and ambiguous input is rejected before backend allocation: see REQ-002.
+- Legacy behavior needs no ML package, network or System 1 configuration: see REQ-005.
+- Private text is omitted from decision traces by default; access and retention are explicit ([data-model.md](data-model.md)).
+- No security or privacy obligation beyond REQ-002, REQ-004 and REQ-005 is normative. The plan and contract also state: no `trust_remote_code`, no automatic network dependency, no copied reference weights or data, no hidden effect-authority inference, no external inference endpoint configured by default, and no caller-controlled field that invokes code, imports, reads files or selects a URL (plan.md; decision-api.md; stdlib-v1.md). Per the owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md), these are scope statements, not requirements.
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Terms this spec uses:
+
+- Primitive: one typed decision kind: `boolean`, `choice` or `score` (REQ-001; [contracts/decision-api.md](contracts/decision-api.md)).
+- Backend: an implementation of the typed backend protocol (`capabilities()`, `evaluate(request, deadline, cancellation)`, `close()`); the first is a deterministic rule backend (plan.md; decision-api.md).
+- Raw concentration and top probability: uncalibrated readouts reported separately from `calibratedProbability`, which is present only when calibration supports it (REQ-003).
+- Abstain, defer, refuse: response `status` values besides `answered`; none authorizes execution (REQ-004; decision-api.md).
+- Advisory: a heuristic recommendation with `evidenceClass: heuristic` and `executionAuthorization: false` (REQ-004).
+- DecisionContext, DecisionQuestion, DecisionAnswer, ModelManifest, CalibrationManifest, PolicyManifest, DecisionTrace: the records in [data-model.md](data-model.md).
+
+Values named in this spec:
+
+- Response `status`: `answered`, `abstain`, `defer`, `refused` (decision-api.md).
+- `calibrationStatus`: `absent`, `fitted`, `validated`, `stale` (decision-api.md).
+- Question `type`: `boolean`, `choice`, `score`; `contractVersion` of the reference profile: `decision-stdlib-v1` (decision-api.md; stdlib-v1.md).
+- Assurance `stage`: `draft` or `validated`; `human_review`: `pending`, `changes-requested` or `approved` ([SPEC_KIT.md](../../docs/development/SPEC_KIT.md)).
+
+## Risks and assumptions
+
+- Risk: invalid input reaches a backend or is silently truncated; validation runs first and refuses (REQ-002, T002).
+- Risk: confidence is read as proof of effects, commutation or execution safety; advice stays heuristic with authorization false (REQ-003, REQ-004, T004, T005).
+- Risk: calibration is population-specific and a rule-derived row looks calibrated; calibratedProbability stays absent unless supported (REQ-003, T004; decision-api.md).
+- Risk: overlapping or cancelled requests mix state or emit late advice (REQ-006, T006).
+- Risk: the new capability changes legacy behavior or imports optional packages by default (REQ-005, T003, T007).
+- Risk: adding inference may increase total decision cost and narrowing may lose the correct label (analysis.md, known tradeoffs; no task measures it here).
+- Risk: request-level timeouts need killable worker boundaries for a hard resource guarantee (analysis.md; decision-api.md; REQ-006 covers bounded admission only).
+- Assumption: local context is trusted and existing deterministic verifiers are unchanged; no workload corpus, training budget or device coverage is assumed (`assurance.json` assumptions; OQ-1 to OQ-3).
+- Assumption: the reference profile has no neural backend; synthetic conformance results are not real utility ([stdlib-v1.md](contracts/stdlib-v1.md); research.md).
+
+## Exit criteria
+
+Verification is complete when all of these hold:
+
+- Each scenario SC-001 to SC-006 has named executable tests with `evidence/sc-00x.json`-style candidate, input, command and environment hashes in `assurance.json` (validation-plan.md; REQ-001 to REQ-006). Obtained today: one synthetic software check per scenario.
+- Each task T001–T008 has its evidence bound, and the final candidate verification `scripts/validate_change.py --base develop --profile pr` passes (tasks.md). Bound today: `evidence/luna-core-cli.json`, `evidence/technical-delivery.json`, `evidence/offline-wheel.json` and the profile logs. The per-task reports `evidence/t001.json` to `t008.json` named in tasks.md are planned and absent.
+- A human contract/protocol review is recorded (`human_review`; checklist CHK-008), which is still pending.
+
+Tests, procedures and feature evidence do not substitute for human review, scientific interpretation, source rights or promotion (tasks.md).
+
+## Open questions
+
+The unresolved decisions are those named in [Clarifications and unresolved decisions](#clarifications-and-unresolved-decisions) and [Evidence and unresolved questions](#evidence-and-unresolved-questions); this section only numbers them. No owner answer is recorded for any of them in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
+
+- OQ-1: Consented source and eligible yield for fitting (Clarifications; CHK-009). SPEC-066 absorbs SPEC-029/T001 (SPEC-029 tasks.md, note of 2026-11-01).
+- OQ-2: Available deployment hardware and device envelope (Clarifications; CHK-011).
+- OQ-3: Paid-call and training budgets (Clarifications).
+- OQ-4: Latency, memory and cost thresholds for promotion; the limits under Non-functional requirements are draft envelope values, not thresholds (CHK-011).
+- OQ-5: Final base-model rights (Clarifications).
+- OQ-6: Remote delivery authorization, tracked separately from feature acceptance (Clarifications).
+- OQ-7: Per-capability promotion (CHK-013). SPEC-066 absorbs SPEC-033/T008 (SPEC-033 tasks.md, note of 2026-11-01).
+- OQ-8: Human contract/protocol review (CHK-008; Evidence and unresolved questions; `assurance.json` `human_review`).
