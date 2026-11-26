@@ -68,7 +68,7 @@ planning validators establishes artifact structure, not implementation or utilit
 
 ## Non-functional requirements
 
-No latency, memory or cost threshold is defined (see [Open questions](#open-questions), OQ-6). Operational and quality constraints this spec states:
+SPEC-033 defines no latency, memory or cost threshold (see [Open questions](#open-questions), OQ-6). Operational and quality constraints this spec states:
 
 - Bounded fallback: every fallback chain is finite and its total cost, including System 2 and verifier, is reported (REQ-005).
 - Atomic return: rollback to deterministic/no-advisor behavior is atomic, and the next request resolves its pinned manifest (REQ-004).
@@ -80,7 +80,7 @@ No latency, memory or cost threshold is defined (see [Open questions](#open-ques
 ## Security and privacy
 
 - Private source content is not exported by default, and content retention follows the registered source policy: see REQ-001.
-- Calls to remote or paid services are not made unless authorized: see REQ-005.
+- Remote or paid service calls require authorization: see REQ-005.
 - Artifact identity is checked against tampering: see REQ-004.
 - No security or privacy obligation beyond these three REQs is normative. The plan also states: no `trust_remote_code`, no automatic network dependency, no copied reference weights or data, and no hidden effect-authority inference. Per the owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md), these and the exclusions in Purpose and scope (online learning, external telemetry export, paid model calls, milestone closure) are scope statements, not requirements.
 
@@ -110,7 +110,7 @@ Values named in this spec:
 - Risk: a replaced artifact serves a mixed model/calibration pair (REQ-004).
 - Risk: a fallback chain loops or escalates without a bound (REQ-005, T005).
 - Risk: sparse groups, proxy labels or conformance fixtures are counted as product utility; research.md keeps them separate and the pilot records full cost and null/negative outcomes (REQ-006, T006).
-- Assumption: local context is trusted and the existing deterministic verifiers are unchanged; no workload corpus, training budget or device coverage is assumed (`assurance.json`; REQ-001, REQ-005).
+- Assumption: local context is trusted and the existing deterministic verifiers are unchanged; no workload corpus, training budget or device coverage is assumed (`assurance.json` assumptions; OQ-1 to OQ-3).
 - Assumption: SPEC-066 absorbs the open T002, T003, T004, T006 and T008 and carries them as T203 and T401–T403 (tasks.md note; T002, T003, T004, T006, T008).
 
 ## Exit criteria
@@ -127,10 +127,10 @@ Tests, procedures and feature evidence do not substitute for human review, scien
 
 ## Open questions
 
-- OQ-1: What consented sources and eligible yield exist for fitting? Owner: owner. The 2026-11-01 decision admits the owner's own sources under SPEC-066 REQ-101; other sources are undecided (SPEC-029/T001; T006).
-- OQ-2: Which deployment hardware and device envelope apply? Owner: owner (T006).
+- OQ-1: What consented sources and eligible yield exist for fitting? Owner: owner. The owner decided on 2026-11-01 that S1.5b labels come from real runs and git-history replay, in registered plugin workspaces only; other repositories need express approval each time ([owner-review-20261101.md](../066-system-one-shadow/owner-review-20261101.md) R9–R10). Other sources are undecided (SPEC-029/T001; T006).
+- OQ-2: Which deployment hardware and device envelope apply? Owner: owner (checklist CHK-011; [evaluation-protocol.md](../029-system-one-evaluation/evaluation-protocol.md)).
 - OQ-3: Which paid-call and training budgets apply? Owner: owner (REQ-005).
-- OQ-4: What are the final base-model rights? Owner: owner.
+- OQ-4: What rights apply to the base artifact the owner builds? Owner: owner. Decided 2026-11-01: native model only, own architecture, training and weights, with no third-party decision models or pretrained encoders, and ADR 0034 accepted as amended ([owner-review-20261101.md](../066-system-one-shadow/owner-review-20261101.md) R7–R8); rights to the owner's own artifact remain open.
 - OQ-5: What is the per-capability promotion go/no-go? Owner: owner (T008; REQ-002).
-- OQ-6: What latency, memory and cost thresholds apply? Owner: owner; none is defined (Non-functional requirements; T001).
+- OQ-6: What latency, memory and cost thresholds apply to promotion and fallback? Owner: owner; none is defined in SPEC-033 (Non-functional requirements; T001). SPEC-066 sets a 50 ms wall-time budget per shadow call, which covers the absorbed T002 only ([SPEC-066](../066-system-one-shadow/spec.md)).
 - OQ-7: When is remote delivery authorized? Owner: owner; tracked separately from feature acceptance.
