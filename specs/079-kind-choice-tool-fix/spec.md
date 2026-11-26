@@ -195,9 +195,8 @@ Operational and quality constraints, each with its source:
 
 ## Security and privacy
 
-No new secret, credential or personal-data obligation was added by this refinement. The
-owner chose to cite existing requirements instead of adding REQs
-([owner decisions](evidence/owner-decisions-20261126.md)):
+This section adds no REQ. It cites existing requirements and the owner's decision to cite
+rather than add REQs ([owner decisions](evidence/owner-decisions-20261126.md)):
 
 - The refusal adds no authority: the redirect never grants execution authority and never
   fabricates coverage (REQ-002); `executionAuthorization` stays false
@@ -219,7 +218,7 @@ owner chose to cite existing requirements instead of adding REQs
 - **Redirect:** the `refused` response with code `units-cannot-answer-independence`, a
   message and the constructed AIM envelope (OD-A, REQ-002).
 - **Kinds:** `aim` and `units` are the `analyze-work` request kinds this spec compares; `git`
-  is named only as a request kind left unchanged (Purpose and scope; plan.md Design 3).
+  is named only as a request kind left unchanged (Purpose and scope: AIM, git and report schemas unchanged).
 - **Held-out set v4:** the fresh 100-prompt split of REQ-006, in seven classes:
   disjoint-parallel, overlap-write, dependency-order, read-only shared, kind-choice probes,
   analyze-tempting, git-branch (tasks.md T004).
@@ -270,7 +269,9 @@ Planned and obtained evidence are kept in `assurance.json`. Tracking:
 milestone [BL.2c #36](https://github.com/jayanez/agent-braid/milestone/36),
 epic #1503, tasks T001–T010 as #1504–#1513. OD-A to OD-D are
 decided; OD-E's thresholds and the T006 protocol were approved on 2026-11-23. No open questions remain at draft stage; the class plan and prompt
-authoring are planning work (plan.md), not owner decisions.
+authoring are planning work (plan.md), not owner decisions. The owner's yes for T008
+(300 rollouts), the zero-prompt classification (T009) and the release (T010) are pending
+gates, not open questions (plan.md, Human review and unresolved decisions).
 Feasibility failure, null and inconclusive outcomes are valid reports.
 
 ## Risks and assumptions
@@ -306,11 +307,10 @@ Verification is complete when the obtained evidence for SC-001 to SC-016 listed 
 today: `evidence/gate0-v4-report.json` (REQ-007) and `prompts/FREEZE-v4.json` (REQ-008).
 Planned and absent: `evidence/gate-v4-report.json` (T008, REQ-009), the owner's zero-prompt
 review record under `reviews/` (T009), the shadow report and the release record (T010, REQ-005,
-REQ-012). A missed gate or an inconclusive shadow check is a valid completion when recorded
-(REQ-010). Passing checks are not approval.
+REQ-012). A missed gate is a valid completion when recorded (REQ-010). An inconclusive shadow
+check (fewer than 30 calls) is recorded but blocks the release record (REQ-012, T010, SC-016),
+so the release record stays absent in that case. Passing checks are not approval.
 
 ## Open questions
 
-No unresolved questions. OD-A to OD-E are decided (Clarifications). The owner's yes for T008
-(300 rollouts), the zero-prompt classification (T009) and the release (T010) are pending
-gates, not open questions (plan.md, Human review and unresolved decisions).
+No unresolved questions; see [Evidence and unresolved questions](#evidence-and-unresolved-questions).
