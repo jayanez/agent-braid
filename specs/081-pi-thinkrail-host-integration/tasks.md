@@ -21,14 +21,14 @@ keeps `executionAuthorization` false.
 
 ## Phase P1 — observation
 
-- [ ] T003 (REQ-002 / SC-002): Write the one-command Pi and ThinkRail capture script with a dry-run mode and a disposable profile.
+- [ ] T003 (REQ-002 / SC-002 REQ-014 / SC-015 REQ-015 / SC-016): Write the one-command Pi and ThinkRail capture script with a dry-run mode and a disposable profile.
   Modelled on `scripts/har_codex_capture.py` (#1421): pinned binary hash and
   version, owner sign-in in their own terminal, environment built from scratch,
   raw output private (mode 0700), redacted shape summary with hashes. Tests use a
   fake binary. Dependencies: T001. Target files: `scripts/pi_host_capture.py`,
   `tests/test_pi_host_capture.py`. Verification: procedure_002, then `quick`.
   Planned evidence: `evidence/t003.json`; obtained: none.
-- [ ] T004 (REQ-002 / SC-002 SC-003): Owner runs the capture; commit the redacted Pi and ThinkRail matrix and amend the spec where a row contradicts it.
+- [ ] T004 (REQ-002 / SC-002 SC-003 REQ-013 / SC-014 REQ-014 / SC-015 REQ-015 / SC-016): Owner runs the capture; commit the redacted Pi and ThinkRail matrix and amend the spec where a row contradicts it.
   Rows: `pi install` from npm, Git and local path; skill and extension loading; Pi
   core `mcp.json` support; configuration and session paths; session JSONL shape;
   ThinkRail package install, MCP per-call approval and skill import. Unobserved rows
@@ -45,16 +45,16 @@ keeps `executionAuthorization` false.
 
 ## Phase P3 — build
 
-- [ ] T006 (REQ-003 / SC-004): Add the Pi package target to the plugin build with the packaged skills (eight with SPEC-080) and byte-identity checks for the other hosts.
+- [ ] T006 (REQ-003 / SC-004 REQ-011 / SC-012 REQ-012 / SC-013): Add the Pi package target to the plugin build with the packaged skills (eight with SPEC-080) and byte-identity checks for the other hosts.
   Dependencies: T005, OD-1, OD-2, OD-4. Target files:
   `scripts/build_native_plugin.py`, plugin build tests. Verification:
-  procedure_004, then `quick`. Planned evidence: `evidence/t006.json`; obtained: none.
-- [ ] T007 (REQ-004 / SC-005): Register the unchanged `agent-braid` server in Pi's `mcp.json` through the bundled launcher, or implement the OD-3 fallback.
+  procedure_004, procedure_010 (method not yet defined), then `quick`. Planned evidence: `evidence/t006.json`; obtained: none.
+- [ ] T007 (REQ-004 / SC-005 REQ-010 / SC-011): Register the unchanged `agent-braid` server in Pi's `mcp.json` through the bundled launcher, or implement the OD-3 fallback.
   Explicit `workspaceId`, `reconnect-required` kept; differential test against the
   Codex and Claude results. Dependencies: T005, T006, OD-3. Target files:
   `scripts/build_native_plugin.py`, `agent_braid/tooling_install.py`, tests.
   Verification: procedure_005. Planned evidence: `evidence/t007.json`; obtained: none.
-- [ ] T008 (REQ-005 / SC-006): Add the `pi` installer profile and Pi to the host lists; add Pi to the harness host registry as unqualified, offline only.
+- [ ] T008 (REQ-005 / SC-006 REQ-009 / SC-010): Add the `pi` installer profile and Pi to the host lists; add Pi to the harness host registry as unqualified, offline only.
   Receipt-owned edits only; a modified owned entry refuses with a stable code.
   Coordinate the registry change with SPEC-080 (OpenCode). Dependencies: T005, OD-5.
   Target files: `agent_braid/tooling_install.py`, `agent_braid/tooling_cli.py`,
@@ -67,7 +67,7 @@ keeps `executionAuthorization` false.
   Dependencies: T004, T008. Target files: `agent_braid/plugin_pi.py`,
   `agent_braid/plugin_cli.py`, `tests/test_plugin_pi.py`. Verification:
   procedure_007, then `quick`. Planned evidence: `evidence/t009.json`; obtained: none.
-- [ ] T010 (REQ-007 / SC-008): State in setup and docs that Pi has no permission layer and that Agent Braid adds no execution authority; check that no packaged text issues a grant.
+- [ ] T010 (REQ-007 / SC-008 REQ-010 / SC-011): State in setup and docs that Pi has no permission layer and that Agent Braid adds no execution authority; check that no packaged text issues a grant.
   Dependencies: T006. Target files: setup skill text,
   `docs/tooling/NATIVE_PLUGINS.md`, `docs/tooling/INSTALL.md`,
   `docs/tooling/HOSTS.md`, plugin tests. Verification: procedure_008. Planned
