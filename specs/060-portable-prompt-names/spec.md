@@ -254,8 +254,14 @@ Obtained evidence is in `assurance.json` and [evidence/](evidence/); procedures
 without obtained evidence are planned only, see [validation-plan.md](validation-plan.md).
 Host behavior is taken from the SPEC-054 research and the sources in
 [research.md](research.md). The native observation (T009) covers CLI and loader
-listings in disposable profiles on macOS arm64; the Claude Code slash-menu display of
-the new names and of a portable/plugin collision was not observed. Decisions
+listings in disposable profiles on macOS arm64; the T009 closure records the
+slash-menu display as not observed. Owner screenshots of 2026-10-27 later recorded
+it in [interactive-slash-result.md](evidence/interactive-slash-result.md): under the
+key `agent-braid` the prompts show as `/agent-braid:analyze (MCP)` and the plugin
+skills as `* /agent-braid:analyze`, distinguishable by the `(MCP)` suffix, the `*`
+marker and the description, with no warning and no hidden entry; under
+`portable-braid` there is no collision. T009, `assurance.json` and `tasks.md` do not
+cite that record. Decisions
 OD-1 to OD-8 are decided, see [plan.md](plan.md#human-review-and-unresolved-decisions).
 Open questions: see [Open questions](#open-questions).
 
@@ -276,10 +282,9 @@ quality constraints it states:
 
 ## Security and privacy
 
-No security or privacy obligation applies: the prompts are read-only text with no
-grant path, no execution path and no secret, credential or personal data
-(`assurance.json` execution contract; REQ-001, REQ-005). The refusal of oversized
-arguments and of unknown names without side effect is stated in REQ-001.
+No security or privacy obligation applies: no grant or execution path changes, and
+prompts remain read-only text (`assurance.json` execution contract). The refusal of
+oversized arguments and of unknown names without side effect is stated in REQ-001.
 
 ## Terminology
 
@@ -313,7 +318,8 @@ Values named in this spec:
 
 - Risk: the portable prompt `/agent-braid:analyze (MCP)` and the plugin skill
   `/agent-braid:analyze` can be confused under the default key; mitigated by
-  documentation, and the menu display was not observed (REQ-009, REQ-010, T009).
+  documentation; distinguishable in the observed menu, no warning shown; the record
+  is not bound to SC-010 (REQ-009, REQ-010, T009).
 - Risk: removing the aliases breaks consumers not known to the repository
   (REQ-007, T011).
 - Risk: the window never ends if no owner decision is taken; the 180-day trigger
@@ -340,10 +346,12 @@ needs two published window releases and an owner removal decision (T011, REQ-007
 - OQ-1: Does the owner decide by 2027-04-25 (180 days after the first release,
   [release record](evidence/release-0.1.0a2.md)) to remove the aliases under
   `v0.3` or to extend the window? Owner: founder (REQ-007, T011).
-- OQ-2: Does the owner want a later observation of the Claude Code slash-menu
-  display and of the portable/plugin key collision, which T009 did not cover
-  ([founder review](founder-review-20261027.json), `notAccepted`)? Owner: founder
-  (REQ-010).
-- OQ-3: Should the obtained evidence for REQ-009 (T007) and REQ-010 (T009) be bound
-  in `assurance.json`? The record is under an approved review, so the edit needs
-  owner approval. Owner: founder (REQ-009, REQ-010).
+- OQ-2: Should [interactive-slash-result.md](evidence/interactive-slash-result.md)
+  be bound to SC-010 and T009? Owner: founder (REQ-010).
+- OQ-3: Should the obtained evidence be bound in `assurance.json`: for REQ-010,
+  `evidence/interactive-slash-result.md` and
+  `evidence/native-observation-0.1.0a2-addendum.md`; for REQ-009 (T007), for which no
+  documentation diff or search record exists under `evidence/`? The record has
+  `human_review` approved and the founder review `limits` bind acceptance to the
+  frozen commit, so the edit may need a new owner review. Owner: founder (REQ-009,
+  REQ-010).

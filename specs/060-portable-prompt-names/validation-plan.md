@@ -3,8 +3,9 @@
 Each procedure records the command, candidate and artifact hashes, environment,
 expected and actual outcome, negative controls and limits. Obtained evidence is in
 `assurance.json` and `evidence/`; procedure_007 runs only when T011 is authorized,
-and procedure_010 is closed with bounded scope (CLI and loader observation; the
-slash-menu display was not observed, see `evidence/native-observation-0.1.0a2.md`).
+and procedure_010 is closed with bounded scope (CLI and loader observation, see
+`evidence/native-observation-0.1.0a2.md`). The slash-menu display is recorded
+separately from owner screenshots in `evidence/interactive-slash-result.md`.
 
 ## procedure_001
 
