@@ -15,9 +15,9 @@ Changes made from the feature's own files, with no owner question:
 
 - The status line and the evidence paragraph now say that T001–T011 are closed offline-only and that `assurance.json` holds no obtained scenario evidence.
 - D7 is recorded as applied by SPEC-049 T007, from the SPEC-049 evaluation report.
-- D4 (retention 30 days) and D6 are recorded as decided, although contract section 12 question 1, `capability-report.md` and the T011 and T012 notes still list retention as pending.
+- D4 sets lifecycle retention to 30 days; whether it also answers contract section 12 question 1 is OQ-18. D4 and D6 are recorded as decided, although contract section 12 question 1, `capability-report.md` and the T011 and T012 notes still list retention as pending.
 
-Left unchanged and reported: `tasks.md` is not edited (its lines are not changed by this refinement). Stale statements remain there and in `plan.md` and `validation-plan.md`: "All implementation and gate tasks remain pending", "All twelve tasks are pending", "No feature acceptance checks have run", the T012 note "no review record yet" and "native cohort pending" while SPEC-049/T014 used 15 of 15 slots, and contract section 1 still recording SPEC-049/T005 as open.
+Left unchanged and reported: `tasks.md` is not edited (its lines are not changed by this refinement). Stale statements remain there and in `plan.md` and `validation-plan.md`: "All implementation and gate tasks remain pending", "All twelve tasks are pending", "No feature acceptance checks have run", the T012 note "no review record yet" and "native cohort pending" while SPEC-049/T014 used 15 of 15 slots, contract section 1 still recording SPEC-049/T005 as open, and the T012 acceptance "scoped Luna/human/founder review" with the T010 and T012 notes naming Luna, superseded by D5 as amended on 2026-11-26.
 
 Limit found after the answers: `assurance.json` is draft/pending with historical snapshots and its exact bytes are validated against the preserved public draft tag. Any change makes `python -m scripts.validate_spec_kit` fail with "export manifest does not bind required file". It was therefore left unchanged, and SC-009 and SC-010 are not yet in it (OQ-15).
 

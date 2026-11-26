@@ -60,7 +60,7 @@ Given a native unit or cohort is admitted under any profile, exercise it runs. R
 
 Trace: REQ-010 / SC-010.
 
-Given a component profile is compiled, installed, migrated or operated, exercise it runs. Required observation: canonical authorities, existing runtime grants, provider permissions and global host configuration MUST remain unchanged, and existing plugin, telemetry, forecasting and System 1 acceptance MUST NOT widen. Run the mapped implementation modules with positive, adversarial, drift, interruption and unavailable-observation controls. Bind source/candidate/host/policy/profile versions and retain missingness, failures and all costs. Native/human acceptance needs its own obtained observations.
+Given a component profile is compiled, installed, migrated or operated, exercise the work completes or refuses. Required observation: canonical authorities, existing runtime grants, provider permissions and global host configuration MUST remain unchanged, and existing plugin, telemetry, forecasting and System 1 acceptance MUST NOT widen. Run the mapped implementation modules with positive, adversarial, drift, interruption and unavailable-observation controls. Bind source/candidate/host/policy/profile versions and retain missingness, failures and all costs. Native/human acceptance needs its own obtained observations.
 
 ## Candidate checks
 
