@@ -44,6 +44,29 @@ Each source names its predecessor, so the chain is
 | 2026-11-10 | 3 | SPEC-071 REQ-014 | SPEC-071 | same |
 | 2026-11-10 | 4 | SPEC-071 OD-2 | SPEC-071 | same |
 | 2026-11-10 | 5 | Real host runs | SPEC-071 | same |
+| 2026-11-26 | 1 | Deferred triage: SPEC-077 and #1473 closed as not planned | SPEC-077, HAR T014 | [deferred-triage-20261126.md](deferred-triage-20261126.md) |
+| 2026-11-26 | 2 | Deferred triage: #1424 (Codex quota observer) closed as not planned | SPEC-044 (cancelled) | same |
+| 2026-11-26 | 3 | Deferred triage: #1343 closed, superseded by SPEC-079 | SPEC-069, SPEC-079 | same |
+| 2026-11-26 | 4 | Deferred triage: SPEC-033 T001/T005/T007 closed, partly covered by SPEC-066 | SPEC-033, SPEC-066 | same |
+| 2026-11-26 | 5 | Deferred triage: SPEC-041 T008 rescued; T001/T006 and closure tasks kept | SPEC-041, SPEC-043 | same |
+| 2026-11-26 | 6 | Deferred triage: SPEC-046 stays read-only and parked | SPEC-046 | same |
+| 2026-11-26 | 7 | Deferred triage: System One, SPEC-076 and SPEC-060 kept with corrected reopen criteria | SPEC-028–033, SPEC-076, SPEC-060 | same |
 
 The 2026-11-08 record also points to program decisions L1–L5 in the
 [BL program](../../specs/070-braid-lightning-foundations/program.md).
+
+## Deferred triage 2026-11-26
+
+Adversarial triage of the 72 open issues in milestone `Deferred` (#24) before the
+tracking-sync phase. Facts, the per-issue matrix and the milestone description draft
+are in [deferred-triage-20261126.md](deferred-triage-20261126.md). The owner chose, in
+the words of the options selected: SPEC-077 and #1473, "Cerrar los 9 (Recomendado)";
+#1424, "Cerrar not-planned (Recomendado)"; #1343, "Cerrar, superado por 079
+(Recomendado)"; SPEC-033 T001/T005/T007, "Cerrar los 3, cubiertos en parte
+(Recomendado)" (re-asked after a fact correction); SPEC-041, "T001/T006 parked, T008 rescate (Recomendado)"; closure
+tasks, "Mantener parked con trigger (Recomendado)"; SPEC-043, "Parked con criterio
+del record (Recomendado)"; SPEC-046, "Sí, solo lectura + parked (Recomendado)";
+System One, "Parked con trigger corregido (Recomendado)"; SPEC-076, "Parked con
+trigger (Recomendado)"; SPEC-060, "Parked con trigger y fecha (Recomendado)". Result:
+14 issues to close as not planned, 1 rescued (#425 into SPEC-041), 57 kept. No GitHub
+issue or milestone was changed; the next phase applies this.
