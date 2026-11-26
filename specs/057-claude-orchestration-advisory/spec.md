@@ -2,7 +2,7 @@
 
 **Milestone:** M4.6 — Claude Code dynamic workflows
 
-**Status:** draft specification. This is an engineering specification with one preregistered evidence protocol (gate G1, owned here) and a set of host-verification probes (HV-6 to HV-13). Implementation starts only after three changes have merged: the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carries this specification (stacked on #671). Those are the only dependencies named by this specification; the plan's increments I-1 to I-6 are separate reviewed changes after them. Nothing is implemented, frozen, signed, run or approved. Obtained evidence: none; human review pending. The binding founder decisions of 2026-10-24 (three rounds) are recorded under Clarifications.
+**Status:** draft specification. This is an engineering specification with one preregistered evidence protocol (gate G1, owned here) and a set of host-verification probes (HV-6 to HV-13). The dependencies it names, the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carried this specification, have merged; the plan's increments I-1 to I-6 are separate reviewed changes. Tasks T012 to T025, T032, T040 and T042 are checked in [tasks.md](tasks.md) and their offline engineering controls are recorded in `assurance.json`. Not done: the recipe (T026, T027), the host probes (T003 to T010), the G1 freeze and runs (T033 to T036), the deferred interoperability, skill and telemetry tasks and closure. Nothing is frozen, signed, run against a host or approved; human review pending. The binding founder decisions of 2026-10-24 (three rounds) are recorded under Clarifications.
 
 ## Purpose and scope
 
@@ -104,7 +104,7 @@ Stages: C = pure core and read-only commands (implementation after #671, #672 an
 
 Failure and inconclusive cases: an accepted unknown or content-bearing member, a vendor-specific member in the core schema, a surface id outside the closed set, or a declaration that is accepted as complete without a base fails the requirement. A schema that cannot be validated with the pinned `jsonschema` package is an unavailable observation, not a pass. Checks that a schema cannot express (critical reads covered by reads, duplicate unit ids, dependencies naming known units, an exemption rule naming only declared paths) are validator rules with their own tests, not schema guarantees.
 
-Verification: [procedure_req_001](validation-plan.md#procedure_req_001). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_001](validation-plan.md#procedure_req_001). Obtained evidence: offline unit tests and schema checks over synthetic fixtures, recorded in `evidence/t012-t013.json` (`assurance.json` SC-001); no review and no host observation.
 ### REQ-002 — Expand ownership to exact paths with explicit path identity and conservative coverage
 
 **SC-002:** Given a declaration with literal paths, directories and glob patterns and a pinned base tree, when the pure expansion module (planned `agent_braid/ownership.py`) expands it, then all of the following hold.
@@ -117,7 +117,7 @@ Verification: [procedure_req_001](validation-plan.md#procedure_req_001). Planned
 
 Failure and inconclusive cases: a directory or glob silently treated as disjoint from a file it contains, a new path created by two units that passes as disjoint, a case-only or symlink alias that passes as disjoint, or an absolute and a relative spelling of one path that pass as different resources fails the requirement. Two spellings of the prefix rule in two places is a defect.
 
-Verification: [procedure_req_002](validation-plan.md#procedure_req_002). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_002](validation-plan.md#procedure_req_002). Obtained evidence: offline negative controls recorded in `evidence/t014-t016.json` (`assurance.json` SC-002); no review and no host observation.
 
 ### REQ-003 — Produce pre-flight evidence through the existing AIM analyzer with a closed output vocabulary
 
@@ -134,7 +134,7 @@ Verification: [procedure_req_002](validation-plan.md#procedure_req_002). Planned
 
 Failure and inconclusive cases: an independent candidate returned for a pair with partial coverage, a verdict worded as permission to start or parallelize, an edit to `agent_braid/analysis.py`, a missing statement that disjoint declarations are not merge evidence, or a pre-flight that reads a declaration without a declared base fails the requirement. An unavailable plugin MCP inside workflow agents (HV-1) means the pre-flight runs from the orchestrating session or the CLI before the workflow is launched; that is the declared fallback, not a defect.
 
-Verification: [procedure_req_003](validation-plan.md#procedure_req_003). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_003](validation-plan.md#procedure_req_003). Obtained evidence: offline tests of the AIM mapping and the `expand-ownership` command recorded in `evidence/t014-t016.json` (`assurance.json` SC-003); no review and no host observation.
 
 ### REQ-004 — Compare declared and observed footprints at committed or quiesced checkpoints
 
@@ -152,7 +152,7 @@ Verification: [procedure_req_003](validation-plan.md#procedure_req_003). Planned
 
 Failure and inconclusive cases: a refused, unstable or unobservable snapshot that appears as a receipt or as clean, a `not-observed` unit read as clean, a rename or delete reported as a clean or complete observation, an orchestrator edit attributed to a unit, an unattributed writer silently dropped without a declared exemption rule, or a receipt that carries file content fails the requirement. Observing a worktree that is being written is a refusal, not a result. On a shared tree, an attribution of any change to a teammate or a refusal caused only by a long list of changed paths fails the requirement.
 
-Verification: [procedure_req_004](validation-plan.md#procedure_req_004). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_004](validation-plan.md#procedure_req_004). Obtained evidence: offline tests of the comparison and of `check-ownership` against temporary Git repositories, recorded in `evidence/t017-t019-t042.json` (`assurance.json` SC-004); no review and no host observation.
 ### REQ-005 — Audit isolation and base as configuration observations
 
 **SC-005:** Given the orchestrator's repository, the documented Claude Code settings files and, optionally, the text of a user's workflow script, when the isolation and base audit runs, then all of the following hold.
@@ -164,7 +164,7 @@ Verification: [procedure_req_004](validation-plan.md#procedure_req_004). Planned
 
 Failure and inconclusive cases: an unreadable setting reported as a value, a verdict worded as safe or unsafe, an observation without a named source, a settings value outside the closed key list or a session `name`, `waitingFor` or `cwd` in any output or log, or the audit executing the host binary fails the requirement. The `agent()` option lint is a text heuristic over a user-supplied file and never proves isolation.
 
-Verification: [procedure_req_005](validation-plan.md#procedure_req_005). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_005](validation-plan.md#procedure_req_005). Obtained evidence: offline tests of `audit-isolation` recorded in `evidence/t020-t021.json` (`assurance.json` SC-005); no review and no host observation.
 ### REQ-006 — Publish a per-surface capability and assurance matrix with host versions and preview labels
 
 **SC-006:** Given the four surface ids (`workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`) and the lifecycle points pre-flight, continuous checkpoint, recovery and integration, when the matrix document and its checker are reviewed, then all of the following hold.
@@ -177,7 +177,7 @@ Verification: [procedure_req_005](validation-plan.md#procedure_req_005). Planned
 
 Failure and inconclusive cases: a cell that claims verified or enforced behavior without a receipt, a surface that is silently absent or spelled differently, or a host version that is not recorded fails the requirement. A matrix row is a statement about documentation or an observation at a stated version, never a claim about later versions; where two matrices of the family state different minimum versions for one surface they must name the different capabilities that explain the difference.
 
-Verification: [procedure_req_006](validation-plan.md#procedure_req_006). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_006](validation-plan.md#procedure_req_006). Obtained evidence: the seed matrix and its checker, exercised by `tests/test_orchestration_matrix.py` (`assurance.json` SC-006); no cell is host-observed, because no probe has run.
 ### REQ-007 — Report orphans and recovery state read-only
 
 **SC-007:** Given the output of `claude agents --json` (with or without `--all`) saved to a file or supplied on standard input, and the Git state of the units' worktrees, when the recovery report runs, then all of the following hold.
@@ -191,7 +191,7 @@ Verification: [procedure_req_006](validation-plan.md#procedure_req_006). Planned
 
 Failure and inconclusive cases: any action beyond reading (a delete, a resume, a message, an executed `claude` command), a guessed value for a missing field, a failed unit reported as untouched without Git evidence, an agent self-report used as evidence, or a persisted session name, waiting text or directory fails the requirement.
 
-Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Obtained evidence: offline tests of `report-recovery` recorded in `evidence/t020-t021.json` (`assurance.json` SC-007); no review and no host observation.
 ### REQ-008 — Emit epoch-stamped hazard notices as data with injection-safe repository strings
 
 **SC-008:** Given a pre-flight verdict or a checkpoint receipt that contains repository-derived strings (paths, branch names, commit subjects, task text), when a hazard notice is built for the orchestrator to read (the Mailbox), then all of the following hold.
@@ -206,7 +206,7 @@ Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Planned
 
 Failure and inconclusive cases: repository text in an instruction field, a notice without an epoch or expiry, an unbounded string, a string with a character of the exclusion set or a trailing line feed that validates, a `validUntil` of the wrong shape that validates, or an imperative sentence generated from repository text fails the requirement. The schema patterns end with `(?!\n)$` because the pinned Python validator lets a bare `$` match before a final line feed; seeded fixtures cover each character class and a trailing line feed. A notice does not authorize anything and does not claim to be heard by any session.
 
-Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Obtained evidence: offline tests of the notice builder and the adversarial fixtures recorded in `evidence/t017-t019-t042.json` (`assurance.json` SC-008); no review and no host observation.
 ### REQ-009 — Own the orchestration-settings schema, with pull notices as the only effective strategy and a versioned extension point
 
 **SC-009:** Given a settings record that may be present at conversation, repository and user scope, when the settings are resolved for a run, then all of the following hold.
@@ -222,7 +222,7 @@ Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Planned
 
 Failure and inconclusive cases: any push behavior, any network or socket call, an accepted unknown value, an effective notification strategy other than Mailbox, a guard mode lowered below a `block` floor, a value read from a location outside the defined operator-owned ones (including a tracked or untracked file inside a working tree), a floor read from the conversation scope, or an extension member that this specification interprets or treats as effective fails the requirement. The precedence, the floor and operator ownership are decided (Clarifications, 2026-10-24); the Megaphone and Doorbell remain opt-in and reserved. The locations are defined in `contracts/README.md`; they do not resist a writer that holds the operator's own file permissions, including shell access, so the floor is as strong as those permissions and no stronger. The conversation scope is supplied at invocation and can never lower a floor.
 
-Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Obtained evidence: offline tests of the settings resolver recorded in `evidence/t022.json` (`assurance.json` SC-009); no review and no host observation.
 ### REQ-010 — Define the policy-profile schema shared with SPEC-058
 
 **SC-010:** Given a unit's declared ownership and a requested enforcement mode, when a policy profile is written against `contracts/policy-profile.schema.json` and validated, then all of the following hold.
@@ -239,7 +239,7 @@ Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned
 
 Failure and inconclusive cases: a profile that validates with an `allow` decision, a grant member, a target inside the main plugin, an enabled mode without protected control paths, Bash coverage claimed without the native-settings-only output and an attestation, or an `enforcementObserved` default of true fails the requirement. The schema alone does not reject a mode that skips the ladder default (the mode member is optional by design); that is a compiler and validator rule and the procedure assigns a test to it. A compiler, hook script or settings writer appearing in this specification's deliverables is a scope defect. `NotebookEdit` is not representable: SPEC-058 proposed it, the founder decision names Write and Edit, and it would be added by a versioned schema change if the founder accepts it (planning interpretations below).
 
-Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Obtained evidence: `tests/test_policy_profile.py` over the schema and its two examples (`assurance.json` SC-010); the compiler and guard belong to SPEC-058.
 ### REQ-011 — Document the wave-gate recipe without shipping a fan-out
 
 **SC-011:** Given a user who writes their own dynamic workflow, session launcher or batch plan, when the recipe document `docs/tooling/CLAUDE_ORCHESTRATION.md` (planned), the CLI help of the four subcommands and the shipped package files are reviewed, then all of the following hold.
@@ -294,7 +294,7 @@ Verification: [procedure_req_012](validation-plan.md#procedure_req_012). Planned
 
 Failure and inconclusive cases: a proposal that omits an arm, a stage, a metric, a gate, a kill criterion, the unreleased-candidate sentence, the EUR 0 rule or the downgrade rule, that relaxes a threshold or the planned run count after data exist, or that states a speed claim fails the requirement. Fewer eligible runs than the stated minimum is an inconclusive report. Consistency between the proposal and this requirement is established by the checker and by the review recorded under T032, not assumed.
 
-Verification: [procedure_req_013](validation-plan.md#procedure_req_013). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_013](validation-plan.md#procedure_req_013). Obtained evidence: the structural checker of the G1 proposal and its tests, recorded in `evidence/t032/t032.json` (`assurance.json` SC-013); the proposal is not frozen and no G1 run exists.
 ### REQ-014 — Specify optional interoperability inputs, documentation now and adapters deferred
 
 **SC-014:** Given third-party coordination tools that may already hold a team's claims or conflict predictions (Clash, mcp_agent_mail, git-kura, Gas Town and Beads), when the interoperability contract document is reviewed, then all of the following hold.
@@ -323,7 +323,7 @@ Verification: [procedure_req_014](validation-plan.md#procedure_req_014). Planned
 
 Failure and inconclusive cases: an unbounded superlative, a competitor characterization without a dated source, a stale statement that the marketplace or topic sweeps were not done where the radar records them, or a feature claimed as a differentiator that the research records as parity, behind or easily copied fails the requirement. Absence of a tool in an aggregator is not evidence that it does not exist. Archived or very small projects are not evidence of demand.
 
-Verification: [procedure_req_015](validation-plan.md#procedure_req_015). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_015](validation-plan.md#procedure_req_015). Obtained evidence: the read-only delta pass of 2026-10-25 recorded in `evidence/prior-art-pass.md` (`assurance.json` SC-015); the pass is repeated before publication wording, before SPEC-058 release and at M4.6 closure (T002).
 ### REQ-016 — Keep the governance boundary and reconcile with HAR.3
 
 **SC-016:** Given the repository's authorities (ADR 0021, ADR 0024, AGENTS.md, Articles 12, 13 and 20) and specs/050 tasks T005, T006 and T011, when the deliverables of this specification are inspected and its tests run, then all of the following hold.
@@ -339,7 +339,7 @@ Verification: [procedure_req_015](validation-plan.md#procedure_req_015). Planned
 
 Failure and inconclusive cases: a launch, message, resume, hook, mod, monitor, channel or grant path; an executed host binary; a new MCP tool; or a duplicated compiler or planner fails the requirement. A conflict with a MUST in an authority blocks the work and is not resolved by this specification.
 
-Verification: [procedure_req_016](validation-plan.md#procedure_req_016). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_016](validation-plan.md#procedure_req_016). Obtained evidence: the governance static tests recorded in `evidence/t025-t040.json` (`assurance.json` SC-016); no review.
 ### REQ-017 — Fail closed within fixed bounds, refuse with errors and keep records free of content
 
 **SC-017:** Given any input to the new commands (declarations, Git state, `claude agents --json` output, settings files, script text), when the commands run, including on oversized, malformed or unreadable input, then all of the following hold.
@@ -356,7 +356,59 @@ The never-collect list for any future telemetry about these commands and their c
 
 Failure and inconclusive cases: an over-limit input that reaches analysis, a write outside an explicit new path, a refusal that appears as a result, any content in an output, a telemetry record, or a telemetry-bound member from the never-collect list, fails the requirement.
 
-Verification: [procedure_req_017](validation-plan.md#procedure_req_017). Planned evidence only; obtained evidence: none.
+Verification: [procedure_req_017](validation-plan.md#procedure_req_017). Obtained evidence: offline bound, refusal and never-collect tests recorded in `evidence/t012-t013.json`, `evidence/t017-t019-t042.json`, `evidence/t020-t021.json` and `evidence/t025-t040.json` (`assurance.json` SC-017); no review and no host observation.
+## Non-functional requirements
+
+Operational and quality constraints, each with its source. They restate limits that existing requirements already carry; this refinement adds no constraint and no REQ.
+
+- Read-only, local and offline: no network and no socket, no model invocation by the commands, no write into the repository or the registry, results only to explicit new private paths and existing paths refused (REQ-017; Scientific boundaries, execution contract).
+- Fixed bounds, refused before analysis: declaration at most 1 MiB, at most 32 units, at most 512 paths per unit, strings at most 256 characters, `claude agents --json` input at most 1 MiB, Git observation within the existing bounded Git helpers (REQ-017; REQ-001).
+- Fail closed: a busy lock, an unstable snapshot, an unobservable source, over-bound or malformed input and an existing output path give a stable error code from `contracts/command-error.schema.json`, a nonzero exit and no result object (REQ-017, REQ-004; T042).
+- Stable observation: a worktree that changes between the two Git observations is refused; checkpoints run as a serialized CLI call and never as polling of the plugin MCP, whose lock, four active calls and worktree allowlist stay unchanged (REQ-004; Operation, step 3).
+- Additive compatibility: no change to `agent_braid/analysis.py`, AIM `0.2.0-draft`, SPEC-023, the SPEC-052 gate, the plugin MCP tools or the five product skills (REQ-003, REQ-016; Scientific boundaries, compatibility).
+- Every emitted object has `executionAuthorization` false and `notAGuarantee` true, and states its Article 13 class (REQ-016; Scientific boundaries, Article 13 classes).
+- Host-dependent statements are tied to a host version and labelled documented, inferred, unconfirmed or host-observed (REQ-006, REQ-012).
+- Cost: EUR 0 additional spend on the existing subscription for probes and G1 (REQ-013; Clarifications, Round 1).
+- The pure module uses the standard library only, plus the pinned `jsonschema` package for schema validation (plan, file-level design; REQ-001, failure cases).
+- No numeric limit for latency, memory or wall time is stated in the spec, plan or tasks. Overhead and notification volume are G1 metrics, not limits (REQ-013; plan, Risks).
+
+## Security and privacy
+
+The obligations below are carried by existing requirements and are cited; this refinement adds no REQ.
+
+- Commands store paths and hashes only: no file content, command text, prompts, transcripts, session names or settings values outside the closed key list (REQ-017; REQ-001, REQ-004).
+- The settings audit reads only `worktree.baseRef` and `worktree.bgIsolation`, and never outputs or persists any other value, such as an `env` value, a token or a hook command (REQ-005).
+- A session `name`, `waitingFor` or `cwd` from `claude agents --json` is used in memory for booleans and counts and is persisted in no output or log (REQ-005, REQ-007).
+- Repository-derived strings in a notice are escaped, bounded to 256 characters and placed only in labelled data fields; a declaration rejects the same excluded characters (REQ-008, REQ-001).
+- Settings are read only from the operator-owned locations; a file inside a working tree, a symlink or a file writable by group or others is refused with `ERR-UNOBSERVABLE-SOURCE`, and the block floor is as strong as those file permissions and no stronger (REQ-009; `contracts/README.md`).
+- Agent Braid never executes the `claude` binary and never launches, messages as, resumes, authorizes or stops a session; no grant or model-callable tool exists (REQ-007, REQ-016; ADR 0021).
+- The policy-profile schema cannot represent `allow` or a grant member (REQ-010).
+- Host-probe receipts are counts and booleans only; probe scripts are log-only, stay outside the repository and leave no standing hook or setting (REQ-012). Raw transcripts, prompts, diffs and repository text from probes and G1 runs stay local and uncommitted (plan, Evidence handling).
+- Nothing is collected by telemetry now; the never-collect list of REQ-017 applies to any later vocabulary (REQ-017; T040, T041).
+- Limit: the block floor does not resist a writer that holds the operator's own file permissions, including shell access (REQ-009).
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Feature-specific terms and their allowed values:
+
+- **Surface id**: closed set `workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`; adding one is a versioned schema change (The four surfaces and four lifecycle points; REQ-006).
+- **Lifecycle point**: pre-flight, continuous (checkpoint), recovery, integration (same section).
+- **Declaration record**, **footprint**, **exemption rule**: the orchestrator's per-unit claim of reads, critical reads, writes, creates and deletes, and an explicit rule excluding a path from the unattributed-writer report (REQ-001, REQ-004).
+- **Coverage**: exact or partial; partial coverage never yields an independent candidate (REQ-002, REQ-003).
+- **Pair class**: independent candidate, ordered, conflicting or unknown (REQ-003).
+- **`declared-only`**: the label of the pre-flight result; its Article 13 class is `0-heuristic`, as for the recovery report and the isolation audit; the declared-versus-observed receipt is `1-syntactic` (REQ-003, REQ-004; Scientific boundaries, Article 13 classes).
+- **Receipt**, **unattributed writer**, **`not-observed`**, **truncation**: the checkpoint result, a writer Git cannot attribute to a unit, a per-unit result with a closed reason, and a recorded cut of an over-long list; none is clean (REQ-004).
+- **Refusal**: an error with a stable code and no result object (REQ-017).
+- **Recovery state**: untouched, dirty, published, conflicting or unknown (REQ-007).
+- **Notice**, **epoch**, **Mailbox**, **Whisper**, **Megaphone**, **Doorbell**: the hazard notice as data, the digest of the declaration and observation snapshot, and the notification strategies; only the Mailbox is effective here (REQ-008, REQ-009).
+- **Settings values**: `notificationMode` `pull` or `push`; `notificationStrategy` `mailbox-whisper`, `megaphone` or `doorbell`; `guardMode` `off`, `audit`, `warn` or `block`; **block floor**: a `block` at repository or user scope that a more specific scope cannot lower; `reserved-for-SPEC-059`: the status of a push request (REQ-009).
+- **Policy profile**, **`enforcementObserved`**: the profile shared with SPEC-058 and its attestation, default false (REQ-010).
+- **Evidence status** of a matrix cell: documented, inferred, unconfirmed or host-observed; **cell status**: planned, deferred, reuse of SPEC-052 unverified or not covered (REQ-006).
+- **Probe** (HV-6 to HV-13) with outcome pass, fail or unobserved (REQ-012).
+- **G1**, arms A0, A1, A2, A3a, A3b, gates GA, GN, GG and hypotheses H-OR1, H-OR2 (REQ-013; Scientific boundaries and compatibility).
+- **Stages** C, H, R, G, D: order of work, not authorization (Requirements and acceptance scenarios).
+- **Imported provenance**: `imported:<tool>@<version>` (REQ-014).
+
 ## Scientific boundaries and compatibility
 
 Claim separation. *Analogy*: none relied upon (clause zero; Article 18). *Hypotheses* (not requirements; no observation exists). The hypothesis register entry H-CW2 (`research/hypotheses/H-CW2-claude-orchestration-ownership.md`) has three parts, and this family maps them without duplicating them: part (a), the advisory arms A1 and A2, is carried here as H-OR1 and H-OR2; part (b), pull digests of arm A2 against A1, is carried by SPEC-059 as H-LD1 (SPEC-057 states no separate hypothesis for it: the REQ-008 notice is the artifact that arm A2 tests); part (c), the opt-in guard, is carried by SPEC-058 as H-OR3. H-OR1: on real Claude Code parallel runs a declared-ownership pre-flight together with a checkpoint receipt catches or prevents integration failures earlier than prompt partitioning plus the SPEC-052 gate, without serializing most of the work (criteria CA1, CA2 and CA5 of gate GA). H-OR2: the pre-flight false-assurance rate and the declaration under-coverage are small enough for the advice to be useful (hard criteria CA3, CA4 and CA6 of gate GA). The disproof conditions are stated in the register entry and the G1 proposal and are not restated here: any unmet hard criterion with its denominator met, or an unmet benefit criterion, falsifies; an unmet denominator minimum is inconclusive; fail outranks inconclusive once minimums are met; inconclusive is not support; and the evaluation order in the proposal governs. The gates are GA (advisory arms; informs this specification), GN (arm A2 against A1; a pass permits only the planning of G2) and GG (guard arms; gates SPEC-058). *Empirical*: nothing obtained. *Formal*: no new result; the analyzer's definitions are unchanged. Null results, counterexamples, an inconclusive G1 and a host that cannot support a capability are valid outcomes, and the protocol's completion does not require any hypothesis to be true.
@@ -425,18 +477,62 @@ These choices fill gaps the decisions leave open. They are listed so the founder
 
 ## Evidence and unresolved questions
 
-Obtained evidence: none. Human review pending. Nothing is frozen, signed, run or approved. The host-verification outcomes HV-6 to HV-13 are all unobserved. The G1 proposal, its inputs record and its structural checker exist as drafts written by the G1 track and are unfrozen; consistency with REQ-013 is checked by the review under T032 and by that checker, and is not assumed.
+Obtained evidence: offline engineering controls only, recorded in `assurance.json` for SC-001 to SC-010, SC-013 and SC-015 to SC-017; none for SC-011, SC-012 and SC-014. Human review pending. Nothing is frozen, signed, run against a host or approved. The host-verification outcomes HV-6 to HV-13 are all unobserved (T003 to T010 are unchecked). The G1 proposal, its inputs record and its structural checker exist and the proposal is unfrozen; consistency with REQ-013 is checked by the review under T032 and by that checker, and is not assumed.
 
 Settled by the Clarifications above and not open: the split into three specifications (SPEC-059 reduced to a sketch), the surfaces and lifecycle points, the control outputs, the notification strategy, settings precedence, G1 staging and the other items recorded there. They are not restated.
 
-Genuinely open, to be answered by the founder or by observation:
-
-- **Receipt class:** whether `1-syntactic` stays the right label after the first obtained evidence (the label is decided; its adequacy is observed).
-- **Minimum Claude Code version per capability:** the matrix states first-changelog versions; the founder confirms the support floor.
-- **`batch` pre-flight arm:** decided after HV-11 and before the freeze (T043).
-- **Agent-teams ledger:** decided after HV-L7 (T044).
-- **Host behaviors that the documentation does not settle** (HV-1 from SPEC-052 and HV-6 to HV-13): whether plugin MCP tools are visible inside workflow agents; whether hooks fire inside workflow agents, `/batch` units and in-process and split-pane teammates (documented for subagents, inferred elsewhere); whether the task tools are present on the model in use, which decides whether `TaskCreated` fires at all (documented rule; presence on the model in use unconfirmed); whether permission rules and the sandbox apply inside subagents and teammates and cover Bash; the `claude agents --json` fields on the installed version; the base that a workflow agent's worktree actually used; the `/batch` branch layout; the formats of the agent-teams task directory and workflow journals, which are not documented interfaces; and the plugin MCP process topology.
-- **Prior-art coverage:** the recorded pass (RAD-2026-016 to RAD-2026-033) covered the official marketplace by a name and description filter, GitHub search and topic queries, merge-queue and semantic-merge tools and named orchestrators from READMEs; a peer-reviewed literature query and re-reads of commercial products were not done, and the pass is repeated or extended under T002 before publication wording, before SPEC-058 release and at M4.6 closure.
-- **Integration with the documents the integrator owns:** the roadmap, program, status, ecosystem, SPEC-052 reference and hypotheses-index edits were made in this pull request. What remains, recorded as T029, is the cross-note in the SPEC-052 ADR proposal's no-go list that hooks are reopened only for the SPEC-058 companion plugin through a separate ADR proposal.
+Genuinely open: see [Open questions](#open-questions).
 
 Record feasibility failure, null and inconclusive outcomes as valid reports.
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects. Sources: the plan's Risks section, Known limits of the evidence and the Clarifications.
+
+- Risk: Under-declaration, especially of reads, gives false assurance; the result stays `declared-only` and G1 measures the pre-flight false-assurance rate and declaration recall (REQ-003, REQ-013; plan, Risks).
+- Risk: Disjoint declarations are not evidence of a clean merge; integration evidence remains SPEC-052 (REQ-003, REQ-005; research RS-4).
+- Risk: Hosts change weekly and several surfaces are experimental or research previews, so matrix rows hold only at the recorded version (REQ-006, REQ-012; T011).
+- Risk: Host behaviors HV-1 and HV-6 to HV-13 are unobserved; a failed probe removes or downgrades the capability (REQ-012; T003 to T010).
+- Risk: Agent teams have no Git ground truth, so evidence there is the weakest and is reported separately per surface (REQ-004; T044).
+- Risk: Repository text in a notice could reach a model-visible context; escaping, bounding and adversarial fixtures are the mitigation (REQ-008; T019).
+- Risk: A pull notice is read only when the orchestrator reads it; lateness and volume are G1 metrics (REQ-008, REQ-009, REQ-013).
+- Risk: A refusal could be read as a result; the single refusal rule and the refusal-versus-result tests are the mitigation (REQ-017, REQ-004; T042).
+- Risk: Scope could creep into control (hooks, monitors, a compiler or a settings writer); the governance static tests are the mitigation (REQ-016; T025).
+- Risk: Settings and host inputs could leak content; the closed key list and the never-collect list are the mitigation (REQ-005, REQ-007, REQ-017; T040).
+- Risk: Anthropic could ship native ownership declaration or conflict detection; claims stay bounded and a G1 outcome of no catches beyond the gate narrows the specification (REQ-013, REQ-015; T002).
+- Risk: Paired G1 arms may not be affordable at EUR 0; the stated downgrade is to observational findings with no efficacy claim (REQ-013; T033, T034).
+- Risk: The G1 proposal was written by another track and may drift before the freeze (REQ-013; T032, T033).
+- Risk: The CLI starts a Python process per checkpoint; overhead is reported by G1 and no per-tool-call hook exists here (REQ-013; T035).
+- Assumption: The host facts are documentation readings of 2026-10-24, not observations, unless a receipt says otherwise (The four surfaces and four lifecycle points; REQ-012).
+- Assumption: The operator-owned settings locations are a proposal for the founder to confirm, not an approved decision (REQ-009; Clarifications, Planning interpretations).
+- Assumption: `NotebookEdit` is not representable in the policy profile until the founder accepts it by a versioned schema change (REQ-010).
+- Assumption: The matrix records the first changelog entry that names a capability as its minimum host version; this is documentation, not a support claim (REQ-006; Clarifications, Planning interpretations).
+- Assumption: The existing subscription covers probes and G1 at EUR 0 additional spend (REQ-013; T034).
+- Assumption: An inconclusive or negative G1 and a host that cannot support a capability are valid outcomes (Scientific boundaries and compatibility; REQ-013).
+
+## Exit criteria
+
+Verification is complete when the evidence below exists. Obtained evidence is recorded in `assurance.json` only from commands that actually ran.
+
+- REQ-001 to REQ-010, REQ-016 and REQ-017: the offline controls recorded in `evidence/t012-t013.json`, `evidence/t014-t016.json`, `evidence/t017-t019-t042.json`, `evidence/t020-t021.json`, `evidence/t022.json` and `evidence/t025-t040.json`, plus `tests/test_orchestration_matrix.py` and `tests/test_policy_profile.py`, all present, and the independent technical review of T037. REQ-006 also needs the host receipts of T003 to T010 consolidated by T011; none exists, so no cell is host-observed.
+- REQ-011: the recipe `docs/tooling/CLAUDE_ORCHESTRATION.md` and the static tests of T026 and T027 are planned and absent today.
+- REQ-012: one receipt per probe HV-6 to HV-13 with outcome pass, fail or unobserved (T003 to T010); planned and absent today. `evidence/` holds no probe receipt.
+- REQ-013: the structural checker evidence in `evidence/t032/t032.json` is present. A frozen preregistration (T033), the stage 1 runs (T034), the evidence report (T035) and the founder disposition (T036) are planned and absent. A failed or inconclusive G1 outcome completes the protocol without supporting H-OR1.
+- REQ-014: the interoperability contract `contracts/interop-inputs.md` is a draft; its verification on dated tool versions (T030) is deferred and unscheduled.
+- REQ-015: `evidence/prior-art-pass.md` is present; the pass is repeated before publication wording, before SPEC-058 release and at M4.6 closure (T002).
+- Closure: the review of T037 and the founder closure note of T038, both planned and absent today.
+
+Today human review is pending. Passing checks are not approval, and no scenario is approved.
+
+## Open questions
+
+Each is unresolved. The owner is the one the sources name. The first two items are the ones T001 asks the founder to confirm or defer.
+
+- OQ-1: Whether `1-syntactic` stays the right label for the receipt after the first obtained evidence (the label is decided; its adequacy is observed). Owner: the founder (T001).
+- OQ-2: The minimum Claude Code version per capability: the matrix states first-changelog versions and the founder confirms the support floor. Owner: the founder (T001).
+- OQ-3: Whether `batch` has a pre-flight arm in G1, decided after HV-11 and before the freeze. Owner: the founder (T043).
+- OQ-4: Whether an attributed-write ledger serves agent teams, decided after probe HV-L7 (SPEC-059). Owner: the founder (T044).
+- OQ-5: Host behaviors that the documentation does not settle (HV-1 from SPEC-052 and HV-6 to HV-13): whether plugin MCP tools are visible inside workflow agents; whether hooks fire inside workflow agents, `/batch` units and in-process and split-pane teammates (documented for subagents, inferred elsewhere); whether the task tools are present on the model in use, which decides whether `TaskCreated` fires at all; whether permission rules and the sandbox apply inside subagents and teammates and cover Bash; the `claude agents --json` fields on the installed version; the base that a workflow agent's worktree actually used; the `/batch` branch layout; the formats of the agent-teams task directory and workflow journals, which are not documented interfaces; and the plugin MCP process topology. Owner: answered by observation, each probe launched by the orchestrating session after the founder authorizes it (REQ-012; T003 to T010).
+- OQ-6: Prior-art coverage: the recorded pass (RAD-2026-016 to RAD-2026-033) covered the official marketplace by a name and description filter, GitHub search and topic queries, merge-queue and semantic-merge tools and named orchestrators from READMEs; a peer-reviewed literature query and re-reads of commercial products were not done, and the pass is repeated or extended under T002 before publication wording, before SPEC-058 release and at M4.6 closure. Owner: the sources name none.
+- OQ-7: The cross-note in the SPEC-052 ADR proposal's no-go list that hooks are reopened only for the SPEC-058 companion plugin through a separate ADR proposal. Owner: the integrator (T029).
+- OQ-8: The planning interpretations that the drafting track proposed and the founder has not approved: the CLI-not-agents rule, the one refusal rule, the operator-owned locations, the coverage tools (`Write` and `Edit` only) and the minimum host versions (Clarifications, Planning interpretations). Owner: the founder, who may accept, amend or reject each.
