@@ -477,8 +477,8 @@ command's required artifacts, destinations and acknowledgements.
 System One shadow mode is off by default. After `plugin setup --system-one shadow` (or `python -m agent_braid.tooling_mcp --system-one shadow` for the standalone server) and a reconnect, each successful `analyze-work` call also appends one closed-vocabulary structural episode to `~/.local/share/agent-braid/system-one/`, with 30 UTC dates retained and no upload; the write runs on a background worker, off the request path, and is dropped when that worker is busy. Episodes include structural features (per-side effect kinds, resource classes and path-shape counts) and per-repository salted pseudonymous resource hashes; the salt and episodes stay on this machine and `system-one purge` removes both. Every MCP envelope stays byte-identical, the reference backend only abstains, and no execution authority changes.
 
 The analyzer/runtime contract is `0.1.0-alpha` and AIM and certificate contracts
-are `0.2.0-draft`. The Python package version is in [pyproject.toml](pyproject.toml).
-The native plugin is versioned separately: the latest release is on the
+are `0.2.0-draft`. The package version is `0.1.0a2` ([pyproject.toml](pyproject.toml); current release state in
+[STATUS](docs/STATUS.md)). The native plugin is versioned separately: the latest release is on the
 [tags page](https://github.com/jayanez/agent-braid/tags) and in the plugin badge
 above, and the rollback target is in [NATIVE_PLUGINS.md](docs/tooling/NATIVE_PLUGINS.md);
 `plugin-status` reports the package as `version` and the plugin as `pluginVersion`. The public CLI does not
