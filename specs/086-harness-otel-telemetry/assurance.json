@@ -334,6 +334,54 @@
         }
       ],
       "text": "Conditional adoption. The OpenTelemetry adoption track (AT-2026-004, `watch`) moves only through a recorded owner decision with an ADR covering the output contract and the export path. If the owner keeps `watch`, or the fixture check of H1 fails, the spec closes with a recorded \"not adopted\" outcome. That is a valid result."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "the harness trace commands, the converter and the host configuration files",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned: evidence/t010.json",
+          "test_file": "specs/086-harness-otel-telemetry/validation-plan.md",
+          "test_name": "procedure_013",
+          "then": "no host exporter setting changes and no path ingests host OTLP.",
+          "when": "a code search and a filesystem monitor run"
+        }
+      ],
+      "text": "No host exporter or host ingest. This specification MUST NOT configure host exporters (Claude Code, Codex) or ingest host OTLP. SPEC-061 owns viewer ingest."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "spans and command results from conversion, store, export and audit",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned: evidence/t006.json; evidence/t010.json",
+          "test_file": "specs/086-harness-otel-telemetry/validation-plan.md",
+          "test_name": "procedure_014",
+          "then": "each span attribute and each result field is exactly `false`.",
+          "when": "they are inspected"
+        }
+      ],
+      "text": "No execution authority. Every span MUST carry `agent_braid.execution_authorization = false`, and every command result MUST keep `executionAuthorization: false`."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "a loopback listener, a non-loopback destination and a loopback listener that answers with a redirect",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned: evidence/t008.json; evidence/t010.json; evidence/t013-loopback-receipt.json",
+          "test_file": "specs/086-harness-otel-telemetry/validation-plan.md",
+          "test_name": "procedure_015",
+          "then": "only the loopback destination without a redirect receives spans, and each refused batch stays pending.",
+          "when": "export runs against each"
+        }
+      ],
+      "text": "Loopback export only in v0.1. Export MUST send only to a loopback endpoint (127.0.0.1 or ::1), MUST NOT follow redirects and MUST bound the request body (OD-5; plan, Approach)."
     }
   ],
   "scientific_limits": "Engineering, not a research protocol. The OTel GenAI conventions are status Development and may change; conformance is to one pinned revision only. H1 is checked on committed fixtures only; no claim of compatibility with any backend. A loopback receipt shows attribute names, not backend behavior. A Codex review is independent model review, not human review or approval.",

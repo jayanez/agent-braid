@@ -18,3 +18,6 @@ not prove privacy, safety or usefulness and are not approval.
 | procedure_010 | SC-010 | write-fault injection and overhead timing (T011) | harness output and exit codes equal the off run; losses counted | a fault that changes a harness result |
 | procedure_011 | SC-011 | audit over a store with spans, drops and a pending export | counts reported; no write; no socket | the audit writes, repairs or connects |
 | procedure_012 | SC-012 | adoption decision record (T003, T012, T015) | cites the ADR, H1 result and owner decision; a failed condition leaves export unreleased | adoption recorded with H1 failed or no ADR |
+| procedure_013 | SC-013 | code search and filesystem monitor over trace commands, converter and host configuration files | no host exporter setting changes; no path ingests host OTLP | a host exporter setting written or host OTLP read |
+| procedure_014 | SC-014 | inspect spans and results from conversion, store, export and audit | every span attribute and result field is exactly `false` | any `true`, missing or non-boolean value |
+| procedure_015 | SC-015 | loopback listener, non-loopback destination and redirecting listener | spans only at the loopback destination without redirect; refused batches stay pending | a non-loopback send, a followed redirect or an unbounded body |
