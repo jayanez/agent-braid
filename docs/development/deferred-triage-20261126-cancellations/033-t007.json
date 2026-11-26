@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-033/T007",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "21f7b0b7317f76a8b41853191cc8ec1b7709a26c937509793ee4e70c6035f644",
+  "sourceReference": "Owner decision of 2026-11-26 (Q4, \"Cerrar los 3, cubiertos en parte (Recomendado)\"), recorded in docs/development/deferred-triage-20261126.md (SHA-256 ce21e5d6f0e24d3e4dba3be0c0426e6ac734537d3a90f5fb4a0ab6dba85c938c). Integrator-recorded provenance, not independently authenticated.",
+  "reason": "Not covered by SPEC-066; the exact-candidate closure packet with fresh reproduction is recorded as not planned.",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

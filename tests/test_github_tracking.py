@@ -22,6 +22,8 @@ from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
 
 S1_5 = "S1.5 — System One shadow activation"
 DEFERRED = "Deferred"
+M4_5 = "M4.5 — AI tooling integrations for Codex and Claude Code"
+RESCUED_T008 = "SPEC-041/T008"
 OWNER_DECISION_R6 = ([f"SPEC-029/T00{n}" for n in range(1, 10)]
                      + ["SPEC-031/T008", "SPEC-033/T002", "SPEC-033/T003",
                         "SPEC-033/T004", "SPEC-033/T006", "SPEC-033/T008"])
@@ -151,12 +153,18 @@ class TrackingTests(unittest.TestCase):
         self.assertFalse(any(key.startswith("SPEC-077/") for key in overrides))
         for key in OWNER_DECISION_W3_DEFERRED:
             self.assertEqual(DEFERRED, by_key[key]["milestone"])
-            self.assertEqual("open", by_key[key]["state"])
-        pinned = set(overrides) - moved
+            # closed as not planned by the 2026-11-26 Deferred triage (Q1)
+            self.assertEqual(("closed", "not_planned"), (by_key[key]["state"], by_key[key]["state_reason"]))
+        # SPEC-041 T008 was rescued into its refined spec (triage Q5; owner 2026-11-26): open in reopened M4.5
+        self.assertEqual(M4_5, overrides[RESCUED_T008])
+        self.assertEqual("open", by_key[RESCUED_T008]["state"])
+        self.assertNotIn(M4_5, config["closed_milestones"])
+        pinned = set(overrides) - moved - {RESCUED_T008}
         self.assertEqual(98, len(pinned))
         for key in pinned:
             self.assertEqual("closed", by_key[key]["state"])
-            self.assertIn(overrides[key], config["closed_milestones"])
+            if overrides[key] != M4_5:  # M4.5 is reopened for the rescued T008
+                self.assertIn(overrides[key], config["closed_milestones"])
         self.assertTrue(all(name in config["milestones"] for name in overrides.values()))
 
     def test_committed_spec_inventory_is_complete(self):

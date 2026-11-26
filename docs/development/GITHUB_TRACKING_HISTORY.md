@@ -25,6 +25,16 @@ Moved from the *Source of truth and stable IDs* section.
   tasks after reconciliation. Its original criterion remains unchecked and its
   dependencies remain unsatisfied; parent and milestone states stay open.
 
+  The [Deferred triage of 2026-11-26](deferred-triage-20261126.md) (frozen record,
+  SHA-256 `ce21e5d6f0e24d3e4dba3be0c0426e6ac734537d3a90f5fb4a0ab6dba85c938c`)
+  cancels ten more tasks as not planned: SPEC-033 T001, T005, T007 and SPEC-077
+  T001, T003–T007, T009. Each has its own decision file in
+  [deferred-triage-20261126-cancellations](deferred-triage-20261126-cancellations/)
+  that cites the record, because a cancellation binding is one JSON file per task.
+  SPEC-077's parent closes as `not_planned` through the spec-level `state_reason`
+  (ADR 0043 is Rejected). SPEC-041/T008 is rescued into M4.5 through a
+  `task_milestone_overrides` entry and M4.5 is reopened for it (owner, 2026-11-26).
+
 ## Historical milestone aliases
 
 Moved from *Milestone names and identity*.
