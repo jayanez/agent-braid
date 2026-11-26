@@ -18,7 +18,7 @@ The guard is not a grant system, a scheduler or a launcher. It never returns `al
 | --- | --- | --- |
 | SPEC-052 | Read-only integration gate over committed work | Existing; unchanged |
 | SPEC-053 | Transcript to AIM adapter, behind gate G0 | Existing; unchanged |
-| SPEC-057 | Advisory core; owns the policy-profile and settings schemas, host probes HV-6 to HV-13 and gate G1 | Specified; implementation after the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carries SPEC-057 to SPEC-059 (stacked on #671) have merged |
+| SPEC-057 | Advisory core; owns the policy-profile and settings schemas, host probes HV-6 to HV-13 and gate G1 | Specified; its Status line (specs/057-claude-orchestration-advisory/spec.md) records that the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carried the specification have merged; its increments I-1 to I-6 are separate reviewed changes |
 | **SPEC-058 (this)** | Policy compiler with three outputs, companion plugin and guard, modes ladder | Specified now; implemented first only as an unreleased engineering candidate behind G1 (needed by G1 arm A3); adoption and release blocked by G1 gate GG and the ADR |
 | SPEC-059 | Coordination ledger and optional active push (a separate companion) | A sketch (objective, limits, decisions taken, a drafted coordination contract kept for founder review); blocked by G2 (decided after G1) and its own ADR |
 
@@ -248,6 +248,59 @@ Failure and inconclusive cases: a package build that succeeds without the record
 
 Verification: [procedure_req_016](validation-plan.md#procedure_req_016). Planned evidence only; obtained evidence: none.
 
+## Non-functional requirements
+
+Operational and quality constraints, each with its source. They restate limits that existing requirements carry, or record their absence; this refinement adds no constraint and no REQ.
+
+- Local and offline: the compiler, the report and the hook scripts use no network and no socket, launch no `claude`, `git` or Agent Braid CLI or MCP process and invoke no model (REQ-013; Scientific boundaries, execution contract).
+- Fixed input bounds, refused before decision: profile and envelope at most 1 MiB, at most 512 paths per list, strings at most 256 characters; at most 32 units; the pending notice read for the Whisper at most 1 MiB (REQ-013, REQ-012; Scientific boundaries, domain).
+- Hook failure is fail-open and recorded: an internal error, timeout or over-bound input gives `no-opinion`, a `guard-error` record and a degraded attestation, never a decision (REQ-009, REQ-013).
+- Whole-command refusals of the compiler, the report and the package builder are errors with a stable code from `command-error.schema.json`, a nonzero exit and no result object; the hook does not use that vocabulary (REQ-001, REQ-010, REQ-016, REQ-013).
+- Output determinism: the compiler and the snippet renderer give byte-identical output for identical input and write only to explicit new private paths, refusing existing paths (REQ-001, REQ-003).
+- Additive compatibility: no change to `agent_braid/analysis.py`, AIM `0.2.0-draft`, the SPEC-052 gate, SPEC-057's schemas and commands, the plugin MCP tools, limits or grants, the five product skills or the main plugin package; the main plugin package stays byte-identical to a build without the companion (REQ-004, REQ-015; Scientific boundaries, compatibility).
+- Every emitted object has `executionAuthorization` false and states its Article 13 class, with `notAGuarantee` true in reports (REQ-001, REQ-010, REQ-015).
+- Host-dependent statements are tied to a host version and labelled documented, inferred, unconfirmed or host-observed (REQ-014; The four surfaces and the three outputs).
+- Cost: EUR 0 additional spend on the existing subscription for probes and G1 (REQ-014; Clarifications, Evidence).
+- The hook scripts are standard-library only (REQ-004; plan.md, Technical context and scope).
+- Hook latency: the G1 proposal's p95 of 500 ms is the proposed criterion, not a measured result and not a limit set here (REQ-013). No numeric limit for memory or wall time is stated in the spec, plan or tasks.
+
+## Security and privacy
+
+The obligations below are carried by existing requirements and are cited; this refinement adds no REQ.
+
+- The audit record carries no `content`, `old_string`, `new_string`, command text, prompt, transcript path or message, and is written to a private local path outside the repository, excluded from Git, with no network or socket write (REQ-012).
+- Repository-derived text reaches a model only through closed templates, in labelled data fields, after the SPEC-057 escaping rule; the Whisper forwards no sibling-written path text (REQ-012).
+- Nothing is collected or emitted as telemetry now; the never-collect list is a specification exclusion for any later vocabulary (REQ-012).
+- Output B carries no secrets, environment values or absolute home paths beyond the declared envelope, and the renderer never reads or edits a settings file (REQ-003, REQ-001).
+- Settings, profile, envelope and notice locations are operator-owned and are never named by a tool call; from the settings the guard reads only `guardMode` and `notificationStrategy` and echoes or persists no other value (REQ-006, REQ-007, REQ-013).
+- No tool-call field is passed as a path argument to a checker, CLI, MCP tool or subprocess (REQ-013).
+- No code path or schema member carries `allow`, `defer`, an input rewrite or a grant; the guard never launches, messages as, resumes, authorizes or stops a session, agent, team or batch (REQ-005, REQ-015; ADR 0021).
+- An internal error is never converted into `allow`, and an unreadable profile or envelope does not deny every write (REQ-009).
+- Host-probe receipts are counts and booleans only; probe scripts are log-only, stay outside the repository and leave no hook or setting behind (REQ-014).
+- Limit: control-path protection against Bash writes exists only through output D where HV-8 records it, and escaping does not neutralise semantic prompt injection (REQ-007, REQ-012; Known limits of the evidence).
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Feature-specific terms and their allowed values:
+
+- **Surface id**: closed set `workflow-tracks`, `linked-sessions`, `agent-teams`, `batch` (The four surfaces and the three outputs; REQ-014).
+- **Output**: D (native settings), A (companion plugin, working name `agent-braid-guard`), B (settings snippet); output C (hooks in the main plugin) is rejected and not representable (REQ-001, REQ-004).
+- **Policy compiler**, **guard**: the pure compiler from declared ownership to a profile and its outputs, and the hook logic of output A (Purpose and scope; REQ-001, REQ-005).
+- **Mode**: `off`, `audit`, `warn`, `block`; default when enforcement is enabled `audit`; absent in every source is `off` (REQ-006).
+- **Scope**: `conversation`, `repository`, `user`; most specific wins; **block floor**: a `block` at repository or user scope that a conversation setting cannot lower (REQ-006).
+- **Mode source**: `conversation`, `repository`, `user`, `profile` or `default` (REQ-006).
+- **Decision vocabulary**: `no-opinion`, `ask`, `deny`, `additionalContext`; `allow` and `defer` are unreachable (REQ-005). **Would-decision**: `would-deny`, `would-ask`, `would-warn` (REQ-006).
+- **Whisper**, **Mailbox**: the bounded `PreToolUse` `additionalContext` for a pending pull notice, and the pull notice the orchestrator reads; template `pending-notice` (REQ-012; Clarifications, Notifications). The Megaphone and the Doorbell belong to SPEC-059.
+- **Envelope**, **partial envelope**, **undecidable path**, **control path**, **envelope digest**: the declared exact write and create paths; an envelope with an entry that did not expand exactly; a path the guard cannot decide; a protected path of the profile; the digest recorded at compile time (REQ-001, REQ-007).
+- **Attestation state**: `advisory`, `observed`, `degraded`; **`enforcementObserved`**; **`guard-not-covered`** (REQ-008).
+- **Report classes**: `bypass-observed` (`shell-write`, `unknown-route`, `control-path-write`), `denied-then-reappeared`, `not-observed`, `unknown` (REQ-010).
+- **`guard-error`**, **`tamper-suspected`**, **`unmarked-task`**, **footprint marker** (REQ-009, REQ-007, REQ-011).
+- **Cell status** of the guard matrix: `planned`, `not-offered`, `guard-not-covered`; **evidence status**: documented, inferred, unconfirmed or host-observed (REQ-014).
+- **Probe**: GP-1 to GP-5 with outcome pass, fail or unobserved; host probes HV-6, HV-7, HV-8, HV-10 are SPEC-057's (REQ-014).
+- **G1**, arms A3a, A3b and the optional `AN`, gates GA and GG, criteria CG0 to CG5 and hypotheses H-OR3, H-GD1, H-GD2 (Known limits of the evidence; Scientific boundaries and compatibility; REQ-016).
+- **Candidate**: the unreleased companion source tree at a recorded commit; **release decision**: the founder-recorded record that the package builder requires (REQ-004, REQ-016).
+- **Stages** D, H, C, P, R, G: order of work, not authorization (Requirements and acceptance scenarios).
+
 ## Scientific boundaries and compatibility
 
 Claim separation. *Analogy*: none relied upon (clause zero; Article 18). *Hypotheses* (not requirements; no observation exists): H-OR3, the guard, if later released, has an acceptable false-block and bypass rate on the surfaces where hooks fire, with no successful tamper and observed liveness (G1 gate GG, criteria CG0 to CG5; research hypothesis H-CW2 part (c)); H-GD1, host-native permission deny rules and the sandbox write allowlist cover shell writes that hooks cannot, on the surfaces where they apply to subagents and teammates (HV-8, GP-5; disproof: they do not apply, the allowlist is additive to default working-directory writes and restricts nothing, or they do not stop `sed -i` and redirects outside the allowlist); H-GD2, a Write/Edit guard in `audit` mode records would-have-blocked decisions with a false-positive rate low enough to inform the choice of `block` (disproof: adjudicated false decisions exceed the G1 criterion). Each has its disproof condition in the G1 proposal or in the probe it names. *Empirical*: nothing obtained. *Formal*: no new result; the decision table is a finite check over the conformance vectors (exhaustive-finite over that table only). A null result, a failing GG, a host that cannot support a capability and an inconclusive G1 are valid outcomes, and completing this protocol does not require any hypothesis to be true.
@@ -313,17 +366,62 @@ Obtained evidence: none. Human review pending. Nothing is frozen, signed, run, i
 
 Settled by the Clarifications above and not open: the split into three specifications; the four surfaces and three lifecycle points; the three supported control outputs and the rejection of hooks in the main plugin; the modes ladder and its default; the guard's output vocabulary; the settings precedence and block floor; Mailbox + Whisper as the default strategy; the deferred orchestration skill; the deferred narrow telemetry; the interoperate-and-prior-art stance and documentation-only interoperability; G1 ownership, staging and its EUR 0 rule; the A3 blocker resolution; fail-open recorded with `ask` kept for undecidable paths; the unattributed-writer default; the Article 13 classes; no Bash observer now; the probe launch rule; the two separate companions; and the Claude-only scope.
 
-Genuinely open, to be answered by the founder or by observation:
-
-- **Proposed interpretations above:** the profile mode as the lowest-precedence default, the Whisper delivery rule and path policy, the refusal mapping, the per-surface gate outcome and NotebookEdit as a coverage extension.
-- **Native-controls arm:** whether the optional G1 arm `AN` is run on a claimed surface (a founder decision at the stage 2 decision); without it the release wording carries the limitation sentence.
-- **`ask` semantics:** whether `ask` is useful where no human is present (GP-2); until answered `block` uses it only for undecidable paths.
-- **Sandbox allowlist semantics:** additive versus restrictive, and its relation to default working-directory writes (HV-8, GP-5).
-- **D versus B distinction and the minimum host version** the matrix should state for each output.
-- **Name and distribution** of the companion plugin (`agent-braid-guard` is the working name) and whether it is ever published; both are decided after G1.
-- **Host behaviors not settled by documentation:** whether plugin `PreToolUse` hooks fire inside workflow agents, `/batch` units and split-pane teammates (HV-6); whether the task tools are present on the model in use (HV-7); whether deny rules and the sandbox apply inside subagents and teammates, cover Bash and reach dispatched sessions (HV-8); the working directory and configuration root a hook sees (HV-10, GP-3); and the guard probes GP-1 to GP-5.
-- **G1 outcome:** whether GA and GG pass on any surface; the thresholds are proposed and unfrozen.
-- **ADR adoption:** adoption, amendment or rejection of the feature-local proposal with the G1 outcome, with the next free ADR number confirmed only at adoption.
-- **Integration with documents the integrator owns:** roadmap, program, ecosystem and hypothesis-index wording and the SPEC-052 specification, plan, checklist and ADR proposal, recorded as tasks and not edited here.
+Genuinely open: see [Open questions](#open-questions) (OQ-1 to OQ-11).
 
 Record feasibility failure, null and inconclusive outcomes as valid reports.
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects. Sources: the plan's Risks section, Known limits of the evidence and the Clarifications.
+
+- Risk: Conservative ownership causes false blocks and lost parallelism; audit first, `block` never default, G1 false-block criteria and the partial-envelope refusal in `block` are the mitigation (REQ-006, REQ-001; plan, Risks).
+- Risk: Bash and other routes bypass a Write/Edit hook; the coverage boundary is stated, output D covers shell writes only where HV-8 records it, and bypass is recorded from receipts (REQ-010, REQ-002; T023).
+- Risk: The guard's own control paths could be tampered with; operator-owned envelope, control-path denial, the digest check and the G1 tamper control are the mitigation, and the Bash gap is stated (REQ-007; T015).
+- Risk: Hooks fail open, can be disabled or may not fire on a surface or model, giving silent non-enforcement; the liveness attestation defaults to `advisory` and the surface is reported `guard-not-covered` (REQ-008, REQ-009, REQ-011; T016, T017).
+- Risk: Hosts change weekly and several surfaces are experimental or research previews, so matrix cells hold only at the recorded host version (REQ-014; T024).
+- Risk: Host behaviors HV-6 to HV-8, HV-10 and GP-1 to GP-5 are unobserved; a failed probe removes the capability from the matrix (REQ-014; T005 to T009).
+- Risk: Prompt injection through model-visible context; closed templates, the byte-identical SPEC-057 escaping definition, adversarial fixtures and a Whisper without sibling-written path text are the mitigation, and the residual route through other tool results is not controlled or measured by G1 (REQ-012; T018).
+- Risk: Authority creep into grants, launching or hooks in the main plugin; governance tests and the ADR gate are the mitigation (REQ-005, REQ-015; T025).
+- Risk: Anthropic could ship native ownership enforcement; claims stay bounded and G1 may end in no benefit beyond native controls (REQ-016; plan, Risks).
+- Risk: A GG pass could be read as value over native controls; the release decision records per surface whether arm `AN` ran and otherwise carries the proposal's limitation sentence (REQ-016; T027).
+- Risk: Paired G1 arms may not be affordable at EUR 0; a downgraded G1 evaluates no threshold and cannot release the guard (REQ-016; T004).
+- Risk: The evaluated candidate and the released artifact could differ; the release decision binds the evaluated candidate commit (REQ-016; T027).
+- Risk: Adoption of the ADR proposal is open until the G1 outcome, and a package or release is blocked until then (REQ-004, REQ-016; T002).
+- Assumption: Host facts are documentation readings of 2026-10-24, not observations, unless a probe receipt exists (The four surfaces and the three outputs; REQ-014).
+- Assumption: The compiled profile `mode` is the lowest-precedence default beneath the user scope; this is a planning interpretation, proposed and not founder-approved (REQ-006; Clarifications, Planning interpretations).
+- Assumption: The Whisper delivery rule and path policy, the refusal mapping, the per-surface gate outcome and NotebookEdit as a coverage extension are proposed and not founder-approved (REQ-012, REQ-001, REQ-016, REQ-014; Clarifications, Planning interpretations).
+- Assumption: The sandbox write allowlist is not claimed to restrict writes until a GP-5 or HV-8 receipt says so (REQ-002).
+- Assumption: Candidate tasks T010 to T021 and T023 to T025 start only after the SPEC-057 policy-profile schema increment (I-3) has merged and the founder has recorded a review disposition of the ADR proposal (T002; tasks.md, introduction).
+- Assumption: The existing subscription covers probes and G1 at EUR 0 additional spend (REQ-014; Clarifications, Evidence).
+- Assumption: A null result, a failing GG, a host that cannot support a capability and an inconclusive G1 are valid outcomes (Scientific boundaries and compatibility; REQ-016).
+
+## Exit criteria
+
+Verification is complete when the evidence below exists. Today every task in [tasks.md](tasks.md) is unchecked, `assurance.json` holds no obtained evidence, the `evidence/` directory of this feature holds only the refinement's [owner-decisions record](evidence/owner-decisions-20261126.md) and no probe receipt, and human review is pending. The test files named below are planned and absent ([validation-plan.md](validation-plan.md), Gate map; plan.md, Requirement to scenario to test to evidence).
+
+- REQ-001, REQ-002, REQ-003, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-011, REQ-012, REQ-013: the offline controls of the procedures of those requirements (`procedure_req_001` to `procedure_req_013`, without 004 and 010, which have their own lines below) over synthetic fixtures, recorded in `assurance.json` only from commands that actually ran; planned test files `tests/test_guard_policy_compiler.py`, `tests/test_guard_native_settings.py`, `tests/test_guard_settings_snippet.py`, `tests/test_guard_decision_contract.py`, `tests/test_guard_modes.py`, `tests/test_guard_control_paths.py`, `tests/test_guard_liveness.py`, `tests/test_guard_fail_open.py`, `tests/test_guard_task_created.py`, `tests/test_guard_context_and_audit.py` and `tests/test_guard_bounds.py`; all planned and absent.
+- REQ-004: `tests/test_guard_companion_package.py` for the candidate source tree and the main-plugin inventory; the package part is blocked by G1 gate GG and ADR adoption (T021, T026). Planned and absent.
+- REQ-010: `tests/test_guard_bypass_report.py` (T023); planned and absent.
+- REQ-014: one receipt per probe GP-1 to GP-5 with outcome pass, fail or unobserved under `specs/058-claude-orchestration-guard/evidence/` (T005 to T009) and `tests/test_guard_surface_matrix.py` (T024); planned and absent.
+- REQ-015: `tests/test_guard_governance.py` (T025), the founder's ADR review disposition (T002) and the integrator reconciliation (T003); planned and absent.
+- REQ-016: `tests/test_guard_release_gate.py` (T022), the founder's release decision record (T027) and the independent technical review (T028); blocked by G1 gate GG and ADR adoption, planned and absent. A failed or inconclusive G1 outcome completes the protocol without a release.
+- Founder decisions: T001 records an answer or a deferral for each item of Open questions that T001 lists.
+- Closure: the independent review and founder disposition of T028, planned and absent.
+
+Passing checks are not approval, and no scenario is approved.
+
+## Open questions
+
+Each is unresolved. The owner is the one the sources name. OQ-1 to OQ-4 are the items that T001 asks the founder to answer or defer.
+
+- OQ-1: Whether the proposed interpretations stand: the compiled profile mode as the lowest-precedence default, the Whisper delivery rule and path policy, the per-surface gate outcome and NotebookEdit as a coverage extension (Clarifications, Planning interpretations). Owner: the founder (T001).
+- OQ-2: Whether `ask` is useful where no human is present; until answered `block` uses it only for undecidable paths (GP-2). Owner: answered by observation, probe launched after the founder authorizes it (T006); the founder records it (T001).
+- OQ-3: The D versus B distinction and the minimum host version the matrix states for each output. Owner: the founder (T001).
+- OQ-4: The name and distribution of the companion plugin (`agent-braid-guard` is the working name) and whether it is ever published, decided after G1. Owner: the founder (T001).
+- OQ-5: Whether the optional G1 arm `AN` runs on a claimed surface; without it the release wording carries the limitation sentence. Owner: the founder, at the stage 2 decision (REQ-016; T027).
+- OQ-6: Sandbox allowlist semantics, additive or restrictive, and their relation to default working-directory writes. Owner: answered by observation (HV-8, GP-5; T009).
+- OQ-7: Host behaviors the documentation does not settle: whether plugin `PreToolUse` hooks fire inside workflow agents, `/batch` units and split-pane teammates (HV-6); whether the task tools are present on the model in use (HV-7); whether deny rules and the sandbox apply inside subagents and teammates, cover Bash and reach dispatched sessions (HV-8); the working directory and configuration root a hook sees (HV-10, GP-3); and GP-1 to GP-5. Owner: answered by observation, each probe launched after the founder authorizes it (REQ-014; T005 to T009).
+- OQ-8: Whether GA and GG pass on any surface; the thresholds are proposed and unfrozen, and G1 is owned by SPEC-057. Owner: the founder, who records the release decision after the G1 report (T027).
+- OQ-9: Adoption, amendment or rejection of the feature-local ADR proposal with the G1 outcome, with the next free ADR number confirmed only at adoption. Owner: the founder (T002).
+- OQ-10: The refusal mapping to SPEC-057's closed codes and its provisional rule vocabularies (Clarifications, Planning interpretations). Owner: the sources name none beyond the founder, who may accept, amend or reject it (the interpretations are proposed and not approved).
+- OQ-11: Integration with documents the integrator owns: roadmap, program, ecosystem and hypothesis-index wording and the SPEC-052 specification, plan, checklist and ADR proposal. Owner: the integrator (T003).
