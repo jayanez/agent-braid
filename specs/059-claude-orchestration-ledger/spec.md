@@ -10,6 +10,10 @@ SPEC-057 gives an orchestrator advisory evidence about parallel Claude Code unit
 
 Article 12 applies in both directions. A delivered notice is never described as concurrency control, and the ledger never claims that a session read or acted on anything.
 
+Actors: the founder, who takes the decisions and reviews the contract (T001, T004, T008); an independent reviewer, who reviews the contract (T002) and runs the offline schema checks (T003); the orchestrating Claude session, which launches host probes only after the founder authorizes each one (T005); the integrator, who keeps the cross-references consistent (T007); and the SPEC-057 owner, who owns G1 and its late-notice-harm measure (T004). The receiving session is the actor of every push transport (REQ-002). No end user interacts with this sketch.
+
+Plan: this feature has no `plan.md`, on purpose. It is a sketch that is specified now and implemented later or never, and `tasks.md` holds decision, review and gate tasks only. A plan is written only if G2 opens (owner decision, 2026-11-26; record in [evidence/owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)).
+
 ## Limits
 
 - Advisory only. A claim is a declaration with a history: it never blocks a write, is never reclaimed automatically and is not a lock or lease. Blocking belongs to SPEC-058's opt-in guard.
@@ -21,6 +25,8 @@ Article 12 applies in both directions. A delivered notice is never described as 
 - No speed claim, no claim that notifications prevent conflicts or that a notice was read, no novelty claim: the research radar records mcp_agent_mail, Gas Town and Beads as ahead on shared claims and liveness, so interoperation is preferred and the ledger is a thin local record. The dogfood datum (one stale-read event) is an anecdote.
 
 ## Decisions taken (founder, 2026-10-24)
+
+All nine decisions below are decided, not proposed. The chosen answers are recorded in this section; section 9.1 of [coordination-contract.md](contracts/coordination-contract.md) records decisions 1 to 8 in seven items, without the EUR 0 spend of decision 8 and without decision 9; the options offered at the time are not preserved in the repository. The addendum pending in Clarifications concerns only the planning interpretations and the values marked proposed, not these nine decisions (owner, 2026-11-26; see [evidence/owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)).
 
 1. **Default delivery is Mailbox + Whisper.** The Mailbox is the pull notice that the orchestrator reads (the host wakes the orchestrator at the end of each turn of a linked session). The Whisper is `PreToolUse` `additionalContext` to the affected agent in its own session, a SPEC-058 companion output. The SPEC-059 companion ships no hook for it.
 2. **Megaphone (monitor or channel) and Doorbell (data posted to the orchestrator's own session socket) are opt-in, in SPEC-059 only,** and enabled only if (a) G1 records late notices with measurable harm under a late-notice-harm measure that the G1 protocol must define before its freeze (gate G1-harm), (b) G2 is adopted, (c) the ADR is adopted and the companion is installed, and, for the Doorbell, (d) a transport receipt pinned after G2 adoption passes and the ADR reframes "never messages as a session" for it. Without all of these the effective mode is `pull` and the reason is named.
@@ -95,8 +101,90 @@ Compatibility. Additive and gated: no change to `agent_braid/analysis.py`, AIM `
 
 Earlier decisions of the family stay: the split into SPEC-057 (advisory core, implemented after #671 and #672), SPEC-058 (opt-in guard, blocked by G1 and an ADR amendment) and SPEC-059 (this sketch); all four surfaces with one vocabulary and three lifecycle points (pre-flight, continuous, recovery; integration stays SPEC-052); a single policy compiler in SPEC-058 with no hooks in the main plugin; compatibility classes (receipt `1-syntactic`; pre-flight, recovery, ledger and exports `0-heuristic`; `notAGuarantee` always true); "unknown as a first-class result" is not claimed as a differentiator by itself; telemetry deferred with a never-collect exclusion; the scope is Claude Code only. Planning interpretations by the drafting track, not founder-approved: the kill switch is a floor like `block`; one ledger per repository keyed by a digest of the canonical Git common directory in a private per-user state directory outside every working tree; probe ids HV-L1 to HV-L8; every number marked proposed in the contract is a planning value to be fixed in the G2 review and before any run. Decisions recorded as "founder opened" in this family are proposed pending a separate founder decision addendum that the integrator owns.
 
+## Non-functional requirements
+
+No performance or availability requirement applies to this sketch: nothing is implemented. The contract states proposed planning values (an event of at most 8 KiB, at most 32 units per run and 8 open runs, an active log of at most 4 MiB, a hook read path with p95 not above 200 ms); each is marked proposed in `contracts/coordination-contract.md` and its value is open (OQ-4). Execution is local, offline and bounded, and invokes no model or network (`assurance.json` `execution_contract`).
+
+## Security and privacy
+
+Each obligation below is stated by the REQ named, or is open where none covers it:
+
+- Every push transport is receiver-side; Agent Braid writes to no other session's socket and calls no session-messaging tool (REQ-002, REQ-004).
+- Text patterns in the push-settings schema reject control and bidirectional characters and a trailing line feed (REQ-002).
+- Unattributed writers are unknown by default and an orchestrator or human edit is never attributed to a unit (REQ-003).
+- No transcript, telemetry or hook in the main plugin (REQ-004).
+- The retention and deletion rule is a precondition of G2 (REQ-001).
+- The ledger is content-free, private (directory mode 0700, files 0600) and outside every working tree and Git, and its hash chain is tamper evidence, not authentication. No REQ covers this; it is stated by C1, C12 and sections 6.1 to 6.3 of the contract (OQ-8).
+
+## Terminology
+
+Shared terms follow the root `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Ledger: the durable, append-only, content-free, advisory record of coordination events across sessions (Objective; REQ-001).
+- Claim: a declaration with a history; never a lock or lease (Limits; REQ-004).
+- Mailbox: the pull notice that the orchestrator reads (decision 1; REQ-002).
+- Whisper: `PreToolUse` `additionalContext` to the affected agent, a SPEC-058 companion output (decision 1).
+- Megaphone: opt-in push through a companion monitor or channel (decision 2; REQ-003).
+- Doorbell: opt-in push of data to the orchestrator's own session socket (decision 2; REQ-003).
+- Receiver-side: a transport that runs in or for the receiving session (REQ-002).
+- Transport receipt: a recorded probe result of counts and booleans with the host version (REQ-002).
+- G1, GA, GN: the staged evaluation protocol and its gates, owned by SPEC-057; GA not `fail` and GN `pass` are the preconditions to plan G2 (REQ-005).
+- G2: the coordination contract of the specs/039 route, drafted and not adopted (REQ-001).
+- Late-notice-harm measure (gate G1-harm): the measure the G1 protocol must define before its freeze (REQ-003).
+- HV-L1 to HV-L8: host-behavior probes, each launched after the founder's authorization (decision 8; REQ-003; T005).
+- Attributed-write recorder: a hook-observed write ledger for shared-tree agent teams; partial by construction (REQ-003).
+- Kill switch: the setting under `extensions.SPEC-059` that disables every SPEC-059 push, so the effective mode is pull; read as a floor, a planning interpretation (contract section 5.5; `push-settings.schema.json`).
+
+Values named in this spec:
+
+- Surface id: `workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`; the spec calls this vocabulary closed (Compatibility).
+- Notification mode: `pull`, `push` (owned by the SPEC-057 `orchestration-settings.schema.json`; decision 7).
+- Notification strategy: `mailbox-whisper`, `megaphone`, `doorbell` (owned by the SPEC-057 `orchestration-settings.schema.json`; decision 7).
+- Effective delivery: `mailbox`, `megaphone`, `doorbell` (REQ-002).
+- Push status: `not-requested`, `active`, `unavailable` (REQ-002).
+- Transport id: `session-socket-self`, `monitor-stdout`, `channel` (REQ-002).
+- Unavailable reason: the 12 values of the `unavailableReasons` enumeration in `push-settings.schema.json`, a closed list by REQ-002.
+- Reserved unit name: `unattributed` (REQ-003).
+- Compatibility class: `1-syntactic` (receipt), `0-heuristic` (pre-flight, recovery, ledger, exports) (Clarifications).
+
+## Risks
+
+- Risk: the G1 protocol never defines the late-notice-harm measure, so the Megaphone and the Doorbell stay disabled for good (REQ-003, T004).
+- Risk: host behavior is unconfirmed until probes HV-L1 to HV-L8 are recorded, and the documentation read on 2026-10-24 may change (REQ-003, T005).
+- Risk: monitors, channels and agent teams are experimental or research previews and may change or disappear (Limits; `transport-matrix.json`).
+- Risk: the hash chain is not authentication, so a same-account writer can rewrite the ledger (Limits; contract section 6.3; OQ-8).
+- Risk: hooks cannot see Bash, MCP-tool or generated-file writes, so the attributed-write export is partial (REQ-003).
+- Risk: mcp_agent_mail, Gas Town and Beads already cover shared claims, so the ledger may duplicate them (REQ-004, T006).
+
+## Assumptions
+
+- Assumption: Claude Code only, on one local macOS or Linux machine with POSIX locking on a local filesystem and one user account (REQ-004).
+- Assumption: host behavior is the documentation as read on 2026-10-24 (changelog to 2.1.310) and stays unconfirmed until probes HV-L1 to HV-L8 are recorded (REQ-003, T005).
+- Assumption: every delivery transport is unverified and none is selected (REQ-002).
+- Assumption: the plugin MCP admission lock is per process and is not a cross-session lease (`assurance.json` assumptions; contract section 2.2.1).
+- Assumption: settings precedence is the SPEC-057 rule (REQ-002).
+- Assumption: implementation is blocked by gate G2 and a dedicated ADR (REQ-001, T001).
+- Assumption: the G1 protocol must define the late-notice-harm measure before its freeze; until a G1 record cites it, the Megaphone and the Doorbell stay disabled (REQ-003, T004, OQ-2).
+- Assumption: additional spend is EUR 0 on the founder's existing subscription (decision 8; `tasks.md` preamble).
+- Assumption: the kill-switch floor and every bound marked proposed are planning interpretations to be confirmed in the G2 review (Clarifications; T001; OQ-4).
+
+## Exit criteria
+
+Verification of this sketch is complete when `assurance.json` records obtained evidence for: the independent review of the contract (T002, `procedure_req_001`); the offline schema checks (T003, `procedure_req_002`); the G1 late-notice-harm measure, or the record that the Megaphone and the Doorbell are dropped (T004, `procedure_req_003`); the documentation review of `contracts/interop-adapters.md` (`procedure_req_004`; T006 itself stays deferred); and the integration consistency review (T007) with the founder's disposition of SPEC-059 (T008) (`procedure_req_005`). T001 and the probes of T005 are required only if GN passes and G2 opens. "Specified but never implemented" is a valid disposition; a GN fail or an inconclusive gate means G2 is not opened. The procedures are in the [validation plan](validation-plan.md) and the tasks in [tasks.md](tasks.md).
+
 ## Evidence and unresolved questions
 
 Obtained evidence: none. Human review pending. The schemas and fixtures were checked with the pinned `jsonschema` package as a planning aid only.
 
-Open for the founder or for observation: whether to open G2 at all, after G1 and only if GN passed; the G1 late-notice-harm measure (it must exist before the G1 freeze, or the push strategies stay disabled forever); the wording of the Doorbell reframing in the ADR; the kill-switch floor, bounds, hook latency threshold, retention amendment and ledger location; whether the recorder ships after HV-L7; whether any import adapter is wanted; and the host behaviors HV-L1 to HV-L8 (hook context reaching the model per surface, own-session socket acceptance, monitor and channel delivery, repetition after compaction or resume, loss and duplication under bursts, identifier survival across restart, lock and fsync behavior).
+Open questions: OQ-1 to OQ-10, below. Owner: the founder unless stated.
+
+- OQ-1: Is G2 opened at all, after G1 and only if GN passed? (T008)
+- OQ-2: What is the G1 late-notice-harm measure? It must exist before the G1 freeze, or the push strategies stay disabled forever (T004; owner: founder with the SPEC-057 owner).
+- OQ-3: What is the wording of the Doorbell reframing in the ADR?
+- OQ-4: What are the kill-switch floor, the bounds, the hook latency threshold, the retention amendment, the default ledger location and whether `CLAUDE_PLUGIN_DATA` is acceptable, and the identifier of a "conversation" scope? (section 9.2 of the contract; the scope identifier with the SPEC-057 owner)
+- OQ-5: Does the attributed-write recorder ship after HV-L7? (T005)
+- OQ-6: Is any import adapter wanted? (T006)
+- OQ-7: What are the host behaviors HV-L1 to HV-L8: hook context reaching the model per surface, own-session socket acceptance, monitor and channel delivery, repetition after compaction or resume, loss and duplication under bursts, identifier survival across restart, lock and fsync behavior? (T005; owner: the orchestrating session after the founder's authorization).
+- OQ-8: If G2 opens, do the advisory-claim rule (a claim never blocks and is never reclaimed automatically) and the content-free, private ledger rule become requirements of their own (REQ-006, REQ-007)? Today the contract states them in C1, C5, C12 and section 6.2, and no REQ covers them.
+- OQ-9: Can an inconclusive GN ever support opening G2? (contract section 9.2; owner: the SPEC-057 owner, before the G1 freeze)
+- OQ-10: When is the founder decision addendum on the planning interpretations recorded? (Clarifications; owner: the integrator for the record, the founder for its content)
