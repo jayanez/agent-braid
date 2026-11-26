@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 from datetime import date
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -97,6 +98,14 @@ PARKED_REVIEW_WARN_DAYS = 30
 ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
+def markdown_anchors(text: str) -> set[str]:
+    """Reuse the repository link checker's heading-anchor rules (loaded by path: scripts/ is not a package)."""
+    spec = importlib.util.spec_from_file_location("validate_repository", ROOT / "scripts/validate_repository.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.markdown_anchors(text)
+
+
 def validate_parked_reviews(root: Path, config: dict, desired: list[dict]) -> dict:
     """Dated review reminders for parked work: key -> {review_by, source}.
 
@@ -121,9 +130,13 @@ def validate_parked_reviews(root: Path, config: dict, desired: list[dict]) -> di
             raise ValueError(f"parked review {key} review_by is not a calendar date") from exc
         if not isinstance(source, str) or not source:
             raise ValueError(f"parked review {key} needs a source")
-        relative = Path(source.partition("#")[0])
+        name, _, fragment = source.partition("#")
+        relative = Path(name)
         if relative.is_absolute() or ".." in relative.parts or not (root / relative).is_file():
             raise ValueError(f"parked review {key} source must be an existing repository file")
+        if fragment and (relative.suffix != ".md" or fragment not in markdown_anchors(
+                (root / relative).read_text(encoding="utf-8"))):
+            raise ValueError(f"parked review {key} source anchor does not resolve: #{fragment}")
     return entries
 
 
