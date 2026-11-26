@@ -10,7 +10,7 @@ The spec was refined for structure under the 2026-11-25 conventions in
 
 Derived without a question:
 
-- Status line aligned with `assurance.json` (stage `validated`, human review pending, one obtained synthetic check per scenario) and `tasks.md` (T001–T008 checked per `technical-delivery.json`, T009–T011 per the 2026-10-20 reconciliation, bounded engineering lots). The Evidence paragraph's claim that every `obtained_evidence` array is empty was corrected to match.
+- Status line aligned with `assurance.json` (stage `validated`, human review pending, one obtained synthetic check per scenario) and `tasks.md` (T001–T008 per the 2026-10-07 evidence heading, T009 as a documentary freeze per the founder decision of 2026-10-31, T010–T011 as bounded engineering lots). The Evidence paragraph's claim that every `obtained_evidence` array is empty was corrected to match.
 - Terminology, Risks and assumptions, Exit criteria and Open questions OQ-1 to OQ-8 written from spec.md, plan.md, research.md, data-model.md, contracts, analysis.md, tasks.md, validation-plan.md and the checklist.
 
 Limits: the owner decides as owner, not as an independent reviewer.

@@ -4,7 +4,7 @@
 
 Engineering foundation for a local, non-generative, typed decision API with a deterministic reference backend. This milestone does not ship a pretrained general-purpose model.
 
-Status: `assurance.json` stage `validated` for bounded synthetic software checks, `human_review` pending. Task status as of 2026-11-26 (`tasks.md`): T001–T008 are checked for the bounded engineering lot (`evidence/technical-delivery.json`, 2026-10-07); T009–T011 are checked for bounded engineering lots only (2026-10-20 documentary reconciliation in `tasks.md`). Dependencies: None; preserve SPEC-018/019/020/021 boundaries.
+Status: `assurance.json` stage `validated` for bounded synthetic software checks, `human_review` pending. Task status as of 2026-11-26 (`tasks.md`): T001–T008 are checked for the bounded engineering lot (heading "Obtained engineering evidence (2026-10-07)", which names T001–T007 as bound by `evidence/luna-core-cli.json`, the focused test log and `evidence/offline-wheel.json`; T008 closed the packet, with `evidence/technical-delivery.json` as its record); T009 is a documentary contract freeze checked by founder decision of 2026-10-31; T010 and T011 are checked as bounded engineering lots (2026-10-20 documentary reconciliation). Dependencies: None; preserve SPEC-018/019/020/021 boundaries.
 Milestone: S1.0 — Decision contracts. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
@@ -121,18 +121,20 @@ Values named in this spec:
 Verification is complete when all of these hold:
 
 - Each scenario SC-001 to SC-006 has named executable tests with `evidence/sc-00x.json`-style candidate, input, command and environment hashes in `assurance.json` (validation-plan.md; REQ-001 to REQ-006). Obtained today: one synthetic software check per scenario.
-- Each task T001–T008 has its candidate-bound report under `evidence/`, and the final candidate verification `scripts/validate_change.py --base develop --profile pr` passes (tasks.md).
+- Each task T001–T008 has its evidence bound, and the final candidate verification `scripts/validate_change.py --base develop --profile pr` passes (tasks.md). Bound today: `evidence/luna-core-cli.json`, `evidence/technical-delivery.json`, `evidence/offline-wheel.json` and the profile logs. The per-task reports `evidence/t001.json` to `t008.json` named in tasks.md are planned and absent.
 - A human contract/protocol review is recorded (`human_review`; checklist CHK-008), which is still pending.
 
 Tests, procedures and feature evidence do not substitute for human review, scientific interpretation, source rights or promotion (tasks.md).
 
 ## Open questions
 
-- OQ-1: What consented sources and eligible yield exist for fitting? Owner: owner; tracked in SPEC-029/T001 (Clarifications; CHK-009).
-- OQ-2: Which deployment hardware and device envelope apply? Owner: owner (Clarifications; CHK-011).
-- OQ-3: Which paid-call and training budgets apply? Owner: owner (Clarifications).
-- OQ-4: What latency, memory and cost thresholds govern promotion? Owner: owner; the limits under Non-functional requirements are draft envelope values, not thresholds (CHK-011).
-- OQ-5: Which final base-model rights apply to the artifact the owner builds? Owner: owner (Clarifications).
-- OQ-6: When is remote delivery authorized? Owner: owner; tracked separately from feature acceptance (Clarifications).
-- OQ-7: What is the per-capability promotion decision? Owner: owner; decided in SPEC-033/T008 (CHK-013).
-- OQ-8: When is the human contract/protocol review recorded? Owner: owner (CHK-008; `assurance.json` `human_review`).
+The unresolved decisions are those named in [Clarifications and unresolved decisions](#clarifications-and-unresolved-decisions) and [Evidence and unresolved questions](#evidence-and-unresolved-questions); this section only numbers them. No owner answer is recorded for any of them in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
+
+- OQ-1: Consented source and eligible yield for fitting (Clarifications; CHK-009). SPEC-066 absorbs SPEC-029/T001 (SPEC-029 tasks.md, note of 2026-11-01).
+- OQ-2: Available deployment hardware and device envelope (Clarifications; CHK-011).
+- OQ-3: Paid-call and training budgets (Clarifications).
+- OQ-4: Latency, memory and cost thresholds for promotion; the limits under Non-functional requirements are draft envelope values, not thresholds (CHK-011).
+- OQ-5: Final base-model rights (Clarifications).
+- OQ-6: Remote delivery authorization, tracked separately from feature acceptance (Clarifications).
+- OQ-7: Per-capability promotion (CHK-013). SPEC-066 absorbs SPEC-033/T008 (SPEC-033 tasks.md, note of 2026-11-01).
+- OQ-8: Human contract/protocol review (CHK-008; Evidence and unresolved questions; `assurance.json` `human_review`).
