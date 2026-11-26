@@ -1,5 +1,11 @@
 # Bounded pending-closure packet — 2026-10-21
 
+> **Historical (marked 2026-11-26).** This packet records the state of 2026-10-21 and
+> is kept unchanged below. The obligations it lists were later resolved elsewhere:
+> SPEC-002/T006 and SPEC-009/T009 in [FOUNDER_DECISIONS_20261031.md](FOUNDER_DECISIONS_20261031.md);
+> SPEC-011/T008, SPEC-025/T007 and SPEC-024/T001 are checked in their current
+> `specs/*/tasks.md`. See the [founder decisions register](FOUNDER_DECISIONS.md).
+
 Baseline: public develop `a6329c828011d1468fed3dfa4e98f5a8531167e2`.
 The complete source audit returned `operations: []` with plan digest
 `5e65eaf463b42ef4d7b586dfed2882e0c49ddc62ac24c1fbf5cefa8485de188d`.
