@@ -33,9 +33,15 @@ it does not establish scientific validity or grant human or founder approval.
   means completed acceptance, and parent/milestone states remain explicit.
   Recorded cancellations are in the
   [tracking history](GITHUB_TRACKING_HISTORY.md#task-overrides-and-cancellations).
-- `task_milestone_overrides` maps a task key `SPEC-NNN/Txxx` to a registered
-  milestone title; its S1.5 introduction and procedure are recorded in the
-  [tracking history](GITHUB_TRACKING_HISTORY.md#s15-system-one-shadow-activation).
+- The top-level `task_milestone_overrides` member maps a task key
+  `SPEC-NNN/Txxx` to a registered milestone title and replaces the milestone the task
+  would inherit from its specification; the parent keeps its own. The source is
+  refused when a key is malformed or names an unknown task, when the milestone is not
+  registered, or when the override equals the specification's own milestone. Source,
+  audit and scoped audit all honour it: `--milestone-number N` selects the tasks
+  overridden into N and excludes the tasks overridden out of N, and a task whose parent
+  sits in another milestone keeps its sub-issue link check. Its first use (S1.5) is
+  in the [tracking history](GITHUB_TRACKING_HISTORY.md#s15-system-one-shadow-activation).
 - Issue bodies contain stable `agent-braid-spec-id` or `agent-braid-task-id`
   markers. Do not delete or reuse these markers. The linked repository files
   are current; issue prose may include historical reconciliation context.
@@ -129,6 +135,15 @@ Private Project membership and custom status remain a separate verification.
    refuses to apply if a managed issue has disappeared from the source, a marker
    is duplicated, or an issue body cannot be safely updated. It never deletes
    GitHub records. Rerun `audit` until it reports `operations: []`.
+   When tasks move between milestones through an override, both scoped audits fail
+   closed while the issues still sit in the old milestone (`selected issue ... moved
+   from registered milestone #N`). Move exactly those issues with `gh issue edit
+   <number> --milestone '<title>'` and read each back, then run the scoped audit for
+   both milestones, review each plan, apply it with its reviewed digest, and re-audit
+   both until no operation remains; a full-scope apply would also carry unrelated
+   drift from other tracks. The synchronizer does not audit milestone descriptions:
+   update them to the source text by hand (`gh api -X PATCH .../milestones/<number>`)
+   and read them back.
 5. Check the private Project's **Specs and tasks**, **By milestone**, and
    **By status** views. The built-in Project workflows add new `spec` or `task`
    issues from `jayanez/agent-braid`, add subissues, set closed items to Done,

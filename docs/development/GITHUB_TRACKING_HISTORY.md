@@ -112,14 +112,7 @@ reviewed digest, and re-audit until no operation remains. Then set the parent to
 Fifteen open Deferred task issues move to #26 by owner decision R6 (OD-5) through
 the top-level `task_milestone_overrides` member of `github-tracking.json` (SPEC-066
 T003): SPEC-029 T001-T009 (#285-#293), SPEC-031 T008 (#311) and SPEC-033 T002,
-T003, T004, T006 and T008 (#323-#325, #327, #329). The member maps a task key
-`SPEC-NNN/Txxx` to a registered milestone title and replaces the milestone the task
-would inherit from its specification; the parent keeps its own. The source is
-refused when a key is malformed or names an unknown task, when the milestone is not
-registered, or when the override equals the specification's own milestone. Source,
-audit and scoped audit all honour it: `--milestone-number N` selects the tasks
-overridden into N and excludes the tasks overridden out of N, and a task whose parent
-sits in another milestone keeps its sub-issue link check.
+T003, T004, T006 and T008 (#323-#325, #327, #329). The member's rules are in the procedure ([GITHUB_TRACKING.md](GITHUB_TRACKING.md)).
 
 The same member also pins 45 closed System One task issues (SPEC-028, SPEC-029
 T010 onward, SPEC-031, SPEC-032 and SPEC-033) to the closed historical milestone
@@ -137,9 +130,8 @@ for #26 (with `--new-record-key` for any SPEC-066 record not yet published) and 
 #24, review each plan, apply it with its reviewed digest, and re-audit both until no
 operation remains. Publish the SPEC-066 records into #26 before this change merges,
 or only after the manual move, because the scoped #26 audit fails closed in between.
-The synchronizer does not audit milestone descriptions, so update the #26 and #24
-descriptions to the source text by hand (`gh api -X PATCH .../milestones/<number>`)
-and read them back. Deferred keeps its reopen condition: SPEC-029
+Update the #26 and #24 descriptions to the source text by hand, as the procedure
+says, and read them back. Deferred keeps its reopen condition: SPEC-029
 T001 source permissions granted and admitted real groups greater than zero
 (third-party sources), or SPEC-066 REQ-101 admission (the owner's own sources).
 
