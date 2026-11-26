@@ -2,10 +2,14 @@
 
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** specification only; [ADR 0031](../../docs/adr/0031-portable-prompt-names.md)
-is Accepted (2026-10-25) and authorizes implementation tasks T002-T008 only;
-native observation (T009), release (T010), tag and publication are not
-authorized. Nothing is implemented by this change.
+**Status:** draft (`assurance.json`: stage `draft`, human review `approved` by
+[founder-review-20261027.json](founder-review-20261027.json), 2026-10-27, bound to
+commit `f9329134`). T001-T010 are done; T009 closed with bounded scope (CLI and
+loader observation, see [native observation](evidence/native-observation-0.1.0a2.md)).
+The candidate is published as pre-release `v0.1.0-alpha.2`
+([release record](evidence/release-0.1.0a2.md)). T011 (alias removal under
+`agent-braid-tooling/v0.3`) is open and deferred. The approval covers the spec at
+`f9329134`; this refinement is not yet reviewed.
 
 ## Purpose and scope
 
@@ -246,8 +250,108 @@ SPEC-041/042 installs. A later `v0.3` removes the aliases.
 
 ## Evidence and unresolved questions
 
-Planned procedures are not obtained evidence; see [validation-plan.md](validation-plan.md)
-and `assurance.json`. Host behavior is taken from the SPEC-054 research and the
-sources in [research.md](research.md); the display of the new names and of a
-portable/plugin collision has not been observed (T009). Open decisions are listed
-in [plan.md](plan.md#human-review-and-unresolved-decisions).
+Obtained evidence is in `assurance.json` and [evidence/](evidence/); procedures
+without obtained evidence are planned only, see [validation-plan.md](validation-plan.md).
+Host behavior is taken from the SPEC-054 research and the sources in
+[research.md](research.md). The native observation (T009) covers CLI and loader
+listings in disposable profiles on macOS arm64; the T009 closure records the
+slash-menu display as not observed. Owner screenshots of 2026-10-27 later recorded
+it in [interactive-slash-result.md](evidence/interactive-slash-result.md): under the
+key `agent-braid` the prompts show as `/agent-braid:analyze (MCP)` and the plugin
+skills as `* /agent-braid:analyze`, distinguishable by the `(MCP)` suffix, the `*`
+marker and the description, with no warning and no hidden entry; under
+`portable-braid` there is no collision. T009, `assurance.json` and `tasks.md` do not
+cite that record. Decisions
+OD-1 to OD-8 are decided, see [plan.md](plan.md#human-review-and-unresolved-decisions).
+Open questions: see [Open questions](#open-questions).
+
+## Non-functional requirements
+
+No performance or availability requirement applies in this spec. Operational and
+quality constraints it states:
+
+- Size limit: an oversized prompt argument map is refused as in v0.1 (REQ-001).
+- Text integrity: alias and canonical text equal the v0.1 text byte for byte, derived
+  from one ordered registry so they cannot drift (REQ-001, REQ-002; plan, Design 2).
+- Compatibility: envelopes, output schemas, provenance, resource URIs, plugin bytes
+  and host configuration previews stay byte-identical (REQ-003, REQ-004, REQ-005).
+- Observability: prompt requests record no telemetry operation (REQ-005).
+- Bounded window: aliases live two releases and are removed only by `v0.3` (REQ-007).
+- Reversibility: reinstalling the earlier package restores the old behavior with
+  configuration and result roots unchanged (REQ-006).
+
+## Security and privacy
+
+No security or privacy obligation applies: no grant or execution path changes, and
+prompts remain read-only text (`assurance.json` execution contract). The refusal of
+oversized arguments and of unknown names without side effect is stated in REQ-001.
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Terms this
+spec uses:
+
+- Surface version: the contract version `agent-braid-tooling/v0.2` of the server
+  surface (capabilities resource, prompt set, contract document), distinct from the
+  envelope version (REQ-003).
+- Envelope version: `agent-braid-tooling/v0.1`, the `schemaVersion` stamp of
+  tool-result envelopes (REQ-003).
+- Canonical prompt: an unprefixed prompt `analyze`, `plan` or `evidence` (REQ-001).
+- Deprecated alias: an old prompt `agent-braid-analyze`, `agent-braid-plan` or
+  `agent-braid-evidence`, kept for the window (REQ-002).
+- Window: the first release that carries v0.2 plus one more release (REQ-007).
+- Portable server: `agent-braid tooling serve`; plugin server: the native plugin's
+  MCP server (REQ-004).
+
+Values named in this spec:
+
+- Prompt names: canonical `analyze`, `plan`, `evidence`; aliases
+  `agent-braid-analyze`, `agent-braid-plan`, `agent-braid-evidence` (REQ-001,
+  REQ-002).
+- Contract versions: surface `agent-braid-tooling/v0.2`; envelope
+  `agent-braid-tooling/v0.1`; alias removal `agent-braid-tooling/v0.3`; plugin
+  `agent-braid-plugin/v0.2` (REQ-003, REQ-004, REQ-007).
+- Capabilities keys: `prompts` (canonical names), `deprecatedPrompts` (aliases),
+  `envelopeSchemaVersion` (REQ-002, REQ-003).
+
+## Risks and assumptions
+
+- Risk: the portable prompt `/agent-braid:analyze (MCP)` and the plugin skill
+  `/agent-braid:analyze` can be confused under the default key; mitigated by
+  documentation; distinguishable in the observed menu, no warning shown; the record
+  is not bound to SC-010 (REQ-009, REQ-010, T009).
+- Risk: removing the aliases breaks consumers not known to the repository
+  (REQ-007, T011).
+- Risk: the window never ends if no owner decision is taken; the 180-day trigger
+  forces a decision by 2027-04-25 (REQ-007, T011).
+- Risk: the plugin facade exposes the new capabilities keys (REQ-004, T005).
+- Assumption: host behavior matches the SPEC-054 research of 2026-10-24 (REQ-010,
+  T009).
+- Assumption: portable-server users exist under the installer default key (REQ-006).
+- Assumption: an alias window counted in releases is acceptable for an alpha package
+  (REQ-007).
+- Assumption: prompt use is not measurable, so non-use is no removal criterion
+  (REQ-007).
+
+## Exit criteria
+
+Verification of the v0.2 candidate is complete when each of SC-001 to SC-011 has
+obtained evidence bound in `assurance.json` or an owner-recorded bounded closure:
+SC-001 to SC-006, SC-008 and SC-011 have bound evidence; SC-009 (T007) and SC-010
+(T009, bounded closure) do not yet. SC-007 is verified only when T011 runs, which
+needs two published window releases and an owner removal decision (T011, REQ-007).
+
+## Open questions
+
+- OQ-1: Does the owner decide by 2027-04-25 (180 days after the first release,
+  [release record](evidence/release-0.1.0a2.md)) to remove the aliases under
+  `v0.3` or to extend the window? Owner: founder (REQ-007, T011).
+- OQ-2: Should [interactive-slash-result.md](evidence/interactive-slash-result.md)
+  be bound to SC-010 and T009? Owner: founder (REQ-010).
+- OQ-3: Should the obtained evidence be bound in `assurance.json`: for REQ-010,
+  `evidence/interactive-slash-result.md` and
+  `evidence/native-observation-0.1.0a2-addendum.md`; for REQ-009 (T007), for which no
+  documentation diff or search record exists under `evidence/`? The record has
+  `human_review` approved and the founder review `limits` bind acceptance to the
+  frozen commit, so the edit may need a new owner review. Owner: founder (REQ-009,
+  REQ-010).

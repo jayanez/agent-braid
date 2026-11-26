@@ -1,8 +1,11 @@
 # SPEC-060 validation procedures
 
 Each procedure records the command, candidate and artifact hashes, environment,
-expected and actual outcome, negative controls and limits. None has been run; this
-specification change only plans them. Native-host observations stay pending.
+expected and actual outcome, negative controls and limits. Obtained evidence is in
+`assurance.json` and `evidence/`; procedure_007 runs only when T011 is authorized,
+and procedure_010 is closed with bounded scope (CLI and loader observation, see
+`evidence/native-observation-0.1.0a2.md`). The slash-menu display is recorded
+separately from owner screenshots in `evidence/interactive-slash-result.md`.
 
 ## procedure_001
 
