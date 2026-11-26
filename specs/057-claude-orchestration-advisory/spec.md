@@ -2,7 +2,7 @@
 
 **Milestone:** M4.6 — Claude Code dynamic workflows
 
-**Status:** draft specification. This is an engineering specification with one preregistered evidence protocol (gate G1, owned here) and a set of host-verification probes (HV-6 to HV-13). The dependencies it names, the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carried this specification, have merged; the plan's increments I-1 to I-6 are separate reviewed changes. Tasks T012 to T025, T032, T040 and T042 are checked in [tasks.md](tasks.md) and their offline engineering controls are recorded in `assurance.json`. Not done: the recipe (T026, T027), the host probes (T003 to T010), the G1 freeze and runs (T033 to T036), the deferred interoperability, skill and telemetry tasks and closure. Nothing is frozen, signed, run against a host or approved; human review pending. The binding founder decisions of 2026-10-24 (three rounds) are recorded under Clarifications.
+**Status:** draft specification. This is an engineering specification with one preregistered evidence protocol (gate G1, owned here) and a set of host-verification probes (HV-6 to HV-13). The dependencies it names, the SPEC-052 and SPEC-053 specification pull request (#671), the SPEC-052 implementation pull request (#672) and the pull request that carried this specification, have merged; the plan's increments I-1 to I-6 are separate reviewed changes. Tasks T012 to T025, T032, T040 and T042 are checked in [tasks.md](tasks.md) and their offline engineering controls are recorded in `assurance.json`. Not done (every unchecked task in tasks.md): the founder decisions (T001, T043, T044), the prior-art repeat (T002), the host probes and their consolidation (T003 to T011), the recipe and its tests (T026, T027), the HAR.3 note and the integrator fix (T028, T029), the G1 freeze, runs, report and disposition (T033 to T036), closure (T037, T038) and the deferred tasks (T030, T031, T039, T041). Nothing is frozen, signed, run against a host or approved; human review pending. The binding founder decisions of 2026-10-24 (three rounds) are recorded under Clarifications.
 
 ## Purpose and scope
 
@@ -16,7 +16,7 @@ SPEC-057 is the **advisory core** of the orchestration family that the founder o
 | --- | --- | --- |
 | SPEC-052 | Read-only integration gate over committed work | Existing specification; unchanged apart from cross-references |
 | SPEC-053 | Transcript to AIM adapter, behind gate G0 | Existing specification; unchanged |
-| **SPEC-057 (this)** | Advisory core: declared ownership, pre-flight, checkpoint receipts, recovery reports, pull notices, the orchestration-settings and policy-profile schemas, host probes, gate G1 | Specified now; implementation after #671, #672 and this specification's pull request have merged |
+| **SPEC-057 (this)** | Advisory core: declared ownership, pre-flight, checkpoint receipts, recovery reports, pull notices, the orchestration-settings and policy-profile schemas, host probes, gate G1 | Specified now; its dependencies #671, #672 and the pull request that carried this specification have merged |
 | SPEC-058 | Opt-in guard: policy compiler with three outputs, a companion plugin (working name `agent-braid-guard`), modes ladder | Specified now; implemented first only as an unreleased engineering candidate behind G1 (needed by G1 arm A3); adoption and release blocked by G1 gate GG and an adopted ADR amendment |
 | SPEC-059 | Sketch only: objective, limits, decisions taken (Mailbox + Whisper by default; Megaphone and Doorbell opt-in, gated by G1 late-notice harm and by G2; a separate notification companion; an attributed-write ledger decided after probe HV-L7; interoperability as documentation only) and a draft coordination contract kept for founder review. No requirement breakdown | Sketched now; blocked by gate G2 (the "Coordination across tools" contract of specs/039), which is decided after G1, and its own ADR |
 
@@ -91,7 +91,7 @@ The planned bundled CLI subcommands are `expand-ownership`, `check-ownership`, `
 
 ## Requirements and acceptance scenarios
 
-Stages: C = pure core and read-only commands (implementation after #671, #672 and this specification's pull request have merged); H = host verification probes launched by the orchestrating Claude session after per-probe founder authorization; R = recipes, contracts and reconciliation; G = the G1 protocol; D = documents and decisions. Stage does not authorize starting; it records order. Every requirement has planned evidence only.
+Stages: C = pure core and read-only commands (its dependencies #671, #672 and the pull request that carried this specification have merged); H = host verification probes launched by the orchestrating Claude session after per-probe founder authorization; R = recipes, contracts and reconciliation; G = the G1 protocol; D = documents and decisions. Stage does not authorize starting; it records order. REQ-011, REQ-012 and REQ-014 have planned evidence only; the other requirements record offline obtained evidence in their Verification lines.
 
 ### REQ-001 — Declare ownership and footprints in a vendor-neutral, bounded schema
 
@@ -359,7 +359,7 @@ Failure and inconclusive cases: an over-limit input that reaches analysis, a wri
 Verification: [procedure_req_017](validation-plan.md#procedure_req_017). Obtained evidence: offline bound, refusal and never-collect tests recorded in `evidence/t012-t013.json`, `evidence/t017-t019-t042.json`, `evidence/t020-t021.json` and `evidence/t025-t040.json` (`assurance.json` SC-017); no review and no host observation.
 ## Non-functional requirements
 
-Operational and quality constraints, each with its source. They restate limits that existing requirements already carry; this refinement adds no constraint and no REQ.
+Operational and quality constraints, each with its source. They restate limits that existing requirements carry, or record their absence; this refinement adds no constraint and no REQ.
 
 - Read-only, local and offline: no network and no socket, no model invocation by the commands, no write into the repository or the registry, results only to explicit new private paths and existing paths refused (REQ-017; Scientific boundaries, execution contract).
 - Fixed bounds, refused before analysis: declaration at most 1 MiB, at most 32 units, at most 512 paths per unit, strings at most 256 characters, `claude agents --json` input at most 1 MiB, Git observation within the existing bounded Git helpers (REQ-017; REQ-001).
