@@ -7,7 +7,7 @@
 T004–T007 are done with `evidence/sc-002.json` and `sc-004.json` to `sc-007.json`,
 and so are the technical counterparts T011–T014. T001, T003 and T008 are Deferred by
 the [2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md),
-and T009 and T010 depend on them. Native-host acceptance, independent review and
+and T009 and T010 are Deferred with them (they depend on T001–T008). Native-host acceptance, independent review and
 founder acceptance are pending.
 
 ## Purpose and scope
@@ -54,7 +54,7 @@ Explain decisions with input identity, conflicts/dependencies, conditional premi
 
 **SC-002:** Given all analyzer classification classes, when chat summaries are generated, then each statement agrees with typed results and unknown is not mislabeled independent.
 
-Verification: [procedure_faithful_summary](validation-plan.md); [T002](tasks.md). Obtained evidence: none.
+Verification: [procedure_faithful_summary](validation-plan.md); [T002](tasks.md). Obtained evidence: [`evidence/sc-002.json`](evidence/sc-002.json).
 
 ### REQ-003
 
@@ -70,7 +70,7 @@ Display actual private-result/verifier state and interruption/recovery outcomes 
 
 **SC-004:** Given successful, failed, cancelled and recovered runs, when the result is presented, then unfinished states never appear successful and source promotion/code correctness is not implied.
 
-Verification: [procedure_result_journey](validation-plan.md); [T004](tasks.md). Obtained evidence: none.
+Verification: [procedure_result_journey](validation-plan.md); [T004](tasks.md). Obtained evidence: [`evidence/sc-004.json`](evidence/sc-004.json).
 
 ### REQ-005
 
@@ -78,7 +78,7 @@ Render an interaction graph with semantic labels, accessible legend and bounded 
 
 **SC-005:** Given conflict/dependency/conditional/unknown edges and malformed graphs, when graph generation runs, then labels and color-independent styles preserve semantics or malformed/oversize data refuse.
 
-Verification: [procedure_interaction_graph](validation-plan.md); [T005](tasks.md). Obtained evidence: none.
+Verification: [procedure_interaction_graph](validation-plan.md); [T005](tasks.md). Obtained evidence: [`evidence/sc-005.json`](evidence/sc-005.json).
 
 ### REQ-006
 
@@ -86,7 +86,7 @@ Export deterministic Markdown, SVG and standalone HTML from selected evidence wi
 
 **SC-006:** Given identical typed input and versioned formatter, when each export repeats, then bytes/order/IDs are stable and receipt binds source/output hashes plus limits.
 
-Verification: [procedure_deterministic_export](validation-plan.md); [T006](tasks.md). Obtained evidence: none.
+Verification: [procedure_deterministic_export](validation-plan.md); [T006](tasks.md). Obtained evidence: [`evidence/sc-006.json`](evidence/sc-006.json).
 
 ### REQ-007
 
@@ -94,7 +94,7 @@ Escape and bound untrusted source/evidence in every export without scripts, remo
 
 **SC-007:** Given HTML/SVG injection, unsafe URIs and overlarge content, when export validation runs, then active/remote content and arbitrary reads refuse or are inert escaped text; no network/telemetry occurs.
 
-Verification: [procedure_export_security](validation-plan.md); [T007](tasks.md). Obtained evidence: none.
+Verification: [procedure_export_security](validation-plan.md); [T007](tasks.md). Obtained evidence: [`evidence/sc-007.json`](evidence/sc-007.json).
 
 ### REQ-008
 
@@ -196,7 +196,9 @@ Values named in this spec:
 - Evidence domain: SDK/documentation, structural checks, synthetic controls, actual
   host observations, independent reproduction (Scientific boundaries section).
 
-## Risks
+## Risks and assumptions
+
+Risks:
 
 - Risk: a chat summary diverges from the typed result, for example by labeling an
   unknown as independent (REQ-002, T002).
@@ -211,19 +213,18 @@ Values named in this spec:
 - Risk: the hypothesis that clear presentation helps developers understand the system
   fails or cannot be tested without observations (T010).
 
-## Assumptions
-
-Taken from `assurance.json` `assumptions` and plan.md:
+Assumptions, taken from `assurance.json` `assumptions` and plan.md:
 
 - Assumption: the roots used are owned, trusted local roots (SC-001).
 - Assumption: contracts the journey consumes are reviewed separately (T001).
 - Assumption: exact host, source and cost decisions are made separately before any
-  capture (plan.md).
-- Assumption: host and tool permissions are explicit (plan.md).
+  capture (REQ-001, REQ-008; T001, T008).
+- Assumption: host and tool permissions are explicit (REQ-003).
+- Assumption: universal compatibility, positive utility and an available provider
+  budget are not assumed (`assurance.json` `assumptions`).
 
-Not assumed: universal compatibility, positive utility and an available provider
-budget. Hypothesis: clear evidence-oriented presentation may help developers
-understand system potential; comprehension and usability need observations.
+The presentation hypothesis is stated under
+[Scientific boundaries and compatibility](#scientific-boundaries-and-compatibility).
 
 ## Exit criteria
 

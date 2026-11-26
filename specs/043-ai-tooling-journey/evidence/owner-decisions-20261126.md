@@ -12,7 +12,7 @@ structure and traceability. This record authorizes no code, no run and no promot
 Derived without a question:
 
 - Status line: aligned with `tasks.md` (T002, T004–T007 and T011–T014 done; T001,
-  T003, T008 Deferred; T009, T010 open) and with the evidence bound in `assurance.json`.
+  T003, T008 Deferred; T009, T010 Deferred, depending on T001–T008) and with the evidence bound in `assurance.json`.
 - The statement that SPEC-044 T017/T018 were pending is replaced by their cancellation
   of 2026-11-01 (`../044-ai-tooling-evaluation/owner-decision-20261101-cancellation.md`).
 - Non-functional requirements, Security and privacy, Terminology, Risks, Assumptions
