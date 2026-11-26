@@ -284,6 +284,102 @@
         }
       ],
       "text": "A label grants nothing. Moving any label writes only the pointer journal. It begins no T013 transaction, activates nothing and changes no host file."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "the code and the SPEC-049 T008 disposition",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t007-controls.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_003",
+          "then": "no caller moves a label without an owner actor, AUTOMATIC_PROMOTION is false and the disposition is deferred.",
+          "when": "a code search and the actor tests run"
+        }
+      ],
+      "text": "A code path MUST NOT move a label without an owner actor. AUTOMATIC_PROMOTION MUST stay false and the SPEC-049 T008 disposition MUST stay deferred."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "any record or view after a move",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t009-script.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "executionAuthorization is exactly false and no launch, grant, admission or activation follows.",
+          "when": "its output is inspected"
+        }
+      ],
+      "text": "A label MUST NOT grant launch, grant, admission or ordinary-use activation. executionAuthorization MUST be false on every record and view."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "a move and a view",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t009-script.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "they are byte-identical.",
+          "when": "the T013 registry files and agent_braid/harness_promotion.py are compared before and after"
+        }
+      ],
+      "text": "This specification MUST NOT change the T013 registry format, its decisions or its journal."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "the plugin launch, the skill text and the MCP tool list",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t010-skill.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "none exists.",
+          "when": "they are inspected for write paths to the pointer journal"
+        }
+      ],
+      "text": "The plugin launch, the SPEC-080 skill and every MCP tool MUST NOT write a pointer record."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "a move under a filesystem monitor",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t009-script.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "no host configuration, global instruction or permission file changes.",
+          "when": "it is applied"
+        }
+      ],
+      "text": "A pointer operation MUST NOT change host configuration, global instructions or permissions."
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "a verdict with regressed private tasks",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "evidence/t009-script.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "the titles appear only in the terminal and no repository file contains them.",
+          "when": "the owner script runs a move to candidate"
+        }
+      ],
+      "text": "The owner script MUST show the titles of regressed private tasks only in the owner's terminal and MUST NOT write them to the repository."
     }
   ],
   "scientific_limits": "Engineering specification; no utility, safety or significance claim. Gate correctness is checked on synthetic fixtures only. A Codex review is independent model review, not human review or approval. Owner identity is not authenticated by the record format.",

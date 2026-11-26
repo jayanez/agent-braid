@@ -32,15 +32,16 @@ In scope:
 - evidence gates for each label;
 - a read-only view in `harness registry-status` and in the SPEC-080 `harness` skill.
 
-Exclusions (each is a MUST NOT):
+Exclusions (each is a MUST NOT, stated with its REQ ID below):
 
 - No automatic promotion. No code path moves a label without an owner actor.
-  `AUTOMATIC_PROMOTION` stays false; the SPEC-049 T008 disposition stays `deferred`.
+  `AUTOMATIC_PROMOTION` stays false; the SPEC-049 T008 disposition stays `deferred`
+  (REQ-010).
 - No execution authority. A label grants no launch, grant, admission or ordinary-use
-  activation. `executionAuthorization` is false on every record and view.
-- No change to the T013 registry format, its decisions or its journal (OD-1).
-- No write through the plugin `launch`, the SPEC-080 skill or any MCP tool.
-- No change to host configuration, global instructions or permissions.
+  activation. `executionAuthorization` is false on every record and view (REQ-011).
+- No change to the T013 registry format, its decisions or its journal (OD-1; REQ-012).
+- No write through the plugin `launch`, the SPEC-080 skill or any MCP tool (REQ-013).
+- No change to host configuration, global instructions or permissions (REQ-014).
 
 ## Requirements and acceptance scenarios
 
@@ -128,7 +129,86 @@ It begins no T013 transaction, activates nothing and changes no host file.
   monitor, then only the pointer journal changes and every output has
   `executionAuthorization` exactly `false`.
 
+## Requirements: exclusions and privacy
+
+**REQ-010 No automatic promotion.** A code path MUST NOT move a label without an owner
+actor. `AUTOMATIC_PROMOTION` MUST stay false and the SPEC-049 T008 disposition MUST
+stay `deferred`.
+
+- **SC-010:** Given the code and the T008 disposition, when a code search and the
+  actor tests run, then no caller moves a label without an owner actor,
+  `AUTOMATIC_PROMOTION` is false and the disposition is `deferred`.
+
+**REQ-011 No execution authority.** A label MUST NOT grant launch, grant, admission
+or ordinary-use activation. `executionAuthorization` MUST be false on every record
+and view.
+
+- **SC-011:** Given any record or view after a move, when its output is inspected,
+  then `executionAuthorization` is exactly `false` and no launch, grant, admission or
+  activation follows.
+
+**REQ-012 T013 unchanged.** This specification MUST NOT change the T013 registry
+format, its decisions or its journal.
+
+- **SC-012:** Given a move and a view, when the T013 registry files and
+  `agent_braid/harness_promotion.py` are compared before and after, then they are
+  byte-identical.
+
+**REQ-013 No write through launch, skill or MCP.** The plugin `launch`, the SPEC-080
+skill and every MCP tool MUST NOT write a pointer record.
+
+- **SC-013:** Given the plugin launch, the skill text and the MCP tool list, when
+  they are inspected for write paths to the pointer journal, then none exists.
+
+**REQ-014 No host change.** A pointer operation MUST NOT change host configuration,
+global instructions or permissions.
+
+- **SC-014:** Given a move under a filesystem monitor, when it is applied, then no
+  host configuration, global instruction or permission file changes.
+
+**REQ-015 Private task titles stay in the terminal.** The owner script MUST show the
+titles of regressed private tasks only in the owner's terminal and MUST NOT write
+them to the repository.
+
+- **SC-015:** Given a verdict with regressed private tasks, when the owner script
+  runs a move to `candidate`, then the titles appear only in the terminal and no
+  repository file contains them.
+
+## Non-functional requirements
+
+Operational and quality constraints, each stated by an existing requirement:
+
+- Bounded records: reason of 1 to 512 characters, at most 16 evidence references
+  (REQ-004).
+- Append-only and tamper-evident: hash chain, extend-only save and refusal of
+  concurrent writers (REQ-004).
+- Offline and deterministic: the module reads no clock, host, model or network; the
+  caller supplies ticks. State is derived only by replay (REQ-004; plan, Approach).
+- Read-only views write nothing (REQ-008).
+- Writes touch only the pointer journal (REQ-009).
+
+## Security and privacy
+
+- Private task titles stay in the owner's terminal (REQ-015).
+- The owner actor is self-asserted; protection comes from the owner-merged pull
+  request chosen under OD-2 (REQ-003).
+
+## Terminology
+
+- **Label:** one of `experimental`, `candidate`, `adopted`; empty or pointing to one
+  candidate hash (REQ-002).
+- **Pointer journal:** the append-only, hash-chained `braid-harness-pointers/v0.1`
+  record sequence (REQ-004).
+- **Record kind:** a move or a `rollback` (REQ-007).
+- **Reason codes** include `broken-chain`, `concurrent-update` and `revoked-evidence`
+  (REQ-004, REQ-007).
+- Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md).
+
 ## Owner decisions (open)
+
+Open questions: see [Open questions](#open-questions). OD-1 to OD-6 were decided on
+2026-11-24 in [the T001 record](evidence/t001-owner-review.md); the options below
+are kept as the decision text.
 
 - **OD-1 Storage.** (a) A separate pointer journal, `braid-harness-pointers/v0.1`,
   that cites T013 decision hashes; (b) new events in the T013 journal (format v0.2).
@@ -156,13 +236,32 @@ reopening SPEC-050 D7, and new statistics (SPEC-083 owns them).
 
 ## Risks
 
-- The owner actor is self-asserted; without OD-2 (a) or (c) a local edit can forge it.
-- A pointer view may read as approval. Mitigation: every view states that a label
-  grants nothing and repeats `executionAuthorization: false`.
-- SPEC-083 or SPEC-082 may not be approved; then `candidate` and `adopted` cannot move
-  and only `experimental` is usable. That is a valid outcome.
-- Two sources of truth (pointer journal and T013 active profile) can diverge; REQ-008
-  reports it rather than resolving it silently.
+Risks and assumptions: each entry below names the REQ or task it affects.
+
+- Risk: The owner actor is self-asserted; without OD-2 (a) or (c) a local edit can forge it (REQ-003).
+- Risk: A pointer view may read as approval. Mitigation: every view states that a label
+  grants nothing and repeats `executionAuthorization: false` (REQ-008, REQ-011).
+- Risk: SPEC-083 or SPEC-082 may not be approved; then `candidate` and `adopted` cannot move
+  and only `experimental` is usable. That is a valid outcome (REQ-005, REQ-006).
+- Risk: Two sources of truth (pointer journal and T013 active profile) can diverge; REQ-008
+  reports it rather than resolving it silently (REQ-008).
+- Assumption: The SPEC-049 T003 registration and T013 registry formats stay as merged
+  (REQ-002, REQ-006, T004).
+- Assumption: SPEC-083 defines a regression verdict record bound to candidate,
+  baseline and corpus hashes, and SPEC-082 defines a corpus hash (REQ-005, T005).
+- Assumption: Records prove binding, not authenticity (REQ-003).
+
+## Exit criteria
+
+Verification is complete when the obtained evidence listed in
+[the validation plan](validation-plan.md) exists for procedures 001 to 012, which map
+to SC-001 to SC-015 and to T001 to T012 in [tasks.md](tasks.md), and the T012 release
+or no-release record is written. Passing checks are not approval.
+
+## Open questions
+
+- OD-7 Release: which alpha carries the code, if approved. Owner: the founder, who
+  decided on 2026-11-24 to decide when the code is finished (T012).
 
 ## Dependencies
 

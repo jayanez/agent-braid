@@ -39,7 +39,7 @@ records the owner decisions. `executionAuthorization` is false throughout.
   Dependencies: T004; T001 (OD-4). Target files: `agent_braid/harness_pointers.py`,
   `tests/test_harness_pointers.py`. Verification: procedure_007, then `quick`.
   Planned evidence: `evidence/t006-rollback.json`; obtained: none.
-- [ ] T007 (REQ-003 / SC-003 REQ-009 / SC-009): Add negative controls: agent and automatic-policy actors refused, no caller moves a label from an evaluation result, a move writes only the journal.
+- [ ] T007 (REQ-003 / SC-003 REQ-009 / SC-009 REQ-010 / SC-010): Add negative controls: agent and automatic-policy actors refused, no caller moves a label from an evaluation result, a move writes only the journal.
   Dependencies: T005 T006. Target files: `tests/test_harness_pointers.py`.
   One mutation control per guard. Verification: procedure_003 and procedure_009. Planned evidence:
   `evidence/t007-controls.json`; obtained: none.
@@ -50,12 +50,12 @@ records the owner decisions. `executionAuthorization` is false throughout.
   Dependencies: T004. Target files: `agent_braid/harness_cli.py`,
   `tests/test_harness_cli.py`. Verification: procedure_008, then `quick`.
   Planned evidence: `evidence/t008-cli-view.json`; obtained: none.
-- [ ] T009 (REQ-003 / SC-003 REQ-009 / SC-009): Add the owner-run move script outside the plugin launch (OD-3 (a)) or record the OD-3 alternative.
+- [ ] T009 (REQ-003 / SC-003 REQ-009 / SC-009 REQ-011 / SC-011 REQ-012 / SC-012 REQ-014 / SC-014 REQ-015 / SC-015): Add the owner-run move script outside the plugin launch (OD-3 (a)) or record the OD-3 alternative.
   Dependencies: T005 T006; T001 (OD-2, OD-3). Target files:
   `scripts/har_pointer_move.py`, `tests/test_har_pointer_move.py`.
   Verification: procedure_009. Planned evidence: `evidence/t009-script.json`;
   obtained: none.
-- [ ] T010 (REQ-008 / SC-008): Add the pointer view to the SPEC-080 `harness` skill text; no write instruction.
+- [ ] T010 (REQ-008 / SC-008 REQ-013 / SC-013): Add the pointer view to the SPEC-080 `harness` skill text; no write instruction.
   Dependencies: T008; SPEC-080 approved. Target files:
   `integrations/agent-braid/plugin/harness/SKILL.md` (planned by SPEC-080).
   Verification: procedure_008. Planned evidence: `evidence/t010-skill.json`;
