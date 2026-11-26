@@ -1,6 +1,6 @@
 # Issue drafts (published)
 
-As of 2026-11-26, every draft that this file once held is a published GitHub issue in milestone S1.5 — System One shadow activation. The draft bodies were removed because the issues are now the source of truth: each issue carries its own `agent-braid-task-id` marker, state and body. Titles below are the published issue titles (identical to the former draft titles); read issue state on GitHub.
+As of 2026-11-26, every draft that this file once held is a published GitHub issue in milestone S1.5 — System One shadow activation. The draft bodies were removed because the issues are now the source of truth: each issue carries its own `agent-braid-task-id` marker, state and body. Titles below are the published issue titles without the `[SPEC-NNN Tnnn]` prefix (otherwise identical to the former draft titles); read issue state on GitHub.
 
 | Draft | Issue | Title |
 |---|---|---|
