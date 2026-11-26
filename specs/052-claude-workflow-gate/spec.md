@@ -2,7 +2,7 @@
 
 **Milestone:** M4.6 — Claude Code dynamic workflows
 
-**Status:** draft planning. Implementation, host verification, ADR adoption, release acceptance and publication are pending. Obtained evidence: none.
+**Status:** draft; human review pending. As recorded in [tasks.md](tasks.md), PR1 tasks T001–T003 and T022 (close PR2) are open; the PR2 implementation tasks T004–T021 and the host-verification tasks T023–T032 are ticked, with their files under `evidence/` (host outcomes: [evidence/hv-disposition.md](evidence/hv-disposition.md)); T035 re-snapshotted the affected records for the Proposed draft [ADR 0029](../../docs/adr/0029-claude-dynamic-workflows.md). ADR adoption (T033, T034, T036), release acceptance and publication (T037–T042), tracking and closure (T043–T046) and the review follow-up T047 are pending. `assurance.json` holds no `obtained_evidence` and `human_review` is `pending`; the "obtained evidence: none" wording of the requirement scenarios below refers to that record.
 
 ## Purpose and scope
 
@@ -182,6 +182,53 @@ Failure and inconclusive cases: A grant or execute attempt, even refused by the 
 
 Verification: [procedure_req_016](validation-plan.md#procedure_req_016). Planned evidence only; obtained evidence: none.
 
+## Non-functional requirements
+
+Operational and quality constraints, each with its source. They restate limits that existing requirements and the Operation section already carry; this refinement adds no constraint and no REQ.
+
+- EUR 0 additional spend on the existing subscription; no paid API, credits or upgrades (Authorities, docs/tooling/BUDGET.md; T023).
+- At most four agents per run, strictly sequential, no worktree isolation, no `parallel()` fan-out (Operation of the gate; REQ-008).
+- Plugin and MCP limits are adopted as the stricter bound and never raised: one caller at a time under the admission lock, 4 active calls, 32 operations, 1 MiB and 360 s (Operation of the gate; REQ-010, T014). More than 32 operations is refused (REQ-002).
+- Replay evidence and `prepare` are limited to 2 to 4 operations; above four the replay is skipped with the stated limit and never reported as a pass (REQ-004, REQ-005).
+- Read-only and local: the gate writes no repository state; merge results live only in a temporary object directory and are discarded (Exclusions; REQ-006).
+- Gating rules are computed by the script from schema-bound results, never by an agent's judgment; every agent result passes a strict schema and the envelope is schema-validated (Authorities, Article 12; REQ-007, REQ-010).
+- A failure, busy lock, missing capability or unobservable control degrades to `refused`, `busy`, `inconclusive` or `unavailable` and never to a clean result; the script never retries (REQ-002, REQ-006, REQ-010).
+- Packaging is reproducible: byte-stable inventory, existing skills byte-identical, Claude-only and additive (REQ-011).
+- No numeric limit for latency or memory is stated in the spec, plan or tasks beyond the inherited limits above; no speed or throughput claim is made (Exclusions; REQ-009).
+
+## Security and privacy
+
+The gate handles repository metadata and analyzer results, not credentials. The obligations below are the existing requirements, cited; no new REQ is added.
+
+- The gate never creates, requests or accepts a grant and never calls an execute, recover, verify, status or runtime-mode tool (REQ-005, REQ-016). Host approval and auto mode are not authority (REQ-009).
+- The script refuses a registration with runtime enabled or a grant store and any visible `execute`, `recover`, `verify` or `status` tool; the host allowlist, not the prompt, restricts the agents' tool surface (REQ-016).
+- Every Git command uses one fixed hardened template: system and global configuration, hooks, fsmonitor, external merge drivers and content filters disabled, no network, no credential prompt (REQ-006).
+- Agent prompts carry only validated identifiers and schema-bound structured results, never raw repository text (REQ-008). Echoed strings (`request`, `refusal.input`, `refusal.message`, `phases[].detail`) are untrusted text (REQ-007; tightening is T047).
+- `executionAuthorization` is always false (REQ-007).
+- The only writes are the scratch directory under `/tmp` and its removal; a scratch that was not removed prevents certification (REQ-016(b); Amendments).
+- Wildcard-tail allowlist rules are wider than literal rules; the founder accepted that trade-off on 2026-10-25 and the residual risks are listed in [founder-decision-20261025.md](founder-decision-20261025.md) (REQ-016).
+- Task-level statements, not bound to a REQ: the gate reaches the network nowhere and uploads nothing, and the privacy text states what the agents read (T020; [adr-proposal.md](adr-proposal.md), no-go list).
+- Limit: uncommitted work is not observed (REQ-002).
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Feature-specific terms and the allowed values of each enumeration, as fixed by [contracts/braid-gate-result.schema.json](contracts/braid-gate-result.schema.json) (REQ-007) unless another source is cited:
+
+- **Gate, braid-gate:** the read-only workflow `/agent-braid:braid-gate` (REQ-001).
+- **Phases:** `validate`, `analyze`, `baseline`, `finalize`, `report`; phase status is one of `ok`, `skipped`, `refused`, `busy`, `failed`, `inconclusive`, `not-run` (Operation of the gate; REQ-007).
+- **Run status:** `refused`, `busy`, `inconclusive`, `hazards-found`, `ok-analyzed`, `ok-certified` (REQ-007; T008).
+- **Refusal rule:** `unknown-field`, `missing-field`, `wrong-type`, `invalid-identifier`, `too-few-sources`, `too-many-operations`, `duplicate-source`, `source-equals-base`, `unresolvable-ref`, `not-descendant-of-base`, `not-in-workspace-repository`, `workspace-not-registered`, `workspace-root-mismatch`, `runtime-enabled-workspace`, `unsafe-tool-surface`, `mcp-unavailable`, `limit-exceeded`, `timeout` (REQ-002, REQ-010, REQ-016).
+- **Analyzer interaction label:** `independent-candidate`, `ordered`, `conflicting`, `unknown`; coverage is `complete`, `partial` or `unknown` (REQ-003; Known limits).
+- **Baseline:** the pairwise `git merge-tree --write-tree` result; baseline status `completed`, `unavailable`, `failed`; pair result `clean`, `conflicted`, `error`, `unavailable` (REQ-006).
+- **Agreement:** `both-clean`, `both-conflicting`, `analyzer-stricter`, `baseline-stricter`, `analyzer-unknown`, `baseline-unavailable`, `not-comparable`; an `independent-candidate` pair against a baseline conflict is a counterexample (REQ-015; T013).
+- **Replay status:** `certified`, `failed`, `inconclusive`, `skipped`; **prepare status:** `prepared`, `not-prepared`, `failed` (REQ-004, REQ-005).
+- **Stale reference:** a base or source that moved, was deleted or became unresolvable by the end of the run; listed in `staleRefs` and forces `inconclusive` (REQ-007).
+- **Constrained Bash:** the host permission rule set defined once in the Clarifications and REQ-016(d).
+- **HV-1 to HV-5:** the host-verification behaviors of REQ-013.
+- **R1:** the commit-level gate release, expected `0.1.0-alpha.4`; **G0:** the transcript-signal gate of SPEC-053 (Clarifications; program.md).
+- **Engineering-only build:** the opt-in package that includes `workflows/` before ADR adoption and is never a releasable identity (REQ-011).
+- **Compatibility class `0-heuristic`:** the class the script sets in the `assurance` block (REQ-007).
+
 ## Scientific boundaries and compatibility
 
 Claim separation. *Analogy*: none relied upon. *Hypotheses* (not requirements, no observation exists): H1, on add/modify-only histories the analyzer's file-level conflicting set may contain merge-tree's (the expected reason is that it is file-level; this is a reason to expect it, not a result); H2 is not a detection hypothesis: at commit level the Agent Braid primary flag equals path overlap plus `unknown` labelling, so no detection advantage over path-only orchestrators or naive overlap is hypothesized; H2 states only that the packaging (labelled file-level evidence, a bounded replay certificate for at most four operations, refusal controls and stated limits) may be useful to operators of worktree-agent workflows, and no requirement here tests it. *Empirical*: nothing obtained. *Formal*: no new result; the analyzer's definitions are unchanged. Null results, counterexamples and a host that cannot support the design are valid outcomes; protocol adherence is assessed separately from them.
@@ -256,7 +303,54 @@ decisions, not acceptance or approval.
 
 ## Evidence and open questions
 
-Obtained evidence: none; human review pending. The planning questions (minimum number of sources, branch names, object-store quarantine, explicit workspace, CLI fallback, model policy, packaging before ADR adoption and the release number) were answered as planning decisions in the Clarifications above; they are not approvals. What remains open: host verification HV-1 to HV-5 (REQ-013), including the permission allowlist syntax (REQ-016), whether a plugin workflow resolves by name from nested `workflow()` and the effect of host restarts of stalled agents (HV-4); whether `git merge-tree --write-tree` accepts a tree-ish as a branch argument for the chained derivation of `expectedFinalTree` (a scratch test reported by the PR #671 review accepted a tree-ish and a commit with `--merge-base` on Git 2.54.0, Apple Git-157; that is not retained evidence, and the minimum Git version for the chained fold is still unstated, to be recorded by T005 and T011); whether the Git hardening template (REQ-006) can disable every configured merge driver and filter; ADR 0024 amendment adoption; the release number and any publication; and real multi-worktree observation (Article 19). Record feasibility failure, null and inconclusive outcomes as valid reports.
+`assurance.json` holds no `obtained_evidence`; human review pending (see Status). The planning questions (minimum number of sources, branch names, object-store quarantine, explicit workspace, CLI fallback, model policy, packaging before ADR adoption and the release number) were answered as planning decisions in the Clarifications above; they are not approvals. Planning-time list (host outcomes recorded since are in Status and `evidence/hv-disposition.md`; the current open questions are in the Open questions section below). What remained open: host verification HV-1 to HV-5 (REQ-013), including the permission allowlist syntax (REQ-016), whether a plugin workflow resolves by name from nested `workflow()` and the effect of host restarts of stalled agents (HV-4); whether `git merge-tree --write-tree` accepts a tree-ish as a branch argument for the chained derivation of `expectedFinalTree` (a scratch test reported by the PR #671 review accepted a tree-ish and a commit with `--merge-base` on Git 2.54.0, Apple Git-157; that is not retained evidence, and the minimum Git version for the chained fold is still unstated, to be recorded by T005 and T011); whether the Git hardening template (REQ-006) can disable every configured merge driver and filter; ADR 0024 amendment adoption; the release number and any publication; and real multi-worktree observation (Article 19). Record feasibility failure, null and inconclusive outcomes as valid reports.
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects. Sources: the plan's Risks table ([plan.md](plan.md)), the Known limits section and the recorded host outcomes.
+
+- Risk: Plugin MCP tools may not be visible to workflow agents; HV-1 passed for an analysis-only registration and the runtime-enabled registration is unobserved (REQ-003, REQ-013, T024).
+- Risk: A model-callable `execute` or `recover` tool is reachable by a gate agent; the validate agent runs before the registration is known, so the host allowlist is the only preventive control for that agent; the script checks its reported tool surface only afterwards (plan.md Tool surface, layers 1 and 2) (REQ-016).
+- Risk: Hostile repository configuration or attributes could run code during Git commands; the hardening depends on the pinned Git honoring the overrides (REQ-006, T011).
+- Risk: The host restarts a stalled agent and a second MCP or `prepare` call follows; HV-4 is partial and the forced stall is unobserved (REQ-010, T027, T047).
+- Risk: Wildcard-tail allowlist rules are wider than the literal REQ-016(b) text; interactive prompts, accept-edits mode, per-agent separation, launcher fallback rules and a managed organization policy are unobserved (REQ-016, T028; [founder-decision-20261025.md](founder-decision-20261025.md)).
+- Risk: `expectedFinalTree` may not be derivable for more than two sources; the batch is then `not-prepared` (REQ-005, T012).
+- Risk: An equal-to-base source is a silent false negative if not refused (REQ-002, T009).
+- Risk: An `independent-candidate` pair against a baseline conflict is a counterexample and blocks conservativeness wording (REQ-015, T021).
+- Risk: Host workflow API drift could make the script unvalidatable; mitigated by static checks of the literal `meta` (REQ-001, T004).
+- Risk: Packaging before ADR 0024 amendment adoption conflicts with its wording; guarded by the engineering-only opt-in (REQ-011, T015, T016, T033).
+- Risk: Speed, safety or semantic-correctness over-claiming (REQ-009).
+- Risk: The minimum Git version for the chained merge-tree fold is unstated (REQ-006, T005, T011).
+- Risk: Only committed work is observed; uncommitted worktree changes are not (REQ-002; Known limits).
+- Assumption: Claude Code workflows are enabled and not disabled by the organization, the plugin is installed and a workspace registered, sources are committed work and spend is EUR 0 (plan.md Assumptions; REQ-010, T031).
+- Assumption: The operator uses an analysis-only registration (REQ-016).
+- Assumption: Gate agents inherit the session model; none is pinned (Clarifications; REQ-008).
+- Assumption: Negative, null and inconclusive outcomes, including a host that cannot support the design, are valid reports (Scientific boundaries; REQ-013, REQ-015).
+
+## Exit criteria
+
+Verification is complete when the evidence below exists. Obtained evidence is recorded in `assurance.json` only from commands that actually ran; today `obtained_evidence` is empty and human review is pending. Passing checks are not approval.
+
+- REQ-001 to REQ-010 and REQ-016: the static and harness tests in `tests/test_claude_workflow_gate.py` (present; T004 to T014) and the native gate runs in `evidence/native-gate-runs.json` and `evidence/auto-and-disabled.json` (present; T030, T031). The per-task files `evidence/t004.json` to `evidence/t020.json` named by those tasks are planned and absent.
+- REQ-011: the package tests in `tests/test_plugin_package.py` and `tests/test_validation_profiles.py` (present; T015 to T018), the closing quick and pr profiles (T022, open) and, for the default flip, T036 (open).
+- REQ-012: the recipe `docs/tooling/CLAUDE_WORKFLOWS.md` with the recorded host outcomes (present; T019, T032).
+- REQ-013: `evidence/host-prerequisites.json`, `evidence/hv-1.json` to `evidence/hv-5.json` with their transcripts and `evidence/hv-disposition.md` (present; T023 to T029).
+- REQ-015: `evidence/corpus-comparison.json` (present; T021).
+- REQ-014: `evidence/release-candidate.json`, `release-acceptance.md`, `evidence/release-alpha4.json` and `delivery/publication.json`, all planned and absent (T039 to T042).
+- REQ-009, REQ-013 and REQ-014 closure: `technical-review.md` and `founder-review.json`, planned and absent (T045, T046).
+
+## Open questions
+
+Each is unresolved; the owner is the one the sources name.
+
+- OQ-1: Adopt, amend or reject the ADR proposal, and with it the amendment of ADR 0024. Owner: the founder (T033).
+- OQ-2: Disposition of the planning packet and whether PR2 may merge before ADR adoption. Owner: the founder (T002, T022).
+- OQ-3: R1 go or no-go, the version number (expected `0.1.0-alpha.4`), release acceptance and any plugin-dist publication. Owner: the founder (T037, T041, T042).
+- OQ-4: Authorize or defer remote tracking publication for M4.6, and closure of the SPEC-052 part. Owner: the founder (T043, T046).
+- OQ-5: The minimum Git version for the chained `merge-tree` fold and whether the hardening template disables every configured merge driver and filter. Owner: the sources name none; observations are recorded by T005 and T011.
+- OQ-6: Host behaviors still unobserved: a forced stall and a duplicate MCP or `prepare` call, interactive prompts, accept-edits mode, per-agent permission separation, launcher fallback rules, a managed organization policy and a valid-source run under a narrow allowlist. Owner: the founder provides the host (plan.md); the observations belong to T027, T028 and T031.
+- OQ-7: Real multi-worktree observation before any workload claim (Article 19). Owner: the sources name none.
+- OQ-8: Adapting the implementation to host restarts and untrusted echoed text, blocked by the PR #672 rebase (T047). Owner: the sources name none.
 
 ## Amendments
 
