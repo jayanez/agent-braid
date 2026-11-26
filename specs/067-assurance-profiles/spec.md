@@ -5,12 +5,13 @@
 **Status:** engineering specification approved by the owner on 2026-11-22
 (`assurance.json`: stage `validated`, `human_review` approved; review record
 [owner-review-2b48a5d6.json](reviews/owner-review-2b48a5d6.json)). T001 to T011
-are done (process-logic evidence in `evidence/t002.json` to `evidence/t009.json` and
-`evidence/t011.json`; unit tests; T010 is ADR 0036); T012 and T013 are open as accepted limits of that approval. ADR 0036
-is accepted (2026-11-02). No standing authorization is issued, no profile is
-adopted and no review-quality or utility claim is made; the approval grants no
-tool, merge, release or approval and `executionAuthorization` stays false. The
-founder decided Q1 to Q6 on 2026-11-02 (see Clarifications and the
+are done (process-logic evidence in `evidence/t002.json` to `evidence/t009.json`
+and `evidence/t011.json`; unit tests; T010 is ADR 0036); T012 and T013 are open
+as accepted limits of that approval. ADR 0036 is accepted (2026-11-02). No
+standing authorization is issued, no profile is adopted and no review-quality or
+utility claim is made; the approval grants no tool, merge, release or approval
+and `executionAuthorization` stays false. The founder decided Q1 to Q6 on
+2026-11-02 (see Clarifications and the
 [founder record](evidence/founder-decisions-20261102.json), T001); the decisions
 authorize no standing authorization, merge or release.
 
@@ -308,18 +309,18 @@ with the limits listed in [Exit criteria](#exit-criteria) and [Open questions](#
 
 ## Non-functional requirements
 
-No numeric latency, memory, size or cost threshold is stated in this specification, its plan or its contract; the code limits are not copied here (owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)). The constraints the sources state, each cited to the REQ that covers it:
+No latency, memory or cost threshold is stated in this specification, its plan or its contract; the only numeric thresholds are those below; the code limits are not copied here (owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)). The constraints the sources state, each cited to the REQ that covers it:
 
-- Determinism: the risk classifier gives equal output for equal input with no network, clock or model call (REQ-004); the compiled artifact, track brief and PR block are byte-identical for the same profile and diff (REQ-006).
+- Determinism: the risk classifier gives equal output for equal input with no network, clock or model call (REQ-004); the compiled artifact, track brief and PR block are byte-identical for the same profile and diff (REQ-006). No gate logic uses the network, a clock or a model (plan.md, Technical context and scope).
 - Receipts are canonical JSON with a content digest, stored in an operator-owned location written by the orchestrator (REQ-007).
 - Profiles, authorizations, rules and floors are read only from operator-controlled locations (REQ-008).
 - Thresholds that change behavior: a diff over 400 changed lines raises `pre-pr-review` to `R3` (REQ-004); a standing authorization has a maximum horizon of 30 days (REQ-002).
 - Compatibility: with no profile, `validate_change` and existing tests give pre-change results (REQ-010).
-- Runtime: Python 3.12+ standard library only; no network, clock or model call in any gate logic (plan.md, Technical context and scope; no REQ covers the runtime requirement).
+- Runtime: Python 3.12+ standard library only (plan.md, Technical context and scope; no REQ covers it).
 
 ## Security and privacy
 
-- No AI attribution in commits, PRs, work items or other published content; no source can disable it (REQ-003).
+- AI attribution is never added to commits, PRs, work items or other published content, and no source can disable that rule (REQ-003).
 - Floor checkpoints stay `human-only`; no scope or source lowers them, and a conversation lowering request is refused and recorded (REQ-003).
 - A standing authorization stores the verbatim owner statement in a hashed JSON record; only the founder issues it (REQ-002).
 - Configuration is never read from a model, tool call or agent-writable file, and an agent cannot change its own depth or mode (REQ-008).
