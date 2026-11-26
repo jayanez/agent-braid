@@ -57,14 +57,14 @@ Every result keeps `executionAuthorization: false`.
   Dependencies: T007. Target files: `agent_braid/telemetry_audit.py`,
   `integrations/agent-braid/plugin/telemetry-audit/SKILL.md`. Verification:
   procedure_011. Planned evidence: `evidence/t009.json`; obtained: none.
-- [ ] T010 (REQ-002 / SC-003 REQ-003 / SC-004 REQ-004 / SC-005 REQ-005 / SC-006 REQ-006 / SC-007 REQ-007 / SC-008 REQ-008 / SC-009 REQ-010 / SC-011 REQ-012 / SC-013 REQ-013 / SC-014 REQ-014 / SC-015): Tests with one mutation control per guard.
+- [ ] T010 (REQ-002 / SC-003 REQ-003 / SC-004 REQ-004 / SC-005 REQ-005 / SC-006 REQ-006 / SC-007 REQ-007 / SC-008 REQ-008 / SC-009 REQ-010 / SC-011 REQ-012 / SC-013 REQ-013 / SC-014 REQ-014 / SC-015 REQ-015 / SC-016): Tests with one mutation control per guard.
   Guards: pin check, allowlist, no invented times, consent, `OTEL_*` refusal,
   loopback limit, store isolation, host exporter and host ingest absence,
-  `false` execution authorization. Dependencies: T006 to T009. Target files:
+  `false` execution authorization, no promotion or grant from spans. Dependencies: T006 to T009. Target files:
   `tests/test_harness_otel.py`, `tests/test_harness_otel_store.py`,
   `tests/test_harness_otel_export.py`, `tests/test_telemetry_audit.py`,
   `tests/test_harness_cli_telemetry.py`. Verification: procedure_003 to
-  procedure_011, procedure_013 to procedure_015, then `quick`. Planned evidence: `evidence/t010.json`;
+  procedure_011, procedure_013 to procedure_016, then `quick`. Planned evidence: `evidence/t010.json`;
   obtained: none.
 - [ ] T011 (REQ-009 / SC-010): Inject write faults and measure overhead against the emission-off run.
   Dependencies: T007. Target files: `tests/test_harness_otel_store.py`.

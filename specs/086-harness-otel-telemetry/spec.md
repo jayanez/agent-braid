@@ -32,12 +32,12 @@ Exclusions (each is a MUST NOT, stated with its REQ ID below):
 - Writing span data, span ids or hashes into the SPEC-047 store, or changing its
   schema, batch format (v4), vocabulary or consent rules (REQ-007).
 - Exporting at run time, enabling emission or export from `OTEL_*` environment
-  variables (REQ-005), or uploading anything without an explicit operator command
-  (REQ-006).
+  variables (REQ-005, REQ-006), or uploading anything without an explicit operator
+  command (REQ-006).
 - Configuring host exporters (Claude Code, Codex) or ingesting host OTLP. SPEC-061
   owns viewer ingest (REQ-012).
 - Turning a span, a backend dashboard or a score into a verdict, promotion or grant
-  (REQ-008). Every span carries `agent_braid.execution_authorization = false`, and
+  (REQ-008, REQ-015). Every span carries `agent_braid.execution_authorization = false`, and
   every command result keeps `executionAuthorization: false` (REQ-013).
 
 ## Requirements and acceptance scenarios
@@ -147,35 +147,43 @@ fails, the spec closes with a recorded "not adopted" outcome. That is a valid re
 **REQ-012 No host exporter or host ingest.** This specification MUST NOT configure
 host exporters (Claude Code, Codex) or ingest host OTLP. SPEC-061 owns viewer ingest.
 
-- **SC-013:** Given the harness trace commands, the converter and the host
-  configuration files, when a code search and a filesystem monitor run, then no host
-  exporter setting changes and no path ingests host OTLP.
+- **SC-013:** Given the harness trace commands and the converter, when a code search and the trace-command tests run, then no
+  path writes a host exporter setting and no path ingests host OTLP.
 
 **REQ-013 No execution authority.** Every span MUST carry
 `agent_braid.execution_authorization = false`, and every command result MUST keep
 `executionAuthorization: false`.
 
 - **SC-014:** Given spans and command results from conversion, store, export and
-  audit, when they are inspected, then each span attribute and each result field is
-  exactly `false`.
+  audit, when they are inspected, then the `agent_braid.execution_authorization`
+  attribute of each span and the `executionAuthorization` field of each result is the
+  boolean `false`.
 
 **REQ-014 Loopback export only in v0.1.** Export MUST send only to a loopback
 endpoint (127.0.0.1 or ::1), MUST NOT follow redirects and MUST bound the request
 body (OD-5; plan, Approach).
 
-- **SC-015:** Given a loopback listener, a non-loopback destination and a loopback
-  listener that answers with a redirect, when export runs against each, then only the
-  loopback destination without a redirect receives spans, and each refused batch stays
-  pending.
+- **SC-015:** Given a loopback listener, a non-loopback endpoint with no listener and
+  a loopback listener that answers with a redirect, when export runs against each,
+  then spans reach only the loopback listener without a redirect, the non-loopback
+  endpoint is refused before any connection is opened, the redirect is not followed,
+  and each refused batch stays pending.
+
+**REQ-015 Spans do not promote or grant.** No command MUST turn a span, a backend
+dashboard or a score into a promotion or a grant.
+
+- **SC-016:** Given span files with every outcome class and a pending export, when the
+  trace, export and audit commands run, then none writes a promotion or grant record
+  or changes one, and every result keeps `executionAuthorization: false`.
 
 ## Non-functional requirements
 
-Operational and quality constraints, each stated by an existing requirement:
+Operational and quality constraints, each with its source:
 
-- Deterministic: repeat conversion is byte-identical and ids derive from record
-  hashes (REQ-003).
+- Deterministic: repeat conversion is byte-identical (REQ-003).
+- Ids derive from record hashes, so a re-export deduplicates (plan, Approach; T006).
 - Offline derivation: no code on the harness hot path; the converter reads no file,
-  network or clock (OD-2; T006).
+  network or clock (OD-2; plan, Approach; T006).
 - Pinned: every span file carries the convention pin and the mapping version
   (REQ-002).
 - Private and bounded store: 0700 directory, 0600 files, no links, bounded size, 30
@@ -197,9 +205,9 @@ Operational and quality constraints, each stated by an existing requirement:
 - Export only by explicit command, only to loopback in v0.1 (REQ-006, REQ-014).
 - No span id, hash or sub-day time in the SPEC-047 store (REQ-007).
 - No host exporter configuration and no host OTLP ingest (REQ-012).
-- Spans grant nothing: `execution_authorization` is `false` (REQ-013).
-- Future path, noted only: content capture needs its own specification and consent
-  and never includes `private-holdout` tasks (SPEC-082).
+- Spans grant nothing: `execution_authorization` is `false` (REQ-013, REQ-015).
+- Future path (not normative, see [Non-goals](#non-goals)): content capture needs its
+  own specification and consent.
 
 ## Terminology
 
@@ -289,8 +297,8 @@ result is valid and closes the spec under REQ-011.
 ## Exit criteria
 
 Verification is complete when the obtained evidence listed in
-[the validation plan](validation-plan.md) exists for procedures 001 to 015, which map
-to SC-001 to SC-015 and to the tasks in [tasks.md](tasks.md) that name them, and the
+[the validation plan](validation-plan.md) exists for procedures 001 to 016, which map
+to SC-001 to SC-016 and to the tasks in [tasks.md](tasks.md) that name them, and the
 T015 adoption or "not adopted" record is written. Passing checks are not approval.
 
 ## Open questions
