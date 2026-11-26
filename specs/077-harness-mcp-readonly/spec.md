@@ -6,7 +6,7 @@ decision D3 of [SPEC-050](../050-braid-harness-adaptation/owner-decisions-202611
 named M4.8, which is the AIM request-authoring milestone, a loose fit; D3's
 requirement of its own versioned contract stands).
 
-**Status:** draft. Contract only; nothing is implemented or published by this
+**Status:** closed, not published (2026-11-22, T008). Contract only; nothing is implemented or published by this
 specification's first PR. Publication is conditional (REQ-010). Closed as "not
 published" on 2026-11-22 (T008; [evidence/t008-publication.json](evidence/t008-publication.json)).
 The contract stays as design history.
@@ -191,7 +191,7 @@ specification closes with a recorded no-publish outcome; that is a valid result.
 
 **REQ-011 Surfaces and configuration left untouched.** The four tools MUST be
 plugin-owned and MUST NOT be added to the portable `agent-braid-tooling` server.
-This specification MUST NOT change global host instructions, host configuration,
+The implementation MUST NOT change global host instructions, host configuration,
 host permissions or the claims of `docs/tooling/HARNESSING.md` before publication.
 
 - **SC-011:** Given the implemented candidate and both tool listings, when the diff
@@ -295,8 +295,7 @@ needs:
   count as `other`. Recommended: add the four names in the same batch-schema change
   as the harness CLI telemetry track, so the schema bumps once.
 - **OD-5 Release.** Which release carries the surface if the gate passes.
-- **OD-6 ADR 0043.** Stays Proposed until the gate; accepted or rejected with the
-  publication decision.
+- **OD-6 ADR 0043.** Rejected 2026-11-22 (T008, [evidence/t008-publication.json](evidence/t008-publication.json)).
 
 ## Risks and assumptions
 
@@ -310,7 +309,7 @@ limits R1 to R6 and the assumptions above.
 - Risk: Hosts truncate long tool output silently near the output cap, which would hide
   entries without a marker (REQ-007).
 - Risk: Races with a concurrent writer inside the user's own workspace are outside the
-  threat model, as for the CLI (REQ-005).
+  threat model, as for the CLI (research.md R3).
 - Risk: Until the SPEC-047 operation names are added, harness MCP calls are invisible
   as such in telemetry (OD-4, T005).
 - Risk: Three hosts with one model each; validity results are descriptive (REQ-009,
@@ -327,14 +326,14 @@ Closed: the "not published" record
 [evidence/t008-publication.json](evidence/t008-publication.json) (T008, REQ-010) and
 the Codex contract review record (T002) exist. If the surface is reopened,
 verification is complete when the obtained evidence listed in the
-[validation plan](validation-plan.md) exists for procedures 001 to 012, which map to
+[validation plan](validation-plan.md) exists for procedures 001 to 012, which cover
 SC-001 to SC-013, and a new publication decision is recorded. Passing checks are not
 approval.
 
 ## Open questions
 
-- OD-1 Surface and version, OD-2 Validity target, OD-3 Output cap, OD-4 Telemetry and
-  OD-5 Release: undecided; they moved to Deferred with T001 (T008 record,
-  2026-11-22). Owner: the founder, only if the surface is reopened after SPEC-049
-  T014 and D7.
-- OD-6 ADR 0043: decided, rejected under D7 (T008, 2026-11-22). No open question.
+- OD-1 to OD-5 (listed under
+  [Evidence and unresolved questions](#evidence-and-unresolved-questions)): undecided;
+  they moved to Deferred with T001 (T008 record, 2026-11-22). Owner: the founder, if
+  the surface is reopened.
+- OD-6 ADR 0043: decided, rejected (T008, 2026-11-22). No open question.
