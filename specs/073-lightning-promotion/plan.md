@@ -75,4 +75,5 @@ can still edit `SKILL.md` by hand; the build check detects it.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-3 in [spec.md](spec.md); owner review is T001.
+OD-1 to OD-5 are decided and recorded in [spec.md](spec.md) (T001 and the
+2026-11-24 re-approval). Open questions: see spec.md "Open questions".

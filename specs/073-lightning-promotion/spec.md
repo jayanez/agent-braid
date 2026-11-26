@@ -6,7 +6,8 @@ reviewed tracking reconciliation after merge).
 **Status:** draft (`assurance.json`: stage `draft`, human review `approved` by
 [owner-review-de602178.json](reviews/owner-review-de602178.json), 2026-11-24).
 T001–T009 are done with `evidence/procedure_001.json` to `procedure_008.json`;
-T010 (the owner's rollback drill) and T011 (converge) are open. This
+T010 (the owner's rollback drill) and T011 (converge) are open. The approval
+covers the spec at `de602178`; this refinement is not yet reviewed. This
 specification grants no execution authority and adopts no automatic promotion.
 
 ## Purpose and scope
@@ -36,8 +37,8 @@ In scope:
   `ExperienceStore.add`, which stay quarantined until a human activates them.
 
 Exclusions (scope statements; no REQ covers them literally, per the owner decision
-recorded in `evidence/owner-decisions-20261126.md`; REQ-002 and REQ-008 are cited
-only where their text covers part of an exclusion):
+recorded in `evidence/owner-decisions-20261126.md`; REQ-002 is cited only where its
+text covers part of an exclusion):
 
 - Any automatic decision, begin or commit: `AUTOMATIC_PROMOTION` stays `False`
   (REQ-002 refuses an automatic actor).
@@ -46,7 +47,7 @@ only where their text covers part of an exclusion):
 - Publication of a plugin release, tags or plugin-dist pushes without the
   owner's explicit yes.
 - Changes to `analyze`, `analyze-work`, `prepare`, `execute`, `recover`, grants,
-  telemetry or System One (REQ-008 bounds the write set of the module).
+  telemetry or System One.
 
 ## Authorities
 
@@ -223,8 +224,9 @@ spec uses:
 
 Values named in this spec:
 
-- Cohort: `native` for Lightning profiles; `decide()` accepts `synthetic` and
-  `native` (research.md).
+- Cohort: the registry defines `synthetic` and `native` (`COHORTS`, research.md);
+  this feature uses only `native` and refuses others with `cohort-mismatch` (P2,
+  REQ-002).
 - Scope map: `lightning.skill.analyze` only; any other scope is refused with
   `unknown-scope` (OD-1).
 - Build severity: release build refuses; local developer build warns (OD-2).
@@ -240,11 +242,13 @@ Values named in this spec:
 - Risk: registry and file diverge after a crash; mitigated by begin/commit with an
   atomic rename and abort (REQ-002, T005).
 - Risk: a hand edit of `SKILL.md` bypasses the registry; the build check refuses
-  release builds (REQ-004).
+  release builds (OD-2; REQ-004).
 - Risk: a reflection carries an injected instruction; mitigated by poison screening
   and quarantine (REQ-007).
-- Assumption: SPEC-072 emits a winner with candidate text, evaluation and cost
-  report digests compatible with `decide()` (REQ-001).
+- Assumption: SPEC-072 emits the winner with a SPEC-049 `Registration` and
+  `EvaluationRecord` pair in the format `decide()` consumes and records the H1
+  outcome per host (REQ-001; OD-4: real SPEC-072 pairs are refused with
+  `regression-not-covered`).
 - Assumption: skill texts fit the scope map limits (REQ-001).
 - Assumption: runtime stays standard-library only (REQ-008).
 
@@ -260,7 +264,3 @@ green ([tasks.md](tasks.md)).
 
 - OQ-1: When does the owner run the T010 drill (decide → begin → commit, rebuild,
   rollback) from [drill.md](drill.md)? Owner: founder.
-- OQ-2: Is the obtained evidence of `evidence/procedure_001.json` to
-  `procedure_008.json` bound into `assurance.json` before T011? Today every
-  scenario lists none, and `assurance.json` is under the approved review. Owner:
-  founder.

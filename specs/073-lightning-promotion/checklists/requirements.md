@@ -8,5 +8,5 @@ Requirement-quality checklist; not a proof or approval.
 - [x] Rollback and revocation specified.
 - [x] Exclusions cover release and publication.
 - [x] Upstream behaviour not ported is named (automatic resource hot-swap).
-- [ ] Open decisions OD-1 to OD-3 resolved (T001).
+- [x] Open decisions OD-1 to OD-3 resolved (T001; see Clarifications in spec.md).
 - [ ] Scope map paths confirmed against the plugin source tree (T002).
