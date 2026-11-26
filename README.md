@@ -51,7 +51,7 @@ what it reads, writes and creates, and under which conditions — so conflicts,
 dependencies and safe orderings are computed rather than guessed.
 
 Agent Braid also supports an opt-in **System One** decision layer in shadow mode:
-a fast, on-device layer meant to answer routine coordination questions from Agent
+an on-device layer meant to answer routine coordination questions from Agent
 Braid's own work history, while the exact analysis above (System 2) keeps the final
 say. It records structural decision episodes beside each analysis, never changes a
 result and never grants authority. Its current state is in [STATUS](docs/STATUS.md).
