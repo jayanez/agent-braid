@@ -1,12 +1,13 @@
 # SPEC-073: Validation plan
 
-Status (draft): no procedure has obtained evidence. Deterministic procedures
+Status (draft): procedures 001–008 have obtained evidence under `evidence/`
+(`assurance.json` does not bind it yet; T011 does); procedure_009 awaits the owner run (T010). Deterministic procedures
 run with `.venv-speckit/bin/python -m unittest` on targeted modules, against
 temporary plugin homes and a copied plugin tree.
 
 | Procedure | Scenario | Test target | Expected | Negative controls |
 |---|---|---|---|---|
-| procedure_001 | SC-001 | `tests/test_lightning_promote.py` (planned) | valid native record from a winner with H1 `supported` and the SPEC-049 pair | unknown scope; digest mismatch; oversize text; H1 not supported → `no-held-out-support` without override reason |
+| procedure_001 | SC-001 | `tests/test_lightning_promote.py` | valid native record from a winner with H1 `supported` and the SPEC-049 pair | unknown scope; digest mismatch; oversize text; H1 not supported → `no-held-out-support` without override reason |
 | procedure_002 | SC-002 | same, apply tests | human approved → begin → commit journaled | automatic actor refused; synthetic cohort refused; stale identity refused |
 | procedure_003 | SC-003 | CLI preview tests | preview printed, no bytes changed; apply only with matching digest | registry or file changed after preview → `preview-stale` |
 | procedure_004 | SC-004 | build check tests | build passes when file digest equals active | edited file → mismatch names scope and both digests |
