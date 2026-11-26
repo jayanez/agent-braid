@@ -299,7 +299,7 @@
           "when": "a code search and the actor tests run"
         }
       ],
-      "text": "No code path MUST move a label without an owner actor. AUTOMATIC_PROMOTION MUST stay false and the SPEC-049 T008 disposition MUST stay deferred."
+      "text": "A code path MUST NOT move a label without an owner actor. AUTOMATIC_PROMOTION MUST stay false and the SPEC-049 T008 disposition MUST stay deferred."
     },
     {
       "id": "REQ-011",
@@ -363,7 +363,7 @@
           "when": "it is applied"
         }
       ],
-      "text": "No pointer operation MUST NOT change host configuration, global instructions or permissions."
+      "text": "A pointer operation MUST NOT change host configuration, global instructions or permissions."
     },
     {
       "id": "REQ-015",
@@ -372,9 +372,9 @@
           "given": "a verdict with regressed private tasks",
           "id": "SC-015",
           "obtained_evidence": [],
-          "planned_evidence": "evidence/t005-gates.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
+          "planned_evidence": "evidence/t009-script.json: candidate-bound procedure record with command, input hashes, exit, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/085-harness-promotion-pointers/validation-plan.md",
-          "test_name": "procedure_005",
+          "test_name": "procedure_009",
           "then": "the titles appear only in the terminal and no repository file contains them.",
           "when": "the owner script runs a move to candidate"
         }

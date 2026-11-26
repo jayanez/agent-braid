@@ -131,7 +131,7 @@ It begins no T013 transaction, activates nothing and changes no host file.
 
 ## Requirements: exclusions and privacy
 
-**REQ-010 No automatic promotion.** No code path MUST move a label without an owner
+**REQ-010 No automatic promotion.** A code path MUST NOT move a label without an owner
 actor. `AUTOMATIC_PROMOTION` MUST stay false and the SPEC-049 T008 disposition MUST
 stay `deferred`.
 
@@ -160,7 +160,7 @@ skill and every MCP tool MUST NOT write a pointer record.
 - **SC-013:** Given the plugin launch, the skill text and the MCP tool list, when
   they are inspected for write paths to the pointer journal, then none exists.
 
-**REQ-014 No host change.** No pointer operation MUST NOT change host configuration,
+**REQ-014 No host change.** A pointer operation MUST NOT change host configuration,
 global instructions or permissions.
 
 - **SC-014:** Given a move under a filesystem monitor, when it is applied, then no
@@ -201,7 +201,7 @@ Operational and quality constraints, each stated by an existing requirement:
   record sequence (REQ-004).
 - **Record kind:** a move or a `rollback` (REQ-007).
 - **Reason codes** include `broken-chain`, `concurrent-update` and `revoked-evidence`
-  (REQ-002, REQ-004, REQ-007).
+  (REQ-004, REQ-007).
 - Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md).
 
 ## Owner decisions (open)
