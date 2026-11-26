@@ -4,7 +4,7 @@
 
 Expose native System 1 recommendations for every architectural stage through an explicit registry of capabilities. Only enabled, evidenced consumers are integrated; arbitrary host actions and runtime scope expansion are excluded.
 
-Status: draft planning, human review pending (`assurance.json`: stage `draft`, human review `pending`; no obtained feature or utility acceptance). Task status as of 2026-11-26 (`tasks.md`): T001–T007 and T009–T011 are checked for bounded engineering lots only (technical-delivery evidence of 2026-10-07; PR #655, commit a6329c82); T008 is open and SPEC-066 absorbs it as T303. Dependencies: SPEC-028 accepted contracts; implementation can use a rule backend while SPEC-030 research remains pending. Live learned use waits for SPEC-030 selection and SPEC-033 promotion.
+Status: draft planning, human review pending (`assurance.json`: stage `draft`, human review `pending`; no obtained feature or utility acceptance). Task status as of 2026-11-26 (`tasks.md`): T001–T007 are checked for bounded engineering lots only (`evidence/technical-delivery.json`, 2026-10-07); T009–T011 are checked for bounded engineering lots only (2026-10-20 documentary reconciliation in `tasks.md`); T008 is open and SPEC-066 absorbs it as T303. Dependencies: SPEC-028 accepted contracts; implementation can use a rule backend while SPEC-030 research remains pending. Live learned use waits for SPEC-030 selection and SPEC-033 promotion.
 Milestone: S1.3 — Advisory integration. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
@@ -66,12 +66,12 @@ planning validators establishes artifact structure, not implementation or utilit
 
 ## Non-functional requirements
 
-No requirement here carries its own threshold. The limits below belong to the feature-local, proposed [integration contract](contracts/integration.md); they bind the transport and cost scenarios named, and the contract stays a proposal until reviewed.
+These limits come from the proposed [integration contract](contracts/integration.md); no REQ defines a threshold of its own. They bind the transport and cost scenarios named, and the contract stays a proposal until reviewed.
 
 - Ingress deadline: one monotonic ceiling of 5,000 ms per stage request, tightened to the request's `deadlineMs` and never reset on delegation (REQ-005).
 - Input size: at most 1,048,576 raw and canonical bytes for the combined input, container depth 16, 1 to 64 operations or candidates per request; no truncation or partial operation set (REQ-005).
 - Budget fields: `maxInputBytes` 1..1,048,576, `maxCandidates` 1..64 and `deadlineMs` 1..5,000, all integers excluding booleans (REQ-005).
-- Resource profile: the pure stage library has no retries, background queues or caches, and the transport opens no network listener, source file, runtime store or extra process (REQ-004, REQ-005).
+- Resource profile: the pure stage library has no retries, background queue or caches; the transport has a bounded queue of one active and eight waiting calls (overflow returns `defer/overloaded`) and opens no network listener, source file, runtime store or extra process (REQ-004, REQ-005).
 - Cost: queue, load, render, inference, fallback and verifier cost are measured per decision stage; advice cost is never omitted from the comparison (REQ-006).
 
 Latency, memory and cost thresholds for promotion and fallback are not defined in this spec (OQ-6).
@@ -94,7 +94,6 @@ Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Terms this 
 - Capability: one separately registered advisory function; the registry declares its consumer, domain, evidence, fallback and authorization boundary (REQ-001).
 - Advisory packet: the immutable result of advice; it carries no grant, certificate, verified or calibrated-probability field (REQ-004).
 - Abstention and fallback: the capability reports unavailable or advisory-only, or the original keep-order applies (REQ-001, REQ-003).
-- Shadow advice: advice recorded without changing planning or execution (REQ-006).
 - DecisionContext, DecisionQuestion, DecisionAnswer, DecisionTrace, ModelManifest, CalibrationManifest, PolicyManifest: the records in [data-model.md](data-model.md).
 
 Values named in this spec:
@@ -119,7 +118,7 @@ Values named in this spec:
 Verification is complete when all of these hold:
 
 - Each scenario SC-001 to SC-006 has named executable tests or an obtained research report in place of its prospective reference, with `evidence/sc-00x.json` binding candidate, input, command and environment hashes ([validation-plan.md](validation-plan.md); REQ-001 to REQ-006).
-- Each task T001–T008 has its planned evidence report under `evidence/`, and the final candidate passes the PR-profile change validation named in tasks.md.
+- Each task T001–T008 has its planned evidence report under `evidence/` (the planned-report set is T001–T008; evidence for T009–T011 is the 2026-10-20 addenda cited in `tasks.md`), and the final candidate passes the PR-profile change validation named in tasks.md.
 - Integration parity and shadow utility results are captured, with disagreement and unknowns visible (T008; REQ-006).
 - A human contract/protocol review is recorded (`human_review`; checklist CHK-008).
 - A per-capability promotion or no-go decision is recorded (CHK-013; SPEC-033/T008).
