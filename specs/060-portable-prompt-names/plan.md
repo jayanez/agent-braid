@@ -2,9 +2,9 @@
 
 ## Technical context and scope
 
-Python standard library plus the pinned optional `mcp==2.3.0` SDK. Specification
-only: nothing below is implemented by this change. Affected code when
-implementation is authorized: `agent_braid/tooling_mcp.py` (`_PROMPT_TEXT`,
+Python standard library plus the pinned optional `mcp==2.3.0` SDK. T002-T010 are
+implemented and recorded in `evidence/`; this change implements nothing. Affected
+code: `agent_braid/tooling_mcp.py` (`_PROMPT_TEXT`,
 `list_prompts`, `get_prompt`, `capabilities`, a surface-version constant),
 `agent_braid/plugin_mcp.py` (`WorkspaceService.capabilities` must strip the new
 keys), the tests that pin prompt names or the v0.1 stamp, English tooling
@@ -127,6 +127,8 @@ Decided by the owner on 2026-10-25; the original recommendation is kept for trac
 - **OD-8 ADR adoption and implementation authority.** **DECIDED:** ADR 0031 is
   Accepted and T002-T008 are authorized; observation (T009), release (T010),
   tagging and publication remain separate owner decisions.
+
+Open questions: see [Open questions](spec.md#open-questions) in the spec.
 
 Remote GitHub issues, milestones and Project items are not created. The local
 tracking source registers SPEC-060 and its tasks under the existing milestone #19;
