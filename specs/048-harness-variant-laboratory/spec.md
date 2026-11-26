@@ -87,3 +87,55 @@ Existing runtime/grants, AIM, plugin, System 1, forecasting and local telemetry 
 ## Evidence and unresolved questions
 
 Obtained acceptance evidence: none. The upstream audit supports design motivation, not these acceptance scenarios. Pending decisions: exact numerical limits, supported containment backend/OS/host versions, permissioned native sources, native route feasibility, evaluation size/margins and candidate-specific promotion. Tasks order these decisions before dependent execution. See plan.md, tasks.md and assurance.json.
+
+## Non-functional requirements
+
+The recorded operational constraints are in REQ-007 (frozen limits, visible counts, wall time, process and resource usage, additional cash spend capped at EUR 0), REQ-006 (resume without duplicate effects) and REQ-009 (frozen context budgets). Their exact numerical values are not fixed here, see OQ-1. No performance or availability requirement is recorded, see OQ-2.
+
+## Security and privacy
+
+- Protected layers, credentials and executable content stay outside the editable surface: REQ-001.
+- Candidate admission is operator-scoped and no existing runtime grant is widened: REQ-003.
+- Undeclared filesystem, credential, process or network access is denied or stopped: REQ-004.
+- Hidden grading material is excluded from context and untrusted text is labeled: REQ-009.
+- Observations are redacted before export and unobservable outcomes cannot become success: REQ-010.
+- Retention of private observations has no stated period or purge rule, see OQ-3.
+
+## Terminology
+
+Shared terms follow `TERMINOLOGY.md`. Glossary of terms this spec introduces:
+
+- Base: the immutable starting harness against which variants are compared (REQ-001, REQ-002).
+- Candidate: a proposed task-local harness variant (REQ-001, REQ-003).
+- Probe: one isolated trial of a candidate (REQ-004, REQ-005).
+- Keep-base: the decision to retain the base instead of a candidate (REQ-005).
+- Laboratory admission: the operator-adopted, independently enforced envelope that lets a probe run (REQ-003).
+
+Values named in this spec:
+
+- Round outcomes (REQ-005): candidate, keep-base, inconclusive, refused.
+- Evidence classes (Scientific boundaries): synthetic, native, human, economic.
+- Hosts (Purpose and scope): Codex and Claude, each through a separately qualified adapter.
+
+## Risks and assumptions
+
+- Risk: small contrastive harness changes may not improve either primary outcome at acceptable complete cost (REQ-005).
+- Risk: unknown provider build identity can be mistaken for a pinned build (REQ-002).
+- Risk: worktree or model instruction alone could be mistaken for containment (REQ-004).
+- Risk: unobservable outcomes could be recorded as completed success (REQ-010).
+- Assumption: the Claude profile is qualified with limits through SPEC-065 and Codex native qualification is not done (REQ-004, T008).
+- Assumption: existing runtime, grants, AIM, plugin, System 1, forecasting and telemetry contracts stay unchanged (REQ-003).
+
+## Exit criteria
+
+Verification is complete when each of procedure_req_001 to procedure_req_010 in the [validation plan](validation-plan.md) has obtained evidence, passing or failing, recorded against its task in [tasks.md](tasks.md). Human acceptance of the feature stays pending, and native Codex qualification is not required by this milestone. A negative, inconclusive or infeasible result completes verification as a finding.
+
+## Open questions
+
+Each is unresolved and owned by the founder. Owner answers of 2026-11-26 are in [evidence/owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
+
+- OQ-1 (REQ-007): what are the exact numerical limits, the supported containment backend, OS and host versions, and the evaluation size and margins?
+- OQ-2: does this feature need a performance or availability requirement? None is recorded.
+- OQ-3 (REQ-010): what retention period and purge rule apply to private observations, and does it need its own MUST requirement? `assurance.json` is bound to a preserved public draft tag, so a new requirement needs a separately reviewed re-snapshot.
+- OQ-4 (REQ-003): which permissioned native sources and which native route feasibility apply?
+- OQ-5 (REQ-005): what candidate-specific promotion decision applies?
