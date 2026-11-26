@@ -97,6 +97,55 @@ Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned
 
 Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Planned evidence only; blocked until G0 passes and SPEC-052's v1 gate exists.
 
+## Non-functional requirements
+
+Operational and quality constraints, each with its source. They restate limits that existing requirements already carry; this refinement adds no constraint and no REQ.
+
+- EUR 0 additional spend on the existing subscription; stop on quota exhaustion (REQ-002; T004).
+- Converter bounds, fail-closed and checked before analysis: at most 32 transcripts, 32 MiB per transcript, 1 MiB per line, 512 distinct paths per agent and metadata strings of at most 256 characters (REQ-007); a nesting depth of 16 is stated only by task T014, not by a REQ.
+- Read-only and local: no model invocation by the adapter, no network, no grant (Scientific boundaries, execution contract; REQ-007 for network).
+- Coverage of every mapped transcript is `partial`, never `complete` (REQ-005).
+- Analysis results for existing inputs stay unchanged and the SPEC-023 suites pass without modification (REQ-003, REQ-008).
+- Gate v2 keeps SPEC-052's bound of four agents and its limits of 4 active calls, 32 operations, 1 MiB and 360 s; a transcript failure degrades only transcript evidence (REQ-009; Compatibility).
+- With no transcripts supplied, the v1 gate result is emitted unchanged (REQ-010).
+- The G0 thresholds and the order of evaluation are pinned and cannot be relaxed (REQ-001).
+- No numeric limit for latency, memory or analysis wall time is stated in the spec, plan or tasks. T005 reports analysis wall times as a measurement, not a limit.
+
+## Security and privacy
+
+Transcripts contain prompts, file contents, command output and possibly secrets. The obligations below are the existing requirements, cited; no new REQ is added.
+
+- Retain and emit only allowlisted metadata and counts under the label `allowlisted-metadata-and-counts`; never copy prompts, file contents, command text or tool output into a result, provenance or diagnostic; name repository-relative paths, base object ids and the per-transcript SHA-256 digest as sensitive metadata (REQ-007).
+- The G0 probe retains integer counts only, never a path, a path hash, a prompt, file content or tool output (REQ-001, REQ-002; T002). Raw transcripts, prompts, diffs and merge-tree output stay local and uncommitted (T004).
+- A real transcript is accepted only with a separately reviewed admission record; without it, or with a mismatched one, it is rejected with a fixed diagnostic code that holds no rejected value (REQ-006).
+- Source rights and provider-terms confirmation are pending; no approval is inferred from the draft (REQ-002).
+- Fail-closed rejection of breaches before analysis, and no network access (REQ-007).
+- A read of a path outside the worktree emits no read effect and no read version (REQ-004).
+- No execution, grant, merge or promotion (Purpose and scope, out of scope; Article 20). `executionAuthorization` false in every artifact and exclusive owner-only creation of outputs are task-level statements (T016, T027), not bound to a REQ.
+- No real transcript enters the repository; tests use synthetic fixtures only ([validation plan](validation-plan.md), common controls; T010).
+- Limit: no detection of arbitrary secrets is claimed, and secrets in file names stay undetected (T014, T020).
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). Feature-specific terms:
+
+- **AIM:** Agent Interaction Metadata, version `0.2.0-draft` (REQ-003).
+- **G0:** the preregistered empirical feasibility gate. Outcomes: `g0-pass`, `g0-fail`, `g0-inconclusive` (REQ-001; Research protocol).
+- **Criteria:** C1a (commit-level, informs R1 only), C1b (transcript-dependent, gates PR5 and PR6), C2 (read/write-overlap precision), C3 (attribution coverage of changes), C4 (negative-control flag limit) (REQ-001).
+- **Run exclusion and label values:** exclusions are agent did not commit, base tests fail, branch tests fail alone, flaky branch tests, workflow aborted, quota exhausted, manual edit of an agent branch and `probe-unavailable`; the reference outcome has the third label `indeterminate` besides pass and fail (Research protocol).
+- **Probe:** the stdlib counts-only transcript script used in G0; distinct from the product mapper (Scientific boundaries).
+- **Mapper:** `claude-subagent-transcript-v1` (REQ-003).
+- **Tool classes:** `Read` yields a read effect; `Edit`, `Write` and `NotebookEdit` yield write effects; `Bash`, `Grep`, `Glob`, MCP tools and every other tool yield an `unknown` effect (REQ-003).
+- **Coverage:** `complete`, `partial` or `unknown`; transcript-derived coverage is always `partial` (REQ-005).
+- **Pair label:** `conflicting`, `ordered`, `unknown` or `independent-candidate`; a transcript-derived pair is never `independent-candidate` (REQ-005).
+- **Inferred channel:** where transcript-derived effects are recorded, as the agent's recorded request and not an observed effect (REQ-005).
+- **Retention labels:** `allowlisted-metadata-and-counts` for the mapper (REQ-007) and `aggregate-only` for the G0 probe (Clarifications).
+- **Admission kind:** a new kind for real sources; task T015 names it `reviewed-real-source` (REQ-006).
+- **R1, R2:** R1 is the commit-level SPEC-052 gate release; R2 includes the adapter and gate v2 only after `g0-pass` (Clarifications; T032).
+- **Gate v1, gate v2:** SPEC-052's result schema and its additive transcript-aware successor (REQ-009, REQ-010).
+- **Constrained Bash:** SPEC-052's allowlist of explicit launcher subcommands, never the launcher binary (REQ-009).
+- **HV-1:** host verification that the host can express that constrained Bash (REQ-009).
+
 ## Scientific boundaries and compatibility
 
 Claim labels: the mapping rules are engineering definitions; the prediction that read/write overlap anticipates integration failures is a heuristic and hypothesis [H-CW1](../../research/hypotheses/H-CW1-claude-workflow-integration.md), untested; no analogy or formal claim is made. Hypothesis falsity is a legitimate completion of the protocol.
@@ -164,10 +213,44 @@ Settled by the Clarifications above and no longer open: the measure that binds C
 
 Genuinely open:
 
-- Founder confirmation of the review amendments to C1, C2 and the order of evaluation, which happens at freezing.
-- Renewal of the founder signature of the source and budget decision against the final revision 3 bytes (recorded after merge; this change adds no renewal), including the provider-terms confirmation (pending, not asserted).
-- The transcript line schema and tool-name inventory, unconfirmed until the founder's pre-freeze layout and tool-name census (T002); the `-v1` pin follows it.
-- Whether a canonical ADR is required for a new mapper plus admission kind (SPEC-023 REQ-008): SPEC-023's owner and the founder, at the start of PR5.
-- Host verification HV-1 and the Bash constraint that REQ-009 depends on, and two reviewed SPEC-052 amendments, both planning amendments approved by the founder on 2026-10-24: the one additional explicit launcher subcommand `analyze-claude-transcripts` in the REQ-016 allowlist for gate v2, and the validated path tokens that the transcript arguments need (plan, gate-result-v2 contract); otherwise the transcript part of the gate is no-go.
-- Spec-owner and founder confirmation of the bounded reading of SC-010.
-- Two mapper design questions kept open for the T009 re-plan, neither decided here: whether a loss should set coverage `unknown` as SPEC-023 does (in the analyzer `partial` and `unknown` give identical pair labels, so the departure in RS-3 changes the label only), and whether a write request with no result record (interrupted or truncated transcript) should emit an `unknown` effect instead of being dropped as failed (the G0 probe counts it as an unknown writer in its descriptive call-share rate and attributes no file to it, so product and experiment differ today).
+- OQ-1: Founder confirmation of the review amendments to C1, C2 and the order of evaluation, which happens at freezing. Owner: the founder, at freezing.
+- OQ-2: Renewal of the founder signature of the source and budget decision against the final revision 3 bytes (recorded after merge; this change adds no renewal), including the provider-terms confirmation (pending, not asserted). Owner: the founder (T001).
+- OQ-3: The transcript line schema and tool-name inventory, unconfirmed until the founder's pre-freeze layout and tool-name census (T002); the `-v1` pin follows it. Owner: the founder (T002).
+- OQ-4: Whether a canonical ADR is required for a new mapper plus admission kind (SPEC-023 REQ-008): SPEC-023's owner and the founder, at the start of PR5. Owner: SPEC-023's owner and the founder, at the start of PR5.
+- OQ-5: Host verification HV-1 and the Bash constraint that REQ-009 depends on, and two reviewed SPEC-052 amendments, both planning amendments approved by the founder on 2026-10-24: the one additional explicit launcher subcommand `analyze-claude-transcripts` in the REQ-016 allowlist for gate v2, and the validated path tokens that the transcript arguments need (plan, gate-result-v2 contract); otherwise the transcript part of the gate is no-go. Owner: the founder (T030) and the SPEC-052 reviewers; the sources name no further owner.
+- OQ-6: Spec-owner and founder confirmation of the bounded reading of SC-010. Owner: the spec owner and the founder.
+- OQ-7: Two mapper design questions kept open for the T009 re-plan, neither decided here: whether a loss should set coverage `unknown` as SPEC-023 does (in the analyzer `partial` and `unknown` give identical pair labels, so the departure in RS-3 changes the label only), and whether a write request with no result record (interrupted or truncated transcript) should emit an `unknown` effect instead of being dropped as failed (the G0 probe counts it as an unknown writer in its descriptive call-share rate and attributes no file to it, so product and experiment differ today). Owner: the sources name none; both are decided at the T009 re-plan.
+
+## Risks and assumptions
+
+Each entry names the REQ or task it affects.
+
+- Risk: Transcript layout and field names are documented by the host but unconfirmed for this project until the pre-freeze census (REQ-003, T002, T009).
+- Risk: A transcript does not show the effects of `Bash`, hidden tool effects or failed or reverted edits, so evidence is partial and can surface hazards but never positive independence (REQ-003, REQ-005).
+- Risk: Designed overlap limits generalization and makes reference-failure prevalence high by construction; G0 has low power, so a negative result is weak evidence (REQ-001, T007).
+- Risk: The probe and the product mapper differ on failed calls and result-less write requests (REQ-005, T018).
+- Risk: The 2026-10-24 declaration is superseded and the signature and provider-terms confirmation are pending, so G0 cannot be frozen (REQ-002, T001, T003).
+- Risk: Host behaviors the gate depends on, including the constrained Bash (HV-1), are unconfirmed; if unavailable, the transcript part of the gate is no-go (REQ-009, T030).
+- Risk: Repository-relative paths are retained as sensitive metadata and secrets in file names go undetected (REQ-007, T020).
+- Risk: The bounded reading of "v1 consumers keep working" in SC-010 is not yet confirmed with the spec owner (REQ-010, T023).
+- Risk: The additive dependency on SPEC-023 needs its owner's review, and the need for a canonical ADR is undecided (REQ-008, T009, T021).
+- Risk: REQ-009 and REQ-010 depend on SPEC-052's v1 gate and on two reviewed SPEC-052 amendments (REQ-009, REQ-010, T023).
+- Assumption: Sources are the founder's own sessions and an owner-controlled repository only (REQ-002; Research protocol).
+- Assumption: The existing Claude subscription covers G0 at EUR 0 additional spend (REQ-002, T004).
+- Assumption: `trace_adapter.py` stays unchanged and the mapper lives in a separate module (REQ-008; plan RS-1, RS-3).
+- Assumption: A failed or inconclusive G0 is a valid outcome, and the commit-level gate stays correct without transcripts (Status; Compatibility).
+
+## Exit criteria
+
+Verification is complete when the following exist, each as obtained evidence in `assurance.json` and not merely as a passing check:
+
+- REQ-001 and REQ-002: the structural checks pass, `tests/test_claude_workflow_g0_proposal.py` and `scripts/validate_claude_workflow_g0_proposal.py`, both present. A structural pass is not a result.
+- G0: a frozen preregistration, the run and a recorded disposition of `g0-pass`, `g0-fail` or `g0-inconclusive` in a founder decision record (T003, T006). The G0 evidence report and its record under `specs/053-claude-transcript-trace-adapter/evidence/` are planned (T005) and absent today; that directory holds only [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md).
+- REQ-003 to REQ-010: planned and absent until G0 passes; each needs the obtained evidence listed in its procedure in the [validation plan](validation-plan.md), plus the SPEC-023 owner's review (REQ-008, T021).
+- On `g0-fail` or `g0-inconclusive`: the closure or blocked record of T007, T008 and T033; either completes the protocol without supporting H-CW1.
+
+Today `obtained_evidence` is empty and human review is pending. Passing checks are not approval.
+
+## Open questions
+
+Open questions: OQ-1 to OQ-7, listed under [Evidence and unresolved questions](#evidence-and-unresolved-questions), each with its owner as the sources name it.
