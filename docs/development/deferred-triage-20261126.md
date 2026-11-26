@@ -55,25 +55,27 @@ tasks, and SPEC-033's three tasks moved from "keep" to "close" (Q4).
    `claude-code`" are out of scope. Codex (HELD-02, HELD-05, 7/10 prompts) and
    OpenCode validity are therefore **not measured by any open spec**. SPEC-079
    T008–T010 are open.
-3. **SPEC-033 #322/#326/#328 are mostly absorbed by SPEC-066.** SPEC-066 already
-   carries SPEC-033 T002/T003/T004/T006/T008 (#323–#325, #327, #329; they were moved
-   to S1.5 by the `task_milestone_overrides` of SPEC-066 T003, and
-   `specs/066-system-one-shadow/research.md` item 10 corrects the numbers) as
-   T401–T403 (`tasks.md:394–441`), with the empty digest-pinned registry and atomic
-   rollback to `off` shipped (T401, `agent_braid/system_one_promotion.py`), D7
-   automatic rollback (T405), and the owner decision packet (T406). Covered:
-   promotion criteria per decision point (REQ-401, spec.md:252) and rollback.
-   **Not covered literally:** "bounded fallback chains" (T005) and "fresh
-   reproduction" of an exact-candidate closure packet (T007). The owner accepted
-   closing them with those two pieces recorded as not planned.
+3. **SPEC-033 #322/#326/#328 are only partly covered by SPEC-066.** SPEC-033
+   `tasks.md:3` and SPEC-066 T401–T403 (`specs/066-system-one-shadow/tasks.md:431–442`)
+   absorb only SPEC-033 T002/T003/T004/T006/T008 (#323–#325, #327, #329; moved to S1.5
+   by the `task_milestone_overrides` of SPEC-066 T003; `research.md` item 10 corrects
+   the numbers). T404–T406 (`tasks.md:446–470`) belong to REQ-402 (rule-based DP-1
+   advise): T404 and T405 are done, T406 is the open owner decision packet. The three
+   issues are covered as follows. **T001** (promotion and rollback criteria review):
+   partly, through REQ-401 (spec.md:252), T401 and T406. **T005** (atomic rollback and
+   bounded fallback chains): the atomic rollback to `off` is T401
+   (`agent_braid/system_one_promotion.py`) plus D7 automatic rollback (T405); only the
+   bounded fallback chains are dropped. **T007** (exact-candidate closure packet with
+   fresh reproduction): not covered. The owner chose to close all three as partly
+   covered, with the remainder recorded as not planned.
 4. **F4a does not cover SPEC-043 T001/T003/T008.** `docs/README.md` and
-   `docs/STATUS.md` do not mention the journey, onboarding or diagnostics tasks. What
+   `docs/STATUS.md` do not record SPEC-043 T001/T003/T008. What
    exists predates F4a: `examples/journey/run_journey.py` and
    `tests/test_journey_synthetic.py` (#1161: synthetic install → export journey with
    receipt and three negative controls; `evidence/sc-001.json` and the
    owner reopen decision still pending) and `docs/tooling/ONBOARDING.md` with
    `tests/test_onboarding_docs.py` (#1207: command-existence checks only; observed
-   sessions in both hosts still required). Each issue body says so.
+   sessions in both hosts still required). The PR descriptions say so.
 5. **Reopen criteria in the issue bodies.** Few bodies state one.
    - #1253 (SPEC-076 T001) lists "ADR 0042 accepted, local CUDA GPU, SPEC-075
      delivered". #771 (SPEC-060 T011) lists "every removal criterion … two
@@ -91,9 +93,9 @@ tasks, and SPEC-033's three tasks moved from "keep" to "close" (Q4).
    - #537, #551, #552 (SPEC-046), #760, and the other groups have no criterion in the
      body; criteria below come from the specs.
 6. **Home specs.** Every kept or rescued item belongs to a spec refined on
-   2026-11-26, except SPEC-046, which the owner deliberately left read-only (see
-   `specs/046-native-ai-plugins` analysis note: draft authority snapshot
-   `historical`, seven incoherences, SpecTorque 12/30). Closed specs (039, 044,
+   2026-11-26, except SPEC-046, which the owner deliberately left read-only (its authority and evidence
+   snapshots in `specs/046-native-ai-plugins/assurance.json` are `historical`,
+   stage draft, human review pending). Closed specs (039, 044,
    049, 069, 070, 075) received no rescued work. **No home spec needs further
    SpecTorque refinement for F4.6.** SPEC-041 will gain T008's work as part of its
    existing, refined task list; no new spec is needed.
@@ -119,31 +121,32 @@ ADR 0043.
 exact-hash pin breaks on every self-update. The open decision of the issue
 (A: re-pin by hand; B: code signature Team `2DC432GLL2` plus allow-listed version,
 needs its own spec or ADR) is recorded here, not made. **Reopen when:** a production
-consumer of `CodexQuotaObserver` is proposed in an open spec (the natural owner is
-SPEC-084 T005 cost gate); that spec then decides A or B and the new transport copy.
+consumer of `CodexQuotaObserver` is proposed in an open spec (proposed natural owner: SPEC-084 T005 cost gate); that spec then decides A or B and the new transport copy.
 Home spec for a fix: none today. Undo: reopen.
 
 ### Q3. #1343 analyze-work D4 — "Cerrar, superado por 079 (Recomendado)"
 
 **Close not planned**, superseded by SPEC-078 D1 and SPEC-079. Recorded gap, no
 issue: Codex 24/30 first-attempt valid (HELD-02, HELD-04, HELD-05) and OpenCode are
-not re-measured. **Reopen when:** SPEC-079 T010 converges and the owner wants the
+not re-measured. **Reopen when (proposed):** SPEC-079 T010 converges and the owner wants the
 measurement extended to Codex/OpenCode on a new held-out set (the SPEC-069 set is
 spent). Home spec if reopened: a new spec, not SPEC-069 (closed) and not SPEC-079
 (Claude Code only). Undo: reopen.
 
-### Q4. SPEC-033 #322, #326, #328 — "Cerrar los 3, absorbidos por 066 (Recomendado)"
+### Q4. SPEC-033 #322, #326, #328 — "Cerrar los 3, cubiertos en parte (Recomendado)"
 
-**Close not planned**, absorbed by SPEC-066 T401–T406 (fact 3). Recorded as not
-planned: bounded fallback chains; fresh reproduction of an exact-candidate closure
-packet. Parent #321 stays open (Q8). Undo: reopen.
+First asked as "absorbed by 066"; re-asked on 2026-11-26 after the orchestrator
+corrected the facts (fact 3). **Close not planned**, partly covered by SPEC-066
+T401/T403/T406; remainder recorded as not planned: part of the T001 criteria review,
+bounded fallback chains (T005), and the exact-candidate closure packet with fresh
+reproduction (T007). Parent #321 stays open (Q8). Undo: reopen.
 
 ### Q5. SPEC-041 #418, #423, #425 — "T001/T006 parked, T008 rescate (Recomendado)"
 
 | Issue | Decision |
 |---|---|
 | #418 T001, #423 T006 | **Keep.** Reopen when (2026-10-31 record): T001 — all five skills loaded at recorded versions, per `procedure_portable_bundle`; T006 — C1–C3 receipts for `evidence` on verified, failed and inconclusive records. |
-| #425 T008 | **Rescue → SPEC-041 (refined 2026-11-26).** Build a synthetic adversarial-guidance control: untrusted text asking for grants, secrets or false success must be refused by deterministic checks and must not change skill guidance vs. permission enforcement (`procedure_adversarial_guidance`, `evidence/sc-008.json`). No native host needed. F5 decides the target milestone: milestone 19 (M4.5) is closed, so the owner/F5 must pick or reopen one. |
+| #425 T008 | **Rescue → SPEC-041 (refined 2026-11-26).** Build a synthetic adversarial-guidance control: untrusted text asking for grants, secrets or false success must be refused by deterministic checks and must not change skill guidance vs. permission enforcement (`procedure_adversarial_guidance`, `evidence/sc-008.json`). No native host needed. F5 decides the target milestone (proposed): milestone 19 (M4.5) is closed, so the owner/F5 must pick or reopen one. |
 
 ### Q6. Closure bookkeeping — "Mantener parked con trigger (Recomendado)"
 
@@ -170,8 +173,8 @@ SPEC-066 T403/T406 decide promotion; close it then.
 **Keep** #537, #551, #552; SPEC-046 stays read-only and is **not** refined in F4.6.
 Reopen when: the owner decides to submit to OpenAI/Anthropic and the external
 requirement is met (T014 partner eligibility; T015 executable/size exception and the
-directory checklist). The seven incoherences stay in the analysis note, to be fixed
-only if the owner authorizes a refinement later.
+directory checklist). Known incoherences in the spec stay unfixed unless the owner
+authorizes a refinement later.
 
 ### Q10. System One — "Parked con trigger corregido (Recomendado)"
 
@@ -206,7 +209,7 @@ new or refined open spec, never SPEC-044, SPEC-069 or SPEC-049.
 | #1473 | HAR T014 | close not planned | n/a |
 | #1424 | 044 (cancelled) | close not planned | production consumer of the observer proposed (Q2) |
 | #1343 | 069 (closed) | close not planned | SPEC-079 T010 converges and Codex/OpenCode extension wanted (Q3) |
-| #322, #326, #328 | 033 | close not planned | absorbed by SPEC-066 T401–T406 (Q4) |
+| #322, #326, #328 | 033 | close not planned | partly covered by SPEC-066 T401/T403/T406; remainder not planned (Q4) |
 | #425 | 041 T008 | rescue → SPEC-041 | target milestone chosen in F5 (Q5) |
 | #418, #423 | 041 | keep | Q5 criteria |
 | #417 | 041 parent | keep | follows children |
