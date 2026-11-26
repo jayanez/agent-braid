@@ -29,7 +29,7 @@ T035) and the VIS.1 publication (milestone #25, parent #810).
 
 ## 2. Requested decisions D1–D6 (confirm)
 
-Recorded in [spec.md](spec.md#owner-decisions-requested-pending-t001) as requested
+Recorded in [spec.md](spec.md#owner-decisions-accepted-in-t001) as requested
 on 2026-10-31, with the D2, D3, D4 and D6 amendments of the adversarial and
 counterfactual reviews. T001 confirms them or names any to reopen.
 
