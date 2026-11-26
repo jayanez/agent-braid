@@ -239,8 +239,8 @@ new or refined open spec, never SPEC-044, SPEC-069 or SPEC-049.
 
 > Parked work with an explicit reopen condition; nothing here is accepted,
 > cancelled by this milestone, or authorized. Created 2026-10-31 by founder
-> decision ([record](docs/development/FOUNDER_DECISIONS_20261031.md)); triaged
-> 2026-11-26 ([record](docs/development/deferred-triage-20261126.md)). Reopen
+> decision ([record](https://github.com/jayanez/agent-braid/blob/develop/docs/development/FOUNDER_DECISIONS_20261031.md)); triaged
+> 2026-11-26 ([record](https://github.com/jayanez/agent-braid/blob/develop/docs/development/deferred-triage-20261126.md)). Reopen
 > conditions: **System One** (SPEC-028–033 parents, SPEC-030, SPEC-032): SPEC-029
 > T001 third-party source permissions granted and admitted real groups > 0, or
 > SPEC-066 T104 owned corpus plus an S1.5d Wilson GO for a learned model.
