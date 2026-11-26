@@ -8,6 +8,23 @@ Claude Code or OpenCode (from `0.1.0-alpha.7`, see
 3.12.15 and hash-locked dependencies; Python, pip, uv, Node and Docker are not
 consumer prerequisites. The Python installation remains available below.
 
+**Quick path.** Install with the commands under [Install for your user](#install-for-your-user)
+(or the OpenCode steps in [OpenCode](#opencode-from-010-alpha7)), then register
+repositories with [setup](#setup-and-repository-suggestions). Everything else on this
+page is reference:
+
+| Need | Section |
+|---|---|
+| Which version is published, its tag and rollback target | [Published experimental marketplace](#published-experimental-marketplace) |
+| Install, update and per-host notes | [Install for your user](#install-for-your-user), [OpenCode](#opencode-from-010-alpha7) |
+| Register repositories, previews and digests, registry changes | [Setup and repository suggestions](#setup-and-repository-suggestions) |
+| Unreleased Claude-only gate workflow | [Optional Claude-only gate workflow](#optional-claude-only-gate-workflow-unreleased) |
+| Telemetry consent and per-version update/rollback notes (alpha.3 to alpha.8) | [Local telemetry consent](#local-telemetry-consent), [Version update and rollback notes](#version-update-and-rollback-notes) |
+| `analyze-work` request kinds and the alpha.8 release notes | [`analyze-work` request kinds](#analyze-work-request-kinds-spec-069) |
+| Where data lives, updating and removal | [Storage, updates and removal](#storage-updates-and-removal) |
+| Maintainer build of a local distribution | [Build a local distribution](#build-a-local-distribution-maintainers) |
+| Alpha.9 release notes | [RELEASE_NOTES_ALPHA9.md](RELEASE_NOTES_ALPHA9.md) |
+
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
@@ -339,6 +356,11 @@ global key in the user registry; each MCP connection snapshots it at startup, an
 and environment variables never enable it. Delegated workspace calls are recorded
 as surface `mcp` under the [local telemetry](TELEMETRY.md) contract; export, merge
 and purge stay manual.
+
+### Version update and rollback notes
+
+The notes below are per-version, newest last; each states migration needs and the
+rollback target.
 
 Version 0.1.0-alpha.3 moves the registry to schema v0.2. After updating from
 alpha.2, `plugin-status` reports `migration-required` until you preview and apply

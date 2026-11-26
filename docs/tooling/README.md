@@ -132,6 +132,21 @@ model-callable tools and skills; runtime work retains the existing private,
 fixed-patch scope. M4.5 acceptance is separate from M4's whole-milestone acceptance
 and historical G4 NO-GO.
 
+## Historical and dated documents
+
+These records keep their original observation boundary; read the living document
+for current status. The dated files are bound by hashes in later receipts and are
+not edited.
+
+| Document | Dated | Read instead for current state |
+|---|---|---|
+| [Acceptance sequence and decision packet](ACCEPTANCE_SEQUENCE_20261012.md) | 2026-10-12 | [Technical status](TECHNICAL_STATUS.md), [Autonomous completion](AUTONOMOUS_COMPLETION.md) |
+| [FC.1 entry packet](FC1_ENTRY_20261012.md) | 2026-10-12 | [Evaluation](EVALUATION.md) |
+| [Technical completion preparation](TECHNICAL_COMPLETION_20261011.md) | 2026-10-11 | [Technical status](TECHNICAL_STATUS.md) |
+| [Evidence retention update](EVIDENCE_RETENTION_20261010.md) | 2026-10-10 | [Technical status](TECHNICAL_STATUS.md) |
+| [Installed-core summary](installed-core-summary-20261010.json) | 2026-10-10 | [Technical status](TECHNICAL_STATUS.md) |
+| System One addenda: dated receipts in [`docs/system-one/addenda/`](../system-one/addenda/) | 2026-10-20 to 2026-11-01 | [System One index](../system-one/README.md) (historical receipt map), [resumption guide](../system-one/RESUMPTION.md) and [shadow mode](SYSTEM_ONE_SHADOW.md) |
+
 ## Contribution and delivery
 
 The existing generated `.agents/skills/` and `.claude/skills/` adapters implement
