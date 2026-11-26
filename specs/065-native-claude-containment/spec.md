@@ -2,12 +2,16 @@
 
 **Track:** HAR (unblocks SPEC-048/T008 for the Claude profile, then SPEC-049/T004)
 
-**Status:** draft; all 15 tasks are done (2026-11-21). The current qualification is the
-2026-11-17 issuance (T015, attempt `t009-20261117c`, `expiresAt` 2026-12-17T22:19:29Z) for one machine, OS
-build and Claude CLI version; it served SPEC-048/T008 and SPEC-049/T014. ADR 0035 (T002) is accepted by the
-founder (2026-11-02), and the founder decided every security choice (NC-1 to NC-11) in the
-[founder decision record](evidence/founder-decisions-20261031.json) (T001, 2026-10-31). Nothing here authorizes
-execution (`executionAuthorization` false); human acceptance of the feature remains pending.
+**Status:** engineering specification approved by the owner on 2026-11-21 (`assurance.json`: stage `validated`,
+`human_review` approved; review record [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json), approval with
+limits A to E). All 15 tasks are done (`tasks.md`). The current issuance is the 2026-11-17 one (T015, attempt
+`t009-20261117c`, `expiresAt` 2026-12-17T22:19:29Z) for one machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292
+and the `Background` session kind; it served SPEC-048/T008 and SPEC-049/T014 (`tasks.md`, T015). This status does not
+assert that the machine is qualified today: a build, version, profile or catalog change requires re-qualification
+(NC-3, NC-9). ADR 0035 (T002) is accepted by the founder (2026-11-02), and the founder decided every security choice
+(NC-1 to NC-11) in the [founder decision record](evidence/founder-decisions-20261031.json) (T001, 2026-10-31).
+The approval grants no execution (`executionAuthorization` false), does not extend the issuance and does not qualify
+Codex.
 
 ## Purpose and scope
 
@@ -442,10 +446,108 @@ because the mechanism fixes what the policy can express.
 
 ## Evidence and unresolved questions
 
-Obtained evidence: no live or scenario evidence (nothing native has run); unit-level records and
-the review records under `evidence/` only. Planned evidence per scenario is in
-[assurance.json](assurance.json). Decided: NC-1 to NC-11 and the F5 binding
-([founder decision record](evidence/founder-decisions-20261031.json), T001).
-Open: values to be observed by probe (OAuth refresh host names, helper
-executables, configuration paths that are session state) are fixed only in the
-T009 evidence bundle. Human review of this specification is pending.
+Obtained evidence: the T009 probe bundles and the founder issuance records under `evidence/qualification/`, the
+per-task verification records under `evidence/` (for example `evidence/t015.json`), the Codex review triage of 2026-11-18 and the owner
+review record [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json) (approved 2026-11-21, with limits A
+to E). Planned evidence per scenario is in [assurance.json](assurance.json). Decided: NC-1 to NC-11 and the F5
+binding ([founder decision record](evidence/founder-decisions-20261031.json), T001). The values left to probe
+observation (OAuth refresh host names, helper executables, configuration paths that are session state) are fixed in
+the T009 evidence bundle. The open items are in [Open questions](#open-questions).
+
+## Non-functional requirements
+
+No separate non-functional requirement exists; the owner chose to cite the constraints the sources already state
+rather than add a requirement (decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)).
+The numeric limits below are the ones this specification and the founder records state:
+
+- Quota caps (F3): 30 minutes per unit, at most 10 % of the 5-hour window per session, at most 15 % of weekly
+  all-models per cohort, at most 16 native units; stop when weekly use exceeds 80 %, extra usage is enabled, or the
+  reading is unavailable or stale (REQ-003). The freshness bound is 5 minutes and a session starts only if the 5-hour
+  window is below 90 % used (NC-6).
+- Process limits (NC-8): wall 30 minutes, CPU 30 minutes, memory 4 GB, file size 64 MB, 256 open files, 16
+  descendants (REQ-008).
+- Validity (NC-9): `expiresAt` 30 days after issuance (REQ-009).
+- Live probe budget (NC-10): up to 3 minimal `claude -p` sessions per attempt, each at most 2 % of the 5-hour window
+  (REQ-009, REQ-010).
+- Refusal: a failed or unenforceable effect refuses the run and never degrades to a weaker mode
+  (REQ-004, REQ-009).
+- Runtime: Python 3.12+ standard library only (plan.md, Technical context and scope; no REQ covers it).
+
+## Security and privacy
+
+- The child authenticates only through a dedicated `CLAUDE_CONFIG_DIR`; the operator's secrets are not copied into the
+  repository, evidence, candidate directory or run logs, and evidence records the credential method and
+  `apiKeySource`, never a secret value (REQ-007, NC-5).
+- No other credential is readable by the child: operator `~/.claude`, other Keychain items, SSH keys and agent
+  sockets, Git credentials, cloud CLIs, browser profiles, the pasteboard, other processes' environments and API-key
+  environment variables (REQ-007).
+- Network egress is denied except to the endpoints fixed by NC-1 (REQ-006); writes are confined to the candidate
+  directory and the NC-7 locations (REQ-005).
+- Positive controls use a disposable directory with dummy secrets created for the probe, never the operator's real
+  credentials (REQ-010; validation-plan.md).
+- The subscription route has no paid fallback and no retry on another route (REQ-002).
+- Code never issues a qualification; a human issues it and runtime code only verifies it (REQ-009).
+- Accepted limit A of the owner review: the configuration directory's session state is not purged, a deviation from
+  NC-7 (T012-03; [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json)).
+- Personal data: no obligation beyond the above is stated in the sources.
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). The terms this feature uses:
+
+- Effects (`ENFORCED_EFFECTS`): `credential`, `filesystem`, `network`, `process` (REQ-004).
+- Isolation level: STRICT (F5; REQ-005 to REQ-008).
+- Backend label: `native`, never given to a weaker run (REQ-004); `SimulatedContainment` confines nothing (Purpose
+  and scope).
+- Session kinds supported: `Aqua`, `Background` (NC-2 (b), REQ-004 amendment).
+- Probe catalog identifiers: FS, NET, CRED and PROC families (validation-plan.md, procedures 005 to 008).
+- Qualification record formats: `braid-harness-containment-qualification/v0.1` and
+  `braid-harness-host-qualification/v0.1` (REQ-009).
+- Founder decision identifiers: F1 to F5 and NC-1 to NC-11 (below).
+- Assurance `stage`: `draft` or `validated`; `human_review`: `pending`, `changes-requested` or `approved`
+  ([SPEC_KIT.md](../../docs/development/SPEC_KIT.md)).
+
+## Risks and assumptions
+
+- Risk: `sandbox-exec` is deprecated and its semantics can change in any OS update, so a qualification covers one OS
+  build (NC-2; REQ-004).
+- Risk: probe results are empirical observations of one machine, OS build, CLI version and finite catalog, not a
+  proof of isolation (REQ-009, REQ-010; Scientific boundaries).
+- Risk: same-UID hostile processes outside the sandbox, kernel or sandbox bugs, physical access and CLI supply-chain
+  compromise are out of scope (Scientific boundaries).
+- Risk: configuration-directory session state is not purged between units, so no independence across units or arms is
+  claimed (REQ-005; accepted limit A, T012-03).
+- Risk: verifier gaps T012-01, T012-02, T012-11, T012-14 and T012-15, quota and expiry timing T012-05, T012-06 and
+  T012-17, and residuals R1 to R17 stay open (accepted limits B, C and E; REQ-003, REQ-009).
+- Risk: effort is never passed to the CLI, so no effort claim is made (accepted limit D, T012-07; REQ-002).
+- Risk: CRED-05, NET-05-CLI and HOST-01 have detector self-test controls only (REQ-010; owner review).
+- Assumption: single-operator machine; the CLI binary at the pinned hash is the vendor's; same-UID processes outside
+  the sandbox are not hostile during a run (plan.md, Research, assumptions and alternatives).
+- Assumption: H1 may fail and a not-qualified result is valid (Scientific boundaries).
+
+## Exit criteria
+
+Verification of this specification is complete when:
+
+- Each scenario SC-001 to SC-011 traces to a procedure in [validation-plan.md](validation-plan.md) and a scenario in
+  [assurance.json](assurance.json).
+- The probe bundle `evidence/qualification/t009-20261117c/` and the issuance record
+  `evidence/qualification/issuance-2026-11-17.json` exist and the verification record `evidence/t015.json` shows both
+  verifiers accepting them.
+- The hand-off packet `evidence/handoff-spec048-t008.md` exists (REQ-011).
+- The owner review record [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json) approves the specification
+  with limits A to E.
+- Open: fixes T012-01, T012-02 and T012-03 are required in the next re-qualification and are not yet done; no evidence
+  for them exists.
+
+Unit tests with fakes prove refusal logic, not containment; only the probe bundle and the human records do
+(validation-plan.md).
+
+## Open questions
+
+- Re-qualification: all fixes from the Codex review triage are deferred to the next re-qualification, and T012-01,
+  T012-02 and T012-03 are required in it (owner: founder; [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json)).
+  No date for it is recorded in the sources.
+- The shared-file changes listed in [plan.md](plan.md#proposed-shared-file-changes) belong to the owners of those
+  files and are not decided here.
+- No other unresolved question is recorded.
