@@ -39,31 +39,32 @@ Every result keeps `executionAuthorization: false`.
 
 ## Phase P2 — implementation (unreleased)
 
-- [ ] T006 (REQ-003 / SC-004 REQ-004 / SC-005 REQ-008 / SC-009): Implement the pure converter and the allowlist serializer.
+- [ ] T006 (REQ-003 / SC-004 REQ-004 / SC-005 REQ-008 / SC-009 REQ-013 / SC-014): Implement the pure converter and the allowlist serializer.
   No file, network or clock access inside the converter; ids derived from record
   hashes. Dependencies: T005. Target files: `agent_braid/harness_otel.py`.
-  Verification: procedure_004. Planned evidence: `evidence/t006.json`;
+  Verification: procedure_004, procedure_014. Planned evidence: `evidence/t006.json`;
   obtained: none.
 - [ ] T007 (REQ-005 / SC-006): Implement the private span store, consent mode, retention and purge, and the `harness trace` commands.
   Off by default; `OTEL_*` ignored; skills cannot enable it. Dependencies: T006,
   OD-1. Target files: `agent_braid/harness_otel_store.py`,
   `agent_braid/harness_cli.py`. Verification: procedure_006. Planned evidence:
   `evidence/t007.json`; obtained: none.
-- [ ] T008 (REQ-006 / SC-007): Implement the opt-in OTLP/HTTP JSON export with pending-batch retry and deduplication.
+- [ ] T008 (REQ-006 / SC-007 REQ-014 / SC-015): Implement the opt-in OTLP/HTTP JSON export with pending-batch retry and deduplication.
   Loopback only under OD-5; no redirects; bounded body. Dependencies: T007, OD-5.
-  Target files: `agent_braid/harness_otel_export.py`. Verification: procedure_007.
-  Planned evidence: `evidence/t008.json`; obtained: none.
+  Target files: `agent_braid/harness_otel_export.py`. Verification: procedure_007,
+  procedure_015. Planned evidence: `evidence/t008.json`; obtained: none.
 - [ ] T009 (REQ-010 / SC-011): Extend `telemetry audit-logs` and the `telemetry-audit` skill with a read-only span section.
   Dependencies: T007. Target files: `agent_braid/telemetry_audit.py`,
   `integrations/agent-braid/plugin/telemetry-audit/SKILL.md`. Verification:
   procedure_011. Planned evidence: `evidence/t009.json`; obtained: none.
-- [ ] T010 (REQ-002 / SC-003 REQ-003 / SC-004 REQ-004 / SC-005 REQ-005 / SC-006 REQ-006 / SC-007 REQ-007 / SC-008 REQ-008 / SC-009 REQ-010 / SC-011): Tests with one mutation control per guard.
+- [ ] T010 (REQ-002 / SC-003 REQ-003 / SC-004 REQ-004 / SC-005 REQ-005 / SC-006 REQ-006 / SC-007 REQ-007 / SC-008 REQ-008 / SC-009 REQ-010 / SC-011 REQ-012 / SC-013 REQ-013 / SC-014 REQ-014 / SC-015 REQ-015 / SC-016): Tests with one mutation control per guard.
   Guards: pin check, allowlist, no invented times, consent, `OTEL_*` refusal,
-  loopback limit, store isolation. Dependencies: T006 to T009. Target files:
+  loopback limit, store isolation, host exporter and host ingest absence,
+  `false` execution authorization, no promotion or grant from spans. Dependencies: T006 to T009. Target files:
   `tests/test_harness_otel.py`, `tests/test_harness_otel_store.py`,
   `tests/test_harness_otel_export.py`, `tests/test_telemetry_audit.py`,
   `tests/test_harness_cli_telemetry.py`. Verification: procedure_003 to
-  procedure_011, then `quick`. Planned evidence: `evidence/t010.json`;
+  procedure_011, procedure_013 to procedure_016, then `quick`. Planned evidence: `evidence/t010.json`;
   obtained: none.
 - [ ] T011 (REQ-009 / SC-010): Inject write faults and measure overhead against the emission-off run.
   Dependencies: T007. Target files: `tests/test_harness_otel_store.py`.
@@ -77,8 +78,9 @@ Every result keeps `executionAuthorization: false`.
   rates. A miss is a negative result, not tuned away. Dependencies: T010. Target
   files: none. Verification: procedure_012. Planned evidence:
   `evidence/t012-h1-fixtures.json`; obtained: none.
-- [ ] T013 (REQ-006 / SC-007): Record a loopback OTLP receipt with a standard-library listener (attribute names only, never values).
-  Dependencies: T008. Target files: none. Verification: procedure_007. Planned
+- [ ] T013 (REQ-006 / SC-007 REQ-014 / SC-015): Record a loopback OTLP receipt with a standard-library listener (attribute names only, never values).
+  Dependencies: T008. Target files: none. Verification: procedure_007,
+  procedure_015. Planned
   evidence: `evidence/t013-loopback-receipt.json`; obtained: none.
 - [ ] T014 (REQ-005 / SC-006 REQ-010 / SC-011): Document emission, store, purge, export and audit; state that exported spans cannot be recalled.
   Dependencies: T012. Target files: `docs/tooling/TELEMETRY.md`,
