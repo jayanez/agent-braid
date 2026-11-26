@@ -2,13 +2,18 @@
 
 **Track:** HAR (parallel to the native chain; no dependency on SPEC-065)
 
-**Status:** draft; implementation in progress. T002 to T009 are implemented or
-registered at process-logic level (unit tests; `evidence/t002.json` to
-`evidence/t009.json`), ADR 0036 is accepted (2026-11-02) and T011 is open. No
-standing authorization is issued, no profile is adopted and no review-quality
-or utility claim is made. The founder decided Q1 to Q6 on 2026-11-02 (see
-Clarifications and the [founder record](evidence/founder-decisions-20261102.json),
-T001); the decisions authorize no standing authorization, merge or release.
+**Status:** engineering specification approved by the owner on 2026-11-22
+(`assurance.json`: stage `validated`, `human_review` approved; review record
+[owner-review-2b48a5d6.json](reviews/owner-review-2b48a5d6.json)). T001 to T011
+are done (process-logic evidence in `evidence/t002.json` to `evidence/t009.json`
+and `evidence/t011.json`; unit tests; T010 is ADR 0036); T012 and T013 are open
+as accepted limits of that approval. ADR 0036 is accepted (2026-11-02). No
+standing authorization is issued, no profile is adopted and no review-quality or
+utility claim is made; the approval grants no tool, merge, release or approval
+and `executionAuthorization` stays false. The founder decided Q1 to Q6 on
+2026-11-02 (see Clarifications and the
+[founder record](evidence/founder-decisions-20261102.json), T001); the decisions
+authorize no standing authorization, merge or release.
 
 ## Purpose and scope
 
@@ -296,8 +301,68 @@ unchanged):
 
 ## Evidence and unresolved questions
 
-Obtained evidence: unit-level records only (`evidence/t002.json` to `evidence/t009.json`); no
+Obtained evidence: unit-level records only (`evidence/t002.json` to `evidence/t009.json`, `evidence/t011.json`) and the Codex review triage (`evidence/review/`); no
 review-quality, utility or adoption evidence for any scenario. Planned evidence per scenario is in
 [assurance.json](assurance.json). Q1 to Q6, S1, P1 and O1 to O3 are decided (T001); the integration
-points in the plan are proposals for the owners of shared files. Human review
-pending.
+points in the plan are proposals for the owners of shared files. Human review approved on 2026-11-22
+with the limits listed in [Exit criteria](#exit-criteria) and [Open questions](#open-questions).
+
+## Non-functional requirements
+
+No latency, memory or cost threshold is stated in this specification, its plan or its contract; the only numeric thresholds are those below; the code limits are not copied here (owner decision in [owner-decisions-20261126.md](evidence/owner-decisions-20261126.md)). The constraints the sources state, each cited to the REQ that covers it:
+
+- Determinism: the risk classifier gives equal output for equal input with no network, clock or model call (REQ-004); the compiled artifact, track brief and PR block are byte-identical for the same profile and diff (REQ-006). No gate logic uses the network, a clock or a model (plan.md, Technical context and scope).
+- Receipts are canonical JSON with a content digest, stored in an operator-owned location written by the orchestrator (REQ-007).
+- Profiles, authorizations, rules and floors are read only from operator-controlled locations (REQ-008).
+- Thresholds that change behavior: a diff over 400 changed lines raises `pre-pr-review` to `R3` (REQ-004); a standing authorization has a maximum horizon of 30 days (REQ-002).
+- Compatibility: with no profile, `validate_change` and existing tests give pre-change results (REQ-010).
+- Runtime: Python 3.12+ standard library only (plan.md, Technical context and scope; no REQ covers it).
+
+## Security and privacy
+
+- AI attribution is never added to commits, PRs, work items or other published content, and no source can disable that rule (REQ-003).
+- Floor checkpoints stay `human-only`; no scope or source lowers them, and a conversation lowering request is refused and recorded (REQ-003).
+- A standing authorization stores the verbatim owner statement in a hashed JSON record; only the founder issues it (REQ-002).
+- Configuration is never read from a model, tool call or agent-writable file, and an agent cannot change its own depth or mode (REQ-008).
+- The receipt digest detects inconsistent edits only; an author who recomputes it is not detected, which is why the store is operator-owned (REQ-007).
+- Track-brief free-text fields are not yet restricted to an identifier charset (T012, open; accepted limit A in the owner review).
+- No credential or personal-data obligation beyond the above is stated in the sources.
+
+## Terminology
+
+Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md). "Review depth" is unrelated to "assurance level" (see Purpose and scope). Terms are defined in [Vocabulary](#vocabulary); the enumerations are:
+
+- Review depth: `R0`, `R1`, `R2`, `R3`, `R4` (REQ-005); a depth applies only to `pre-pr-review` (REQ-001).
+- HITL mode, ordered: `autonomous`, `notify`, `standing-authorization`, `approve-each`, `human-only` (REQ-002).
+- Checkpoints: the closed catalog of REQ-001.
+- Floor checkpoints: `release`, `clarification`, `grant`, `native-effect`, `auto-promotion` (REQ-003).
+- Compiled artifact: `executionAuthorization` is `false` (REQ-006).
+- Profile presets: `lite`, `standard`, `strict` (Clarifications, Q1 and P1).
+- Assurance `stage`: `draft` or `validated`; `human_review`: `pending`, `changes-requested` or `approved` ([SPEC_KIT.md](../../docs/development/SPEC_KIT.md)).
+
+## Risks and assumptions
+
+- Risk: a receipt is read as proof that a review was sound or happened (REQ-007; accepted limit C).
+- Risk: review agents are fallible and correlated, so a higher depth is more review, not a guarantee (REQ-005; Scientific boundaries).
+- Risk: path and size classification misses semantic risk; it can only raise (REQ-004).
+- Risk: track-brief free text carries sensitive or `@` text (REQ-006, T012).
+- Risk: a profile journal over its byte cap becomes unreadable (REQ-008, T013).
+- Risk: profiles that derive the same reasons can share a classification (REQ-004; accepted limit D).
+- Risk: H1 has no data, so no utility claim is supportable (REQ-009).
+- Assumption: single-operator repository; without a profile the baseline is the documented `quick`, `pr` and `sensitive` profiles (`assurance.json` assumptions; REQ-010).
+- Assumption: the SPEC-058 REQ-006 and `ownership.resolve_settings` precedent holds for scope precedence (REQ-003).
+
+## Exit criteria
+
+Verification of this specification is complete when:
+
+- Each scenario SC-001 to SC-010 is traced to a test or review in [validation-plan.md](validation-plan.md) and [assurance.json](assurance.json); the obtained process-logic evidence is `evidence/t002.json` to `evidence/t009.json` and `evidence/t011.json` (all exist).
+- The Codex review triage `evidence/review/codex-t011-20261116.json` and `evidence/review/codex-t011-20261121.json` exist; the owner review record [owner-review-2b48a5d6.json](reviews/owner-review-2b48a5d6.json) approves the specification with limits A to E.
+- Open: T012 and T013 stay open with their own tests and evidence as planned in tasks.md; no evidence for them exists yet.
+- `evidence/t009.json` is a registration of H1 only; no observation exists (REQ-009).
+
+Passing tests do not show review quality or that higher depths help (tasks.md).
+
+## Open questions
+
+Open decisions are limited to what the sources record: T012 and T013 (accepted limits A and B in the owner review) and the proposed shared-file changes in [plan.md](plan.md#proposed-shared-file-changes), which belong to the owners of those files. No other unresolved question is recorded; Q1 to Q6, S1, P1 and O1 to O3 are decided (see [Clarifications](#clarifications) and [Evidence and unresolved questions](#evidence-and-unresolved-questions)).
