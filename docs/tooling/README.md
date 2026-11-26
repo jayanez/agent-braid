@@ -145,7 +145,7 @@ not edited.
 | [Technical completion preparation](TECHNICAL_COMPLETION_20261011.md) | 2026-10-11 | [Technical status](TECHNICAL_STATUS.md) |
 | [Evidence retention update](EVIDENCE_RETENTION_20261010.md) | 2026-10-10 | [Technical status](TECHNICAL_STATUS.md) |
 | [Installed-core summary](installed-core-summary-20261010.json) | 2026-10-10 | [Technical status](TECHNICAL_STATUS.md) |
-| System One addenda (`*-20261020`, `*-20261021`, `*-20261101`) | 2026-10-20 to 2026-11-01 | [System One index](../system-one/README.md) (historical receipt map) and [shadow mode](SYSTEM_ONE_SHADOW.md) |
+| System One addenda: dated receipts in [`docs/system-one/addenda/`](../system-one/addenda/) | 2026-10-20 to 2026-11-01 | [System One index](../system-one/README.md) (historical receipt map), [resumption guide](../system-one/RESUMPTION.md) and [shadow mode](SYSTEM_ONE_SHADOW.md) |
 
 ## Contribution and delivery
 
