@@ -253,7 +253,7 @@ Verification: [procedure_req_016](validation-plan.md#procedure_req_016). Planned
 Operational and quality constraints, each with its source. They restate limits that existing requirements carry, or record their absence; this refinement adds no constraint and no REQ.
 
 - Local and offline: the compiler, the report and the hook scripts use no network and no socket, launch no `claude`, `git` or Agent Braid CLI or MCP process and invoke no model (REQ-013; Scientific boundaries, execution contract).
-- Fixed input bounds, refused before decision: profile and envelope at most 1 MiB, at most 512 paths per list, strings at most 256 characters; at most 32 units; the pending notice read for the Whisper at most 1 MiB (REQ-013, REQ-012; Scientific boundaries, domain).
+- Fixed input bounds, refused before decision: profile and envelope at most 1 MiB, at most 512 paths per list, strings at most 256 characters; at most 32 units; the pending notice read for the Whisper at most 1 MiB (REQ-013, REQ-012; Scientific boundaries, domain). The SPEC-057 bounds of 1 MiB, 32 units, 512 paths per list and 256 characters are listed in `contracts/README.md` (refusal mapping, `ERR-OVER-BOUND`).
 - Hook failure is fail-open and recorded: an internal error, timeout or over-bound input gives `no-opinion`, a `guard-error` record and a degraded attestation, never a decision (REQ-009, REQ-013).
 - Whole-command refusals of the compiler, the report and the package builder are errors with a stable code from `command-error.schema.json`, a nonzero exit and no result object; the hook does not use that vocabulary (REQ-001, REQ-010, REQ-016, REQ-013).
 - Output determinism: the compiler and the snippet renderer give byte-identical output for identical input and write only to explicit new private paths, refusing existing paths (REQ-001, REQ-003).
@@ -262,7 +262,7 @@ Operational and quality constraints, each with its source. They restate limits t
 - Host-dependent statements are tied to a host version and labelled documented, inferred, unconfirmed or host-observed (REQ-014; The four surfaces and the three outputs).
 - Cost: EUR 0 additional spend on the existing subscription for probes and G1 (REQ-014; Clarifications, Evidence).
 - The hook scripts are standard-library only (REQ-004; plan.md, Technical context and scope).
-- Hook latency: the G1 proposal's p95 of 500 ms is the proposed criterion, not a measured result and not a limit set here (REQ-013). No numeric limit for memory or wall time is stated in the spec, plan or tasks.
+- Hook latency: p95 at most 500 ms is criterion CG5 of the G1 proposal (`docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md`), proposed and not measured, and not a limit set here; REQ-013 restates it as the proposed criterion (REQ-013). No numeric limit for memory or wall time is stated in the spec, plan or tasks.
 
 ## Security and privacy
 
@@ -399,7 +399,7 @@ Each entry names the REQ or task it affects. Sources: the plan's Risks section, 
 
 Verification is complete when the evidence below exists. Today every task in [tasks.md](tasks.md) is unchecked, `assurance.json` holds no obtained evidence, the `evidence/` directory of this feature holds only the refinement's [owner-decisions record](evidence/owner-decisions-20261126.md) and no probe receipt, and human review is pending. The test files named below are planned and absent ([validation-plan.md](validation-plan.md), Gate map; plan.md, Requirement to scenario to test to evidence).
 
-- REQ-001, REQ-002, REQ-003, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-011, REQ-012, REQ-013: the offline controls of the procedures of those requirements (`procedure_req_001` to `procedure_req_013`, without 004 and 010, which have their own lines below) over synthetic fixtures, recorded in `assurance.json` only from commands that actually ran; planned test files `tests/test_guard_policy_compiler.py`, `tests/test_guard_native_settings.py`, `tests/test_guard_settings_snippet.py`, `tests/test_guard_decision_contract.py`, `tests/test_guard_modes.py`, `tests/test_guard_control_paths.py`, `tests/test_guard_liveness.py`, `tests/test_guard_fail_open.py`, `tests/test_guard_task_created.py`, `tests/test_guard_context_and_audit.py` and `tests/test_guard_bounds.py`; all planned and absent.
+- REQ-001, REQ-002, REQ-003, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-011, REQ-012, REQ-013: the offline controls of the procedures of those requirements (`procedure_req_001` to `procedure_req_013`, without 004 and 010, which have their own lines below) over synthetic fixtures, recorded in `assurance.json` only from commands that actually ran; planned test files `tests/test_guard_contracts.py` (validation-plan.md, Gate map; T010), `tests/test_guard_policy_compiler.py`, `tests/test_guard_native_settings.py`, `tests/test_guard_settings_snippet.py`, `tests/test_guard_decision_contract.py`, `tests/test_guard_modes.py`, `tests/test_guard_control_paths.py`, `tests/test_guard_liveness.py`, `tests/test_guard_fail_open.py`, `tests/test_guard_task_created.py`, `tests/test_guard_context_and_audit.py` and `tests/test_guard_bounds.py`; all planned and absent.
 - REQ-004: `tests/test_guard_companion_package.py` for the candidate source tree and the main-plugin inventory; the package part is blocked by G1 gate GG and ADR adoption (T021, T026). Planned and absent.
 - REQ-010: `tests/test_guard_bypass_report.py` (T023); planned and absent.
 - REQ-014: one receipt per probe GP-1 to GP-5 with outcome pass, fail or unobserved under `specs/058-claude-orchestration-guard/evidence/` (T005 to T009) and `tests/test_guard_surface_matrix.py` (T024); planned and absent.
@@ -412,9 +412,9 @@ Passing checks are not approval, and no scenario is approved.
 
 ## Open questions
 
-Each is unresolved. The owner is the one the sources name. OQ-1 to OQ-4 are the items that T001 asks the founder to answer or defer.
+Each is unresolved. The owner is the one the sources name. OQ-1 to OQ-4 are items that T001 asks the founder to answer or defer; OQ-10 is not in T001.
 
-- OQ-1: Whether the proposed interpretations stand: the compiled profile mode as the lowest-precedence default, the Whisper delivery rule and path policy, the per-surface gate outcome and NotebookEdit as a coverage extension (Clarifications, Planning interpretations). Owner: the founder (T001).
+- OQ-1: Whether the proposed interpretations stand: the compiled profile mode as the lowest-precedence default, the Whisper delivery rule, the per-surface gate outcome and NotebookEdit as a coverage extension (Clarifications, Planning interpretations). Owner: the founder (T001 names the Whisper delivery rule, the compiled profile mode, the per-surface gate outcome and NotebookEdit).
 - OQ-2: Whether `ask` is useful where no human is present; until answered `block` uses it only for undecidable paths (GP-2). Owner: answered by observation, probe launched after the founder authorizes it (T006); the founder records it (T001).
 - OQ-3: The D versus B distinction and the minimum host version the matrix states for each output. Owner: the founder (T001).
 - OQ-4: The name and distribution of the companion plugin (`agent-braid-guard` is the working name) and whether it is ever published, decided after G1. Owner: the founder (T001).
@@ -423,5 +423,5 @@ Each is unresolved. The owner is the one the sources name. OQ-1 to OQ-4 are the 
 - OQ-7: Host behaviors the documentation does not settle: whether plugin `PreToolUse` hooks fire inside workflow agents, `/batch` units and split-pane teammates (HV-6); whether the task tools are present on the model in use (HV-7); whether deny rules and the sandbox apply inside subagents and teammates, cover Bash and reach dispatched sessions (HV-8); the working directory and configuration root a hook sees (HV-10, GP-3); and GP-1 to GP-5. Owner: answered by observation, each probe launched after the founder authorizes it (REQ-014; T005 to T009).
 - OQ-8: Whether GA and GG pass on any surface; the thresholds are proposed and unfrozen, and G1 is owned by SPEC-057. Owner: the founder, who records the release decision after the G1 report (T027).
 - OQ-9: Adoption, amendment or rejection of the feature-local ADR proposal with the G1 outcome, with the next free ADR number confirmed only at adoption. Owner: the founder (T002).
-- OQ-10: The refusal mapping to SPEC-057's closed codes and its provisional rule vocabularies (Clarifications, Planning interpretations). Owner: the sources name none beyond the founder, who may accept, amend or reject it (the interpretations are proposed and not approved).
+- OQ-10: The refusal mapping to SPEC-057's closed codes and its provisional rule vocabularies (Clarifications, Planning interpretations). Owner: not named by T001 or the plan; the Clarifications say only that the founder may accept, amend or reject the proposed interpretations, so no owner is assigned here.
 - OQ-11: Integration with documents the integrator owns: roadmap, program, ecosystem and hypothesis-index wording and the SPEC-052 specification, plan, checklist and ADR proposal. Owner: the integrator (T003).
