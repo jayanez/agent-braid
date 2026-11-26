@@ -50,6 +50,18 @@ Trace: REQ-008 / SC-008.
 
 Given a reviewed profile is exposed to CLI or a separately versioned plugin/MCP consumer, exercise installation, migration, operation, drift or uninstall occurs. Required observation: it uses explicit workspace/profile binding, compatibility checks, private export controls, canary/rollback and revocation, and preserves a usable previous profile; planning or synthetic checks never imply native product acceptance. Run the mapped implementation modules with positive, adversarial, drift, interruption and unavailable-observation controls. Bind source/candidate/host/policy/profile versions and retain missingness, failures and all costs. Native/human acceptance needs its own obtained observations.
 
+## procedure_req_009
+
+Trace: REQ-009 / SC-009.
+
+Given a native unit or cohort is admitted under any profile, exercise it runs. Required observation: every unit MUST stay within 30 minutes of wall time, every session within 10 % of the 5-hour quota window and the cohort within 15 % of the weekly quota window, and the work MUST NOT incur additional cash beyond EUR 0; the further limits (cohort size, stop rule) are in contracts/interface.md section 6. Run the mapped implementation modules with positive, adversarial, drift, interruption and unavailable-observation controls. Bind source/candidate/host/policy/profile versions and retain missingness, failures and all costs. Native/human acceptance needs its own obtained observations.
+
+## procedure_req_010
+
+Trace: REQ-010 / SC-010.
+
+Given a component profile is compiled, installed, migrated or operated, exercise it runs. Required observation: canonical authorities, existing runtime grants, provider permissions and global host configuration MUST remain unchanged, and existing plugin, telemetry, forecasting and System 1 acceptance MUST NOT widen. Run the mapped implementation modules with positive, adversarial, drift, interruption and unavailable-observation controls. Bind source/candidate/host/policy/profile versions and retain missingness, failures and all costs. Native/human acceptance needs its own obtained observations.
+
 ## Candidate checks
 
 Run the required quick profile after coherent changes and pr once stable, using isolated pinned dependencies. Frozen-candidate evidence, independent review and human/founder decisions remain separate.
