@@ -28,7 +28,7 @@ Retain full report/evidence identifiers and a visible legend/limits.
 Export deterministic Markdown, SVG and standalone HTML from the typed envelope.
 Use stable ordering and IDs, escape all text/attributes/URIs, forbid active source
 HTML/scripts and remote resources, and bound input/node/output size. Offline HTML
-may use reviewed self-contained presentation code; no telemetry or network calls.
+contains no scripts (REQ-007); no telemetry or network calls.
 SVG contains no scripts/foreign objects or file/remote references. Export only
 operator-selected evidence; do not include secrets or arbitrary source content.
 
