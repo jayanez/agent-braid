@@ -13,6 +13,10 @@ assert that the machine is qualified today: a build, version, profile or catalog
 The approval grants no execution (`executionAuthorization` false), does not extend the issuance and does not qualify
 Codex.
 
+Approval binding: the owner approval covers `spec.md` as reviewed (sha256 `bced74ca…5007e` in
+[owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json), reviewed commit `a768e6d3`). Later edits are
+form-only refinement (structure, wording, traceability) and do not change the approved scope.
+
 ## Purpose and scope
 
 On 2026-10-31 the founder authorized SPEC-048/T008 qualification of the Claude
@@ -537,8 +541,9 @@ Verification of this specification is complete when:
 - The hand-off packet `evidence/handoff-spec048-t008.md` exists (REQ-011).
 - The owner review record [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json) approves the specification
   with limits A to E.
-- Open: fixes T012-01, T012-02 and T012-03 are required in the next re-qualification and are not yet done; no evidence
-  for them exists.
+
+Not part of these criteria: fixes T012-01, T012-02 and T012-03, which the owner review requires in the next
+re-qualification (planned; evidence absent).
 
 Unit tests with fakes prove refusal logic, not containment; only the probe bundle and the human records do
 (validation-plan.md).
@@ -546,8 +551,6 @@ Unit tests with fakes prove refusal logic, not containment; only the probe bundl
 ## Open questions
 
 - Re-qualification: all fixes from the Codex review triage are deferred to the next re-qualification, and T012-01,
-  T012-02 and T012-03 are required in it (owner: founder; [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json)).
+  T012-02 and T012-03 are required in it (deferred by the founder in the owner review; [owner-review-a768e6d3.json](reviews/owner-review-a768e6d3.json)).
   No date for it is recorded in the sources.
-- The shared-file changes listed in [plan.md](plan.md#proposed-shared-file-changes) belong to the owners of those
-  files and are not decided here.
 - No other unresolved question is recorded.
