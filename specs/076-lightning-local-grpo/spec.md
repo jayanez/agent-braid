@@ -35,20 +35,19 @@ In scope (when reopened):
 - reward-hacking controls; budget estimate; a proposed `training` section for
   `lightning.json`.
 
-Exclusions. Those without a requirement ID are scope statements (owner
-decision, 2026-11-26):
+Exclusions:
 
-- Loading trained weights in System One or the MCP server MUST NOT happen
-  (REQ-013). Trained weights are laboratory artifacts only (ADR 0034).
-- A Kubernetes path MUST NOT exist (REQ-007).
-- Remote clusters, paid GPU rental and any cash spend MUST NOT be used (ADR 0021,
-  EUR 0) unless a new owner decision changes the budget. Scope statement.
-- Training MUST NOT use host-model output without the SPEC-075 terms gate
-  (SPEC-075 OD-1; criterion 4 of [deferral.md](deferral.md)). Scope statement.
-- Hydra MUST NOT be used; the `training` section stays outside configuration v0.1
-  ([contract](contracts/training-config-proposal.md)). Scope statement.
-- Promotion MUST NOT be automatic; promotion stays human (SPEC-073). Scope
-  statement.
+- Any use of trained weights as a System One backend or decision model
+  (ADR 0034); trained weights are laboratory artifacts only. REQ-013 MUST
+  hold this for System One and the MCP server.
+- Kubernetes MUST NOT be used (REQ-007). Remote clusters, paid GPU rental or any
+  cash spend are also out (ADR 0021, EUR 0) unless a new owner decision changes
+  the budget.
+- Training on host-model output without the SPEC-075 terms gate (SPEC-075 OD-1;
+  criterion 4 of [deferral.md](deferral.md)).
+- Hydra; the `training` section stays outside configuration v0.1
+  ([contract](contracts/training-config-proposal.md)).
+- Automatic promotion; promotion stays human (SPEC-073).
 
 ## Authorities
 
@@ -227,10 +226,12 @@ change to core or MCP surfaces. One schema change: the new event schema
 `braid-lightning-event/v0.2` (REQ-004, recorded by ADR 0042); v0.1 events stay
 readable.
 
-## Evidence
+## Evidence and unresolved questions
 
 None obtained. Procedures and their tasks are in
 [validation-plan.md](validation-plan.md). Open decisions: OD-1 to OD-4.
+
+Open questions: see [Open questions](#open-questions).
 
 
 ## Non-functional requirements
@@ -281,10 +282,12 @@ Values named in this spec:
 - Training algorithm: `grpo` in the proposal; `loss_mode: per_rollout_mean`
   (REQ-008, G4).
 
-## Risks
+## Risks and assumptions
 
-- Risk: GPU cost may exceed the estimate; plan.md mitigates with a budget cap in
-  `training` and a stop at the cap (REQ-014).
+- Risk: GPU cost may exceed the estimate. plan.md Risks name a budget cap in
+  `training` and a stop at the cap; `gpuHourCap` is `null` in the
+  [`training` proposal](contracts/training-config-proposal.md), T014 reviews the
+  proposal, and no REQ enforces the stop (see the open question on the cap).
 - Risk: reward hacking is mitigated, not excluded (REQ-012; `assurance.json`
   `scientific_limits`).
 - Risk: advantage collapse; mitigated by difficulty filtering (REQ-010).
@@ -292,8 +295,6 @@ Values named in this spec:
   environment (REQ-006).
 - Risk: trained weights leak into System One; mitigated by the boundary test
   (REQ-013).
-
-## Assumptions
 
 - Assumption: vLLM can return token IDs for the chosen open model (REQ-003, OD-3).
 - Assumption: a local CUDA GPU has enough memory for a small open model (OD-4,
@@ -303,8 +304,8 @@ Values named in this spec:
 
 Verification is complete when each of procedure_001 to procedure_015 in the
 [validation plan](validation-plan.md) has obtained evidence, passing or failing,
-for its task in [tasks.md](tasks.md) (procedure_n verifies SC-n of REQ-n; T001
-verifies procedure_001 and T015 procedure_015), recorded as `obtained_evidence`
+for its task (each task in [tasks.md](tasks.md) names its verifying procedure,
+for example T002 → procedure_006), recorded as `obtained_evidence`
 of the scenario in [assurance.json](assurance.json). GPU procedures run only in
 the isolated `lightning-gpu` environment on the owner's machine. T015 closes the
 last task: a null result is valid and `speckit-converge` must pass (SC-015). A
@@ -328,8 +329,8 @@ no-go at T001 leaves the spec deferred (SC-001).
   out of its records and marks bounds as `truncated`. Which module provides the
   token-ID path and the drop? Owner: founder, at reopening.
 - Which procedures run in CI and which in the GPU environment? plan.md puts T007,
-  T009, T011 and T012 in P2 (GPU), while procedure_007, procedure_009 and
-  procedure_011 name fake-GPU or stdlib tests. Owner: founder, T001.
+  T009, T011 and T012 in P2 (GPU), while the validation plan describes
+  procedure_007 as a fake-GPU runner test. Owner: founder, T001.
 - Do the rules of the token proxy contract that no REQ states (401 without body
   echo, non-loopback backend refused, no `*_API_KEY` read or forwarded, required
   `X-Braid-Rollout` and `X-Braid-Attempt` headers) become REQs? Owner: founder,
