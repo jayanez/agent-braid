@@ -1,5 +1,12 @@
 # Pending closure checkpoint — 2026-10-21
 
+> **Historical (marked 2026-11-26).** This checkpoint records the state of 2026-10-21
+> and is kept unchanged below. The SPEC-024 architecture decision it waits for was
+> adopted on 2026-10-21 and T001–T008 are checked in
+> [specs/024-effectful-workload-lab/tasks.md](../../specs/024-effectful-workload-lab/tasks.md);
+> SPEC-025/T007 is checked in its `tasks.md`. Current closure decisions are in the
+> [founder decisions register](FOUNDER_DECISIONS.md).
+
 Implementation-plan authority produced a first bounded preparation lot, not
 completion of the whole plan. The independent clone is on
 `feat/pending-closure-lab`, with source base `a6329c8` and validated preparation
