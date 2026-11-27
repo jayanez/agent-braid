@@ -55,7 +55,7 @@ hosts, so it misses single-host comparisons; the complete inventory is in the
   specification consumes it unchanged.
 
 In scope: `codex` in the `lightning-run` capability (SPEC-087 registry); the
-`lightning-optimizer` capability that keeps the optimizer on `claude-code`; the Codex
+`lightning-optimizer-config` and `lightning-default-rollout` capabilities that keep the optimizer enum and the default rollout hosts exactly as today; the Codex
 entries of the feature-owned runner tables; additive schema and export-terms acceptance
 of `codex`; the declared-limit path for an unverified Codex route; verification of
 `parse_codex` and of the Codex tool-name prefix against recorded Codex streams; a fake
@@ -127,19 +127,24 @@ the registry (SPEC-087 REQ-009).
   set equals its capability query; and when `codex` is removed from one table, then the
   test fails.
 
-**REQ-004 Optimizer stays on `claude-code`.** The registry gains a capability
-`lightning-optimizer` whose only member is `claude-code`; `optimizer.host` and the CLI
-`--optimizer-host` accept only its members. `optimizer.host: codex` ends in the
-existing configuration refusal (`config-enum`) before any run, and `SandboxedHost`
-keeps refusing every other host. Codex MUST NOT serve optimizer calls (OD-2).
+**REQ-004 Optimizer path unchanged.** The registry gains a capability
+`lightning-optimizer-config` whose members are today's optimizer enum, `claude-code` and
+`opencode`, in that order; `optimizer.host` and the CLI `--optimizer-host` accept only its
+members. `codex` is not a member, so `optimizer.host: codex` ends in the existing
+configuration refusal (`config-enum`) before any run. `SandboxedHost` stays the only
+later gate and keeps refusing every host but `claude-code`, so `optimizer.host: opencode`
+behaves exactly as today. Codex MUST NOT serve optimizer calls (OD-2).
 
 - **SC-004:** Given a configuration with `optimizer.host` set to `codex`, when it is
-  validated, then it is refused with the existing code and nothing is launched; and
-  given `claude-code`, then it is accepted as before.
+  validated, then it is refused with `config-enum` and nothing is launched; given
+  `opencode`, then it passes configuration and is refused at launch as today; and given
+  `claude-code`, then it is accepted as before.
 
-**REQ-005 Existing hosts and defaults unchanged.** The default `rollout.hosts` stays
-`['claude-code', 'opencode']` and is no longer derived from the whole `lightning-run`
-tuple; Codex is opt-in by naming it. For every configuration, preview, run, plan,
+**REQ-005 Existing hosts and defaults unchanged.** The default `rollout.hosts` is the
+registry capability `lightning-default-rollout`, whose members are `claude-code` and
+`opencode`, in that order; it is no longer derived from the whole `lightning-run` tuple,
+and Codex is opt-in by naming it. The wizard prompt text of `lightning_cli.py:26` is
+unchanged. For every configuration, preview, run, plan,
 record, report and refusal that does not name `codex`, the output bytes, digests and
 refusal codes are identical to those before the change. The one exemption is refusal
 and usage text that lists the accepted hosts, which may additionally list `codex`.
@@ -201,11 +206,17 @@ covers.
 **REQ-010 Fake Codex host for the pipeline.** `--fake-hosts` can run Codex through a
 fixture `tests/fixtures/lightning-fake-hosts/codex`, labelled `pipeline-only` like the
 existing fixtures, so CI exercises the Codex path without a Codex install, a model or
-quota.
+quota. Because `parse_codex` reports no credential source, a fake Codex rollout
+completes only through a key-source value that exists solely in the fake-host path (set
+by the fixture, accepted only when `fake_hosts` is true, recorded with the
+`pipeline-only` label) and never in a real run; the production verdict of REQ-007 is not
+weakened, and a test runs the real verdict on the same stream to show it ends as
+`route-unverified`.
 
 - **SC-010:** Given the fixture, when `lightning run --fake-hosts` names `codex`, then
-  the pipeline completes, every record is labelled `pipeline-only`, and no network or
-  provider access occurs.
+  the pipeline completes through the fake-only source, every record is labelled
+  `pipeline-only`, no network or provider access occurs; and given the same stream with
+  `fake_hosts` false, then the verdict is `route-unverified`.
 
 **REQ-011 Required hosts unchanged.** `REQUIRED_HOSTS` MUST NOT change from
 `("claude-code",)` (OD-1). Codex rows appear in `report` (rates and Wilson intervals) as
@@ -213,7 +224,8 @@ a non-binding host: the H1 outcome, the SPEC-049 registration and the inputs of 
 SPEC-073 promotion decision are byte-identical with and without Codex rows. Only a
 later amendment, backed by Codex measurements, can make Codex binding.
 
-- **SC-011:** Given a report that contains `claude-code` and `codex` rows, when
+- **SC-011:** Given a fake-host report (REQ-010) that contains `claude-code` and `codex`
+  rows, and a second report in which Codex is a declared limit, when
   `h1_outcome` and the SPEC-049 pair are computed, then they equal those computed from
   the `claude-code` rows alone, and `requiredHosts` is `["claude-code"]`.
 
@@ -221,8 +233,9 @@ later amendment, backed by Codex measurements, can make Codex binding.
 as any host run (`consent-required` otherwise). No consent kind, bypass or default is
 added, and Codex transcripts enter traces only through the SPEC-074 opt-in sources.
 
-- **SC-012:** Given a Codex run without setup consent, when it is invoked, then it is
-  refused with `consent-required`; and given consent for the laboratory only, then no
+- **SC-012:** Given a real-host (not `--fake-hosts`, which skips the gate at
+  `lightning_cli.py:299-300`) Codex run invocation without setup consent, when it is
+  invoked, then it is refused with `consent-required`; and given consent for the laboratory only, then no
   content-bearing trace of Codex is written.
 
 **REQ-013 Export terms gate stays closed.** The export terms-record check accepts
@@ -236,15 +249,16 @@ permits training.
   `codex` in a temporary directory, then the record shape validates and no real provider
   is named.
 
-**REQ-014 No held-out use.** The runner refuses a Codex rollout on every frozen,
-spent or test held-out prompt set (`HELDOUT`, `TEST_SETS`); Codex runs on the
-development prompt set only until a fresh preregistered split exists (SPEC-089). The
-refusal reuses an existing code or adds one to the closed vocabulary of SPEC-071's
-refusal contract in the code phase.
+**REQ-014 Codex runs on the development set only.** The runner allows a `codex` host
+only for the prompt set `development` and refuses it before launch for every other
+prompt set: the SPEC-069 `held-out` set (spent), the SPEC-078 and SPEC-079 splits
+(`v2-feedback`, `v2-validation`, `v2-test`, `v3-test`, `v4-test` and their freezes) and any set added later. This is an allow-list, so a new set is refused by default. A fresh
+preregistered split is SPEC-089's. The refusal reuses an existing code or adds one to the
+closed vocabulary of SPEC-071's refusal contract in the code phase.
 
-- **SC-014:** Given a plan or run for a held-out or test prompt set that names `codex`,
-  when it is invoked, then it is refused before launch; and given the development set,
-  then it is planned.
+- **SC-014:** Given a plan or run that names `codex` for each of `held-out`, `v2-feedback`,
+  `v2-validation`, `v2-test`, `v3-test` and `v4-test`, when it is invoked, then each is
+  refused before launch; and given `development`, then it is planned.
 
 **REQ-015 No execution authorization.** This specification grants no authority to run
 Codex. `executionAuthorization` stays `false` in every plan output, and the first real
@@ -299,7 +313,7 @@ until evidence is recorded, and that nothing is measured.
 - **Rollout host:** a host that runs the rollouts of a prompt set in a disposable
   profile. Registered through `lightning-run` (REQ-002).
 - **Optimizer host:** the host that calls a model to rewrite guidance (APO, GEPA).
-  Registered through `lightning-optimizer`, `claude-code` only (REQ-004).
+  Registered through `lightning-optimizer-config`, whose members stay `claude-code` and `opencode`; only `claude-code` passes `SandboxedHost` (REQ-004).
 - **Declared limit:** a host that cannot run in this environment or whose route is not
   verified; reported, never replaced by a manual step (REQ-008).
 - **Required host:** a host in `REQUIRED_HOSTS`, whose verdict decides H1 and
@@ -351,13 +365,22 @@ other hosts must not lose functionality or precision; REQ-005 and REQ-011 encode
 - **OD-4 Schema (decided).** Widen `v0.1` additively (REQ-006). Rejected: a new `v0.2`,
   which collides with the name SPEC-076 reserves for `local-vllm` and changes readers,
   store and export.
-- **OD-5 Held-out guard (open, author proposal).** REQ-014 refuses Codex on held-out
-  and test sets so that no spent or frozen set is consumed before SPEC-089's fresh
-  split. The owner has not answered it. Options: refuse (proposed), or leave the
+- **OD-5 Development-set allow-list (open, author proposal).** REQ-014 allows Codex
+  only on `development` so that no spent or frozen set is consumed before SPEC-089's
+  fresh split. The owner has not answered it. Options: refuse (proposed), or leave the
   runner permissive and rely on the owner's run authorization. Owner confirms in T001.
 - **OD-6 Real Codex run (open, later).** The first real Codex rollout, its credential
   carrier and its Codex build are decided at T003 and T011 on observed evidence. The
   owner authorizes the run at T011.
+
+Design choices that follow from behavior preservation, not owner decisions: (a) the
+default rollout hosts stay `claude-code` and `opencode` (REQ-005); (b) the optimizer
+enum keeps today's two members, so `lightning-optimizer-config` and
+`lightning-default-rollout` are capabilities that name existing sets (REQ-004,
+REQ-005); (c) `codex` is appended last in `lightning-run` so existing observed orders
+keep their prefix (REQ-002). Each is checked by the T002 differential record. Decision
+labels OD-1 to OD-6 are this specification's own and are not the "OD-2" prose of
+`lightning_runner.py`, which is SPEC-071's.
 
 ## Risks and assumptions
 
@@ -369,6 +392,9 @@ other hosts must not lose functionality or precision; REQ-005 and REQ-011 encode
   scored as invalid or the reverse (REQ-009; T003, T007).
 - Risk: a Codex model identity is not reported and the record names a guess (REQ-009;
   T003).
+- Risk: SPEC-076 (deferred) also adds a host (`local-vllm`) to the schema host enums;
+  if it lands first or later, T005 and its additive widening must be reconciled with it
+  (REQ-006; T005).
 - Risk: SPEC-087's code is not merged, so this change adds its own list (REQ-002;
   dependency in T002).
 - Risk: widening the host enum changes accepted-host text that a test or document quotes
@@ -396,7 +422,7 @@ approval, and nothing here measures Codex.
   Owner: the founder, at T011.
 - Proposed amendment to SPEC-087 (not made here): extend its T002 scan to single-host
   comparisons and to `host_name == 'opencode'`-style branches, and record the
-  `lightning-optimizer` capability. Owner: the founder, at SPEC-087 T001.
+  `lightning-optimizer-config` and `lightning-default-rollout` capabilities. Owner: the founder, at SPEC-087 T001.
 
 ## Dependencies
 

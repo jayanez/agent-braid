@@ -186,11 +186,11 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004, T005.",
           "test_file": "specs/088-lightning-codex-host/validation-plan.md",
           "test_name": "procedure_004",
-          "then": "it is refused with the existing code and nothing is launched; and given `claude-code`, then it is accepted as before.",
+          "then": "it is refused with `config-enum` and nothing is launched; given `opencode`, then it passes configuration and is refused at launch as today; and given `claude-code`, then it is accepted as before.",
           "when": "it is validated"
         }
       ],
-      "text": "Optimizer stays on `claude-code`.. The registry gains a capability `lightning-optimizer` whose only member is `claude-code`; `optimizer.host` and the CLI `--optimizer-host` accept only its members. `optimizer.host: codex` ends in the existing configuration refusal (`config-enum`) before any run, and `SandboxedHost` keeps refusing every other host. Codex MUST NOT serve optimizer calls (OD-2)."
+      "text": "Optimizer path unchanged.. The registry gains a capability `lightning-optimizer-config` whose members are today's optimizer enum, `claude-code` and `opencode`, in that order; `optimizer.host` and the CLI `--optimizer-host` accept only its members. `codex` is not a member, so `optimizer.host: codex` ends in the existing configuration refusal (`config-enum`) before any run. `SandboxedHost` stays the only later gate and keeps refusing every host but `claude-code`, so `optimizer.host: opencode` behaves exactly as today. Codex MUST NOT serve optimizer calls (OD-2)."
     },
     {
       "id": "REQ-005",
@@ -206,7 +206,7 @@
           "when": "each runs after the change on the same input without `codex`"
         }
       ],
-      "text": "Existing hosts and defaults unchanged.. The default `rollout.hosts` stays `['claude-code', 'opencode']` and is no longer derived from the whole `lightning-run` tuple; Codex is opt-in by naming it. For every configuration, preview, run, plan, record, report and refusal that does not name `codex`, the output bytes, digests and refusal codes are identical to those before the change. The one exemption is refusal and usage text that lists the accepted hosts, which may additionally list `codex`."
+      "text": "Existing hosts and defaults unchanged.. The default `rollout.hosts` is the registry capability `lightning-default-rollout`, whose members are `claude-code` and `opencode`, in that order; it is no longer derived from the whole `lightning-run` tuple, and Codex is opt-in by naming it. The wizard prompt text of `lightning_cli.py:26` is unchanged. For every configuration, preview, run, plan, record, report and refusal that does not name `codex`, the output bytes, digests and refusal codes are identical to those before the change. The one exemption is refusal and usage text that lists the accepted hosts, which may additionally list `codex`."
     },
     {
       "id": "REQ-006",
@@ -282,17 +282,17 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006, T008.",
           "test_file": "specs/088-lightning-codex-host/validation-plan.md",
           "test_name": "procedure_010",
-          "then": "the pipeline completes, every record is labelled `pipeline-only`, and no network or provider access occurs.",
+          "then": "the pipeline completes through the fake-only source, every record is labelled `pipeline-only`, no network or provider access occurs; and given the same stream with `fake_hosts` false, then the verdict is `route-unverified`.",
           "when": "`lightning run --fake-hosts` names `codex`"
         }
       ],
-      "text": "Fake Codex host for the pipeline.. `--fake-hosts` can run Codex through a fixture `tests/fixtures/lightning-fake-hosts/codex`, labelled `pipeline-only` like the existing fixtures, so CI exercises the Codex path without a Codex install, a model or quota."
+      "text": "Fake Codex host for the pipeline.. `--fake-hosts` can run Codex through a fixture `tests/fixtures/lightning-fake-hosts/codex`, labelled `pipeline-only` like the existing fixtures, so CI exercises the Codex path without a Codex install, a model or quota. Because `parse_codex` reports no credential source, a fake Codex rollout completes only through a key-source value that exists solely in the fake-host path (set by the fixture, accepted only when `fake_hosts` is true, recorded with the `pipeline-only` label) and never in a real run; the production verdict of REQ-007 is not weakened, and a test runs the real verdict on the same stream to show it ends as `route-unverified`."
     },
     {
       "id": "REQ-011",
       "scenarios": [
         {
-          "given": "a report that contains `claude-code` and `codex` rows",
+          "given": "a fake-host report (REQ-010) that contains `claude-code` and `codex` rows, and a second report in which Codex is a declared limit",
           "id": "SC-011",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T008.",
@@ -308,7 +308,7 @@
       "id": "REQ-012",
       "scenarios": [
         {
-          "given": "a Codex run without setup consent",
+          "given": "a real-host (not `--fake-hosts`, which skips the gate at `lightning_cli.py:299-300`) Codex run invocation without setup consent",
           "id": "SC-012",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T010.",
@@ -340,17 +340,17 @@
       "id": "REQ-014",
       "scenarios": [
         {
-          "given": "a plan or run for a held-out or test prompt set that names `codex`",
+          "given": "a plan or run that names `codex` for each of `held-out`, `v2-feedback`, `v2-validation`, `v2-test`, `v3-test` and `v4-test`",
           "id": "SC-014",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
           "test_file": "specs/088-lightning-codex-host/validation-plan.md",
           "test_name": "procedure_014",
-          "then": "it is refused before launch; and given the development set, then it is planned.",
+          "then": "each is refused before launch; and given `development`, then it is planned.",
           "when": "it is invoked"
         }
       ],
-      "text": "No held-out use.. The runner refuses a Codex rollout on every frozen, spent or test held-out prompt set (`HELDOUT`, `TEST_SETS`); Codex runs on the development prompt set only until a fresh preregistered split exists (SPEC-089). The refusal reuses an existing code or adds one to the closed vocabulary of SPEC-071's refusal contract in the code phase."
+      "text": "Codex runs on the development set only.. The runner allows a `codex` host only for the prompt set `development` and refuses it before launch for every other prompt set: the SPEC-069 `held-out` set (spent), the SPEC-078 and SPEC-079 splits (`v2-feedback`, `v2-validation`, `v2-test`, `v3-test`, `v4-test` and their freezes) and any set added later. This is an allow-list, so a new set is refused by default. A fresh preregistered split is SPEC-089's. The refusal reuses an existing code or adds one to the closed vocabulary of SPEC-071's refusal contract in the code phase."
     },
     {
       "id": "REQ-015",

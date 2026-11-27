@@ -22,9 +22,10 @@ baseline and the guard test of SPEC-087, not this table, are the lasting check.
 | # | Site | Today | Becomes | Task |
 |---|---|---|---|---|
 | 1 | `agent_braid/lightning_config.py:25` `HOSTS` | `claude-code, opencode` (feeds rows 2 to 4) | `lightning-run` | T004, T005 |
-| 2 | `lightning_config.py:40` default `rollout.hosts` | `list(HOSTS)` | fixed default `['claude-code', 'opencode']` (REQ-005) | T005 |
-| 3 | `lightning_config.py:54` `optimizer.host` enum | `HOSTS`, default `claude-code` | `lightning-optimizer` (REQ-004) | T005 |
-| 4 | `lightning_cli.py:70` `--optimizer-host` choices | `config.HOSTS` | `lightning-optimizer` | T005 |
+| 2 | `lightning_config.py:40` default `rollout.hosts` | `list(HOSTS)` | `lightning-default-rollout` = `claude-code`, `opencode` (REQ-005) | T005 |
+| 3 | `lightning_config.py:54` `optimizer.host` enum | `HOSTS`, default `claude-code` | `lightning-optimizer-config` = `claude-code`, `opencode` (REQ-004) | T005 |
+| 4 | `lightning_cli.py:70` `--optimizer-host` choices | `config.HOSTS` | `lightning-optimizer-config` | T005 |
+| 4b | `lightning_cli.py:26` wizard prompt text "comma-separated: claude-code, opencode" | string literal in a message, not a collection | text unchanged (REQ-005); T002 checks whether SPEC-087's guard counts string literals and, if it does, records the line as an exception with this reason | T002, T005 |
 | 5 | `lightning_schema.py:37` `HOSTS` (rollout, model identity, `attempt_start`) | `claude-code, opencode` | `lightning-run` | T005 |
 | 6 | `lightning_export.py:863` terms record `host` | `claude-code, opencode` | `lightning-run` | T005 |
 | 7 | `lightning_runner.py:54` `CREDENTIALS` | keys `claude-code, opencode` | table stays; key set equals `lightning-run`; `codex` value per T003 | T006 |
@@ -54,13 +55,15 @@ literal, so no consent edit is planned (REQ-012; T002 confirms).
 | Capability | Today | After | Order rationale |
 |---|---|---|---|
 | `lightning-run` | `claude-code`, `opencode` | `claude-code`, `opencode`, `codex` | `codex` appended, so the prefix equals today's order and every order-observing site (table iteration, serialized lists, argparse choices) keeps its current prefix |
-| `lightning-optimizer` (new) | none (the same tuple served both) | `claude-code` | `optimizer.host` and `--optimizer-host` only |
+| `lightning-optimizer-config` (new) | none (the same tuple served both) | `claude-code`, `opencode` (today's enum) | `optimizer.host` and `--optimizer-host` only; `SandboxedHost` stays the only gate |
+| `lightning-default-rollout` (new) | none (`list(HOSTS)`) | `claude-code`, `opencode` | default `rollout.hosts` only |
 | `lightning-tool-classes` | `claude-code`, `codex`, `opencode` | unchanged | already includes `codex` |
 | `tooling-measurement`, `host-events`, `plugin-assets`, `harness-*`, `viewer-hosts` | per SPEC-087 | unchanged | not touched |
 
 Registry edit: the code PR edits SPEC-087's capability data (adds `codex` to
-`lightning-run`, adds `lightning-optimizer`) and updates its recorded membership table,
-the registry test fixtures and the SPEC-087 guard's expectations. SPEC-087 REQ-007 binds
+`lightning-run`, adds `lightning-optimizer-config` and `lightning-default-rollout`) and
+updates the recorded membership table (a test fixture and evidence record, not
+SPEC-087's `plan.md`, which stays unedited, REQ-016), the registry test fixtures and the SPEC-087 guard's expectations. SPEC-087 REQ-007 binds
 SPEC-087's own change set to today's membership; this change is the next change and
 follows SPEC-087's extension path (its REQ-017). A SPEC-087 test that fails on adding a
 capability without a table change is satisfied by the table update in the same PR.
@@ -93,7 +96,7 @@ No MUST conflict found.
 - **Add `codex` to the shared tuple only (rejected).** One edit, but it makes Codex a
   default `rollout.hosts` entry (default `list(HOSTS)`), changes the default
   configuration digest for everyone, and makes `optimizer.host: codex` validate and fail
-  late. Chosen: a separate `lightning-optimizer` capability and a fixed default
+  late. Chosen: separate capabilities that keep today's optimizer enum and default
   (REQ-004, REQ-005).
 - **Make Codex a required host now (rejected by OD-1).** It would change the closed
   SPEC-072 and SPEC-073 criteria with no Codex measurement in Lightning.
@@ -116,27 +119,32 @@ No MUST conflict found.
 
 ## Design and compatibility
 
-- **Registry.** Add `codex` to `lightning-run` and a `lightning-optimizer` capability;
+- **Registry.** Add `codex` to `lightning-run` and the `lightning-optimizer-config` and `lightning-default-rollout` capabilities;
   consumers query them. Order is append-only so existing observable orders keep their
   prefix.
 - **Config.** `rollout.hosts` options come from `lightning-run`; its default is the
-  literal pair `['claude-code', 'opencode']`, kept as a constant in the config module and
-  pinned to a subset of `lightning-run` by a test, so a later host added to the
-  capability does not silently join the default. `optimizer.host` options and the CLI
-  choices come from `lightning-optimizer`.
+  `lightning-default-rollout` capability (`claude-code`, `opencode`), so no literal host
+  list remains in the config module (SPEC-087 REQ-010) and a later host added to
+  `lightning-run` does not silently join the default. `optimizer.host` options and the CLI
+  choices come from `lightning-optimizer-config`.
 - **Schema and export.** Host enums read `lightning-run`; version strings stay.
 - **Runner tables.** `CREDENTIALS`, the fake-binary and binary tables, the accepted
   key-source table and the declared-limit table are keyed by `lightning-run` members and
   stay in `lightning_runner.py`; the OpenCode special cases become table lookups with
   the same results for `opencode`. `codex` entries are written from T003's evidence; until
   then `codex` accepts no source and ends as a declared limit.
-- **Held-out guard.** `plan()` and `run()` refuse a `codex` host for a prompt set in
-  `HELDOUT` or `TEST_SETS` before launch (REQ-014, OD-5).
+- **Development-set allow-list.** `plan()` and `run()` allow a `codex` host only for the
+  prompt set `development` and refuse every other set (`held-out`, the v2, v3 and v4
+  sets, any later set) before launch (REQ-014, OD-5). The allow-list needs no update when
+  a set is added.
 - **Fake host.** `tests/fixtures/lightning-fake-hosts/codex` mirrors the existing fixtures
-  and reuses the SPEC-069 fake Codex behavior; it reports no model credential.
+  and reuses the SPEC-069 fake Codex behavior; it reports no model credential. Since `parse_codex` sets no key source, a fake Codex
+  rollout completes only through a source value accepted solely when `fake_hosts` is
+  true and labelled `pipeline-only`; a test on the same stream with `fake_hosts` false
+  shows the production verdict stays `route-unverified` (REQ-010).
 - **Docs.** `docs/tooling/LIGHTNING.md` states that Codex is a rollout host, that it is
   non-binding, that its route is `route-unverified` until evidence exists, that the
-  optimizer stays on Claude Code, and the held-out guard; it claims no result (REQ-017).
+  optimizer stays on Claude Code, and the development-set allow-list; it claims no result (REQ-017).
 - **Rollback.** Revert the code PR; no data changed. A Codex record already written would
   stop being readable by a reader without `codex`.
 
@@ -145,7 +153,7 @@ No MUST conflict found.
 - Differential record first (T002), repeated after (T010): identical bytes and sets for
   `claude-code` and `opencode`, apart from accepted-host text in refusals.
 - One test per requirement as in [tasks.md](tasks.md), each with a mutation control:
-  drop `codex` from a table, add it to `lightning-optimizer`, add it to
+  drop `codex` from a table, add it to `lightning-optimizer-config` or `lightning-default-rollout`, add it to
   `REQUIRED_HOSTS`, derive the default from the whole capability, accept a Codex source
   that was not observed, run Codex on a held-out set.
 - `--fake-hosts` pipeline test with `claude-code`, `opencode` and `codex` (REQ-010).
@@ -159,8 +167,8 @@ No MUST conflict found.
 
 ## Constitution check after design
 
-No MUST conflict. The deliberate differences from a one-line change: a second capability
-for the optimizer and a fixed default for `rollout.hosts`, to keep every existing
+No MUST conflict. The deliberate differences from a one-line change: two capabilities
+that name today's optimizer enum and default rollout hosts, to keep every existing
 configuration and output unchanged.
 
 ## Human review and unresolved decisions
@@ -174,7 +182,7 @@ Codex build) is decided at T003 and T011 on observed evidence.
 1. Extend T002's scan to single-host comparisons and branches (for example
    `host == 'opencode'`), which the collection scan does not see; at least
    `lightning_runner.py:703` is such a site.
-2. Record the `lightning-optimizer` capability, or allow a capability to be added by a
+2. Record the `lightning-optimizer-config` and `lightning-default-rollout` capabilities, or allow a capability to be added by a
    later spec through REQ-017.
 3. Name the SPEC-069 to SPEC-073 scripts as consumers that SPEC-088 reads unchanged, so
    the exception list stays valid.
