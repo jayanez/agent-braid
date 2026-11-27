@@ -239,7 +239,7 @@
           "when": "the union of hosts and the per-capability members are compared with the recorded membership table"
         }
       ],
-      "text": "Behavior preserving.. The registry MUST NOT add a host, MUST NOT remove a host and MUST NOT give any host a capability it does not have today."
+      "text": "Behavior preserving.. The registry MUST NOT change the set of hosts or any host's capabilities from today's."
     },
     {
       "id": "REQ-008",
@@ -303,7 +303,7 @@
           "when": "it loads and answers every query"
         }
       ],
-      "text": "Pure registry.. The registry MUST NOT read the environment, files, the network, the clock or credentials, and importing it MUST have no side effect. It uses only the standard library."
+      "text": "Pure registry.. Importing or querying the registry MUST NOT read the environment, files, the network, the clock or credentials. It uses only the standard library."
     },
     {
       "id": "REQ-012",

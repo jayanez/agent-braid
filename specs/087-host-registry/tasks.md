@@ -61,8 +61,8 @@ owner approval (T001).
 ## Phase P3 — extension path, closure checks, evidence
 
 - [ ] T008 (REQ-017 / SC-017): Document how a host is added and prove it with a fake host.
-  A copy of the registry gains a fake host; the guard and key-set tests must report
-  exactly the feature-owned tables that lack it. Requires T007. Target files:
+  A copy of the registry gains a fake host. The guard and key-set tests then report
+  the feature-owned tables that lack it, and no other table. Requires T007. Target files:
   `docs/tooling/HOSTS.md`, `tests/test_host_registry.py`. Verification: procedure_017.
   Planned evidence: `evidence/t008.json`; obtained: none.
 - [ ] T009 (REQ-012 / SC-012 REQ-016 / SC-016): Check that no frozen data and no other specification changed.

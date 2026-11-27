@@ -33,7 +33,7 @@ contributor documentation of how a host is added.
 
 Exclusions (each is a MUST NOT, stated with its REQ ID below):
 
-- Adding a host, removing a host or adding a capability to any host (REQ-007).
+- Changing the set of hosts or any host's capabilities (REQ-007).
 - Rewriting stored or frozen data, or changing the bytes any surface writes (REQ-005,
   REQ-012).
 - Changing `integrations/agent-braid/hosts.json` or any packaged asset byte (REQ-008).
@@ -105,8 +105,8 @@ today's order, as listed in the plan's membership table.
   capability query is evaluated, then its members and order equal the recorded set; and
   a query for a capability a host does not have returns no such host.
 
-**REQ-007 Behavior preserving.** The registry MUST NOT add a host, MUST NOT remove a
-host and MUST NOT give any host a capability it does not have today.
+**REQ-007 Behavior preserving.** The registry MUST NOT change the set of hosts or any
+host's capabilities from today's.
 
 - **SC-007:** Given the registry, when the union of hosts and the per-capability members
   are compared with the recorded membership table, then no host or capability differs;
@@ -141,9 +141,9 @@ an explicit, minimal exception list that names each exception and its reason.
   with only the recorded exceptions; and given a fixture module that declares
   `("codex", "claude-code")`, then the guard reports it.
 
-**REQ-011 Pure registry.** The registry MUST NOT read the environment, files, the
-network, the clock or credentials, and importing it MUST have no side effect. It uses
-only the standard library.
+**REQ-011 Pure registry.** Importing or querying the registry MUST NOT read the
+environment, files, the network, the clock or credentials. It uses only the standard
+library.
 
 - **SC-011:** Given an import of the registry under a process with file, network and
   environment access traced, when it loads and answers every query, then it performs no
@@ -218,7 +218,7 @@ edit to any other host list.
 - The registry MUST NOT read or hold credentials, credential variable names, tokens or
   personal data (REQ-009, REQ-011).
 - No telemetry, network access or file access is added (REQ-011).
-- The registry grants no authority: a capability flag is not an authorization
+- A capability flag is not an authorization; the registry grants no authority
   (REQ-014).
 - No frozen or stored record is rewritten (REQ-012).
 
@@ -227,15 +227,18 @@ edit to any other host list.
 - **Host:** an AI coding tool that Agent Braid integrates with. Registered hosts are
   `codex`, `claude-code` and `opencode`; Pi and ThinkRail are not registered by this
   specification (REQ-003, REQ-007).
-- **Canonical identifier:** the registry's identifier for a host (REQ-003).
+- **Canonical identifier:** the registry's identifier for a host. Allowed values:
+  `codex`, `claude-code`, `opencode` (REQ-003).
 - **Alias:** an accepted input spelling that normalizes to a canonical identifier. The
-  only alias is `claude` for `claude-code` (REQ-004).
+  only allowed value is `claude`, for `claude-code` (REQ-004).
 - **Stored spelling:** the spelling a surface writes or reads today for a host
-  (REQ-005). Surfaces: `plugin-assets`, `harness`, `viewer`, `host-events`,
-  `lightning`, `tooling`.
+  (REQ-005). Allowed surface values: `plugin-assets`, `harness`, `viewer`,
+  `host-events`, `lightning`, `tooling`.
 - **Capability:** a named, closed property of a host that today's code expresses as
-  membership in a per-feature list. The closed set is in the plan's membership table
-  (REQ-006).
+  membership in a per-feature list. Allowed values: `plugin-assets`,
+  `tooling-measurement`, `subscription-auth`, `host-events`, `lightning-run`,
+  `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`; T001
+  may rename them (REQ-006).
 - **Capability query:** a registry function that returns the hosts having a capability,
   in a fixed order (REQ-006).
 - **Harness qualification registry:** the existing records in `harness_hosts.py` and
