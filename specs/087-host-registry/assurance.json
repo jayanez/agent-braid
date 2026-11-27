@@ -399,7 +399,7 @@
           "when": "the guard and key-set tests run"
         }
       ],
-      "text": "Documented extension path.. (Proposed by the author as the proof of OD-4; OD-5 asks the owner to confirm it.) The contributor documentation states how a host is added: one registry entry, its capability flags, its stored spellings and the feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no edit to any other host list."
+      "text": "Documented extension path.. (The proof of OD-4; confirmed by the owner at T001, OD-5.) The contributor documentation states how a host is added: one registry entry, its capability flags, its stored spellings and the feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no edit to any other host list."
     }
   ],
   "scientific_limits": "Engineering, not a research protocol. Differential equality at one commit; no claim about host behavior, qualification or install success. A passing profile is not human review or approval.",

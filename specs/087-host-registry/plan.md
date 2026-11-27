@@ -51,7 +51,7 @@ test (REQ-010) and the scan baseline (T002), not this table, are the lasting che
 Rows 2 to 26 account for 34 collections (rows with several lines count each line).
 
 **Listed exceptions (29 collections in 10 files).** The guard test (REQ-010) allows
-exactly these files; each reason is a claim T001 confirms (OD-5).
+exactly these files; the owner confirmed each reason at T001 on 2026-11-27 (OD-5).
 
 | Files | Collections | Reason |
 |---|---|---|
@@ -83,7 +83,7 @@ order differs.
 | `harness-inventory` | `claude-code`, `codex`, `opencode` | `claude`, `codex`, `opencode` | 22, 23 |
 | `viewer-hosts` | `claude-code`, `codex` | `claude`, `codex` | 25, 26 |
 
-The proposed capability names are descriptive; T001 may rename them before code.
+The capability names are descriptive; the owner approved them as written at T001 (2026-11-27).
 
 ### Stored spelling by surface (REQ-005)
 
@@ -172,8 +172,8 @@ differ by surface on purpose, to keep frozen data valid (REQ-005, REQ-012).
 ## Human review and unresolved decisions
 
 OD-1 to OD-4 were answered by the owner on 2026-11-27 (see the spec). OD-5, the exception
-list and the fake-host test, is open: T001 records the owner's review of the final text,
-including the capability names, before code.
+list and the fake-host test, and the capability names were approved by the owner at T001
+on 2026-11-27 ([record](evidence/owner-decisions-20261127.md)).
 
 ## Affected files for the later code phase (named, not edited)
 

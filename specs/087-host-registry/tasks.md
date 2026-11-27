@@ -3,14 +3,14 @@
 Stable task IDs. Completion requires obtained evidence. `quick` means
 `python3 scripts/validate_change.py --base develop --profile quick`. No task adds a
 host, adds a capability, changes `integrations/agent-braid/hosts.json` or rewrites
-stored data. This first PR is documentation only; the tasks from T002 on wait for
-owner approval (T001).
+stored data. This first PR is documentation only; the owner approved the spec and
+plan on 2026-11-27 (T001), so the tasks from T002 on may start.
 
 ## Phase P0 — review and baseline
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec and plan, including the capability names in the plan's membership table.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec and plan, including the capability names in the plan's membership table.
   Dependencies: none. Target files: none. Verification: procedure_001. Planned
-  evidence: `evidence/t001-owner-review.md`; obtained: none.
+  evidence: owner review record; obtained: `evidence/owner-decisions-20261127.md`.
 - [ ] T002 (REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007): Record the differential baseline from `develop` at 2a524884.
   Write the AST scan `scripts/host_scan.py` (tuples, lists, sets and dictionaries with two
   or more host identifiers in `agent_braid/` and `scripts/`) and generate from it every

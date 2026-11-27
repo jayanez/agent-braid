@@ -5,7 +5,8 @@ cleanup plan). First specification of the umbrella: SPEC-088 (Codex as a Braid L
 host) registers through this registry.
 
 **Status:** draft, documentation only. Nothing is implemented, installed or published by
-this specification's first PR. Code waits for owner approval of the spec and plan (T001).
+this specification's first PR. The owner approved the spec and plan on 2026-11-27 (T001,
+[record](evidence/owner-decisions-20261127.md)); code (T002 onward) may start.
 
 ## Purpose and scope
 
@@ -203,8 +204,8 @@ registry terms follow those of SPEC-080 and SPEC-081 and say so.
   `specs/` other than `specs/087-host-registry/`, none is `CONSTITUTION.md` or its
   replica, and no closed specification changes.
 
-**REQ-017 Documented extension path.** (Proposed by the author as the proof of OD-4;
-OD-5 asks the owner to confirm it.) The contributor documentation states how a host
+**REQ-017 Documented extension path.** (The proof of OD-4; confirmed by the owner
+at T001, OD-5.) The contributor documentation states how a host
 is added: one registry entry, its capability flags, its stored spellings and the
 feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no
 edit to any other host list.
@@ -249,8 +250,8 @@ edit to any other host list.
 - **Capability:** a named, closed property of a host that today's code expresses as
   membership in a per-feature list. Allowed values: `plugin-assets`,
   `tooling-measurement`, `host-events`, `lightning-run`,
-  `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`; T001
-  may rename them (REQ-006).
+  `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`, approved
+  by the owner at T001 on 2026-11-27 (REQ-006).
 - **Capability query:** a registry function that returns the hosts having a capability,
   in a fixed order (REQ-006).
 - **Harness qualification registry:** the existing records in `harness_hosts.py` and
@@ -282,7 +283,7 @@ author session (Spanish, with options, examples, risks and a recommendation), ch
 the recommended option each time. The orchestrator's binding decisions of the same day
 (canonical `claude-code`, `claude` as input alias, no migration of frozen data, behavior
 preserving, Host parity milestone, priority before SPEC-088) are the premise of OD-1 and
-OD-2. OD-5 is not decided.
+OD-2. The owner decided OD-5 on 2026-11-27 at T001.
 
 - **OD-1 `hosts.json`.** Decided: leave the file unchanged and check it against the
   registry. Rejected: change it to `claude-code`, which changes packaged bytes,
@@ -295,12 +296,11 @@ OD-2. OD-5 is not decided.
   registry.
 - **OD-4 Guard.** Decided: a CI test fails on new loose host lists, with an explicit
   exception list (REQ-010). Rejected: convention only.
-- **OD-5 Exceptions and fake-host proof (open).** The ten exception files of the plan
-  and the fake-host test of REQ-017 are the author's proposals, derived from the AST scan
-  and the closed or non-host nature of each file; the owner has not answered them. Options
-  for the SPEC-069 drivers: keep them as exceptions (recommended: closed evidence tied to
-  recorded held-out runs, SPEC-088 migrates what it touches) or migrate them here (larger
-  diff, risk to recorded evidence). Owner confirms in T001.
+- **OD-5 Exceptions and fake-host proof.** Decided at T001 (2026-11-27): the ten
+  exception files of the plan stay exceptions with their recorded reasons; the SPEC-069
+  drivers stay as they are and SPEC-088 migrates what it touches; the fake-host test of
+  REQ-017 is kept. Rejected: migrating the SPEC-069 drivers here (larger diff, risk to
+  recorded held-out evidence) and dropping REQ-017.
 
 ## Risks and assumptions
 
@@ -331,8 +331,7 @@ before and after differential records of T010 attached. Passing checks are not a
 
 ## Open questions
 
-- OD-5: confirm the ten exception files and the fake-host test (REQ-017), or move the
-  SPEC-069 drivers into scope. Owner: the founder, at T001.
+None. OD-1 to OD-5 are decided.
 
 ## Dependencies
 
