@@ -37,7 +37,7 @@ The D4 target was not met on any host and the owner accepted that as a documente
 deviation on 2026-11-12; it is not a pass. HELD-04 failed on every host with one
 signature. On 2026-11-20 (BL.2b, `docs/tooling/NATIVE_PLUGINS.md`) the owner attributed
 HELD-04 to the analyze skill's dependency rule and the skill changed; no host run has
-measured that change, and the table below predates it; the causes of HELD-02 and
+measured that change, and the table above predates it; the causes of HELD-02 and
 HELD-05 on Codex are unexplained.
 
 Unmeasured, from #1700:

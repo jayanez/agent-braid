@@ -374,13 +374,13 @@ other hosts must not lose functionality or precision; REQ-005 and REQ-011 encode
   owner authorizes the run at T011.
 
 Design choices that follow from behavior preservation, not owner decisions: (a) the
-default rollout hosts stay `claude-code` and `opencode` (REQ-005); (b) the optimizer
+default rollout hosts stay `claude-code` and `opencode` (see REQ-005); (b) the optimizer
 enum keeps today's two members, so `lightning-optimizer-config` and
-`lightning-default-rollout` are capabilities that name existing sets (REQ-004,
-REQ-005); (c) `codex` is appended last in `lightning-run` so existing observed orders
-keep their prefix (REQ-002). Each is checked by the T002 differential record. Decision
-labels OD-1 to OD-6 are this specification's own and are not the "OD-2" prose of
-`lightning_runner.py`, which is SPEC-071's.
+`lightning-default-rollout` are capabilities that name existing sets (see REQ-004 and
+also REQ-005); (c) `codex` is appended last in `lightning-run` so existing observed orders
+keep their prefix (see REQ-002). Each is checked by the T002 differential record.
+Decision labels OD-1 to OD-6 are this specification's own and are not the "OD-2" prose
+of `lightning_runner.py`, which is SPEC-071's.
 
 ## Risks and assumptions
 
@@ -393,7 +393,7 @@ labels OD-1 to OD-6 are this specification's own and are not the "OD-2" prose of
 - Risk: a Codex model identity is not reported and the record names a guess (REQ-009;
   T003).
 - Risk: SPEC-076 (deferred) also adds a host (`local-vllm`) to the schema host enums;
-  if it lands first or later, T005 and its additive widening must be reconciled with it
+  if it lands first or later, T005 and its additive widening are reconciled with it
   (REQ-006; T005).
 - Risk: SPEC-087's code is not merged, so this change adds its own list (REQ-002;
   dependency in T002).
