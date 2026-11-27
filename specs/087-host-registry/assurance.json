@@ -1,0 +1,408 @@
+{
+  "articles": [
+    0,
+    5,
+    13,
+    14,
+    19,
+    20
+  ],
+  "assumptions": "Every module and script that lists hosts can import the registry from the same package. The membership table recorded from develop at 2a524884 is the behavior to preserve. The viewer HOSTS tuple is the only host-bearing part of the viewer vocabulary. Packaged hosts.json stays byte-identical.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "c80de0ce5391e597f58c7be78ddc8bc460c32a6abdd29c0d647909fb534efc84",
+      "docs/adr/0001-formalization-before-implementation.md": "4277851acfb78c1c42fa89e69745c311d54f4c4253cb04a9b5af1d38c1425b6e",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "cadbc7d514b43a58cdeaf5ef01ef4e8a8cb7ba10f02ffdddbbf1e20a90bbbcbb",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "a1dadefebeed2bbcf28f6cb268f79210515dd21040b54833c088e1dc03f69019",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "882478fd2966602af9f8cd646fd8d883a4a6cc5309ddb253e166a4426c94401f",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "ca8ff188e3b8bbf149065efe2058f9ee859b83744f067072e9c2c1e0c1f6303a",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "e493af9dd31d1d6296211a795571279b4205543cf5bec8f8d7033178161b7573",
+      "docs/adr/0007-read-only-python-analyzer.md": "df9df5ec22135439dbbac63007db33762cd19dd3d4fef14ed18bb3d4ccbb2c4d",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "016e6f728b0e69fbd56d4f15f48817210bedf4574dc47efd87d33f72057f6665",
+      "docs/adr/0009-transparent-validation-status.md": "6d44bea11643f90c6312bc6895ef59ffb9d91b0476c52b72613b3fc638e41a6a",
+      "docs/adr/0010-clean-publication-provenance.md": "bc8fffe963c4a7b2a878efc907ced423cb6642ed51442d9abaab94a8e838d2c2",
+      "docs/adr/0011-risk-based-validation-gates.md": "44a3362d4b6f2ff329512654ed444cb6f2d093c5871a5912709d99ebd37cc2f4",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "206057a2ebdab5e1b50d7ea5294aa260d4ddd4d99ce5d2a6029d8dafb74291fa",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "244f8c7e22f5c3ae5a473ab06de5e34ff52ac425e54956fb70d8d658624db543",
+      "docs/adr/0014-parallel-integration-contract.md": "627d34c516e48a4a761fc9d4bb230b8a2ec3e193e9248e06eecf13b6268ef254",
+      "docs/adr/0015-real-repository-validation-profile.md": "664a028024fdf2097c1cfcc8d60a99b8540b05e6593fe9cadac52507d588e58a",
+      "docs/adr/0016-post-root-public-provenance.md": "dab388d3e01bec24817f2d0907d077971125c1f3e26665c79e6bb4ce06b49518",
+      "docs/adr/0017-bounded-structured-exchange.md": "2c5bd456938837313fedfa0e7cc677d483b5835b5e0b4f5c71cf47b8a0b9465e",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "3a394e5aa5088575470cac17f2f359a3665d7767cc39ac1696ac1905c1d29c8a",
+      "docs/adr/0019-bounded-local-git-runtime.md": "64a253d60f0ee0ca962794562941ee0441e55af6f0c39f3b71e20c45acaf71d4",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "9dcf0b3ed71b7eb68b7a32247ca7fb1fc7c8885d3125bc67de6ccf5c93531020",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "010fc99e3d17533ccd2e7bb41b7fe21a4762889e8fd3ffd7d42e462953196ac4",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "13d35571a01897d9f3f8a05ed8cd6e7080bdfa2043b1fe789b3ca55ceb878bf3",
+      "docs/adr/0023-second-history-correction-equivalence.md": "b87be90cad0a96806144ae08611f5ef9c6c926b75dc0d34b0e8fa455f0eda380",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "26ef7a9aa1d2a25a49737414ee8044b0e8dea21d3bb8fe7257a668fb60d56478",
+      "docs/adr/0025-local-technical-telemetry.md": "e49d05c57153344ee3366bdd96826a2dd3cd73a0111da97ef9ee985c34ec716d",
+      "docs/adr/0026-pure-owned-work-validation.md": "117eaf4c3cd2dd56999f3580747bc575deccc474285f0653914caad3b1dc6172",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "90da1579982c6a86384c0de0ea125da6b13d4707a918134e039cece1509ab6b9",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "d3ab6b5c93c2c21311721659bfad5ee863bb260b2394a0a2176a2ec6ee18ced7",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "9137ba4952ec46bfd2d123cec54346fabc2835f238737bc235601ffd4ffc0ffe",
+      "docs/adr/0031-portable-prompt-names.md": "00ab10fa03e4d0f6b5ddca15cbe08b189ff7a8b90bbbc423ec7b37a967973da3",
+      "docs/adr/0032-activity-viewer-companion.md": "bca08826416f4cbc06fa61ebcb5f5578a476326b6697077dc46e49bc0805d5cd",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fabde19d7cd5209eb1de4c892ec01d57341d7e3474f68f414fbc0ea486a7d9cd",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "2ef1124558ecd992f2a3bd740edf7452911121eb7b04d7bbceca65ce4485b012",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "18acdade757d498756571bb0b10ec216e5461b8aa4f8259e6c8c134f425a113d",
+      "docs/adr/0036-assurance-profiles.md": "22e43a44bec9d95fcac2ecd7e203817e1d0a7d56e5ab791b57d2f7f8025df06c",
+      "docs/adr/0037-opencode-native-plugin.md": "0c12c3be4f988ce3ac2ab67582313cf1a7412d922a33b0c2b61ae9816bd035ca",
+      "docs/adr/0038-analyze-work-request-contract.md": "887cd3025a07eba3525abe33c41e98e27c300d87e09dc9a411374e4e3d98dc65",
+      "docs/adr/0039-braid-lightning-boundary.md": "56286e36d06a61a956db6f5400bc1045daa8a5d7abca65d3389d1c62842db098",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "fdb5496011db77d0bcd17d49a7784daf317844b8a92efe4cb939fd52d6dcb96a",
+      "docs/adr/0041-braid-lightning-content-traces.md": "188cc3f85b6051f1af9d1a423acc78b75bab8b46cc8c0846eee060643be2166a",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "fcec8771db27e9d0b33e63bdfb76296c28804f103c419ff92d42e2febeaccf50",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
+      "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
+      "docs/adr/README.md": "22e4cb4de6ca5f9b26f6f4042530b2518d0b29f4af9daef76216b2d76cfbc3be",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive module. Existing surfaces keep inputs, outputs, stored data and packaged assets; the alias claude and the canonical claude-code are both accepted as input for supported hosts. Rollback reverts the code change; no data changed.",
+  "domain": "Host identifiers and their capability memberships in agent_braid/ and scripts/ at the recorded commit.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "None. The registry runs no host, grants nothing and writes no record; a capability flag is not qualification, observation or authorization. executionAuthorization stays false wherever it exists.",
+  "human_review": "pending",
+  "hypotheses": "None; engineering specification.",
+  "observation_contract": "The membership table and per-surface outputs recorded from develop at 2a524884 before the change; equality of sets and bytes after it. Equality shows preservation at that commit, not that the memberships are right, and not that any host works.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/adr/0024-native-ai-plugins.md",
+    "docs/adr/0044-harness-portability-tiers-skill-surface.md",
+    "docs/tooling/HOSTS.md",
+    "docs/tooling/NATIVE_PLUGINS.md",
+    "integrations/agent-braid/hosts.json",
+    "specs/080-harness-skill-every-host/spec.md",
+    "specs/081-pi-thinkrail-host-integration/spec.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "this spec and plan",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T001.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_001",
+          "then": "each open question is decided or deferred in a dated record and the spec is approved, amended or rejected.",
+          "when": "the owner reviews them"
+        }
+      ],
+      "text": "Owner review before code.. The spec and plan are reviewed before any code."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "the registry and the sites listed in the plan",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005, T006, T007.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "every listed site obtains its hosts from the registry and none keeps a literal collection of host identifiers.",
+          "when": "a code search and the guard test (REQ-010) run"
+        }
+      ],
+      "text": "One registry.. One module names every supported host. After the change, no module in `agent_braid/` or `scripts/` outside the ten exception files of the plan declares a collection of host identifiers; each site listed in the plan reads the registry or is a feature-owned table pinned to it."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "the registry",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T003.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_003",
+          "then": "they are exactly `codex`, `claude-code` and `opencode`, in that order, with no other value.",
+          "when": "its identifiers are listed"
+        }
+      ],
+      "text": "Canonical identifiers.. The registry's closed set of canonical identifiers is `codex`, `claude-code` and `opencode`. The canonical Claude identifier is `claude-code`."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "each surface that takes a host (the plugin CLI `--host`, the tooling CLI `--host`, the viewer `view env --host`, the Lightning configuration, the tooling measurement configuration)",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_004",
+          "then": "both are accepted and select the same host; when a host the surface does not support today is supplied (for example `codex` for Lightning), then the surface refuses as before; and when an unknown value is supplied, then the surface refuses with its existing code.",
+          "when": "`claude` and `claude-code` are supplied to a surface whose capability includes that host"
+        }
+      ],
+      "text": "Input aliases.. Every host input accepts each canonical identifier and the alias `claude` for the hosts the surface supports, and normalizes the alias to `claude-code` before use. An unsupported or unknown value still ends in the surface's existing refusal: its refusal code where it has one, and for argparse options exit status 2 with no other output."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "recorded fixtures for each surface listed in the plan's spelling table",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T004, T010.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_005",
+          "then": "the output bytes are identical, except argparse usage, help and invalid-choice text.",
+          "when": "each runs before and after the change on the same input"
+        }
+      ],
+      "text": "Stored spelling preserved.. Each surface writes and reads the spelling it writes and reads today. The registry exposes, per host and surface, that stored spelling. For the same input, every output, receipt, record and JSON document is byte-identical to the one produced before the change. The one exemption is argparse usage, help and invalid-choice text, which may additionally list `claude-code`."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "the membership table recorded from `develop` at 2a524884",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T005, T010.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_006",
+          "then": "its members and order equal the recorded set; and a query for a capability a host does not have returns no such host.",
+          "when": "each capability query is evaluated"
+        }
+      ],
+      "text": "Capability queries keep today's membership.. Each existing per-feature host set becomes a capability query on the registry that returns exactly today's members. A capability is an ordered tuple fixed in the registry, and its order is the order of the sites that observe order today (iterated, serialized, hashed or listed), as listed in the plan's membership table. Membership-only sites do not constrain order."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "the registry",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T010.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_007",
+          "then": "no host or capability differs; and a test that adds a host or capability to the registry without a matching table change fails.",
+          "when": "the union of hosts and the per-capability members are compared with the recorded membership table"
+        }
+      ],
+      "text": "Behavior preserving.. The registry MUST NOT change the set of hosts or any host's capabilities from today's."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "the file at its recorded SHA-256 and the registry",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "it passes; and when the registry's stored spelling for that surface is altered, then it fails.",
+          "when": "the consistency test runs"
+        }
+      ],
+      "text": "`hosts.json` unchanged and checked.. The packaged `integrations/agent-braid/hosts.json` MUST NOT change. The registry declares its spelling (`claude`, `codex`, `opencode`, in file order) as the stored spelling of the `plugin-assets` surface, and a test fails when the file and the registry disagree."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "each feature-owned table of the plan",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005, T006.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "each key set equals its capability query; and when a key is added to a table without the capability, then the test fails.",
+          "when": "the key-set test runs"
+        }
+      ],
+      "text": "Per-host data stays with its feature.. The registry MUST NOT hold per-host credentials, credential variable names, binary names, authentication labels, origins, parsers, tool-name or event tables, or harness qualification rows. Those tables stay in their feature modules, and a test requires the key set of each table the plan lists (`_PROFILES`, `_AUTH`, `_ORIGINS`, the model-identity tables, the Lightning runner tables, `META_TOOLS`, `PARSERS`, `HOST_SUPPORT`, `_MODELED`) to equal the matching capability query, in the surface's stored spelling."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "the tree after the change",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T007.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_010",
+          "then": "it passes with only the ten listed exception files; and given a fixture module that declares `(\"codex\", \"claude-code\")`, then the guard reports it.",
+          "when": "the guard test runs"
+        }
+      ],
+      "text": "Guard against loose host lists.. A test fails in CI when `agent_braid/` or `scripts/` declares a literal collection of two or more host identifiers outside the registry, except in the ten files the plan lists with a reason each. The guard reuses the scan that records the baseline (T002)."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "an import of the registry under a process with file, network and environment access traced",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T003.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "it performs no such access and its answers are identical on repeat.",
+          "when": "it loads and answers every query"
+        }
+      ],
+      "text": "Pure registry.. Importing or querying the registry MUST NOT read the environment, files, the network, the clock or credentials. It uses only the standard library."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "the frozen fixtures and the committed evidence directories",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T009.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_012",
+          "then": "`git diff` shows no change to any of them and the existing verifiers still accept them.",
+          "when": "the change is applied"
+        }
+      ],
+      "text": "No migration of frozen data.. The change MUST NOT rewrite stored evidence, receipts, qualification records, frozen assurance records or any record written under an earlier format."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "the harness registry and gate tests",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_013",
+          "then": "they pass; and the gate query returns `claude-code` and `codex` without `opencode`.",
+          "when": "they run unchanged after the change"
+        }
+      ],
+      "text": "Harness qualification registry untouched.. The registry MUST NOT change the harness qualification registry rows, the native qualification gate set, their `observedBuild` and `qualification` fields or their refusals. The gate set becomes a capability query with its current members (`claude-code`, `codex`; stored spelling `claude`, `codex`); the inventory set keeps `opencode` as inventory only."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "the registry and its documentation",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T003, T010.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_014",
+          "then": "no query or field named or documented as qualification, observation or authorization exists, and every command result touched by the change that carries `executionAuthorization` keeps the boolean `false`.",
+          "when": "they are inspected"
+        }
+      ],
+      "text": "A capability is not an authorization.. A capability flag MUST NOT be read as qualification, an install observation, a measurement or an authorization to run. Nothing in the registry grants execution; no result of this feature carries `executionAuthorization: true`."
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "the viewer vocabulary and the registry",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_015",
+          "then": "`braid` and `other` appear only in the viewer vocabulary and the registry identifiers are exactly those of REQ-003.",
+          "when": "both are listed"
+        }
+      ],
+      "text": "Viewer labels are not hosts.. The viewer source labels `braid` and `other` MUST NOT be registered as hosts. They stay in the viewer's own vocabulary."
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "the change set",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T009.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_016",
+          "then": "no path is in `specs/` other than `specs/087-host-registry/`, none is `CONSTITUTION.md` or its replica, and no closed specification changes.",
+          "when": "its changed paths are listed"
+        }
+      ],
+      "text": "No other specification edited.. This specification's change set MUST NOT edit SPEC-080, SPEC-081, a closed specification, the Constitution or its replica. Its registry terms follow those of SPEC-080 and SPEC-081 and say so."
+    },
+    {
+      "id": "REQ-017",
+      "scenarios": [
+        {
+          "given": "a fake host added to a copy of the registry",
+          "id": "SC-017",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T008.",
+          "test_file": "specs/087-host-registry/validation-plan.md",
+          "test_name": "procedure_017",
+          "then": "they report exactly the feature-owned tables that lack an entry for it and no loose list.",
+          "when": "the guard and key-set tests run"
+        }
+      ],
+      "text": "Documented extension path.. (Proposed by the author as the proof of OD-4; OD-5 asks the owner to confirm it.) The contributor documentation states how a host is added: one registry entry, its capability flags, its stored spellings and the feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no edit to any other host list."
+    }
+  ],
+  "scientific_limits": "Engineering, not a research protocol. Differential equality at one commit; no claim about host behavior, qualification or install success. A passing profile is not human review or approval.",
+  "scope": "Specify one host registry module, agent_braid/host_registry.py, that names each supported host (codex, claude-code, opencode) once with its canonical identifier, the input alias claude, per-surface stored spellings and capability queries, replacing the scattered host lists with today's exact membership. Behavior preserving: no host or capability is added, no stored data or packaged asset changes. Documentation only: nothing implemented.",
+  "stage": "draft"
+}
