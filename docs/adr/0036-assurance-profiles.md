@@ -1,6 +1,6 @@
 # ADR 0036: Assurance profiles and the standing-authorization record
 
-- **Status:** Accepted 2026-11-02 by the founder, in two answers recorded verbatim in
+- **Status:** Accepted — 2026-11-02 by the founder, in two answers recorded verbatim in
   [founder-decisions-20261102c.json](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102c.json):
   (1) "Con respecto a la afiermación de "Siempre requieren una persona: release, tus
   decisiones, grants, ejecución nativa, auto-promoción y cambios en el propio harness" Si es

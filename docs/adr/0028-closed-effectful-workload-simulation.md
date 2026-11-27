@@ -1,6 +1,6 @@
 # ADR 0028: Closed effectful workload simulation
 
-- **Status:** Accepted by the founder on 2026-10-21 for the bounded simulation profile; implementation acceptance, scientific review (T007) and later profiles remain separate.
+- **Status:** Accepted — by the founder on 2026-10-21 for the bounded simulation profile; implementation acceptance, scientific review (T007) and later profiles remain separate.
 - **Date:** 2026-10-21
 - **Decider:** Juan Antonio Yáñez García (`@jayanez`). The canonical text below was approved section by section on 2026-10-23.
 - **Constitutional articles:** 0, 2–6, 9, 12–14, 19–20, 23–25.

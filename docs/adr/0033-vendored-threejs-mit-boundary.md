@@ -1,6 +1,6 @@
 # ADR 0033: MIT boundary for vendored Three.js
 
-- **Status:** accepted by explicit founder decision on 2026-11-01 (founder's answer, verbatim: "Aceptar ambas, r186"), with the pin moved from the proposed r182 to r186; amended 2026-11-04 (2D timeline as the default view, no vendor change), accepted by the owner (answer, verbatim: "Aceptar (Recommended)")
+- **Status:** Accepted — by explicit founder decision on 2026-11-01 (founder's answer, verbatim: "Aceptar ambas, r186"), with the pin moved from the proposed r182 to r186; amended 2026-11-04 (2D timeline as the default view, no vendor change), accepted by the owner (answer, verbatim: "Aceptar (Recommended)")
 - **Date:** 2026-10-31
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 21

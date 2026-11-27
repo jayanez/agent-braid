@@ -1,6 +1,6 @@
 # ADR 0011: Risk-based validation gates
 
-- **Status:** accepted
+- **Status:** Accepted
 - **Date:** 2026-09-19
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 9, 10, 13, 14, 19, 21, 23

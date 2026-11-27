@@ -3,9 +3,11 @@
 **Milestone:** BL.0 — Braid Lightning foundations (GitHub milestone created by the
 reviewed tracking reconciliation after merge).
 
-**Status:** draft. Owner decisions L1–L5 of 2026-11-08 are recorded in the
-[program](program.md). `human_review` is pending; this specification grants no
-execution authority.
+**Status:** validated and closed on 2026-11-08 (owner approval of candidate
+`c0b6956e`, PR #1269). Owner decisions L1–L5 of 2026-11-08 are recorded in the
+[program](program.md). `human_review` is approved
+([review record](reviews/owner-review-c0b6956e.json)); this specification grants
+no execution authority.
 
 ## Purpose and scope
 

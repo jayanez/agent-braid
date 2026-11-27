@@ -1,6 +1,6 @@
 # ADR 0002: Yang–Baxter is a hypothesis, not an assumed property
 
-- **Status:** accepted
+- **Status:** Accepted
 - **Date:** 2026-09-13
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 0, 8, 10, 17, 18, 22

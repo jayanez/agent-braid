@@ -1,6 +1,6 @@
 # ADR 0001: Formalization before production implementation
 
-- **Status:** accepted
+- **Status:** Accepted
 - **Date:** 2026-09-13
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 3, 13, 23, 24

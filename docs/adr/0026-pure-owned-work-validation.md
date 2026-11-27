@@ -1,7 +1,8 @@
 # ADR 0026: Pure owned-work validation boundary
 
-Status: adopted for local software design by explicit owner instruction on
-2026-10-21; public integration/review and actual source admission pending.
+- **Status:** Accepted — adopted for local software design by explicit owner instruction on
+  2026-10-21; public integration/review and actual source admission pending.
+
 Articles: 0, 5, 7, 12–14, 19–20, 23–25.
 
 Separate SPEC-051 from SPEC-045 synthetic forecasting and SPEC-047 numeric

@@ -1,6 +1,6 @@
 # ADR 0039: Braid Lightning optimization boundary
 
-- **Status:** accepted by the owner on 2026-11-08 (SPEC-070 T001; [founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 1)
+- **Status:** Accepted — by the owner on 2026-11-08 (SPEC-070 T001; [founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 1)
 - **Date:** 2026-11-08
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 0, 12, 13, 14, 19, 20, 23, 25

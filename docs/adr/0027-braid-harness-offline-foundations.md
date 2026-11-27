@@ -1,6 +1,6 @@
 # ADR 0027: Braid Harness offline foundations
 
-- **Status:** Accepted by the founder on 2026-10-21 for the bounded offline profile below; implementation acceptance and later profiles remain separate.
+- **Status:** Accepted — by the founder on 2026-10-21 for the bounded offline profile below; implementation acceptance and later profiles remain separate.
 - **Date:** 2026-10-21
 - **Decider:** Juan Antonio Yáñez García (`@jayanez`).
 - **Constitutional articles:** 0, 1–3, 5–7, 9, 12–15, 19–21, 23–25.

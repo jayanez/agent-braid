@@ -1,6 +1,6 @@
 # ADR 0019: Bounded authorized local Git runtime
 
-- **Status:** Accepted by the founder on 2026-10-03 against frozen candidate `4dd52c8d1e54a8813e6113e09a772a371856f9a8`; [decision record](../../specs/020-m4-local-git-runtime/founder-review.json).
+- **Status:** Accepted — by the founder on 2026-10-03 against frozen candidate `4dd52c8d1e54a8813e6113e09a772a371856f9a8`; [decision record](../../specs/020-m4-local-git-runtime/founder-review.json).
 - **Date:** 2026-10-03
 - **Constitutional articles:** 6, 7, 12–16, 19–25
 

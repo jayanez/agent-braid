@@ -3,9 +3,10 @@
 **Milestone:** BL.4 — Lightning trace consent (GitHub milestone created by the
 reviewed tracking reconciliation after merge).
 
-**Status:** draft. OD-1 to OD-3 are decided (T001 owner review recorded
+**Status:** validated and closed on 2026-11-17 (owner approval of candidate
+`a5a7235c`, PR #1425). OD-1 to OD-3 are decided (T001 owner review recorded
 2026-11-13, [review](reviews/owner-t001-20261113.md)); `human_review` is
-pending. ADR 0041 (content-bearing traces) was accepted by the owner on
+approved ([review record](reviews/owner-review-a5a7235c.json)). ADR 0041 (content-bearing traces) was accepted by the owner on
 2026-11-08 and applies when this specification is delivered. No content is
 collected until the owner records consent.
 

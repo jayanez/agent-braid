@@ -1,6 +1,6 @@
 # ADR NNNN: Title
 
-- **Status:** proposed
+- **Status:** Proposed
 - **Date:** YYYY-MM-DD
 - **Deciders:**
 - **Constitutional articles:**

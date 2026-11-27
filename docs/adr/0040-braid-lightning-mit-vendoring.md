@@ -1,6 +1,6 @@
 # ADR 0040: Vendoring microsoft/agent-lightning (MIT) into AGPL modules
 
-- **Status:** accepted by the founder on 2026-11-08 (SPEC-070 T001; [founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 2)
+- **Status:** Accepted — by the founder on 2026-11-08 (SPEC-070 T001; [founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 2)
 - **Date:** 2026-11-08
 - **Deciders:** Juan Antonio Yáñez García (owner, founder)
 - **Constitutional articles:** 0, 23

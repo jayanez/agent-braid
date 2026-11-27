@@ -1,6 +1,6 @@
 # ADR 0035: Native Claude laboratory containment
 
-- **Status:** Accepted 2026-11-02 by the founder (answer "Aceptar tal cual (Recommended)"
+- **Status:** Accepted — 2026-11-02 by the founder (answer "Aceptar tal cual (Recommended)"
   to "ADR 0035 (contención nativa de Claude, propuesta en #893): ¿la aceptas? Es
   requisito para T009 ... Aceptarla no autoriza todavía ninguna sesión nativa.").
   Acceptance authorizes no native session, probe, qualification or execution:

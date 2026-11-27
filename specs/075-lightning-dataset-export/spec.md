@@ -2,7 +2,10 @@
 
 **Milestone:** BL.5 — Lightning dataset export.
 
-**Status:** draft, converged 2026-11-16 (T012). Depends on SPEC-074 (BL.4,
+**Status:** validated and closed on 2026-11-17 (owner approval of candidate
+`21926de6`, PR #1425); converged 2026-11-16 (T012);
+`human_review` is approved ([review record](reviews/owner-review-21926de6.json)).
+Depends on SPEC-074 (BL.4,
 trace consent and `agent_braid/lightning_adapter.py`). Owner decisions: T001
 (2026-11-14) E1–E5 accepted, OD-2 equal 1:1; OD-3 (2026-11-16) Q1 A, Q2 A; OD-4
 (2026-11-16) additive purge output. OD-1 (host usage-terms review) is deferred,

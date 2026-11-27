@@ -1,10 +1,8 @@
 # ADR 0008: Read-only Git and worktree adapter
 
-## Status
-
-Accepted by explicit founder decision on 2026-09-18. This architectural
-acceptance authorizes the reviewed alpha design, not repository mutation,
-concurrent execution, scientific approval, M1 closure, or production use.
+- **Status:** Accepted — by explicit founder decision on 2026-09-18. This architectural
+  acceptance authorizes the reviewed alpha design, not repository mutation,
+  concurrent execution, scientific approval, M1 closure, or production use.
 
 ## Context
 

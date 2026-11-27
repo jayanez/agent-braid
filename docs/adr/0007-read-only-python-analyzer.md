@@ -1,9 +1,7 @@
 # ADR 0007: Python reference analyzer before runtime execution
 
-## Status
-
-Accepted for implementation by the founder's explicit request to implement the
-open-tooling plan. This decision does not authorize production execution.
+- **Status:** Accepted — for implementation by the founder's explicit request to implement the
+  open-tooling plan. This decision does not authorize production execution.
 
 ## Context
 

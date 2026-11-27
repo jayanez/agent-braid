@@ -1,6 +1,6 @@
 # ADR 0017: Bounded structured exchange laboratory
 
-- **Status:** Accepted as a bounded experiment by the founder on 2026-09-27;
+- **Status:** Accepted — as a bounded experiment by the founder on 2026-09-27;
   [review record](../../specs/018-structured-exchange/founder-review.json).
 - **Date:** 2026-09-27
 - **Decider:** Juan Antonio Yáñez García, founder

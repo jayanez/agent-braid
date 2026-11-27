@@ -1,10 +1,8 @@
 # ADR 0009: Transparent validation status
 
-## Status
-
-Accepted by explicit founder decision on 2026-09-18. Acceptance adopts the
-validation-status policy; it does not approve a release, change repository
-visibility, authenticate an external reviewer or establish a scientific result.
+- **Status:** Accepted — by explicit founder decision on 2026-09-18. Acceptance adopts the
+  validation-status policy; it does not approve a release, change repository
+  visibility, authenticate an external reviewer or establish a scientific result.
 
 ## Context
 
