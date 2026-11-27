@@ -8,7 +8,7 @@ owner approval (T001).
 
 ## Phase P0 — review and baseline
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec and plan, including the capability names in the plan's membership table.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec and plan, including the capability names in the plan's membership table.
   Dependencies: none. Target files: none. Verification: procedure_001. Planned
   evidence: `evidence/t001-owner-review.md`; obtained: none.
 - [ ] T002 (REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007): Record the differential baseline from `develop` at 2a524884.
