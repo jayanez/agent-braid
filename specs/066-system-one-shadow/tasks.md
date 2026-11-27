@@ -458,8 +458,8 @@ replay cannot supply System-2-`unknown` pairs (see REQ-402 and the ADR 0034 adde
   rollback reason `auto-rollback-false-independence` resolves to `shadow`). Data on
   2026-11-16: 29 shadow episodes, 0 joined outcomes; the `runtime-state` source is
   refused `path-outside-admitted`.
-- [ ] T406 (REQ-402, owner): Decision packet 2026-11-28; `advise` live 2026-11-30 only
-  on a recorded go; mandatory review 2026-12-31. Dependencies: T404, T405.
+- [ ] T406 (REQ-402, owner): Decision packet 2026-11-30; `advise` live 2026-12-02 only
+  on a recorded go; mandatory review 2026-12-31 (dates moved by the owner on 2026-11-27 from 2026-11-28 and 2026-11-30). Dependencies: T404, T405.
   The rule, the promotion CLI and the join ship in plugin `0.1.0-alpha.9` (published 2026-11-16, installed
   by the owner 2026-11-17; `release-acceptance-alpha9.md`, `evidence/release-alpha9.json`). The promotion
   registry is empty, so DP-1 stays `shadow` (reason `no-owner-go`) until the owner's go.
