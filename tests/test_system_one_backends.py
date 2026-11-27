@@ -34,7 +34,7 @@ class SystemOneBackendTests(unittest.TestCase):
         class MustNotRun:
             def evaluate(self, *_args, **_kwargs):
                 raise AssertionError("invalid input entered backend")
-        runtime = test_runtime(backend=MustNotRun())
+        runtime = _runtime_with_backend(backend=MustNotRun())
         response = runtime.evaluate(b'{"secret":"/private/source"}')
         self.assertEqual(response["reasonCodes"], ["invalid-envelope"])
         self.assertNotIn("secret", str(response))
@@ -44,7 +44,7 @@ class SystemOneBackendTests(unittest.TestCase):
         class Invalid:
             def evaluate(self, *_args, **_kwargs):
                 return ((0.0, float("nan")),)
-        runtime = test_runtime(backend=Invalid())
+        runtime = _runtime_with_backend(backend=Invalid())
         response = runtime.evaluate(encoded(fixture()))
         self.assertEqual(response["reasonCodes"], ["invalid-backend-output"])
         self.assertEqual(response["answers"], [])
@@ -60,7 +60,7 @@ class SystemOneBackendTests(unittest.TestCase):
             self.assertEqual(runtime.evaluate(encoded(fixture(policy=STRICT_POLICY)))["status"], "abstain")
 
 
-def test_runtime(*, backend, **kwargs):
+def _runtime_with_backend(*, backend, **kwargs):
     """Private test seam; supported runtime cannot select an injected backend."""
     runtime = DecisionRuntime(**kwargs)
     runtime._backend = backend

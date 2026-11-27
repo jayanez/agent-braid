@@ -58,7 +58,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
                 clock = FakeClock()
                 token = CancellationToken()
                 backend = BlockingBackend()
-                runtime = test_runtime(backend=backend, clock=clock)
+                runtime = _runtime_with_backend(backend=backend, clock=clock)
                 value = fixture()
                 value["budgets"]["deadlineMs"] = 1
                 def crossing(request):
@@ -82,7 +82,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_interleaved_inputs_keep_their_own_state_and_one_active_slot(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
                 first = pool.submit(runtime.evaluate, encoded(fixture(request_id="first", choice="false")))
@@ -102,7 +102,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_eight_waiters_and_ninth_overload(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         with ThreadPoolExecutor(max_workers=9) as pool:
             try:
                 active = pool.submit(runtime.evaluate, encoded(fixture(request_id="active")))
@@ -123,7 +123,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_queued_cancellation_removes_ticket_without_backend_call(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         token = CancellationToken()
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
@@ -146,7 +146,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_active_cancellation_suppresses_late_answer_keeps_slot_until_stop(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         token = CancellationToken()
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
@@ -174,7 +174,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
                 result = super().evaluate(request, **kwargs)
                 clock.advance(5000000)
                 return result
-        runtime = test_runtime(backend=Advance(), clock=clock)
+        runtime = _runtime_with_backend(backend=Advance(), clock=clock)
         value = fixture()
         value["budgets"]["deadlineMs"] = 5
         response = runtime.evaluate(encoded(value))
@@ -185,7 +185,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_expired_queue_and_close_do_not_start_new_work(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
                 active = pool.submit(runtime.evaluate, encoded(fixture(request_id="active")))
@@ -215,7 +215,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
     def test_queued_deadline_expires_without_evaluating(self):
         clock = FakeClock()
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend, clock=clock)
+        runtime = _runtime_with_backend(backend=backend, clock=clock)
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
                 active = pool.submit(runtime.evaluate, encoded(fixture(request_id="active")))
@@ -237,7 +237,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
 
     def test_concurrent_token_reuse_is_rejected_and_no_cross_request_cancel(self):
         backend = BlockingBackend()
-        runtime = test_runtime(backend=backend)
+        runtime = _runtime_with_backend(backend=backend)
         token = CancellationToken()
         with ThreadPoolExecutor(max_workers=1) as pool:
             try:
@@ -269,7 +269,7 @@ class SystemOneConcurrencyTests(unittest.TestCase):
         self.assertEqual(response["answers"], [])
 
 
-def test_runtime(*, backend, **kwargs):
+def _runtime_with_backend(*, backend, **kwargs):
     """Private test seam; supported runtime cannot select an injected backend."""
     runtime = DecisionRuntime(**kwargs)
     runtime._backend = backend
