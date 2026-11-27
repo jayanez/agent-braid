@@ -83,7 +83,7 @@ order differs.
 | `harness-inventory` | `claude-code`, `codex`, `opencode` | `claude`, `codex`, `opencode` | 22, 23 |
 | `viewer-hosts` | `claude-code`, `codex` | `claude`, `codex` | 25, 26 |
 
-The proposed capability names are descriptive; T001 may rename them before code.
+The capability names are descriptive; the owner approved them as written at T001 (2026-11-27).
 
 ### Stored spelling by surface (REQ-005)
 

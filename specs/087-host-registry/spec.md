@@ -250,8 +250,8 @@ edit to any other host list.
 - **Capability:** a named, closed property of a host that today's code expresses as
   membership in a per-feature list. Allowed values: `plugin-assets`,
   `tooling-measurement`, `host-events`, `lightning-run`,
-  `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`; T001
-  may rename them (REQ-006).
+  `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`, approved
+  by the owner at T001 on 2026-11-27 (REQ-006).
 - **Capability query:** a registry function that returns the hosts having a capability,
   in a fixed order (REQ-006).
 - **Harness qualification registry:** the existing records in `harness_hosts.py` and
