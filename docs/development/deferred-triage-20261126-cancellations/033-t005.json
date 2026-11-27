@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-033/T005",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "f0a1a781284a8d4f391262d5f012f2899f3a255e8e6cc1fe2fda7921a3901712",
+  "sourceReference": "Owner decision of 2026-11-26 (Q4, \"Cerrar los 3, cubiertos en parte (Recomendado)\"), recorded in docs/development/deferred-triage-20261126.md (SHA-256 ce21e5d6f0e24d3e4dba3be0c0426e6ac734537d3a90f5fb4a0ab6dba85c938c). Integrator-recorded provenance, not independently authenticated.",
+  "reason": "The atomic rollback to off is covered by SPEC-066 T401 and the D7 automatic rollback (T405); only the bounded fallback chains are recorded as not planned.",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

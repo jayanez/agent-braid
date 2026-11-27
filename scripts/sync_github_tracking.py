@@ -9,7 +9,9 @@ infer founder approval, delete issues, or mutate the private Project directly.
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -89,6 +91,79 @@ def validate_unpublished_milestones(config: dict) -> list[str]:
     if numbered:
         raise ValueError(f"unpublished milestone has a registered GitHub number: {numbered}")
     return names
+
+
+PARKED_MILESTONE = "Deferred"
+PARKED_REVIEW_WARN_DAYS = 30
+ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def markdown_anchors(text: str) -> set[str]:
+    """Reuse the repository link checker's heading-anchor rules (loaded by path: scripts/ is not a package)."""
+    spec = importlib.util.spec_from_file_location("validate_repository", ROOT / "scripts/validate_repository.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.markdown_anchors(text)
+
+
+def validate_parked_reviews(root: Path, config: dict, desired: list[dict]) -> dict:
+    """Dated review reminders for parked work: key -> {review_by, source}.
+
+    Each key names an open tracked record. Closing it makes this refuse, which is the
+    prompt to remove the entry (see GITHUB_TRACKING.md, "Parked-work review dates").
+    """
+    entries = config.get("parked_reviews", {})
+    if not isinstance(entries, dict):
+        raise ValueError("parked reviews must be a mapping")
+    open_keys = {item["key"] for item in desired if item["state"] == "open"}
+    for key, entry in entries.items():
+        if key not in open_keys:
+            raise ValueError(f"parked review {key!r} must name an open tracked record; remove the entry once it closes")
+        if not isinstance(entry, dict) or set(entry) != {"review_by", "source"}:
+            raise ValueError(f"parked review {key} needs exactly review_by and source")
+        review_by, source = entry["review_by"], entry["source"]
+        if not isinstance(review_by, str) or not ISO_DATE.fullmatch(review_by):
+            raise ValueError(f"parked review {key} review_by must be YYYY-MM-DD")
+        try:
+            date.fromisoformat(review_by)
+        except ValueError as exc:
+            raise ValueError(f"parked review {key} review_by is not a calendar date") from exc
+        if not isinstance(source, str) or not source:
+            raise ValueError(f"parked review {key} needs a source")
+        name, _, fragment = source.partition("#")
+        relative = Path(name)
+        if relative.is_absolute() or ".." in relative.parts or not (root / relative).is_file():
+            raise ValueError(f"parked review {key} source must be an existing repository file")
+        if fragment and (relative.suffix != ".md" or fragment not in markdown_anchors(
+                (root / relative).read_text(encoding="utf-8"))):
+            raise ValueError(f"parked review {key} source anchor does not resolve: #{fragment}")
+    return entries
+
+
+def parked_review_warnings(config: dict, milestones: dict, today: date) -> list[str]:
+    """GitHub ``::warning::`` lines for the audit; informational, never a failure.
+
+    No entries means no-op. With entries, one warning per review date that is within
+    30 days or past, and one retirement warning once the Deferred milestone has no
+    open issue left.
+    """
+    entries = config.get("parked_reviews", {})
+    if not entries:
+        return []
+    warnings = []
+    for key, entry in sorted(entries.items(), key=lambda pair: (pair[1]["review_by"], pair[0])):
+        days = (date.fromisoformat(entry["review_by"]) - today).days
+        if days > PARKED_REVIEW_WARN_DAYS:
+            continue
+        when = (f"is due in {days} day{'s' if days != 1 else ''}" if days >= 0
+                else f"was due {-days} day{'s' if days != -1 else ''} ago")
+        warnings.append(f"::warning title=Parked work review::{key} review by {entry['review_by']} {when}; "
+                        f"decide or move the date ({entry['source']})")
+    deferred = resolve_milestones(config, milestones).get(PARKED_MILESTONE)
+    if deferred is not None and deferred.get("open_issues") == 0:
+        warnings.append("::warning title=Deferred is empty::Deferred is empty: close the milestone, remove the "
+                        "STATUS parked table and parked_reviews, and remove this step.")
+    return warnings
 
 
 def partition_unpublished(config: dict, desired: list[dict],
@@ -174,6 +249,9 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
         metadata = config["specs"][folder.name]
         if metadata["state"] not in {"open", "closed"}:
             raise ValueError(f"invalid parent state: {folder.name}")
+        reason = metadata.get("state_reason")
+        if reason is not None and (metadata["state"] != "closed" or reason not in {"completed", "not_planned"}):
+            raise ValueError(f"invalid parent state reason: {folder.name}")
         assurance = json.loads((folder / "assurance.json").read_text(encoding="utf-8"))
         reqs = ", ".join(req["id"] for req in assurance["requirements"])
         common = f"[spec.md]({base}specs/{folder.name}/spec.md) · [tasks.md]({base}specs/{folder.name}/tasks.md) · [assurance.json]({base}specs/{folder.name}/assurance.json)"
@@ -182,6 +260,7 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
             "title": f"[{spec_id}] {first[2:].strip()}",
             "body": f"<!-- agent-braid-spec-id: {spec_id} -->\n\nSource: {common}\n\nRequirements: {reqs}.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
             "milestone": metadata["milestone"], "state": metadata["state"],
+            **({"state_reason": reason} if reason else {}),
         })
         lines = (folder / "tasks.md").read_text(encoding="utf-8").splitlines()
         task_ids: set[str] = set()
@@ -251,6 +330,7 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
         key not in by_key or by_key[key]["state"] != "open" for key in pending
     ):
         raise ValueError("Project Review pending must name unique open tracked issues")
+    validate_parked_reviews(root, config, desired)
     return config, desired
 
 
@@ -541,7 +621,7 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
         print(f"applied {action}: {operation.get('key', operation.get('name', operation.get('to')))}", flush=True)
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, today: date | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["source", "audit", "apply"])
     parser.add_argument("--confirm-repository", help="Required exact owner/repo for remote writes")
@@ -613,6 +693,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"tracking sync: skipped unpublished milestone {name!r}: {entry['pending']} pending "
               "operations (listed in unpublished_milestones; not counted)", file=sys.stderr)
     if args.mode == "audit":
+        if scope == "full":
+            for line in parked_review_warnings(config, milestones, today or date.today()):
+                print(line, file=sys.stderr)
         return 1 if operations else 0
     if args.confirm_repository != repo:
         parser.error(f"apply requires --confirm-repository {repo} after reviewing the audit output")

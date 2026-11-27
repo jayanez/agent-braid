@@ -27,7 +27,7 @@
     "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend.",
     "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid evidence for Claude Code dynamic workflows and orchestrator-style parallel agents: integration gate (SPEC-052), G0-gated transcript adapter (SPEC-053), advisory ownership/pre-flight/checkpoint/recovery core (SPEC-057), G1-gated opt-in guard (SPEC-058) and G2-gated ledger/push (SPEC-059); planning only, no execution authority. Extra cash spend EUR 0.",
     "M4.7 — AI tooling integration for OpenCode": "Native OpenCode integration at parity with M4.5 (SPEC-068): user-global plugin with the bundled runtime registering the unchanged agent-braid-plugin/v0.2 MCP server, the seven skills (five product skills, setup and telemetry-audit), setup and reconnect commands, native lifecycle, install.sh --host opencode and a receipt-owned legacy profile. Opens the SPEC-039 additional-environments route for OpenCode only; M4.5 stays closed. No new authority. Published as plugin 0.1.0-alpha.7 on 2026-11-04 (specs/068-opencode-native-integration/release-acceptance-alpha7.md); T001-T011 done, T010 rows 22-23 and native host installs of alpha.7 in Claude Code and Codex unobserved, F1 tracked in issue #1080. Closed 2026-11-04 after the publication record.",
-    "Deferred": "Work parked by the founder on 2026-10-31 until its reopen criteria hold: SPEC-029 T001 source permissions granted and admitted real groups greater than zero (third-party sources), or SPEC-066 REQ-101 admission (the owner's own sources, decided 2026-11-01). The 15 task issues named in the S1.5 milestone moved there by the SPEC-066 T003 task-level override (owner decision R6); the remaining deferred work stays here. Parent issues stay open; nothing here is accepted, cancelled or authorized. See docs/development/FOUNDER_DECISIONS_20261031.md.",
+    "Deferred": "Parked work with an explicit reopen condition; nothing here is accepted, cancelled by this milestone, or authorized. Created 2026-10-31 by founder decision ([record](https://github.com/jayanez/agent-braid/blob/develop/docs/development/FOUNDER_DECISIONS_20261031.md)); triaged 2026-11-26 ([record](https://github.com/jayanez/agent-braid/blob/develop/docs/development/deferred-triage-20261126.md)). Reopen conditions: **System One** (SPEC-028–033 parents, SPEC-030, SPEC-032): SPEC-029 T001 third-party source permissions granted and admitted real groups > 0, or SPEC-066 T104 owned corpus plus an S1.5d Wilson GO for a learned model. **SPEC-076** (local GRPO): founder go/no-go accepting ADR 0042, a local CUDA GPU and SPEC-075 delivered. **SPEC-046** T014/T015: owner decision to submit and the external requirements met (spec read-only). **SPEC-060** T011: alias-removal criteria of REQ-007 and an owner decision, review by 2027-04-25. **SPEC-041 and SPEC-043** tasks: the observation criteria of the 2026-10-31 M4.5 record; T009/T010 follow T001–T008. Task-level overrides to S1.5 for the SPEC-066-absorbed tasks still apply. Parent issues stay open.",
     "VIS.1 — Activity viewer": "Read-only, loopback-only companion that turns Agent Braid artifacts and allowlisted Claude Code and Codex telemetry into the agent-braid-loom/v0.1 event stream and a local Three.js braid viewer with live delivery, replay and explicit minimal export. Independent track; never gates the core, M4.x or HAR. No execution authority, no telemetry persistence, effort kept in memory. Draft planning; no due date, host acceptance or release implied. Extra cash spend EUR 0.",
     "S1.5 — System One shadow activation": "Resumes the deferred System One program (SPEC-028–033) as a measured, owner-consented, local subsystem. S1.5a records one structural decision episode beside every successful analyze-work result without changing any output; S1.5b–e (owned corpus, reference-grade abstention and calibration contracts, a native learned model, per-decision-point go/no-go) are outline and blocked. Absorbs 15 open task issues parked in Deferred by owner decision R6 (SPEC-029 T001-T009, SPEC-031 T008, SPEC-033 T002, T003, T004, T006, T008) through task-level milestone overrides (SPEC-066 T003). Independent track; never gates the core, M4.x, HAR or VIS. No execution authority, no network, no content in episodes. Engineering and hypothesis (H-S1); nothing here is accepted, calibrated or promoted. Decision: docs/development/FOUNDER_DECISIONS_20261101.md; ADR 0034. Extra cash spend EUR 0.",
     "M4.8 — AIM request authoring": "Published, validator-equivalent analyze-work request contract (SPEC-069): schema/validator differential test, field-specific refusals, declared-not-observed report label, fully automated native measurement in Claude Code, Codex and OpenCode, and a conditional `units` authoring kind with schema delivery, in phases P1-P3. Origin: SPEC-068 T010 finding F1, issue #1080. Draft; human review pending.",
@@ -58,7 +58,6 @@
     "S1.4 — Product capabilities and promotion",
     "LAB.1 — Effectful workload lab",
     "RES.1 — Formal interaction research",
-    "M4.5 — AI tooling integrations for Codex and Claude Code",
     "M3.5 — Native proposal predictor",
     "GOV.1 — Governance and adoption",
     "FC.1 — Forecast-guided parallelism experiment",
@@ -367,7 +366,8 @@
     },
     "077-harness-mcp-readonly": {
       "milestone": "Deferred",
-      "state": "open"
+      "state": "closed",
+      "state_reason": "not_planned"
     },
     "079-kind-choice-tool-fix": {
       "milestone": "BL.2c — Lightning tool-level kind-choice fix",
@@ -520,7 +520,8 @@
     "SPEC-043/T006": "M4.5 — AI tooling integrations for Codex and Claude Code",
     "SPEC-043/T005": "M4.5 — AI tooling integrations for Codex and Claude Code",
     "SPEC-043/T004": "M4.5 — AI tooling integrations for Codex and Claude Code",
-    "SPEC-043/T002": "M4.5 — AI tooling integrations for Codex and Claude Code"
+    "SPEC-043/T002": "M4.5 — AI tooling integrations for Codex and Claude Code",
+    "SPEC-041/T008": "M4.5 — AI tooling integrations for Codex and Claude Code"
   },
   "project_review_pending": [
     "SPEC-028",
@@ -756,6 +757,52 @@
     "SPEC-044/T018": {
       "decision": "specs/044-ai-tooling-evaluation/evidence/t018-owner-disposition-2026-11-01.json",
       "sha256": "3159d364fdbd1e44335bbc2fe93e63a38b7c2ef415a243cb64c2dc599bed6227"
+    },
+    "SPEC-033/T001": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/033-t001.json",
+      "sha256": "5ab7abc9836ea85bc38cb911917bb209c574357b140bd3edf9bc702d2e4f2af4"
+    },
+    "SPEC-033/T005": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/033-t005.json",
+      "sha256": "e379f0effb7424895a0d4fd3cfb572586a7fbc31245dabc876973684c5b4f4f7"
+    },
+    "SPEC-033/T007": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/033-t007.json",
+      "sha256": "b6e998e50bf43ea831ae2b2397e7811b2f75bc094a10d2c5dcede6c74acc128e"
+    },
+    "SPEC-077/T001": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t001.json",
+      "sha256": "c90e0df9bcc914f8a55e4c911a2f85a2f83012ebb6456327f09273986a4e05ed"
+    },
+    "SPEC-077/T003": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t003.json",
+      "sha256": "b4204b5d2846c603e4d9ae947bdb1131425ce46eb4b838c0ed1e3e3ec6cce3fc"
+    },
+    "SPEC-077/T004": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t004.json",
+      "sha256": "0f381c48b294609325ff7a46d658f7abfd107385b146ace0a3ca3c378de54306"
+    },
+    "SPEC-077/T005": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t005.json",
+      "sha256": "03cbf2782b9adfb2eaf2047729f326da0c5a1685c71e709843b68b5f03a22775"
+    },
+    "SPEC-077/T006": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t006.json",
+      "sha256": "1735fd683ba59a59fda2d5c30903b986398c5de82224f2ccd6b5eebb650a45eb"
+    },
+    "SPEC-077/T007": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t007.json",
+      "sha256": "1bc72aaa1d7bf988dbe3b267be6f05263dba6d7487d0d92daf909168d98b0e2d"
+    },
+    "SPEC-077/T009": {
+      "decision": "docs/development/deferred-triage-20261126-cancellations/077-t009.json",
+      "sha256": "b615bc64e4710449832b5db6625740666b2a4f50c56378ebe903ebdd2b19a7e6"
+    }
+  },
+  "parked_reviews": {
+    "SPEC-060/T011": {
+      "review_by": "2027-04-25",
+      "source": "docs/development/deferred-triage-20261126.md#q12-spec-060--parked-con-trigger-y-fecha-recomendado"
     }
   }
 }

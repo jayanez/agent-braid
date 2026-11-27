@@ -33,6 +33,10 @@ it does not establish scientific validity or grant human or founder approval.
   means completed acceptance, and parent/milestone states remain explicit.
   Recorded cancellations are in the
   [tracking history](GITHUB_TRACKING_HISTORY.md#task-overrides-and-cancellations).
+- A spec entry in `specs` may carry an optional `state_reason` (`completed` or
+  `not_planned`), valid only with `state: closed`. Without it a closed parent closes as
+  `completed`; the audit compares the reason, so a parent closed as `not_planned`
+  needs the field or the next audit proposes to change it back.
 - The top-level `task_milestone_overrides` member maps a task key
   `SPEC-NNN/Txxx` to a registered milestone title and replaces the milestone the task
   would inherit from its specification; the parent keeps its own. The source is
@@ -181,6 +185,32 @@ already exists on GitHub. Publishing a milestone therefore means removing it fro
 `unpublished_milestones` in the same change that prepares its publication; its
 operations then count again, and once created its number goes in
 `milestone_numbers`.
+
+### Parked-work review dates
+
+The optional top-level `parked_reviews` member maps an open tracked record key (for
+example `SPEC-060/T011`) to `{"review_by": "YYYY-MM-DD", "source": "<repository file>[#anchor]"}`.
+`source` must exist and should point at the decision that parked the work. The source
+check refuses a malformed entry, a key that is not an open tracked record (remove the
+entry when the record closes) and any extra field.
+
+The full `audit` prints one GitHub `::warning::` line on standard error for each entry
+whose `review_by` is 30 days away or less, or already past. It is informational: it
+never changes the exit status, which still depends on `operations` alone. It is a no-op
+when `parked_reviews` is empty or absent. When the Deferred milestone has no open issue
+the audit adds one warning, "Deferred is empty: close the milestone, remove the STATUS
+parked table and parked_reviews, and remove this step."
+
+Retire it when Deferred is empty (or every parked review is decided):
+
+1. Close the Deferred milestone and record the closure.
+2. Remove the "Parked work and reopen triggers" table from [STATUS](../STATUS.md) and
+   this section.
+3. Remove `parked_reviews` from `github-tracking.json`.
+4. Remove `validate_parked_reviews` and `parked_review_warnings` from
+   `scripts/sync_github_tracking.py`, their call sites, and `tests/test_parked_reviews.py`.
+
+Removing only the entry for a decided review leaves the step in place for the others.
 
 The audit deliberately does not create issues from unchecked speculative text,
 declare future M2–M4 tasks, close a parent because every child is closed, or

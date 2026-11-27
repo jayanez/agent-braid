@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-077/T005",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "c3fd2dbea17481707b435bbe9716ef5bedbf7b6727094e353cda7f615361a6ff",
+  "sourceReference": "Owner decision of 2026-11-26 (Q1, \"Cerrar los 9 (Recomendado)\"), recorded in docs/development/deferred-triage-20261126.md (SHA-256 ce21e5d6f0e24d3e4dba3be0c0426e6ac734537d3a90f5fb4a0ab6dba85c938c). Integrator-recorded provenance, not independently authenticated.",
+  "reason": "SPEC-077 T008 (evidence/t008-publication.json, 2026-11-22) records 'not published' and ADR 0043 is Rejected; this task was moved to Deferred by that decision and is closed as not planned. The design stays in specs/077-harness-mcp-readonly/ and ADR 0043.",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}
