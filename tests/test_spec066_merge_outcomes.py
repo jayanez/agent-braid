@@ -210,6 +210,33 @@ class RecorderTests(Base):
         self.assertEqual(self.repo.git("status", "--porcelain").stdout, "")
         self.assertEqual(sorted(self.repo.git("for-each-ref").stdout.splitlines()), before)
 
+    def run_write(self, mode):
+        if mode:
+            registry = self.home / "registry.json"
+            value = json.loads(registry.read_text())
+            registry.write_text(json.dumps(dict(value, systemOne=mode)))
+        argv = ["--repository", str(self.repo.path), "--head", "secret-branch-one", "--head", "secret-branch-two",
+                "--owner-email", OWNER, "--write", "--day", TODAY.isoformat()]
+        out = io.StringIO()
+        with redirect_stdout(out), mock.patch.object(replay, "today", lambda: TODAY), \
+                mock.patch.object(shadow, "today", lambda: TODAY):
+            self.assertEqual(recorder.main(argv, home=self.home, consent_path=self.consent), 0)
+        return json.loads(out.getvalue())
+
+    def test_write_stores_one_replay_episode_per_new_pair_and_it_joins(self):
+        first = self.run_write("shadow")
+        second = self.run_write(None)
+        self.assertEqual((first["episodes"], second["episodes"]), ({"written": 1}, {"duplicate": 1}))
+        self.assertEqual(len((self.store / f"episodes-{TODAY}.jsonl").read_text().splitlines()), 1)
+        result = self.observe()
+        self.assertEqual((result.counts["joined"], result.counts["no-episode"], result.counts["ambiguous"]), (1, 0, 0))
+        self.assertIn(result.records[0]["ruleAnswer"], shadow.CHOICES)
+
+    def test_no_episode_is_stored_without_shadow_consent(self):
+        evidence = self.run_write(None)
+        self.assertEqual(evidence["episodes"], {"consent-off": 1})
+        self.assertFalse(list(self.store.glob("episodes-*.jsonl")))
+
     def test_write_is_refused_when_the_output_is_not_ignored(self):
         (self.repo.path / ".gitignore").write_text("")
         argv = ["--repository", str(self.repo.path), "--head", "secret-branch-one", "--head", "secret-branch-two",

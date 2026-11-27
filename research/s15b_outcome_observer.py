@@ -55,7 +55,7 @@ RULE_ANSWER_FIELD = "ruleAnswer"
 RECORD_FIELDS = frozenset({"schemaVersion", "joinKey", "day", "source", "outcomeKind", "joinStatus", "pair",
                            "executionAuthorization", RULE_ANSWER_FIELD})
 INDEPENDENT = "likely-independent"
-COUNTERS = ("outcomes-seen", "outcomes-invalid", "joined", "no-episode", "salt-unmatched", "ambiguous",
+COUNTERS = ("outcomes-seen", "outcomes-invalid", "joined", "no-episode", "pair-unmatched", "ambiguous",
             "duplicate", "written", "episodes-read", "episodes-invalid", "episodes-unattributable",
             "episode-files-refused", "secret-absent", "secret-unsafe", "roots-unavailable", "no-salt",
             "truncated", "source-error", "advised-pairs", "rule-answered-pairs")
@@ -257,6 +257,16 @@ def read_episodes(today: date, counts: Counter, answers: dict | None = None) -> 
 
 # --- Matcher -----------------------------------------------------------------------
 
+def registered_root(*, home: Path | None = None) -> tuple | None:
+    """`(sourceRoot, systemOne mode)` of the admitted workspace, the root exactly as the live adapter gets it."""
+    try:
+        value = plugin_registry.inspect_registry(home)["value"]
+        row = next(item for item in value["workspaces"] if item["workspaceId"] == gate.ADMITTED_WORKSPACE_ID)
+        return row["sourceRoot"], value.get("systemOne", "off")
+    except (plugin_registry.RegistryError, OSError, KeyError, TypeError, ValueError, StopIteration):
+        return None
+
+
 def candidate_roots(*, home: Path | None = None) -> list:
     """Raw and resolved `source_root` strings the adapter may have been configured with.
 
@@ -311,7 +321,7 @@ def match(outcome: Outcome, pairs, salts) -> tuple:
         if actual in expected:
             hits.append((day, pair))
     if not hits:
-        return "no-match", None, None, "salt-unmatched"
+        return "no-match", None, None, "pair-unmatched"
     if len(hits) > 1:
         return "ambiguous", None, None, "ambiguous"
     return "joined", hits[0][0], hits[0][1], "joined"
