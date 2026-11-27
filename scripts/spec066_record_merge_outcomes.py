@@ -13,7 +13,8 @@ structural records in the gitignored file under the admitted workspace's source 
 
 Refused with a closed code, never an input: a repository outside the admitted workspace (corpus gate), a
 source family the T101 consent does not list, a missing store secret, an output path the repository does not
-ignore. Only commits authored by the owner are used (address matched in memory, never stored or printed); a
+ignore. With `--write`, and only when the registry's `systemOne` consent is `shadow` or `advise`, each new
+outcome also stores the replay shadow episode of the same pair, so the observer has an episode to join. Only commits authored by the owner are used (address matched in memory, never stored or printed); a
 pair with any other author is skipped and counted. Records hold the verdict, the day, pseudonym lists and a
 count: no path, ref, commit id, author, message or workspace id. Nothing here grants authority.
 """
