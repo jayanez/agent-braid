@@ -323,8 +323,8 @@ atomic rollback to `off` (REQ-401). It absorbs SPEC-033 T002, T003, T006 and T00
   backends.
 - T405 joins merge outcomes of the owner's parallel tracks to episodes inside the
   admitted workspace and performs the D7 automatic rollback.
-- T406 (owner): decision packet 2026-11-28, `advise` live 2026-11-30 on a go, review
-  2026-12-31 (D8).
+- T406 (owner): decision packet 2026-11-30, `advise` live 2026-12-02 on a go, review
+  2026-12-31 (D8; dates moved by the owner on 2026-11-27 from 2026-11-28 and 2026-11-30).
 
 ## Human review and unresolved decisions
 

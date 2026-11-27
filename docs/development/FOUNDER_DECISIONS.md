@@ -51,6 +51,7 @@ Each source names its predecessor, so the chain is
 | 2026-11-26 | 5 | Deferred triage: SPEC-041 T008 rescued; T001/T006 and closure tasks kept | SPEC-041, SPEC-043 | same |
 | 2026-11-26 | 6 | Deferred triage: SPEC-046 stays read-only and parked | SPEC-046 | same |
 | 2026-11-26 | 7 | Deferred triage: System One, SPEC-076 and SPEC-060 kept with corrected reopen criteria | SPEC-028–033, SPEC-076, SPEC-060 | same |
+| 2026-11-27 | 1 | SPEC-066 D8 moved: GO packet 2026-11-30 (was 2026-11-28), `advise` live 2026-12-02 on a go (was 2026-11-30), review 2026-12-31 unchanged | SPEC-066 T406 | [STATUS](../STATUS.md), [SPEC-066 tasks](../../specs/066-system-one-shadow/tasks.md) |
 
 The 2026-11-08 record also points to program decisions L1–L5 in the
 [BL program](../../specs/070-braid-lightning-foundations/program.md).

@@ -584,8 +584,8 @@ and the track continues on a reviewable fast route (REQ-402,
 [ADR 0034 addendum](docs/adr/0034-system-one-shadow-advisory-boundary.md)): a
 rule-based DP-1 advise with promotion-registry plumbing and a merge-outcome join with
 automatic rollback to `shadow` at the first real conflict on an advised-independent
-pair. The owner's go/no-go packet (T406) is due 2026-11-28, `advise` goes live
-2026-11-30 only on a recorded go, and a mandatory review on 2026-12-31 ends the go.
+pair. The owner's go/no-go packet (T406) is due 2026-11-30, `advise` goes live
+2026-12-02 only on a recorded go, and a mandatory review on 2026-12-31 ends the go.
 Merged work, shadow-week counts and the latest episode counts are in the S1.5 row of
 [STATUS](docs/STATUS.md#evidence-boundaries-by-milestone).
 The stages are:
