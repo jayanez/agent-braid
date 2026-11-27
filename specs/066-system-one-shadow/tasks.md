@@ -467,3 +467,11 @@ replay cannot supply System-2-`unknown` pairs (see REQ-402 and the ADR 0034 adde
   `analyze-work` and were served the built definition; see `release-acceptance-alpha9.md`.
   The packet generator exists: `python -m scripts.spec066_go_packet` (read-only; counts, risk, owner commands,
   undo, dates; never records a go; `tests/test_spec066_go_packet.py`). The go itself is still pending.
+- [ ] T407 (REQ-403): Replay episodes from the merge-outcome recorder in a separate
+  store, observer joins kept apart (`joined-replay`, record `source` `replay`), live
+  joins only for the D7 rollback, the false-independence report and the D8 packet,
+  `system-one purge` removing both stores, and the `salt-unmatched` counter renamed
+  `pair-unmatched`. Dependencies: T405. Files: `scripts/spec066_record_merge_outcomes.py`,
+  `research/s15b_outcome_observer.py`, `agent_braid/system_one_shadow.py`,
+  `tests/test_spec066_merge_outcomes.py`. Implemented on branch
+  `docs/s15b-replay-episodes`; tick this task and add the PR evidence at merge.

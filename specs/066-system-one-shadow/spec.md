@@ -266,6 +266,24 @@ episodeRetentionDays: 30}`. It never reports episode contents.
   first joined real conflict on an advised-independent pair rolls DP-1 back to
   `shadow` atomically with a closed-vocabulary reason; (g) the go is reviewed on
   2026-12-31. This go is not a test of H-S1.
+- **REQ-403 Replay episodes from merge outcomes (amendment 2026-11-27, owner
+  decision).** Live shadow episodes exist only when `analyze-work` is used, so a
+  quiet week leaves nothing for the outcome observer to join. The merge-outcome
+  recorder (T405) therefore also writes, for each new outcome record, the replay
+  episode of the same pair of heads, under the same consent and privacy rules as
+  REQ-104. Acceptance: (a) replay episodes go to their own user-local store beside
+  the live one, never into it, with the same closed episode schema, the same
+  `shadow`/`advise` consent gate and the same retention, and
+  `agent-braid system-one purge` removes both stores; (b) the observer reads both
+  stores and keeps the joins apart (joined records carry `source` `replay`; a live
+  episode is preferred and a live ambiguity is never replaced by a replay join);
+  (c) the D7 automatic rollback, the false-independence report and Wilson bound and
+  the D8 decision packet use live joins only, while replay joins are reported as
+  descriptive counts with their limits (true by construction, built after the merge,
+  record day is the recorder run day); (d) one replay episode per pair resource
+  lists, never doubled by a rerun or a later day; (e) no episode is written for a
+  backfill day or without consent. Approved by the owner on 2026-11-27 (separate
+  replay store; replay joins informative only for D8). This is not a test of H-S1.
 
 ## Hypothesis
 

@@ -210,32 +210,93 @@ class RecorderTests(Base):
         self.assertEqual(self.repo.git("status", "--porcelain").stdout, "")
         self.assertEqual(sorted(self.repo.git("for-each-ref").stdout.splitlines()), before)
 
-    def run_write(self, mode):
+    def run_write(self, mode, day=TODAY, patch_today=True):
         if mode:
             registry = self.home / "registry.json"
             value = json.loads(registry.read_text())
             registry.write_text(json.dumps(dict(value, systemOne=mode)))
         argv = ["--repository", str(self.repo.path), "--head", "secret-branch-one", "--head", "secret-branch-two",
-                "--owner-email", OWNER, "--write", "--day", TODAY.isoformat()]
+                "--owner-email", OWNER, "--write", "--day", day.isoformat()]
         out = io.StringIO()
-        with redirect_stdout(out), mock.patch.object(replay, "today", lambda: TODAY), \
-                mock.patch.object(shadow, "today", lambda: TODAY):
-            self.assertEqual(recorder.main(argv, home=self.home, consent_path=self.consent), 0)
+        with redirect_stdout(out), mock.patch.object(replay, "today", lambda: day):
+            if patch_today:
+                with mock.patch.object(shadow, "today", lambda: day):
+                    self.assertEqual(recorder.main(argv, home=self.home, consent_path=self.consent), 0)
+            else:
+                self.assertEqual(recorder.main(argv, home=self.home, consent_path=self.consent), 0)
         return json.loads(out.getvalue())
 
-    def test_write_stores_one_replay_episode_per_new_pair_and_it_joins(self):
+    @property
+    def replay_store(self):
+        return self.store.parent / shadow.REPLAY_DIRECTORY
+
+    def test_write_stores_a_replay_episode_apart_from_the_live_store_and_joins_it_as_replay(self):
         first = self.run_write("shadow")
         second = self.run_write(None)
         self.assertEqual((first["episodes"], second["episodes"]), ({"written": 1}, {"duplicate": 1}))
-        self.assertEqual(len((self.store / f"episodes-{TODAY}.jsonl").read_text().splitlines()), 1)
+        self.assertFalse(list(self.store.glob("episodes-*.jsonl")))
+        self.assertEqual(len((self.replay_store / f"episodes-{TODAY}.jsonl").read_text().splitlines()), 1)
         result = self.observe()
-        self.assertEqual((result.counts["joined"], result.counts["no-episode"], result.counts["ambiguous"]), (1, 0, 0))
+        self.assertEqual((result.counts["joined"], result.counts["joined-replay"], result.counts["no-episode"]), (0, 1, 0))
+        self.assertEqual(result.records[0]["source"], observer.REPLAY_SOURCE)
         self.assertIn(result.records[0]["ruleAnswer"], shadow.CHOICES)
+        self.assertEqual(observer.false_independence(result.records, 0)["joinedOutcomes"], 0)
+        self.assertEqual(observer.replay_summary(result.records, 1)["joinedOutcomes"], 1)
+
+    def test_a_live_episode_wins_over_the_replay_episode(self):
+        self.write_records("secret-branch-one", "secret-branch-two")
+        self.put_episodes(self.episode("one", "two"))
+        self.run_write("shadow")
+        result = self.observe()
+        self.assertEqual((result.counts["joined"], result.counts["joined-replay"]), (1, 0))
+        self.assertEqual(result.records[0]["source"], observer.SOURCE)
+
+    def test_replay_joins_never_reach_the_rollback_or_the_report(self):
+        self.run_write("shadow")
+        record = self.observe().records[0]
+        record = dict(record, outcomeKind="merge-conflict", ruleAnswer="likely-independent")
+        self.assertEqual(observer.false_independent_days([record]), [])
+        self.assertFalse(observer.apply_auto_rollback([record], TODAY, home=self.home))
+        self.assertEqual(observer.false_independence([record], 1)["falseIndependent"], 0)
+
+    def test_a_rerun_on_a_later_day_does_not_double_the_episode(self):
+        self.run_write("shadow")
+        later = self.run_write(None, day=date(2026, 11, 15))
+        self.assertEqual(later["episodes"], {"duplicate": 1})
+        self.assertEqual(len(list(self.replay_store.glob("episodes-*.jsonl"))), 1)
+        self.assertEqual(self.observe().counts["ambiguous-replay"], 0)
+
+    def test_a_backfill_day_writes_no_episode(self):
+        evidence = self.run_write("shadow", day=date(2026, 11, 14), patch_today=False)
+        self.assertEqual(evidence["episodes"], {"day-mismatch": 1})
+        self.assertFalse(self.replay_store.exists())
+
+    def test_identical_bodies_in_one_run_and_unbuilt_episodes_are_counted(self):
+        result = self.record("secret-branch-one", "secret-branch-two")
+        record, episode = result["records"][0], result["episodes"][0]
+        twice = dict(result, systemOne="shadow", records=[record, record, record],
+                     episodes=[episode, episode, None])
+        with mock.patch.object(shadow, "today", lambda: TODAY):
+            fresh, counts = recorder.new_episodes(twice, TODAY)
+        self.assertEqual((len(fresh), dict(counts)), (1, {"duplicate": 1, "no-episode-built": 1}))
+
+    def test_an_outcome_record_outside_retention_gets_no_episode(self):
+        result = self.record("secret-branch-one", "secret-branch-two")
+        old = dict(result, systemOne="shadow", records=[dict(result["records"][0], day="2026-01-01")])
+        with mock.patch.object(shadow, "today", lambda: TODAY):
+            fresh, counts = recorder.new_episodes(old, TODAY)
+        self.assertEqual((fresh, list(counts)), ([], ["refused:retention-expired"]))
+
+    def test_the_system_one_purge_removes_the_replay_store(self):
+        self.run_write("shadow")
+        removed = shadow.purge()
+        self.assertEqual(removed["replayFilesRemoved"], 2)
+        self.assertFalse(self.replay_store.exists())
 
     def test_no_episode_is_stored_without_shadow_consent(self):
         evidence = self.run_write(None)
         self.assertEqual(evidence["episodes"], {"consent-off": 1})
-        self.assertFalse(list(self.store.glob("episodes-*.jsonl")))
+        self.assertFalse(self.replay_store.exists())
 
     def test_write_is_refused_when_the_output_is_not_ignored(self):
         (self.repo.path / ".gitignore").write_text("")

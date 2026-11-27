@@ -47,6 +47,8 @@ from research import s15b_corpus_gate as gate
 SCHEMA = "agent-braid-s1-outcome/v0.1"
 OUTCOME_KINDS = ("runtime-conflict", "merge-conflict", "merge-clean", "verify-pass", "verify-fail")
 SOURCE = "real-run"
+REPLAY_SOURCE = "replay"  # joined to the separate replay store; descriptive only, never D7/D8 evidence
+SOURCES = (SOURCE, REPLAY_SOURCE)
 MATCH_WINDOW_DAYS = 7
 STORE_NAME = "system-one-s15b"
 MAX_FILE_BYTES = 4 * 1024 * 1024
@@ -58,7 +60,9 @@ INDEPENDENT = "likely-independent"
 COUNTERS = ("outcomes-seen", "outcomes-invalid", "joined", "no-episode", "pair-unmatched", "ambiguous",
             "duplicate", "written", "episodes-read", "episodes-invalid", "episodes-unattributable",
             "episode-files-refused", "secret-absent", "secret-unsafe", "roots-unavailable", "no-salt",
-            "truncated", "source-error", "advised-pairs", "rule-answered-pairs")
+            "truncated", "source-error", "advised-pairs", "rule-answered-pairs", "joined-replay", "ambiguous-replay",
+            "episodes-read-replay", "episodes-invalid-replay", "episodes-unattributable-replay",
+            "episode-files-refused-replay", "advised-pairs-replay", "rule-answered-pairs-replay")
 _UUID4 = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 _EPISODE_FILE = re.compile(r"^episodes-(\d{4}-\d{2}-\d{2})\.jsonl$")
 _OUTCOME_FILE = re.compile(r"^outcomes-(\d{4}-\d{2}-\d{2})\.jsonl$")
@@ -194,20 +198,22 @@ def read_secret(counts: Counter | None = None) -> bytes | None:
     return None
 
 
-def read_episodes(today: date, counts: Counter, answers: dict | None = None) -> list:
+def read_episodes(today: date, counts: Counter, answers: dict | None = None, *, replay: bool = False) -> list:
     """Retained v0.2 episode pairs with resource pseudonyms, as `(day, pair)`; reads only.
 
     Pairs without pseudonyms cannot be attributed to the admitted workspace and are never
     returned (fail closed). No episode id is kept. When `answers` is a dict it receives
     `id(pair) -> the DP-1 rule's choice` for each returned pair (None when the episode has no answer);
     the pair objects stay alive in the returned list, so the ids stay valid for the caller.
+    `replay` reads the separate replay store; its counters carry the suffix `-replay`.
     """
+    suffix = "-replay" if replay else ""
     cutoff = gate.retention_cutoff(today)
     try:
-        root = shadow._store_root(create=False)
+        root = shadow._store_root(create=False, replay=replay)
         names = sorted(entry.name for entry in root.iterdir()) if root is not None else []
     except (OSError, ValueError):
-        counts["episode-files-refused"] += 1
+        counts["episode-files-refused" + suffix] += 1
         return []
     pairs = []
     for name in names:
@@ -223,7 +229,7 @@ def read_episodes(today: date, counts: Counter, answers: dict | None = None) -> 
         try:
             data = _read_private(root / name, shadow.MAX_FILE_BYTES)
         except (OSError, ObserverRefused):
-            counts["episode-files-refused"] += 1
+            counts["episode-files-refused" + suffix] += 1
             continue
         for line in data.split(b"\n"):
             if not line:
@@ -232,22 +238,22 @@ def read_episodes(today: date, counts: Counter, answers: dict | None = None) -> 
                 episode = shadow.validate_episode(json.loads(line))
                 day = date.fromisoformat(episode["day"])
             except (ValueError, RecursionError, UnicodeError):
-                counts["episodes-invalid"] += 1
+                counts["episodes-invalid" + suffix] += 1
                 continue
             if day < cutoff:
                 continue
-            counts["episodes-read"] += 1
+            counts["episodes-read" + suffix] += 1
             if episode["schemaVersion"] != shadow.SCHEMA:
-                counts["episodes-unattributable"] += 1
+                counts["episodes-unattributable" + suffix] += 1
                 continue
             given = episode["systemOne"]["answers"]
             for index, pair in enumerate(episode["pairs"]):
                 choice = given[index]["choice"] if given is not None and index < len(given) else None
                 if choice is not None:
-                    counts["rule-answered-pairs"] += 1
-                    counts["advised-pairs"] += choice == INDEPENDENT
+                    counts["rule-answered-pairs" + suffix] += 1
+                    counts["advised-pairs" + suffix] += choice == INDEPENDENT
                 if pair["resourceHashes"] is None:
-                    counts["episodes-unattributable"] += 1
+                    counts["episodes-unattributable" + suffix] += 1
                 else:
                     pairs.append((day, pair))
                     if answers is not None:
@@ -360,18 +366,18 @@ def validate_record(record) -> dict:
     _need(answer is None or (type(answer) is str and answer in shadow.CHOICES))
     _need(type(record["joinKey"]) is str and _UUID4.fullmatch(record["joinKey"]))
     _need(type(record["day"]) is str and date.fromisoformat(record["day"]).isoformat() == record["day"])
-    _need(record["source"] == SOURCE and record["joinStatus"] == "joined"
+    _need(record["source"] in SOURCES and record["joinStatus"] == "joined"
           and type(record["outcomeKind"]) is str and record["outcomeKind"] in OUTCOME_KINDS)
     _need(record["executionAuthorization"] is False)
     _validate_pair(record["pair"])
     return record
 
 
-def make_record(kind: str, day: date, pair: dict, rule_answer: str | None = None) -> dict:
+def make_record(kind: str, day: date, pair: dict, rule_answer: str | None = None, source: str = SOURCE) -> dict:
     """A joined record with a random join key, never derived from any input."""
     return validate_record({
         "schemaVersion": SCHEMA, "joinKey": str(uuid.UUID(bytes=secrets.token_bytes(16), version=4)),
-        "day": day.isoformat(), "source": SOURCE, "outcomeKind": kind, "joinStatus": "joined",
+        "day": day.isoformat(), "source": source, "outcomeKind": kind, "joinStatus": "joined",
         "pair": json.loads(json.dumps(pair)), RULE_ANSWER_FIELD: rule_answer, "executionAuthorization": False})
 
 
@@ -395,8 +401,9 @@ def observe(sources, today: date, *, home: Path | None = None, consent_path: Pat
     counts = Counter()
     outcomes = collect_outcomes(sources, today, counts, home=home, consent_path=consent_path)
     secret = read_secret(counts)
-    rule_answers = {}
+    rule_answers, replay_answers = {}, {}
     pairs = read_episodes(today, counts, rule_answers)
+    replay_pairs = read_episodes(today, counts, replay_answers, replay=True)
     roots = candidate_roots(home=home)
     if not roots:
         counts["roots-unavailable"] += 1
@@ -407,9 +414,18 @@ def observe(sources, today: date, *, home: Path | None = None, consent_path: Pat
             counts["no-salt"] += 1
             continue
         status, day, pair, reason = match(outcome, pairs, salts)
-        counts[reason] += 1
         if status == "joined":
             records.append(make_record(outcome.kind, day, pair, rule_answers.get(id(pair))))
+        elif reason in ("no-episode", "pair-unmatched"):
+            # Only without a live episode does the replay store speak; a live ambiguity is never replaced.
+            replay_status, replay_day, replay_pair, replay_reason = match(outcome, replay_pairs, salts)
+            if replay_status == "joined":
+                records.append(make_record(outcome.kind, replay_day, replay_pair, replay_answers.get(id(replay_pair)),
+                                           REPLAY_SOURCE))
+                status, reason = "joined-replay", "joined-replay"
+            elif replay_reason == "ambiguous":
+                counts["ambiguous-replay"] += 1
+        counts[reason] += 1
     return Result(records, counts)
 
 
@@ -442,9 +458,26 @@ def merged_records(*groups) -> list:
     return merged
 
 
+def live(records) -> list:
+    """The records joined to live shadow episodes: the only evidence of the report, the D7 rollback and the D8 packet."""
+    return [record for record in records if record.get("source", SOURCE) == SOURCE]
+
+
+def replay_summary(records, advised_pairs: int) -> dict:
+    """Descriptive counts of records joined to replay episodes (true by construction); no bound, no decision."""
+    replayed = [record for record in records if record.get("source") == REPLAY_SOURCE]
+    independent = [r for r in replayed if r.get(RULE_ANSWER_FIELD) == INDEPENDENT]
+    return {"advisedPairsInReplayEpisodes": advised_pairs, "joinedOutcomes": len(replayed),
+            "joinedOnAdvisedPairs": len(independent),
+            "advisedMergeClean": sum(r["outcomeKind"] == "merge-clean" for r in independent),
+            "falseIndependent": sum(r["outcomeKind"] == "merge-conflict" for r in independent),
+            "joinedByOutcomeKind": {kind: sum(r["outcomeKind"] == kind for r in replayed) for kind in OUTCOME_KINDS}}
+
+
 def false_independence(records, advised_pairs: int) -> dict:
     """Counts by closed key. A false independent is a joined `merge-conflict` on a pair whose rule
     answer was `likely-independent`; `undetermined` and unanswered pairs never count."""
+    records = live(records)
     independent = [r for r in records if r.get(RULE_ANSWER_FIELD) == INDEPENDENT]
     conflicts = sum(r["outcomeKind"] == "merge-conflict" for r in independent)
     clean = sum(r["outcomeKind"] == "merge-clean" for r in independent)
@@ -458,7 +491,7 @@ def false_independence(records, advised_pairs: int) -> dict:
 
 
 def false_independent_days(records) -> list:
-    return sorted(r["day"] for r in records
+    return sorted(r["day"] for r in live(records)
                   if r["outcomeKind"] == "merge-conflict" and r.get(RULE_ANSWER_FIELD) == INDEPENDENT)
 
 

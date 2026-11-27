@@ -14,7 +14,7 @@ structural records in the gitignored file under the admitted workspace's source 
 Refused with a closed code, never an input: a repository outside the admitted workspace (corpus gate), a
 source family the T101 consent does not list, a missing store secret, an output path the repository does not
 ignore. With `--write`, and only when the registry's `systemOne` consent is `shadow` or `advise`, each new
-outcome also stores the replay shadow episode of the same pair, so the observer has an episode to join. Only commits authored by the owner are used (address matched in memory, never stored or printed); a
+outcome also stores the replay episode of the same pair in the separate replay store (descriptive only). Only commits authored by the owner are used (address matched in memory, never stored or printed); a
 pair with any other author is skipped and counted. Records hold the verdict, the day, pseudonym lists and a
 count: no path, ref, commit id, author, message or workspace id. Nothing here grants authority.
 """
@@ -53,9 +53,9 @@ LIMITS = [
     "unsupported path carries an operation id the live episode used, so it cannot match and stays unjoined.",
     "Only owner-authored commits are used; one person's parallel work is not a population.",
     "Records are rolling: kept 30 days from their day, identical bodies collapse.",
-    "Episodes written by --write are replay episodes: built after the merge from the pair's two heads with the "
-    "live analysis, so the join of these pairs holds by construction. The rule never sees the verdict. They are "
-    "not distinguishable from live episodes in the shadow store.",
+    "Episodes written by --write are replay episodes in a separate store: built after the merge from the pair's "
+    "two heads with the live analysis, so their join holds by construction. The rule never sees the verdict. "
+    "They are reported as descriptive only and never reach the Wilson bound, the D7 rollback or the D8 packet.",
 ]
 
 
@@ -193,30 +193,49 @@ def record_wave(repository, heads, *, owner_email: str | None = None, base: str 
             "evidence": evidence}
 
 
-def new_episodes(directory: Path, result: dict, run_day: date) -> tuple:
-    """`(episodes, counts)`: one replay episode per outcome record not yet stored, so a rerun never doubles a pair.
+def _pair_key(hashes: dict) -> tuple:
+    """The pair as the observer matches it: both sides (unordered) and the shared list."""
+    return (tuple(sorted((tuple(hashes["left"]), tuple(hashes["right"])))), tuple(hashes["shared"]))
 
-    Needs the registry's explicit `shadow` or `advise` consent (REQ-001). Call before the records are written.
+
+def new_episodes(result: dict, run_day: date, *, replay_pairs=()) -> tuple:
+    """`(episodes, counts)`: replay episodes to store, one per pair resource lists not already stored.
+
+    Needs the registry's explicit `shadow` or `advise` consent (REQ-001), a run day equal to the day the
+    episode will carry (`shadow.today()`, else `day-mismatch`: no backfill), and an outcome record the
+    retention rule keeps. `replay_pairs` are the `(day, pair)` already in the replay store (its retention
+    window), so a rerun, on any day, never doubles a pair. Writes nothing.
     """
+    records = result["records"]
     if result["systemOne"] not in ("shadow", "advise"):
-        return [], {"consent-off": len(result["records"])}
-    known = {outcomes._body(record) for record in outcomes.read_records(directory, run_day)}
+        return [], {"consent-off": len(records)}
+    if run_day != shadow.today():
+        return [], {"day-mismatch": len(records)}
+    seen = {_pair_key(pair["resourceHashes"]) for _, pair in replay_pairs}
     counts, fresh = Counter(), []
-    for record, episode in zip(result["records"], result["episodes"]):
-        if outcomes._body(record) in known:
+    for record, episode in zip(records, result["episodes"]):
+        if episode is None:
+            counts["no-episode-built"] += 1
+            continue
+        try:
+            gate.require_retained(date.fromisoformat(record["day"]), run_day)
+        except gate.GateRefusal as refusal:
+            counts["refused:" + refusal.code] += 1
+            continue
+        key = _pair_key(episode["pairs"][0]["resourceHashes"])
+        if key in seen:
             counts["duplicate"] += 1
-        elif episode is None:
-            counts["no-episode"] += 1
-        else:
-            fresh.append(episode)
+            continue
+        seen.add(key)
+        fresh.append(episode)
     return fresh, counts
 
 
 def write_episodes(episodes, counts: Counter) -> dict:
-    """Append the episodes to the shadow store; a refused append is counted, never raised."""
+    """Append the episodes to the replay store; a refused append is counted and retried by the next run."""
     for episode in episodes:
         try:
-            shadow.append(episode)
+            shadow.append(episode, replay=True)
             counts["written"] += 1
         except shadow.StoreRefused as refusal:
             counts["refused:" + str(refusal)] += 1
@@ -252,9 +271,12 @@ def main(argv=None, *, home: Path | None = None, consent_path: Path | None = Non
             directory = outcomes.store_directory(home=home)
             _require_ignored(directory)
             today = run_day or replay.today()
-            fresh, episode_counts = new_episodes(directory, result, today)
-            evidence["store"] = dict(outcomes.write_records(directory, result["records"], today))
+            replay_pairs = observer.read_episodes(today, Counter(), replay=True)
+            fresh, episode_counts = new_episodes(result, today, replay_pairs=replay_pairs)
+            # Episodes first: a crash or a refused outcome write leaves no outcome without its episode, and a rerun
+            # finds the stored episode by its pair, so it neither doubles it nor loses the record.
             evidence["episodes"] = write_episodes(fresh, Counter(episode_counts))
+            evidence["store"] = dict(outcomes.write_records(directory, result["records"], today))
     except (gate.GateRefusal, RecordError, outcomes.MergeOutcomeError) as refusal:
         print("refused: " + refusal.code, file=sys.stderr)
         return 2

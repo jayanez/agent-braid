@@ -117,6 +117,14 @@ def default_directory() -> Path:
     return Path.home() / '.local' / 'share' / 'agent-braid' / 'system-one'
 
 
+REPLAY_DIRECTORY = 'system-one-replay'
+
+
+def replay_directory() -> Path:
+    """Beside the live store, never inside it: replay episodes cannot be mistaken for real use."""
+    return default_directory().parent / REPLAY_DIRECTORY
+
+
 def display_location() -> str:
     """The store location with the home directory shown as `~`, so no user name is exposed."""
     directory = default_directory()
@@ -542,8 +550,8 @@ def validate_episode(value) -> dict:
 
 # --- Private store ------------------------------------------------------------
 
-def _store_root(*, create: bool) -> Path | None:
-    root = _safe(default_directory(), directory=True)
+def _store_root(*, create: bool, replay: bool = False) -> Path | None:
+    root = _safe(replay_directory() if replay else default_directory(), directory=True)
     if not root.exists():
         if not create:
             return None
@@ -622,14 +630,17 @@ class _Lock:
         os.close(self.descriptor)
 
 
-def append(episode: dict) -> None:
-    """Append one validated episode; raise StoreRefused when the store cannot take it safely."""
+def append(episode: dict, *, replay: bool = False) -> None:
+    """Append one validated episode; raise StoreRefused when the store cannot take it safely.
+
+    `replay` selects the separate replay store (same episode schema, day files and retention, no salt file).
+    """
     current = today()
     try:
         validate_episode(episode)
         line = _canonical(episode)
         _need(hasattr(os, 'O_NOFOLLOW'), 'secure store opening is unsupported')
-        root = _store_root(create=True)
+        root = _store_root(create=True, replay=replay)
         with _Lock(root, wait=WORKER_LOCK_WAIT):
             for entry in _entries(root):
                 if not _retained(entry.name, current):
@@ -895,11 +906,34 @@ def render_report(value: dict) -> str:
     return '\n'.join(lines)
 
 
+def _purge_replay() -> dict:
+    """Remove the replay store's day files and lock, then its directory when nothing else is in it."""
+    root = _store_root(create=False, replay=True)
+    if root is None:
+        return {'replayFilesRemoved': 0}
+    with _Lock(root) as lock:
+        days, others = _listing(root)
+        for entry in days:
+            _safe(entry).unlink()
+        lock.path.unlink()
+    if not others:
+        root.rmdir()
+    return {'replayFilesRemoved': len(days) + 1}
+
+
 def purge() -> dict:
-    """Delete the store's day files, salt and lock, then the directory when nothing else is in it."""
+    """Delete the store's day files, salt and lock, then the directory when nothing else is in it.
+
+    The separate replay store goes with it (`replayFilesRemoved`, present when one existed).
+    """
+    try:
+        removed = _purge_replay()['replayFilesRemoved']
+    except OSError:
+        raise StoreRefused('unavailable') from None
+    extra = {'replayFilesRemoved': removed} if removed else {}
     root = _store_root(create=False)
     if root is None:
-        return {'status': 'empty', 'externalCopies': 'not-removed'}
+        return {'status': 'empty', 'externalCopies': 'not-removed', **extra}
     try:
         with _Lock(root) as lock:
             days, others = _listing(root)
@@ -913,7 +947,7 @@ def purge() -> dict:
             lock.path.unlink()
     except OSError:
         raise StoreRefused('unavailable') from None
-    result = {'status': 'purged', 'filesRemoved': len(days) + 1 + salted, 'externalCopies': 'not-removed'}
+    result = {'status': 'purged', 'filesRemoved': len(days) + 1 + salted, 'externalCopies': 'not-removed', **extra}
     if others:
         result['leftover'] = [entry.name for entry in others]
     else:
