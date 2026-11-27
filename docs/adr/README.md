@@ -9,7 +9,8 @@ column links the specification named in the ADR itself; `—` means the ADR name
 
 ADR 0024 has two files. [0024-native-ai-plugins.md](0024-native-ai-plugins.md) is the active ADR 0024.
 [0024-local-technical-telemetry.md](0024-local-technical-telemetry.md) is a compatibility pointer (resolved 2026-10-20) that only
-preserves historical links; the active telemetry ADR is 0025. Nothing is renumbered.
+preserves historical links; the active telemetry ADR is 0025. Nothing is renumbered. The pointer has no
+Status line, so its row shows `Pointer` instead of a Status token.
 
 | ADR | Title | Status | Specification |
 |---|---|---|---|
@@ -36,7 +37,7 @@ preserves historical links; the active telemetry ADR is 0025. Nothing is renumbe
 | 0021 | [Portable tooling integration for Codex and Claude Code](0021-codex-claude-tooling-integration.md) | Proposed — decision pending: founder; no adoption recorded (SPEC-039 M4.5 program) | [SPEC-039](../../specs/039-ai-tooling-program/spec.md) |
 | 0022 | [Attribution-correction history equivalence](0022-attribution-correction-history-equivalence.md) | Accepted | — |
 | 0023 | [Preserve historical contracts after the second history correction](0023-second-history-correction-equivalence.md) | Proposed — decision pending: founder; history-correction integration | — |
-| 0024 | [Historical telemetry reference pointer](0024-local-technical-telemetry.md) | Pointer — to [ADR 0025](0025-local-technical-telemetry.md) (resolved 2026-10-20; not an active ADR) | — |
+| 0024 | [Historical telemetry ADR reference pointer](0024-local-technical-telemetry.md) | Pointer — to [ADR 0025](0025-local-technical-telemetry.md) (resolved 2026-10-20; not an active ADR) | — |
 | 0024 | [Native user-scoped AI plugins](0024-native-ai-plugins.md) | Proposed — decision pending: founder; capability acceptance (SPEC-046) | [SPEC-046](../../specs/046-native-ai-plugins/spec.md) |
 | 0025 | [Explicit local aggregate telemetry](0025-local-technical-telemetry.md) | Proposed — decision pending: founder; architectural adoption (SPEC-047) | [SPEC-047](../../specs/047-local-technical-telemetry/spec.md) |
 | 0026 | [Pure owned-work validation boundary](0026-pure-owned-work-validation.md) | Accepted | [SPEC-051](../../specs/051-owned-work-evaluation/spec.md) |

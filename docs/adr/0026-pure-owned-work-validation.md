@@ -1,6 +1,6 @@
 # ADR 0026: Pure owned-work validation boundary
 
-- **Status:** Accepted — for local software design by explicit owner instruction on
+- **Status:** Accepted — adopted for local software design by explicit owner instruction on
   2026-10-21; public integration/review and actual source admission pending.
 
 Articles: 0, 5, 7, 12–14, 19–20, 23–25.
