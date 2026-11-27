@@ -9,7 +9,7 @@ this specification's first PR. Code waits for owner approval of the spec and pla
 
 ## Purpose and scope
 
-Host identity is spread over 63 literal collections in 36 files (34 of them product
+Host identity is spread over 63 literal collections in 34 Python files plus `hosts.json` (34 collections are product
 code), with two spellings of the
 Claude Code identifier (`claude` and `claude-code`).
 Adding a host, for example Codex in Braid Lightning (SPEC-088) or Pi and ThinkRail

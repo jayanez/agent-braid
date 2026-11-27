@@ -12,7 +12,7 @@ through it later; this plan implements neither.
 
 An AST scan of `agent_braid/` and `scripts/` on `develop` at 2a524884 (tuples, lists,
 sets and dictionaries with two or more of `codex`, `claude`, `claude-code`, `opencode`
-as string constants) finds **63 collections in 36 files**, plus the packaged
+as string constants) finds **63 collections in 34 files**, plus the packaged
 `integrations/agent-braid/hosts.json`. 34 collections are product code and are replaced
 or pinned by this change; 29 are listed exceptions (below). Line numbers drift; the guard
 test (REQ-010) and the scan baseline (T002), not this table, are the lasting check.
@@ -99,7 +99,7 @@ and receipts, provenance) writes `claude`; `harness` writes `claude`; `viewer` w
 | 0 | No claim beyond evidence | Equality with recorded membership proves preservation at one commit, not that memberships are right (spec, limits) |
 | 5, 14 | Effects explicit, evidence not verdicts | The registry has no effect and no verdict; a capability is not qualification (REQ-014) |
 | 13 | Evidence before claims | Before and after differential records (T002, T010) |
-| 19 | Real, measurable problem | Fifteen loose sites; a missed list fails silently (spec, purpose) |
+| 19 | Real, measurable problem | 63 loose collections (34 in product code); a missed list fails silently (spec, purpose) |
 | 20 | Analysis and execution separate | No execution authority; `executionAuthorization` stays `false` (REQ-014) |
 
 No MUST conflict found.
@@ -126,7 +126,7 @@ No MUST conflict found.
 - **Module.** `agent_braid/host_registry.py`: a frozen `Host` record (`id`, `aliases`,
   `spellings` by surface, `capabilities`), a constant tuple of the three hosts, and pure
   functions `normalize(value)` (alias or canonical to canonical, else `None`),
-  `hosts_with(capability)` (canonical identifiers in registry order),
+  `hosts_with(capability)` (canonical identifiers),
   `spelling(host, surface)` and `from_spelling(surface, value)`. Each capability is an
   ordered tuple of canonical identifiers fixed in the module, so `hosts_with` returns the
   order the observable sites have today, not the host record order. Surfaces and
