@@ -5,7 +5,8 @@
 .env
 .env.*
 !.env.example
-# The runtime is standard-library only; a uv lockfile is local tool state.
+
+# Local uv lockfile (the core runtime declares no dependencies)
 uv.lock
 
 # IDE and editor state
