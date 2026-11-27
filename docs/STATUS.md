@@ -17,8 +17,8 @@ Method: counts computed on 2026-11-26 at `develop` `02b19545` from `specs/`,
 
 | Item | Value | Source |
 | --- | --- | --- |
-| Specs | 81 (`specs/*/spec.md`), all assigned to a milestone | `specs/`, `github-tracking.json` (`specs`) |
-| Published milestones | 38: 28 closed, 10 open (M4.5 reopened on 2026-11-27 for #425) | GitHub milestones API |
+| Specs | 84 (`specs/*/spec.md`; SPEC-087 to SPEC-089 added 2026-11-27), all assigned to a milestone | `specs/`, `github-tracking.json` (`specs`) |
+| Published milestones | 39: 28 closed, 11 open (M4.5 reopened on 2026-11-27 for #425; Host parity created 2026-11-27) | GitHub milestones API |
 | Unpublished milestone | 1 (M4.6 — Claude Code dynamic workflows; no remote record) | `github-tracking.json` (`unpublished_milestones`) |
 | Latest plugin release | `0.1.0-alpha.9`, tag `agent-braid--v0.1.0-alpha.9`, published 2026-11-16; rollback target `0.1.0-alpha.8` | [release notes](tooling/RELEASE_NOTES_ALPHA9.md), `git ls-remote --tags` |
 | Python package version | `0.1.0a2` | `pyproject.toml` |
@@ -78,6 +78,7 @@ closed. The decisions of 2026-11-26 are in the
 | [36](https://github.com/jayanez/agent-braid/milestone/36) | BL.2c — Lightning tool-level kind-choice fix | open | – | 4 / 9 |
 | [37](https://github.com/jayanez/agent-braid/milestone/37) | HAR.4 — Harness evaluation platform | open | – | 67 / 6 |
 | [38](https://github.com/jayanez/agent-braid/milestone/38) | M4.9 — AI tooling integration for Pi and ThinkRail | open | – | 13 / 0 |
+| [39](https://github.com/jayanez/agent-braid/milestone/39) | Host parity | open | – | 26 / 0 |
 
 
 ### Parked work and reopen triggers
