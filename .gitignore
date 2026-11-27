@@ -6,6 +6,9 @@
 .env.*
 !.env.example
 
+# Local uv lockfile (the core runtime declares no dependencies)
+uv.lock
+
 # IDE and editor state
 .idea/
 .vscode/
