@@ -200,7 +200,10 @@ agent-braid system-one purge --yes    # no prompt
 ```
 
 Purge deletes the day files, `salt.key` and the lock, then the directory when
-nothing else is in it, and prints a JSON summary. Removing the salt makes
+nothing else is in it, and prints a JSON summary. It also removes the separate
+replay store (`system-one-replay/`, `replayFilesRemoved`) that the merge-outcome
+recorder fills ([runbook](../development/SYSTEM_ONE_DAILY_RUNBOOK.md#replay-episodes));
+replay episodes never enter the live store. Removing the salt makes
 pseudonyms in any copy you made elsewhere unlinkable to new episodes. Purge does
 not remove copies, snapshots or backups you made; remove those yourself. If
 another process holds the store, the command refuses and you retry shortly.

@@ -13,7 +13,8 @@ structural records in the gitignored file under the admitted workspace's source 
 
 Refused with a closed code, never an input: a repository outside the admitted workspace (corpus gate), a
 source family the T101 consent does not list, a missing store secret, an output path the repository does not
-ignore. Only commits authored by the owner are used (address matched in memory, never stored or printed); a
+ignore. With `--write`, and only when the registry's `systemOne` consent is `shadow` or `advise`, each new
+outcome also stores the replay episode of the same pair in the separate replay store (descriptive only). Only commits authored by the owner are used (address matched in memory, never stored or printed); a
 pair with any other author is skipped and counted. Records hold the verdict, the day, pseudonym lists and a
 count: no path, ref, commit id, author, message or workspace id. Nothing here grants authority.
 """
@@ -52,6 +53,9 @@ LIMITS = [
     "unsupported path carries an operation id the live episode used, so it cannot match and stays unjoined.",
     "Only owner-authored commits are used; one person's parallel work is not a population.",
     "Records are rolling: kept 30 days from their day, identical bodies collapse.",
+    "Episodes written by --write are replay episodes in a separate store: built after the merge from the pair's "
+    "two heads with the live analysis, so their join holds by construction. The rule never sees the verdict. "
+    "They are reported as descriptive only and never reach the Wilson bound, the D7 rollback or the D8 packet.",
 ]
 
 
@@ -84,22 +88,26 @@ def _resolve(ctx, root: Path, revision: str, budget) -> str:
     return oid
 
 
-def _pair_variants(ctx, request: dict, salts) -> tuple:
-    """`(variants, canonicalSharedCount)` as a live episode of this pair would record them."""
+def _pair_variants(ctx, request: dict, salts, live_salt=None) -> tuple:
+    """`(variants, canonicalSharedCount, episode)` as a live episode of this pair would record them.
+
+    `episode` is the one built with `live_salt` (the salt of the registered source root), else None."""
     try:
         report, _ = analyze_git_with_provenance(request, env=ctx.env, budget=ctx.budget())
         sides = {entry["instanceId"]: entry["resources"] for entry in report["operations"]}
-        variants = []
+        variants, live = [], None
         for salt in salts:
             episode = shadow.build_episode(report, "analyze", "git", request=request, salt=salt)
             shadow.validate_episode(episode)
             if len(episode["pairs"]) != 1 or episode["pairs"][0]["resourceHashes"] is None:
                 raise ValueError
             variants.append(episode["pairs"][0]["resourceHashes"])
+            if salt == live_salt:
+                live = episode
         shared = len(rule.shared_canonical(sides["left"], sides["right"]))
     except Exception:  # noqa: BLE001 - any analysis failure is the closed reason, never its text
         raise replay._Unlabelled("analysis-error") from None
-    return variants, shared
+    return variants, shared, live
 
 
 def record_wave(repository, heads, *, owner_email: str | None = None, base: str | None = None,
@@ -130,6 +138,8 @@ def record_wave(repository, heads, *, owner_email: str | None = None, base: str 
             salts = observer.candidate_salts(secret, observer.candidate_roots(home=home))
             if not salts:
                 raise RecordError("no-salt")
+            registered = observer.registered_root(home=home)
+            live_salt = shadow._repo_salt(secret, registered[0]) if registered else None
             version = replay.git_version(ctx)
             old_git = version is None or version < replay.MIN_GIT
             shallow_answer = ctx.git(root, "rev-parse", "--is-shallow-repository", budget=ctx.budget(commands=4))
@@ -141,7 +151,7 @@ def record_wave(repository, heads, *, owner_email: str | None = None, base: str 
             if len(oids) < 2:
                 raise RecordError("too-few-heads")
             base_oid = _resolve(ctx, root, base, budget) if base is not None else None
-            records, skipped, unlabelled, enumerated = [], Counter(), Counter(), 0
+            records, episodes, skipped, unlabelled, enumerated = [], [], Counter(), Counter(), 0
             for left, right in itertools.combinations(oids, 2):
                 enumerated += 1
                 pair = replay._Pair("branch-tip", left, right)
@@ -161,8 +171,9 @@ def record_wave(repository, heads, *, owner_email: str | None = None, base: str 
                     request = replay._request(root, pair)
                     if base_oid is not None:
                         request["baseRevision"] = base_oid
-                    variants, shared = _pair_variants(ctx, request, salts)
+                    variants, shared, episode = _pair_variants(ctx, request, salts, live_salt)
                     records.append(outcomes.make_record(kind, day, variants, shared))
+                    episodes.append(episode)
                 except replay._Unlabelled as exc:
                     unlabelled[exc.reason] += 1
                 except (GitCommandFailure, GitInfrastructureFailure, OSError):
@@ -178,7 +189,57 @@ def record_wave(repository, heads, *, owner_email: str | None = None, base: str 
                           "skipped": {name: skipped.get(name, 0) for name in SKIPPED},
                           "unlabelled": {name: unlabelled.get(name, 0) for name in UNLABELLED}},
                 "retentionDays": gate.RETENTION_DAYS, "limits": list(LIMITS)}
-    return {"records": records, "evidence": evidence}
+    return {"records": records, "episodes": episodes, "systemOne": registered[1] if registered else "off",
+            "evidence": evidence}
+
+
+def _pair_key(hashes: dict) -> tuple:
+    """The pair as the observer matches it: both sides (unordered) and the shared list."""
+    return (tuple(sorted((tuple(hashes["left"]), tuple(hashes["right"])))), tuple(hashes["shared"]))
+
+
+def new_episodes(result: dict, run_day: date, *, replay_pairs=()) -> tuple:
+    """`(episodes, counts)`: replay episodes to store, one per pair resource lists not already stored.
+
+    Needs the registry's explicit `shadow` or `advise` consent (REQ-001), a run day equal to the day the
+    episode will carry (`shadow.today()`, else `day-mismatch`: no backfill), and an outcome record the
+    retention rule keeps. `replay_pairs` are the `(day, pair)` already in the replay store (its retention
+    window), so a rerun, on any day, never doubles a pair. Writes nothing.
+    """
+    records = result["records"]
+    if result["systemOne"] not in ("shadow", "advise"):
+        return [], {"consent-off": len(records)}
+    if run_day != shadow.today():
+        return [], {"day-mismatch": len(records)}
+    seen = {_pair_key(pair["resourceHashes"]) for _, pair in replay_pairs}
+    counts, fresh = Counter(), []
+    for record, episode in zip(records, result["episodes"]):
+        if episode is None:
+            counts["no-episode-built"] += 1
+            continue
+        try:
+            gate.require_retained(date.fromisoformat(record["day"]), run_day)
+        except gate.GateRefusal as refusal:
+            counts["refused:" + refusal.code] += 1
+            continue
+        key = _pair_key(episode["pairs"][0]["resourceHashes"])
+        if key in seen:
+            counts["duplicate"] += 1
+            continue
+        seen.add(key)
+        fresh.append(episode)
+    return fresh, counts
+
+
+def write_episodes(episodes, counts: Counter) -> dict:
+    """Append the episodes to the replay store; a refused append is counted and retried by the next run."""
+    for episode in episodes:
+        try:
+            shadow.append(episode, replay=True)
+            counts["written"] += 1
+        except shadow.StoreRefused as refusal:
+            counts["refused:" + str(refusal)] += 1
+    return dict(counts)
 
 
 def _require_ignored(directory: Path) -> None:
@@ -209,8 +270,13 @@ def main(argv=None, *, home: Path | None = None, consent_path: Path | None = Non
         if args.write:
             directory = outcomes.store_directory(home=home)
             _require_ignored(directory)
-            evidence["store"] = dict(outcomes.write_records(directory, result["records"],
-                                                            run_day or replay.today()))
+            today = run_day or replay.today()
+            replay_pairs = observer.read_episodes(today, Counter(), replay=True)
+            fresh, episode_counts = new_episodes(result, today, replay_pairs=replay_pairs)
+            # Episodes first: a crash or a refused outcome write leaves no outcome without its episode, and a rerun
+            # finds the stored episode by its pair, so it neither doubles it nor loses the record.
+            evidence["episodes"] = write_episodes(fresh, Counter(episode_counts))
+            evidence["store"] = dict(outcomes.write_records(directory, result["records"], today))
     except (gate.GateRefusal, RecordError, outcomes.MergeOutcomeError) as refusal:
         print("refused: " + refusal.code, file=sys.stderr)
         return 2

@@ -14,7 +14,7 @@ as the package.
 
 | Step | Command | What it does |
 |---|---|---|
-| 1 | `python3 scripts/spec066_record_merge_outcomes.py --repository REPO --head REV --head REV ... --write` | Labels every pair of the given heads with `git merge-tree` and stores the outcomes. Without `--write` it is a dry run (also the default). |
+| 1 | `python3 scripts/spec066_record_merge_outcomes.py --repository REPO --head REV --head REV ... --write` | Labels every pair of the given heads with `git merge-tree` and stores the outcomes. With `--write` and `systemOne` consent `shadow` or `advise`, it also stores one replay episode per new pair in a separate store (see below). Without `--write` it is a dry run (also the default). |
 | 2 | `python3 scripts/spec066_s15b_observe.py --write` | Joins stored outcomes to the shadow episodes, appends joined records, writes the evidence JSON and applies the automatic rollback. `--yield-report` (the default) prints the same counts and writes nothing, and cannot roll back. |
 | 3 | `agent-braid system-one report [--format json]` | Counts the retained shadow episodes per day and System 2 class. Optional context; the daily numbers below come from step 2. |
 
@@ -55,7 +55,7 @@ s1_daily() (
   if [ "${#heads[@]}" -ge 4 ]; then
     (cd "$repo" && "$py" scripts/spec066_record_merge_outcomes.py --repository "$repo" "${heads[@]}" $write) |
       jq -c '{recorded: .pairs.recorded, enumerated: .pairs.enumerated, byKind: .pairs.byKind,
-              skipped: .pairs.skipped, unlabelled: .pairs.unlabelled, store}' || exit 1
+              skipped: .pairs.skipped, unlabelled: .pairs.unlabelled, store, episodes}' || exit 1
   else
     echo "fewer than 2 heads: recorder skipped (nothing lost; the next run starts from $since)"
     stamp=$since
@@ -92,6 +92,39 @@ chunks are not labelled. Branches merged by someone else, or deleted objects tha
 cannot be fetched, are skipped by the recorder and counted (`author-excluded`,
 `objects-missing`), not silently dropped.
 
+## Replay episodes
+
+Live shadow episodes are written only when `analyze-work` runs, so a quiet week
+leaves nothing to join. To avoid that, step 1 with `--write` also stores, for each
+pair it labels, the episode of the same pair of heads: the same analysis a live call
+runs, salted with the registered source root, with the rule's answer and without the
+verdict. These replay episodes live in their own store, `system-one-replay/` beside
+`system-one/`, never in the live one. Rules, stated plainly:
+
+- **Separate, descriptive only.** The observer joins an outcome to a live episode when
+  it can and to a replay episode only when no live episode matches. Replay joins are
+  counted as `joined-replay` and reported under `replayDescriptive`. The
+  false-independence report, the Wilson bound, the D7 automatic rollback and the D8
+  packet use live joins only.
+- **True by construction.** The join of these pairs holds because both sides come from
+  the same analysis. The episode is built after the merge and its day is the recorder
+  run day. The rule reads only the two heads and never sees the verdict.
+- **No doubling.** One replay episode is stored per pair resource lists, checked against
+  the replay store's retained episodes, so a rerun on any day does not store a second
+  one. The episode is stored before the outcome record, so a crash between the two
+  leaves no outcome without its episode. A refused episode is counted as `refused:*`;
+  rerunning the same heads stores it, because the check is by pair, not by record.
+  A pair whose first replay episode is older than the 7-day join window gets no new
+  episode, so its later outcome stays `no-episode`.
+- **No backfill.** With `--day` other than today nothing is stored (`day-mismatch`), and
+  an outcome record older than the retention window gets no episode. Without the
+  registry's `shadow` or `advise` consent nothing is stored (`consent-off`).
+  `episodes` in the recorder evidence counts `written`, `duplicate`, `no-episode-built`
+  and `refused:*`.
+- **Revocation.** `agent-braid system-one purge` removes both stores
+  (`replayFilesRemoved`). Outcome records from before this step have no episode and
+  stay `no-episode`.
+
 ## Reading the output
 
 | Line | Meaning |
@@ -105,6 +138,7 @@ cannot be fetched, are skipped by the recorder and counted (`author-excluded`,
 
 The bound is over advised pairs with a textual `git merge-tree` verdict. It is not a
 calibrated accuracy, and a merge-clean pair is not proven semantically independent.
+The unjoined counters mean: `no-episode` (no episode within the 7 days before the outcome), `pair-unmatched` (episodes exist in the window but none has the same left, right and shared resource pseudonym lists as the outcome; a salt outside the candidate set is not told apart from a list mismatch), `truncated` (a side has 32 or more resources).
 A yield of zero joined outcomes is valid: pairs with a deleted or unsupported path,
 more than 31 resources on a side, or no matching episode stay unjoined.
 

@@ -146,10 +146,10 @@ class JoinTests(Base):
     def test_no_match_counters_are_split(self):
         self.put_secret()
         none, _ = self.observe([self.outcome()])
-        self.assertEqual((none.counts["no-episode"], none.counts["salt-unmatched"]), (1, 0))
+        self.assertEqual((none.counts["no-episode"], none.counts["pair-unmatched"]), (1, 0))
         self.put_episodes([self.episode("conflicting", str(self.adm))])
         miss, _ = self.observe([self.outcome("disjoint")])
-        self.assertEqual((miss.counts["no-episode"], miss.counts["salt-unmatched"]), (0, 1))
+        self.assertEqual((miss.counts["no-episode"], miss.counts["pair-unmatched"]), (0, 1))
         self.assertEqual(miss.records, [])
 
     def test_episode_outside_the_seven_day_window_does_not_join(self):
@@ -188,7 +188,7 @@ class JoinTests(Base):
         self.put_episodes([self.episode("conflicting", str(self.exc1))])
         result, _ = self.observe([self.outcome()])
         self.assertEqual(result.records, [])
-        self.assertEqual(result.counts["salt-unmatched"], 1)
+        self.assertEqual(result.counts["pair-unmatched"], 1)
         before = self.listing(self.store)
         observer.write_records(result.records, TODAY)
         observer.purge()
@@ -282,7 +282,7 @@ class RobustnessTests(Base):
         (self.store / shadow.SALT_FILE).write_bytes(b"short")
         os.chmod(self.store / shadow.SALT_FILE, 0o600)
         result, _ = self.observe([self.outcome()])
-        self.assertEqual((result.counts["secret-unsafe"], result.counts["no-salt"], result.counts["salt-unmatched"]),
+        self.assertEqual((result.counts["secret-unsafe"], result.counts["no-salt"], result.counts["pair-unmatched"]),
                          (1, 1, 0))
         self.put_secret()
         (self.home / "registry.json").unlink()

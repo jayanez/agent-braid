@@ -38,6 +38,9 @@ LIMITS = [
     "Episodes of workspaces other than the admitted one are never joined, persisted or purged.",
     "Merge outcomes come from the owner's own branch-head pairs through git merge-tree: textual cleanliness, not "
     "semantic independence; a pair with a deleted or unsupported path cannot be matched to an episode.",
+    "Joins to replay episodes (the merge-outcome recorder's separate store) are reported under replayDescriptive "
+    "only: true by construction, built after the merge, record day is the recorder run day. They are not in "
+    "falseIndependence, the Wilson bound, the D7 rollback or the D8 packet.",
     "falseIndependent counts joined merge-conflict outcomes on pairs the DP-1 rule answered likely-independent; "
     "the Wilson bound is over advised pairs with a textual verdict and is not a calibrated accuracy.",
 ]
@@ -63,9 +66,10 @@ def build_evidence(mode: str, today, *, sources=None, home=None, consent_path=No
     counts.update({key: value for key, value in sorted(result.counts.items()) if key.startswith("refused:")})
     evidence = {"schema": EVIDENCE_SCHEMA, "date": today.isoformat(), "mode": mode,
                 "counts": counts, "joinedByOutcomeKind": {
-                    kind: sum(1 for record in result.records if record["outcomeKind"] == kind)
+                    kind: sum(1 for record in observer.live(result.records) if record["outcomeKind"] == kind)
                     for kind in observer.OUTCOME_KINDS},
                 "falseIndependence": observer.false_independence(retained, result.counts["advised-pairs"]),
+                "replayDescriptive": observer.replay_summary(retained, result.counts["advised-pairs-replay"]),
                 "inventory": observer.inventory(home=home, consent_path=consent_path, locations=locations),
                 "positiveControl": observer.positive_control(),
                 "limits": list(LIMITS), "executionAuthorization": False}
