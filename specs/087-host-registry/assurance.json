@@ -159,7 +159,7 @@
           "when": "a code search and the guard test (REQ-010) run"
         }
       ],
-      "text": "One registry.. One module names every supported host. After the change, no other module in `agent_braid/` or `scripts/` declares a collection of host identifiers; each site listed in the plan reads the registry instead."
+      "text": "One registry.. One module names every supported host. After the change, no module in `agent_braid/` or `scripts/` outside the ten exception files of the plan declares a collection of host identifiers; each site listed in the plan reads the registry or is a feature-owned table pinned to it."
     },
     {
       "id": "REQ-003",
@@ -181,7 +181,7 @@
       "id": "REQ-004",
       "scenarios": [
         {
-          "given": "each surface that takes a host (the plugin CLI `--host`, the viewer `view env --host`, the Lightning configuration, the tooling measurement configuration)",
+          "given": "each surface that takes a host (the plugin CLI `--host`, the tooling CLI `--host`, the viewer `view env --host`, the Lightning configuration, the tooling measurement configuration)",
           "id": "SC-004",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004.",
@@ -191,7 +191,7 @@
           "when": "`claude` and `claude-code` are supplied to a surface whose capability includes that host"
         }
       ],
-      "text": "Input aliases.. Every host input accepts each canonical identifier and the alias `claude`, and normalizes the alias to `claude-code` before use. An unknown value still ends in the same refusal code or error path the surface has today."
+      "text": "Input aliases.. Every host input accepts each canonical identifier and the alias `claude` for the hosts the surface supports, and normalizes the alias to `claude-code` before use. An unsupported or unknown value still ends in the surface's existing refusal: its refusal code where it has one, and for argparse options exit status 2 with no other output."
     },
     {
       "id": "REQ-005",
@@ -203,11 +203,11 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T004, T010.",
           "test_file": "specs/087-host-registry/validation-plan.md",
           "test_name": "procedure_005",
-          "then": "the output bytes are identical.",
+          "then": "the output bytes are identical, except argparse usage, help and invalid-choice text.",
           "when": "each runs before and after the change on the same input"
         }
       ],
-      "text": "Stored spelling preserved.. Each surface writes and reads the spelling it writes and reads today. The registry exposes, per host and surface, that stored spelling. For the same input, every output, receipt, record and JSON document is byte-identical to the one produced before the change."
+      "text": "Stored spelling preserved.. Each surface writes and reads the spelling it writes and reads today. The registry exposes, per host and surface, that stored spelling. For the same input, every output, receipt, record and JSON document is byte-identical to the one produced before the change. The one exemption is argparse usage, help and invalid-choice text, which may additionally list `claude-code`."
     },
     {
       "id": "REQ-006",
@@ -223,7 +223,7 @@
           "when": "each capability query is evaluated"
         }
       ],
-      "text": "Capability queries keep today's membership.. Each existing per-feature host set becomes a capability query on the registry that returns exactly today's members, in today's order, as listed in the plan's membership table."
+      "text": "Capability queries keep today's membership.. Each existing per-feature host set becomes a capability query on the registry that returns exactly today's members. A capability is an ordered tuple fixed in the registry, and its order is the order of the sites that observe order today (iterated, serialized, hashed or listed), as listed in the plan's membership table. Membership-only sites do not constrain order."
     },
     {
       "id": "REQ-007",
@@ -261,17 +261,17 @@
       "id": "REQ-009",
       "scenarios": [
         {
-          "given": "the Lightning credential and binary tables, the Lightning tool-name table and the subscription authentication table",
+          "given": "each feature-owned table of the plan",
           "id": "SC-009",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005.",
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005, T006.",
           "test_file": "specs/087-host-registry/validation-plan.md",
           "test_name": "procedure_009",
           "then": "each key set equals its capability query; and when a key is added to a table without the capability, then the test fails.",
           "when": "the key-set test runs"
         }
       ],
-      "text": "Per-host data stays with its feature.. The registry MUST NOT hold per-host credentials, credential variable names, binary names, authentication labels or tool-name tables. Those tables stay in their feature modules, keyed by canonical identifier, and a test requires each table's key set to equal the matching capability query."
+      "text": "Per-host data stays with its feature.. The registry MUST NOT hold per-host credentials, credential variable names, binary names, authentication labels, origins, parsers, tool-name or event tables, or harness qualification rows. Those tables stay in their feature modules, and a test requires the key set of each table the plan lists (`_PROFILES`, `_AUTH`, `_ORIGINS`, the model-identity tables, the Lightning runner tables, `META_TOOLS`, `PARSERS`, `HOST_SUPPORT`, `_MODELED`) to equal the matching capability query, in the surface's stored spelling."
     },
     {
       "id": "REQ-010",
@@ -283,11 +283,11 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T007.",
           "test_file": "specs/087-host-registry/validation-plan.md",
           "test_name": "procedure_010",
-          "then": "it passes with only the recorded exceptions; and given a fixture module that declares `(\"codex\", \"claude-code\")`, then the guard reports it.",
+          "then": "it passes with only the ten listed exception files; and given a fixture module that declares `(\"codex\", \"claude-code\")`, then the guard reports it.",
           "when": "the guard test runs"
         }
       ],
-      "text": "Guard against loose host lists.. A test fails in CI when `agent_braid/` or `scripts/` declares a literal collection of host identifiers outside the registry, with an explicit, minimal exception list that names each exception and its reason."
+      "text": "Guard against loose host lists.. A test fails in CI when `agent_braid/` or `scripts/` declares a literal collection of two or more host identifiers outside the registry, except in the ten files the plan lists with a reason each. The guard reuses the scan that records the baseline (T002)."
     },
     {
       "id": "REQ-011",
@@ -399,7 +399,7 @@
           "when": "the guard and key-set tests run"
         }
       ],
-      "text": "Documented extension path.. The contributor documentation states how a host is added: one registry entry, its capability flags, its stored spellings and the feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no edit to any other host list."
+      "text": "Documented extension path.. (Proposed by the author as the proof of OD-4; OD-5 asks the owner to confirm it.) The contributor documentation states how a host is added: one registry entry, its capability flags, its stored spellings and the feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no edit to any other host list."
     }
   ],
   "scientific_limits": "Engineering, not a research protocol. Differential equality at one commit; no claim about host behavior, qualification or install success. A passing profile is not human review or approval.",

@@ -9,11 +9,13 @@ this specification's first PR. Code waits for owner approval of the spec and pla
 
 ## Purpose and scope
 
-Host identity is spread over about fifteen literal lists, with two spellings of the
+Host identity is spread over 63 literal collections in 36 files (34 of them product
+code), with two spellings of the
 Claude Code identifier (`claude` and `claude-code`).
 Adding a host, for example Codex in Braid Lightning (SPEC-088) or Pi and ThinkRail
 (SPEC-081), means finding and editing every list, and a missed list fails silently.
-Verified on `develop` at 2a524884 on 2026-11-27; the sites are named in the
+Counted on 2026-11-27 by an AST scan of `agent_braid/` and `scripts/` on `develop` at
+2a524884; the sites and the 29 listed exceptions are in the
 [plan](plan.md#host-sites-verified-2026-11-27).
 
 This is engineering, not a research protocol. It adds one registry module that names
@@ -63,8 +65,9 @@ Exclusions (each is a MUST NOT, stated with its REQ ID below):
   rejected.
 
 **REQ-002 One registry.** One module names every supported host. After the change, no
-other module in `agent_braid/` or `scripts/` declares a collection of host identifiers;
-each site listed in the plan reads the registry instead.
+module in `agent_braid/` or `scripts/` outside the ten exception files of the plan
+declares a collection of host identifiers; each site listed in the plan reads the
+registry or is a feature-owned table pinned to it.
 
 - **SC-002:** Given the registry and the sites listed in the plan, when a code search and
   the guard test (REQ-010) run, then every listed site obtains its hosts from the
@@ -77,11 +80,14 @@ each site listed in the plan reads the registry instead.
   `codex`, `claude-code` and `opencode`, in that order, with no other value.
 
 **REQ-004 Input aliases.** Every host input accepts each canonical identifier and the
-alias `claude`, and normalizes the alias to `claude-code` before use. An unknown value
-still ends in the same refusal code or error path the surface has today.
+alias `claude` for the hosts the surface supports, and normalizes the alias to
+`claude-code` before use. An unsupported or unknown value still ends in the surface's
+existing refusal: its refusal code where it has one, and for argparse options exit
+status 2 with no other output.
 
-- **SC-004:** Given each surface that takes a host (the plugin CLI `--host`, the viewer
-  `view env --host`, the Lightning configuration, the tooling measurement configuration),
+- **SC-004:** Given each surface that takes a host (the plugin CLI `--host`, the tooling
+  CLI `--host`, the viewer `view env --host`, the Lightning configuration, the tooling
+  measurement configuration),
   when `claude` and `claude-code` are supplied to a surface whose capability includes
   that host, then both are accepted and select the same host; when a host the surface
   does not support today is supplied (for example `codex` for Lightning), then the
@@ -91,15 +97,18 @@ still ends in the same refusal code or error path the surface has today.
 **REQ-005 Stored spelling preserved.** Each surface writes and reads the spelling it
 writes and reads today. The registry exposes, per host and surface, that stored
 spelling. For the same input, every output, receipt, record and JSON document is
-byte-identical to the one produced before the change.
+byte-identical to the one produced before the change. The one exemption is argparse
+usage, help and invalid-choice text, which may additionally list `claude-code`.
 
 - **SC-005:** Given recorded fixtures for each surface listed in the plan's spelling
   table, when each runs before and after the change on the same input, then the output
-  bytes are identical.
+  bytes are identical, except argparse usage, help and invalid-choice text.
 
 **REQ-006 Capability queries keep today's membership.** Each existing per-feature host
-set becomes a capability query on the registry that returns exactly today's members, in
-today's order, as listed in the plan's membership table.
+set becomes a capability query on the registry that returns exactly today's members. A
+capability is an ordered tuple fixed in the registry, and its order is the order of the
+sites that observe order today (iterated, serialized, hashed or listed), as listed in
+the plan's membership table. Membership-only sites do not constrain order.
 
 - **SC-006:** Given the membership table recorded from `develop` at 2a524884, when each
   capability query is evaluated, then its members and order equal the recorded set; and
@@ -123,22 +132,24 @@ spelling (`claude`, `codex`, `opencode`, in file order) as the stored spelling o
   surface is altered, then it fails.
 
 **REQ-009 Per-host data stays with its feature.** The registry MUST NOT hold per-host
-credentials, credential variable names, binary names, authentication labels or
-tool-name tables. Those tables stay in their feature modules, keyed by canonical
-identifier, and a test requires each table's key set to equal the matching capability
-query.
+credentials, credential variable names, binary names, authentication labels, origins,
+parsers, tool-name or event tables, or harness qualification rows. Those tables stay in
+their feature modules, and a test requires the key set of each table the plan lists
+(`_PROFILES`, `_AUTH`, `_ORIGINS`, the model-identity tables, the Lightning runner
+tables, `META_TOOLS`, `PARSERS`, `HOST_SUPPORT`, `_MODELED`) to equal the matching
+capability query, in the surface's stored spelling.
 
-- **SC-009:** Given the Lightning credential and binary tables, the Lightning tool-name
-  table and the subscription authentication table, when the key-set test runs, then each
-  key set equals its capability query; and when a key is added to a table without the
+- **SC-009:** Given each feature-owned table of the plan, when the key-set test runs,
+  then each key set equals its capability query; and when a key is added to a table without the
   capability, then the test fails.
 
 **REQ-010 Guard against loose host lists.** A test fails in CI when `agent_braid/` or
-`scripts/` declares a literal collection of host identifiers outside the registry, with
-an explicit, minimal exception list that names each exception and its reason.
+`scripts/` declares a literal collection of two or more host identifiers outside the
+registry, except in the ten files the plan lists with a reason each. The guard reuses
+the scan that records the baseline (T002).
 
 - **SC-010:** Given the tree after the change, when the guard test runs, then it passes
-  with only the recorded exceptions; and given a fixture module that declares
+  with only the ten listed exception files; and given a fixture module that declares
   `("codex", "claude-code")`, then the guard reports it.
 
 **REQ-011 Pure registry.** Importing or querying the registry MUST NOT read the
@@ -192,7 +203,8 @@ registry terms follow those of SPEC-080 and SPEC-081 and say so.
   `specs/` other than `specs/087-host-registry/`, none is `CONSTITUTION.md` or its
   replica, and no closed specification changes.
 
-**REQ-017 Documented extension path.** The contributor documentation states how a host
+**REQ-017 Documented extension path.** (Proposed by the author as the proof of OD-4;
+OD-5 asks the owner to confirm it.) The contributor documentation states how a host
 is added: one registry entry, its capability flags, its stored spellings and the
 feature-owned tables of REQ-009. A test using a fake host proves that adding it needs no
 edit to any other host list.
@@ -236,7 +248,7 @@ edit to any other host list.
   `host-events`, `lightning`, `tooling`.
 - **Capability:** a named, closed property of a host that today's code expresses as
   membership in a per-feature list. Allowed values: `plugin-assets`,
-  `tooling-measurement`, `subscription-auth`, `host-events`, `lightning-run`,
+  `tooling-measurement`, `host-events`, `lightning-run`,
   `lightning-tool-classes`, `harness-gated`, `harness-inventory`, `viewer-hosts`; T001
   may rename them (REQ-006).
 - **Capability query:** a registry function that returns the hosts having a capability,
@@ -265,8 +277,12 @@ Engineering, not a research protocol; no hypothesis.
 
 ## Owner decisions
 
-All decided on 2026-11-27 in the author session; nothing remains open. See
-[Open questions](#open-questions).
+The owner answered OD-1 to OD-4 on 2026-11-27 through four AskUserQuestion prompts in the
+author session (Spanish, with options, examples, risks and a recommendation), choosing
+the recommended option each time. The orchestrator's binding decisions of the same day
+(canonical `claude-code`, `claude` as input alias, no migration of frozen data, behavior
+preserving, Host parity milestone, priority before SPEC-088) are the premise of OD-1 and
+OD-2. OD-5 is not decided.
 
 - **OD-1 `hosts.json`.** Decided: leave the file unchanged and check it against the
   registry. Rejected: change it to `claude-code`, which changes packaged bytes,
@@ -275,10 +291,16 @@ All decided on 2026-11-27 in the author session; nothing remains open. See
   normalize; each surface keeps writing its current spelling (REQ-004, REQ-005).
   Rejected: write `claude-code` everywhere, which breaks frozen formats.
 - **OD-3 Per-host data.** Decided: credentials, binaries, authentication labels and
-  tool-name tables stay in their feature modules, keyed by canonical identifier
-  (REQ-009). Rejected: put them in the registry.
+  tool-name tables stay in their feature modules (REQ-009). Rejected: put them in the
+  registry.
 - **OD-4 Guard.** Decided: a CI test fails on new loose host lists, with an explicit
   exception list (REQ-010). Rejected: convention only.
+- **OD-5 Exceptions and fake-host proof (open).** The ten exception files of the plan
+  and the fake-host test of REQ-017 are the author's proposals, derived from the AST scan
+  and the closed or non-host nature of each file; the owner has not answered them. Options
+  for the SPEC-069 drivers: keep them as exceptions (recommended: closed evidence tied to
+  recorded held-out runs, SPEC-088 migrates what it touches) or migrate them here (larger
+  diff, risk to recorded evidence). Owner confirms in T001.
 
 ## Risks and assumptions
 
@@ -289,6 +311,10 @@ All decided on 2026-11-27 in the author session; nothing remains open. See
 - Risk: a capability name is read as a qualification claim (REQ-014, T001).
 - Risk: SPEC-088 and SPEC-081 land before this registry and add their own lists
   (REQ-002, T007).
+- Risk: an argparse `choices` change alters help or invalid-choice text that a test or a
+  document quotes (REQ-004, T004).
+- Risk: the AST scan misses a host list built dynamically or from another constant
+  (REQ-010, T007).
 - Assumption: every module and script that lists hosts can import the registry from the
   same package (REQ-002, T003).
 - Assumption: the membership table recorded at 2a524884 is the behavior to preserve
@@ -305,7 +331,8 @@ before and after differential records of T010 attached. Passing checks are not a
 
 ## Open questions
 
-No unresolved questions.
+- OD-5: confirm the ten exception files and the fake-host test (REQ-017), or move the
+  SPEC-069 drivers into scope. Owner: the founder, at T001.
 
 ## Dependencies
 

@@ -10,60 +10,87 @@ through it later; this plan implements neither.
 
 ### Host sites (verified 2026-11-27)
 
-Verified by reading each site on `develop` at 2a524884. Line numbers drift; the guard
-test (REQ-010), not this table, is the lasting check.
+An AST scan of `agent_braid/` and `scripts/` on `develop` at 2a524884 (tuples, lists,
+sets and dictionaries with two or more of `codex`, `claude`, `claude-code`, `opencode`
+as string constants) finds **63 collections in 36 files**, plus the packaged
+`integrations/agent-braid/hosts.json`. 34 collections are product code and are replaced
+or pinned by this change; 29 are listed exceptions (below). Line numbers drift; the guard
+test (REQ-010) and the scan baseline (T002), not this table, are the lasting check.
 
-| # | Site | Today | Becomes |
-|---|---|---|---|
-| 1 | `integrations/agent-braid/hosts.json` | `["codex","claude","opencode"]` | unchanged; checked against the registry (REQ-008) |
-| 2 | `agent_braid/plugin_cli.py:36` | `--host` choices `('codex','claude','opencode')` | `plugin-assets` query; `claude` and `claude-code` accepted |
-| 3 | `agent_braid/tooling_hosts.py:33`, `:315` | `_SUPPORTED_HOSTS={"codex","claude-code"}`; `"codex" if … else "claude"` conversion | `tooling-measurement` query; conversion becomes `spelling(host, "host-events")` |
-| 4 | `agent_braid/tooling_host_events.py:16` | `Host=Literal["codex","claude"]` | `host-events` query with stored spelling; the type stays a closed literal derived from it |
-| 5 | `agent_braid/lightning_config.py:25` | `HOSTS=('claude-code','opencode')` | `lightning-run` query |
-| 6 | `agent_braid/lightning_runner.py:54`, `:319`, `:323` | `CREDENTIALS`, `_fake_binary` and `_host_binary` dictionaries keyed by host | feature-owned tables, key sets equal `lightning-run` (REQ-009) |
-| 7 | `agent_braid/lightning_hosts.py:40` | `META_TOOLS` keyed `claude-code`, `codex`, `opencode` | feature-owned table, key set equals `lightning-tool-classes` |
-| 8 | `agent_braid/harness_hosts.py:36`, `:45` | `GATED_HOSTS=("claude","codex")`; `_ITEMS` labels to `claude`, `codex` | `harness-gated` query with stored spelling; `_ITEMS` labels stay |
-| 9 | `agent_braid/harness_components.py:79` (docstring `:41`) | `HOSTS=("claude","codex","opencode")` | `harness-inventory` query with stored spelling |
-| 10 | `agent_braid/view_cli.py:49` | `HOSTS=("claude","codex")` | `viewer-hosts` query with stored spelling |
-| 11 | `agent_braid/view_loom.py:53` | `HOSTS=("braid","claude","codex","other")` | `("braid", *viewer-hosts, "other")`; `braid` and `other` stay viewer labels (REQ-015) |
-| 12 | `agent_braid/tooling_subscription.py:23` | `_AUTH={"codex":"chatgpt","claude-code":"claude.ai"}` | feature-owned table, key set equals `subscription-auth` |
-| 13 | `agent_braid/tooling_install.py:728-745` (`_PROFILES`), `:448`, `:1276` | profile keys `codex`, `claude`, `opencode`; branch on `"claude"`; `hosts.json` equality check | keys and branches from `plugin-assets`; `:1276` compares with the registry's stored spelling |
-| 14 | `scripts/build_native_plugin.py:427` | `{'hosts': ['codex','claude','opencode']}` in provenance | read from the registry's `plugin-assets` stored spelling; bytes unchanged |
-| 15 | `scripts/reproduce_native_plugin.py:155`, `:204` | provenance equality; loop over `codex`, `claude` | same registry reads |
+**Replaced or pinned (34 collections).** "Order today" is the order in the source.
 
-Not hosts, kept where they are: the viewer labels `braid` and `other` (site 11), the
-harness qualification rows (`observedBuild`, `qualification`, REQ-013), the per-host
-credentials, binaries, authentication labels and tool-name tables (sites 6, 7, 12;
-REQ-009).
+| # | Site | Today (order today) | Becomes | Task |
+|---|---|---|---|---|
+| 1 | `integrations/agent-braid/hosts.json` | `codex, claude, opencode` | unchanged; checked against the registry (REQ-008) | T006 |
+| 2 | `agent_braid/plugin_cli.py:36` | `--host` choices `codex, claude, opencode` | `plugin-assets` | T006 |
+| 3 | `agent_braid/tooling_cli.py:37` | `--host` choices `codex, claude, opencode` | `plugin-assets` | T006 |
+| 4 | `agent_braid/tooling_install.py:728` (`_PROFILES`), `:448`, `:1276` | keys `codex, claude, opencode`; branch on `"claude"`; `hosts.json` equality | profile table keyed by `plugin-assets` (key-set test); `:1276` compares the registry's stored spelling | T006 |
+| 5 | `scripts/build_native_plugin.py:427` | provenance `codex, claude, opencode` | registry `plugin-assets` stored spelling; bytes unchanged | T006 |
+| 6 | `scripts/reproduce_native_plugin.py:155` | provenance equality `codex, claude, opencode` | same registry read | T006 |
+| 7 | `agent_braid/tooling_hosts.py:33`, `:315` | set `codex, claude-code`; `"codex" if … else "claude"` | `tooling-measurement`; conversion is `spelling(host, "host-events")` | T005 |
+| 8 | `agent_braid/tooling_evaluation.py:35` | `HOSTS` `codex, claude-code` | `tooling-measurement` | T005 |
+| 9 | `agent_braid/tooling_human_audit.py:29` | `HOSTS` `codex, claude-code` | `tooling-measurement` | T005 |
+| 10 | `agent_braid/tooling_subscription_estimate.py:28` | frozenset `codex, claude-code` | `tooling-measurement` | T005 |
+| 11 | `agent_braid/tooling_subscription.py:23` | `_AUTH` keys `codex, claude-code` | table stays; key set equals `tooling-measurement` | T005 |
+| 12 | `agent_braid/tooling_interface_observer.py:28` | `_ORIGINS` keys `codex, claude-code` | table stays; key set equals `tooling-measurement` | T005 |
+| 13 | `agent_braid/tooling_model_identity.py:93`, `:94`, `:110` | provider, authentication and domain tables keyed `codex, claude-code` | tables stay; key sets equal `tooling-measurement` | T005 |
+| 14 | `agent_braid/tooling_host_events.py:16`, `:183` | `Literal` and membership test `codex, claude` | `host-events` with stored spelling | T005 |
+| 15 | `agent_braid/tooling_incremental_usage.py:25`, `:182` | `Literal` and membership test `claude, codex` (membership only, order unobservable) | `host-events` with stored spelling | T005 |
+| 16 | `agent_braid/lightning_config.py:25` | `HOSTS` `claude-code, opencode` | `lightning-run` | T005 |
+| 17 | `agent_braid/lightning_schema.py:37` | `HOSTS` `claude-code, opencode` | `lightning-run` | T005 |
+| 18 | `agent_braid/lightning_export.py:863` | membership test `claude-code, opencode` | `lightning-run` | T005 |
+| 19 | `agent_braid/lightning_runner.py:54`, `:319`, `:323` | credential, fake-binary and binary tables keyed `claude-code, opencode` | tables stay; key sets equal `lightning-run` | T005 |
+| 20 | `agent_braid/lightning_hosts.py:40`, `:383` | `META_TOOLS` and `PARSERS` keyed `claude-code, codex, opencode` | tables stay; key sets equal `lightning-tool-classes` | T005 |
+| 21 | `agent_braid/harness_hosts.py:36`, `:42` | `GATED_HOSTS` `claude, codex`; `_ITEMS` labels | `harness-gated` with stored spelling; `_ITEMS` labels stay | T006 |
+| 22 | `agent_braid/harness_components.py:79`, `:80` | `HOSTS` `claude, codex, opencode`; `GATED_HOSTS` `claude, codex` | `harness-inventory`, `harness-gated` with stored spelling | T006 |
+| 23 | `agent_braid/harness_components.py:95` | `HOST_SUPPORT` keys `claude, codex, opencode` (rows with `observedBuild`, `qualification`) | rows stay unchanged; key set equals `harness-inventory` | T006 |
+| 24 | `agent_braid/harness_hooks.py:70` | `_MODELED` keys `claude, codex` | table stays; key set equals `harness-gated` | T006 |
+| 25 | `agent_braid/view_cli.py:49` | `HOSTS` `claude, codex` | `viewer-hosts` with stored spelling | T006 |
+| 26 | `agent_braid/view_loom.py:53` | `HOSTS` `braid, claude, codex, other` | `("braid", *viewer-hosts, "other")`; `braid` and `other` stay viewer labels (REQ-015) | T006 |
+
+Rows 2 to 26 account for 34 collections (rows with several lines count each line).
+
+**Listed exceptions (29 collections in 10 files).** The guard test (REQ-010) allows
+exactly these files; each reason is a claim T001 confirms (OD-5).
+
+| Files | Collections | Reason |
+|---|---|---|
+| `scripts/spec069_native_runs.py`, `scripts/spec069_scoring.py`, `scripts/spec069_capture_t005_evidence.py`, `scripts/spec069_host_probe.py` | 18 | SPEC-069 and SPEC-072 measurement drivers: host-keyed driver tables and `REQUIRED_HOSTS` tied to recorded held-out evidence. SPEC-088 owns the Codex amendment of `REQUIRED_HOSTS`, so it migrates what it touches. |
+| `scripts/run_m45_skills_acceptance.py` | 2 | Closed M4.5 acceptance checklist producer; its output is bound to recorded receipts. |
+| `scripts/spec066_t030_receipt.py` | 1 | Receipt field names (`claudeCode`, `codex`, `opencode`), not a host collection. |
+| `scripts/spec_kit.py`, `scripts/test_spec_kit_integration.py`, `scripts/validate_spec_kit.py`, `scripts/validate_m0_closure.py` | 8 | Spec Kit agent integrations (`codex`, `claude` assistants of the Spec Kit tooling), not Agent Braid hosts. |
+
+Not hosts, kept where they are: the viewer labels `braid` and `other`, the harness
+qualification rows (`observedBuild`, `qualification`, REQ-013), and the per-host
+credentials, binaries, authentication labels, origins, parsers, tool-name and event
+tables (REQ-009).
 
 ### Membership table (recorded behavior, REQ-006)
 
-Hosts are canonical identifiers, listed in registry order. The proposed capability names
-are descriptive; T001 may rename them before code.
+A capability is an ordered tuple of canonical identifiers. Its order is the order its
+observable sites have today; sites that only test membership (rows 14, 15, 18) do not
+constrain order. T002 generates this table from the scan and fails if a site's observable
+order differs.
 
-| Capability | Members | Stored spelling (claude / codex / opencode) | Source sites |
+| Capability | Members, in order | Stored spelling | Sites |
 |---|---|---|---|
-| `plugin-assets` | `codex`, `claude-code`, `opencode` | `claude` / `codex` / `opencode` | 1, 2, 13, 14, 15 |
-| `tooling-measurement` | `codex`, `claude-code` | `claude-code` / `codex` | 3 |
-| `subscription-auth` | `codex`, `claude-code` | `claude-code` / `codex` | 12 |
-| `host-events` | `codex`, `claude-code` | `claude` / `codex` | 3, 4 |
-| `lightning-run` | `claude-code`, `opencode` | `claude-code` / `opencode` | 5, 6 |
-| `lightning-tool-classes` | `codex`, `claude-code`, `opencode` | `claude-code` / `codex` / `opencode` | 7 |
-| `harness-gated` | `codex`, `claude-code` | `claude` / `codex` | 8 |
-| `harness-inventory` | `codex`, `claude-code`, `opencode` | `claude` / `codex` / `opencode` | 9 |
-| `viewer-hosts` | `codex`, `claude-code` | `claude` / `codex` | 10, 11 |
+| `plugin-assets` | `codex`, `claude-code`, `opencode` | `codex`, `claude`, `opencode` | 1 to 6 |
+| `tooling-measurement` | `codex`, `claude-code` | `codex`, `claude-code` | 7 to 13 |
+| `host-events` | `codex`, `claude-code` | `codex`, `claude` | 14, 15 |
+| `lightning-run` | `claude-code`, `opencode` | `claude-code`, `opencode` | 16 to 19 |
+| `lightning-tool-classes` | `claude-code`, `codex`, `opencode` | `claude-code`, `codex`, `opencode` | 20 |
+| `harness-gated` | `claude-code`, `codex` | `claude`, `codex` | 21, 22, 24 |
+| `harness-inventory` | `claude-code`, `codex`, `opencode` | `claude`, `codex`, `opencode` | 22, 23 |
+| `viewer-hosts` | `claude-code`, `codex` | `claude`, `codex` | 25, 26 |
 
-Order inside a query follows the registry (`codex`, `claude-code`, `opencode`); a surface
-whose current list has another order keeps its order through its stored spelling list
-(for example Lightning's `claude-code`, `opencode`), recorded by the differential test
-(T002, T010).
+The proposed capability names are descriptive; T001 may rename them before code.
 
 ### Stored spelling by surface (REQ-005)
 
-Surfaces: `plugin-assets` (`hosts.json`, the plugin CLI, installer profiles and
-receipts, provenance) writes `claude`; `harness` writes `claude`; `viewer` writes
+Surfaces: `plugin-assets` (`hosts.json`, the plugin and tooling CLIs, installer profiles
+and receipts, provenance) writes `claude`; `harness` writes `claude`; `viewer` writes
 `claude`; `host-events` writes `claude`; `lightning` writes `claude-code`; `tooling`
-writes `claude-code`. `codex` and `opencode` have one spelling everywhere.
+(measurement) writes `claude-code`. `codex` and `opencode` have one spelling everywhere.
 
 ## Constitution check before research
 
@@ -100,25 +127,33 @@ No MUST conflict found.
   `spellings` by surface, `capabilities`), a constant tuple of the three hosts, and pure
   functions `normalize(value)` (alias or canonical to canonical, else `None`),
   `hosts_with(capability)` (canonical identifiers in registry order),
-  `spelling(host, surface)` and `from_spelling(surface, value)`. Surfaces and
+  `spelling(host, surface)` and `from_spelling(surface, value)`. Each capability is an
+  ordered tuple of canonical identifiers fixed in the module, so `hosts_with` returns the
+  order the observable sites have today, not the host record order. Surfaces and
   capabilities are closed string constants. Unknown surface, capability or host raises
   `ValueError`; consumers keep their own refusal text.
 - **Consumers.** Each site reads a query at import or call time instead of declaring a
   list. Input paths call `normalize` first; stored and output paths call `spelling`.
   Existing refusal codes, messages and JSON shapes stay.
-- **Feature-owned tables.** Dictionaries keyed by host stay in place, keyed by canonical
-  identifier where they are not already; a test compares each key set with its query.
-- **Guard.** A test walks the AST of `agent_braid/` and `scripts/` and reports a tuple,
-  list, set, frozenset or dict whose string constants include two or more host
-  identifiers or the alias, outside `host_registry.py` and an exception list. Initial
-  exceptions are named in T007 (for example `hosts.json` readers' expected-value checks
-  and frozen format constants) with a reason each.
+- **Feature-owned tables.** Dictionaries keyed by host stay in place (`META_TOOLS`,
+  `PARSERS`, `HOST_SUPPORT`, `_MODELED`, `_AUTH`, `_ORIGINS`, the model-identity and
+  Lightning runner tables, `_PROFILES`), keyed by canonical identifier where they are not
+  already, or by the surface's stored spelling where a frozen format requires it; a test
+  compares each key set with its query.
+- **Guard.** The scan of T002 (AST walk of `agent_braid/` and `scripts/` for tuples,
+  lists, sets and dictionaries with two or more host identifiers or the alias) is one
+  module reused by the baseline recorder and the guard test, outside `host_registry.py`
+  and the ten exception files above.
+- **Argparse text.** `--host` options normalize through the registry. Usage, help and
+  invalid-choice text may list `claude-code` in addition; exit status and the absence of
+  other output stay (REQ-004, REQ-005).
 - **Rollback.** Revert the code PR; no data changed, so nothing to restore.
 
 ## Validation strategy
 
-- Differential record first (T002): export today's membership, per-surface stored
-  spellings and the outputs of the fixture commands from `develop` at 2a524884.
+- Differential record first (T002): generate today's membership, order and stored
+  spellings from the AST scan, and record the outputs of the fixture commands, from
+  `develop` at 2a524884.
 - Tests per requirement as in [tasks.md](tasks.md), each with a mutation control: add a
   host, drop a host, change a stored spelling, edit `hosts.json`, add a loose list.
 - Existing suites for Lightning, harness, viewer, tooling install, host events and
@@ -136,14 +171,16 @@ differ by surface on purpose, to keep frozen data valid (REQ-005, REQ-012).
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-4 were decided on 2026-11-27 and are recorded in the spec. T001 records the
-owner's review of the final text, including the capability names, before code.
+OD-1 to OD-4 were answered by the owner on 2026-11-27 (see the spec). OD-5, the exception
+list and the fake-host test, is open: T001 records the owner's review of the final text,
+including the capability names, before code.
 
 ## Affected files for the later code phase (named, not edited)
 
 - New: `agent_braid/host_registry.py`, `tests/test_host_registry.py`,
   `tests/test_host_registry_guard.py`.
-- Changed: the sites in the table above except `hosts.json`.
+- New: `scripts/host_scan.py` (the AST scan shared by the baseline and the guard).
+- Changed: sites 2 to 26 of the table above.
 - Docs: `docs/tooling/HOSTS.md` (how a host is added), `AGENTS.md` or the contributor
   guide line that points to it.
 - Unchanged by rule: `integrations/agent-braid/hosts.json`, frozen records and
