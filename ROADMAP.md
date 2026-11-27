@@ -495,7 +495,8 @@ issue #1080). [SPEC-069](specs/069-aim-request-authoring/spec.md) T001–T015 ar
 [ADR 0038](docs/adr/0038-analyze-work-request-contract.md) was accepted on 2026-11-07.
 The work shipped in `0.1.0-alpha.8` (2026-11-13, #1345) and is carried in
 `0.1.0-alpha.9`. T008 and T010 closed with an accepted D4 deviation (#1322); the D4
-gap is follow-up #1343 (Deferred). SPEC-069 is still a draft: its freeze and owner
+gap was follow-up #1343, closed as not planned on 2026-11-26
+([triage Q3](docs/development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado)). SPEC-069 is still a draft: its freeze and owner
 review are pending.
 
 **Objective:** host models in Claude Code, Codex and OpenCode author a valid
