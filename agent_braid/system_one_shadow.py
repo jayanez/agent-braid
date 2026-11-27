@@ -926,14 +926,24 @@ def purge() -> dict:
 
     The separate replay store goes with it (`replayFilesRemoved`, present when one existed).
     """
+    failure, result, removed = None, None, 0
     try:
-        removed = _purge_replay()['replayFilesRemoved']
-    except OSError:
-        raise StoreRefused('unavailable') from None
-    extra = {'replayFilesRemoved': removed} if removed else {}
+        result = _purge_live()
+    except (OSError, ValueError) as exc:
+        failure = exc
+    try:
+        removed = _purge_replay()['replayFilesRemoved']  # attempted even when the live purge failed
+    except (OSError, ValueError) as exc:
+        failure = failure or (StoreRefused('unavailable') if isinstance(exc, OSError) else exc)
+    if failure is not None:
+        raise failure
+    return {**result, **({'replayFilesRemoved': removed} if removed else {})}
+
+
+def _purge_live() -> dict:
     root = _store_root(create=False)
     if root is None:
-        return {'status': 'empty', 'externalCopies': 'not-removed', **extra}
+        return {'status': 'empty', 'externalCopies': 'not-removed'}
     try:
         with _Lock(root) as lock:
             days, others = _listing(root)
@@ -947,7 +957,7 @@ def purge() -> dict:
             lock.path.unlink()
     except OSError:
         raise StoreRefused('unavailable') from None
-    result = {'status': 'purged', 'filesRemoved': len(days) + 1 + salted, 'externalCopies': 'not-removed', **extra}
+    result = {'status': 'purged', 'filesRemoved': len(days) + 1 + salted, 'externalCopies': 'not-removed'}
     if others:
         result['leftover'] = [entry.name for entry in others]
     else:

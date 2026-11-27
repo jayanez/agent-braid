@@ -269,8 +269,8 @@ episodeRetentionDays: 30}`. It never reports episode contents.
 - **REQ-403 Replay episodes from merge outcomes (amendment 2026-11-27, owner
   decision).** Live shadow episodes exist only when `analyze-work` is used, so a
   quiet week leaves nothing for the outcome observer to join. The merge-outcome
-  recorder (T405) therefore also writes, for each new outcome record, the replay
-  episode of the same pair of heads, under the same consent and privacy rules as
+  recorder (T405) therefore also writes, for each labelled pair of heads not already
+  in the replay store, the replay episode of that pair, under the same consent and privacy rules as
   REQ-104. Acceptance: (a) replay episodes go to their own user-local store beside
   the live one, never into it, with the same closed episode schema, the same
   `shadow`/`advise` consent gate and the same retention, and

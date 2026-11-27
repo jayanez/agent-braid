@@ -114,6 +114,8 @@ verdict. These replay episodes live in their own store, `system-one-replay/` bes
   one. The episode is stored before the outcome record, so a crash between the two
   leaves no outcome without its episode. A refused episode is counted as `refused:*`;
   rerunning the same heads stores it, because the check is by pair, not by record.
+  A pair whose first replay episode is older than the 7-day join window gets no new
+  episode, so its later outcome stays `no-episode`.
 - **No backfill.** With `--day` other than today nothing is stored (`day-mismatch`), and
   an outcome record older than the retention window gets no episode. Without the
   registry's `shadow` or `advise` consent nothing is stored (`consent-off`).

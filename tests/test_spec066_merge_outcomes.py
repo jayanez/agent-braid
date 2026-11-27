@@ -293,6 +293,13 @@ class RecorderTests(Base):
         self.assertEqual(removed["replayFilesRemoved"], 2)
         self.assertFalse(self.replay_store.exists())
 
+    def test_a_failing_replay_purge_does_not_delay_the_live_purge(self):
+        self.run_write("shadow")
+        with mock.patch.object(shadow, "_purge_replay", side_effect=OSError):
+            with self.assertRaises(shadow.StoreRefused):
+                shadow.purge()
+        self.assertFalse((self.store / shadow.SALT_FILE).exists())
+
     def test_no_episode_is_stored_without_shadow_consent(self):
         evidence = self.run_write(None)
         self.assertEqual(evidence["episodes"], {"consent-off": 1})
