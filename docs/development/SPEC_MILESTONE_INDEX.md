@@ -53,21 +53,16 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-038: m4-real-workload-closure](../../specs/038-m4-real-workload-closure/spec.md) | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) |
 | [SPEC-039: ai-tooling-program](../../specs/039-ai-tooling-program/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 | [SPEC-040: portable-mcp-surface](../../specs/040-portable-mcp-surface/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-| [SPEC-041: ai-tooling-skills](../../specs/041-ai-tooling-skills/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
+| [SPEC-041: ai-tooling-skills](../../specs/041-ai-tooling-skills/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
 | [SPEC-042: ai-tooling-packaging](../../specs/042-ai-tooling-packaging/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-| [SPEC-043: ai-tooling-journey](../../specs/043-ai-tooling-journey/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-| [SPEC-044: ai-tooling-evaluation](../../specs/044-ai-tooling-evaluation/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-
+| [SPEC-043: ai-tooling-journey](../../specs/043-ai-tooling-journey/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
+| [SPEC-044: ai-tooling-evaluation](../../specs/044-ai-tooling-evaluation/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
 | [SPEC-045: local-forecasting-capabilities](../../specs/045-local-forecasting-capabilities/spec.md) | [FC.2 — Local forecasting capabilities](https://github.com/jayanez/agent-braid/milestone/20) |
-
 | [SPEC-051: owned-work-evaluation](../../specs/051-owned-work-evaluation/spec.md) | [FC.2 — Local forecasting capabilities](https://github.com/jayanez/agent-braid/milestone/20) |
-
-| [SPEC-046: native-ai-plugins](../../specs/046-native-ai-plugins/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-
+| [SPEC-046: native-ai-plugins](../../specs/046-native-ai-plugins/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
 | [SPEC-047: local-technical-telemetry](../../specs/047-local-technical-telemetry/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-
-| [SPEC-060: portable-prompt-names](../../specs/060-portable-prompt-names/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
-
+| [SPEC-054: plugin-surface-naming](../../specs/054-plugin-surface-naming/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
+| [SPEC-060: portable-prompt-names](../../specs/060-portable-prompt-names/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
 | [SPEC-068: opencode-native-integration](../../specs/068-opencode-native-integration/spec.md) | [M4.7 — AI tooling integration for OpenCode](https://github.com/jayanez/agent-braid/milestone/27) (closed; plugin `0.1.0-alpha.7` published 2026-11-04) |
 | [SPEC-069: aim-request-authoring](../../specs/069-aim-request-authoring/spec.md) | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) (closed 2026-11-13; draft, freeze and human review pending) |
 | [SPEC-070: braid-lightning-foundations](../../specs/070-braid-lightning-foundations/spec.md) | [BL.0 — Braid Lightning foundations](https://github.com/jayanez/agent-braid/milestone/29) (closed 2026-11-08; approved, review bound to `c0b6956e`) |
@@ -79,8 +74,21 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-076: lightning-local-grpo](../../specs/076-lightning-local-grpo/spec.md) | Deferred (Deferred milestone #24; draft, human review pending) |
 | [SPEC-078: lightning-heldout-v2](../../specs/078-lightning-heldout-v2/spec.md) | [BL.2b — Lightning held-out re-evaluation](https://github.com/jayanez/agent-braid/milestone/35) (open; draft, human review pending) |
 | [SPEC-079: kind-choice-tool-fix](../../specs/079-kind-choice-tool-fix/spec.md) | [BL.2c — Lightning tool-level kind-choice fix](https://github.com/jayanez/agent-braid/milestone/36) (open; draft, human review pending; issues #1503–#1513) |
+| [SPEC-065: native-claude-containment](../../specs/065-native-claude-containment/spec.md) | [HAR.1 — Braid Harness laboratory](https://github.com/jayanez/agent-braid/milestone/21) |
+| [SPEC-067: assurance-profiles](../../specs/067-assurance-profiles/spec.md) | [HAR.3 — Braid Harness adaptation and integration](https://github.com/jayanez/agent-braid/milestone/23) |
+| [SPEC-077: harness-mcp-readonly](../../specs/077-harness-mcp-readonly/spec.md) | [Deferred](https://github.com/jayanez/agent-braid/milestone/24) |
+| [SPEC-080: harness-skill-every-host](../../specs/080-harness-skill-every-host/spec.md) | [HAR.3 — Braid Harness adaptation and integration](https://github.com/jayanez/agent-braid/milestone/23) |
+| [SPEC-081: pi-thinkrail-host-integration](../../specs/081-pi-thinkrail-host-integration/spec.md) | [M4.9 — AI tooling integration for Pi and ThinkRail](https://github.com/jayanez/agent-braid/milestone/38) |
+| [SPEC-082: harness-task-qa-infra-controls](../../specs/082-harness-task-qa-infra-controls/spec.md) | [HAR.4 — Harness evaluation platform](https://github.com/jayanez/agent-braid/milestone/37) |
+| [SPEC-083: capability-regression-evals](../../specs/083-capability-regression-evals/spec.md) | [HAR.4 — Harness evaluation platform](https://github.com/jayanez/agent-braid/milestone/37) |
+| [SPEC-084: harbor-evaluation-substrate](../../specs/084-harbor-evaluation-substrate/spec.md) | [HAR.4 — Harness evaluation platform](https://github.com/jayanez/agent-braid/milestone/37) |
+| [SPEC-085: harness-promotion-pointers](../../specs/085-harness-promotion-pointers/spec.md) | [HAR.4 — Harness evaluation platform](https://github.com/jayanez/agent-braid/milestone/37) |
+| [SPEC-086: harness-otel-telemetry](../../specs/086-harness-otel-telemetry/spec.md) | [HAR.4 — Harness evaluation platform](https://github.com/jayanez/agent-braid/milestone/37) |
+| [SPEC-087: host-registry](../../specs/087-host-registry/spec.md) | [Host parity](https://github.com/jayanez/agent-braid/milestone/39) |
+| [SPEC-088: lightning-codex-host](../../specs/088-lightning-codex-host/spec.md) | [Host parity](https://github.com/jayanez/agent-braid/milestone/39) |
+| [SPEC-089: analyze-work-validity-codex-opencode](../../specs/089-analyze-work-validity-codex-opencode/spec.md) | [Host parity](https://github.com/jayanez/agent-braid/milestone/39) |
 
-The current source inventory has 59 active specs across 26 declared milestone identities; SPEC-051 extends FC.2/#20; M4.6 (SPEC-052, SPEC-053 and SPEC-057 to SPEC-059) is in progress (SPEC-052 host verification and native gate runs recorded; nothing released) and its local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts; VIS.1 (SPEC-061) is a draft planning addition whose milestone and issues are created only after merge through the reviewed tracking reconciliation. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047, SPEC-054 and draft SPEC-060 extend M4.5/#19. For M4.5: ten source specs, 131 task obligations (102 checked, 29 unchecked), 3 historically closed parents, 1 closed SPEC-054 parent and 6 open parents: 141 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
+On 2026-11-27 the source inventory has 84 specs across 40 declared milestone identities; every spec appears once in this index. Earlier inventory note (historical): SPEC-051 extends FC.2/#20; M4.6 (SPEC-052, SPEC-053 and SPEC-057 to SPEC-059) is in progress (SPEC-052 host verification and native gate runs recorded; nothing released) and its local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts; VIS.1 (SPEC-061) is a draft planning addition whose milestone and issues are created only after merge through the reviewed tracking reconciliation. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047, SPEC-054 and draft SPEC-060 extend M4.5/#19. For M4.5: ten source specs, 131 task obligations (102 checked, 29 unchecked), 3 historically closed parents, 1 closed SPEC-054 parent and 6 open parents: 141 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
