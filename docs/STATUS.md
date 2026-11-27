@@ -81,8 +81,8 @@ reads 0 / 111, closed. The decisions are in the
 
 ### Parked work and reopen triggers
 
-What stays in Deferred #24 after the 2026-11-26 triage (57 kept issues plus one new
-measurement issue; none is accepted, cancelled or authorized by being parked). The
+What stays in Deferred #24 after the 2026-11-26 triage (57 kept issues plus the
+new measurement issue [#1700](https://github.com/jayanez/agent-braid/issues/1700); none is accepted, cancelled or authorized by being parked). The
 full wording is only in the [triage record](development/deferred-triage-20261126.md);
 this table is a pointer. A review date raises a warning in the weekly tracking audit
 until it is removed (see [GitHub tracking](development/GITHUB_TRACKING.md#parked-work-review-dates)).
@@ -97,6 +97,7 @@ until it is removed (see [GitHub tracking](development/GITHUB_TRACKING.md#parked
 | SPEC-041/043 closure | #426, #427, #448, #449 | T001–T008 of the same spec closed or closed by owner decision | – | [Q6](development/deferred-triage-20261126.md#q6-closure-bookkeeping--mantener-parked-con-trigger-recomendado) |
 | SPEC-043 tasks | #440, #442, #447 | the observation criteria of the 2026-10-31 M4.5 record | – | [Q7](development/deferred-triage-20261126.md#q7-spec-043-440-442-447--parked-con-criterio-del-record-recomendado) |
 | Parents SPEC-041, SPEC-043 | #417, #439 | follow their child tasks | – | [Q8](development/deferred-triage-20261126.md#q8-parents-417-spec-041-439-spec-043-321-spec-033) |
+| Codex/OpenCode `analyze-work` validity | [#1700](https://github.com/jayanez/agent-braid/issues/1700) | SPEC-079 T010 (#1513) converges and the owner authorizes the measurement | – | [Q3](development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado) |
 
 ## Work merged by 2026-10-24
 
