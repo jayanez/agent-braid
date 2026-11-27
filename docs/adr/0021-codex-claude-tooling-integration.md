@@ -1,6 +1,6 @@
 # ADR 0021: Portable tooling integration for Codex and Claude Code
 
-- **Status:** Proposed; the owner approved preparation of the M4.5 program on
+- **Status:** Proposed — the owner approved preparation of the M4.5 program on
   2026-10-08. This is not a recorded adoption of this ADR or milestone closure.
 - **Date:** 2026-10-08
 - **Constitutional articles:** 0, 3–7, 12–16, 19–25

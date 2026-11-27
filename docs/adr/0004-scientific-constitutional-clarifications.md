@@ -1,6 +1,6 @@
 # ADR 0004: Scientific constitutional clarifications
 
-- **Status:** accepted by the founder on 2026-09-16
+- **Status:** Accepted — by the founder on 2026-09-16
 - **Date:** 2026-09-15
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 6, 8, 13; clause zero unchanged

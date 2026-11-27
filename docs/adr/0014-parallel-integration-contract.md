@@ -1,6 +1,6 @@
 # ADR 0014: Contract boundary for parallel integration
 
-- **Status:** Accepted by explicit founder decision on 2026-09-24 for the bounded T013 prototype. No runtime or promotion authority is granted.
+- **Status:** Accepted — by explicit founder decision on 2026-09-24 for the bounded T013 prototype. No runtime or promotion authority is granted.
 - **Date:** 2026-09-24
 - **Deciders:** Juan Antonio Yáñez García, founder
 - **Constitutional articles:** 6, 7, 12–14, 19–20

@@ -1,6 +1,6 @@
 # ADR 0015: Real-repository M2 validation profile
 
-- **Status:** Accepted by explicit founder decision on 2026-09-25 for the
+- **Status:** Accepted — by explicit founder decision on 2026-09-25 for the
   validation profile only. Repository-code execution remains unauthorized
   pending a separate decision on exact inputs.
 - **Date:** 2026-09-25; accepted 2026-09-25

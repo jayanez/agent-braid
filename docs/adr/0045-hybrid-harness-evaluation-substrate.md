@@ -1,6 +1,6 @@
 # ADR 0045: Hybrid harness evaluation substrate (Harbor containers plus a macOS shadow)
 
-- **Status:** Proposed (2026-11-22). Not accepted, and it implements, installs and runs
+- **Status:** Proposed — (2026-11-22). Not accepted, and it implements, installs and runs
   nothing. The owner chose this direction on 2026-11-22 (F2 in the
   [harnessing benchmark](../strategy/HARNESSING_BENCHMARK.md)). The founder accepts or
   rejects it in the SPEC-084 T001 review.

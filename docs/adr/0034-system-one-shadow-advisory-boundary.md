@@ -1,6 +1,6 @@
 # ADR 0034: System One shadow mode and advisory boundary
 
-- **Status:** accepted as amended by the owner on 2026-11-01 (see [founder decisions](../development/FOUNDER_DECISIONS_20261101.md), decisions 2-3): no external services and no third-party decision models, ever; the learned layer is native. The SPEC-066 scope review (T001) was accepted on the same date ([owner review](../../specs/066-system-one-shadow/owner-review-20261101.md)).
+- **Status:** Accepted — as amended by the owner on 2026-11-01 (see [founder decisions](../development/FOUNDER_DECISIONS_20261101.md), decisions 2-3): no external services and no third-party decision models, ever; the learned layer is native. The SPEC-066 scope review (T001) was accepted on the same date ([owner review](../../specs/066-system-one-shadow/owner-review-20261101.md)).
 - **Date:** 2026-11-01
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 0, 6, 13, 20, 21, 22, 24

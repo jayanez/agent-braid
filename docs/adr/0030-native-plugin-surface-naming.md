@@ -1,6 +1,6 @@
 # ADR 0030: Native plugin surface naming
 
-- **Status:** Accepted on 2026-10-24 by the founder (conversation decision in the
+- **Status:** Accepted — on 2026-10-24 by the founder (conversation decision in the
   SPEC-054 pull request). Adoption authorizes implementation tracks T002–T008
   only; native observation, release, tag and `plugin-dist` publication remain
   separate founder decisions.

@@ -1,6 +1,6 @@
 # ADR 0038: analyze-work request contract
 
-- **Status:** Accepted 2026-11-07 by the owner, Juan Antonio Yáñez García
+- **Status:** Accepted — 2026-11-07 by the owner, Juan Antonio Yáñez García
   ([review record](../../specs/069-aim-request-authoring/reviews/owner-t001-adr-contract-20261107.md)).
   Adoption authorizes no publication, tag, plugin-dist push or release by itself.
 - **Status note (2026-11-07):** the condition of point 7 is met. The P2 baseline

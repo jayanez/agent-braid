@@ -1,6 +1,6 @@
 # ADR 0023: Preserve historical contracts after the second history correction
 
-- **Status:** proposed; founder integration decision pending
+- **Status:** Proposed — founder integration decision pending
 - **Date:** 2026-10-16
 - **Constitutional articles:** 0, 7, 13, 14
 

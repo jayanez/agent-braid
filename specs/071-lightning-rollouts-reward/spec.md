@@ -3,10 +3,12 @@
 **Milestone:** BL.1 — Lightning rollouts and verifiable reward (GitHub milestone
 created by the reviewed tracking reconciliation after merge).
 
-**Status:** draft. Owner decisions L1–L5 of 2026-11-08 apply (see the
+**Status:** validated and closed on 2026-11-11 (owner approval of candidate
+`39a427ae`, PR #1291). Owner decisions L1–L5 of 2026-11-08 apply (see the
 [program](../070-braid-lightning-foundations/program.md)). OD-1 and OD-2 are decided; T001 owner review
 recorded on 2026-11-10 ([review](reviews/owner-t001-20261110.md)).
-`human_review` is pending; this specification grants no execution authority.
+`human_review` is approved ([review record](reviews/owner-review-39a427ae.json));
+this specification grants no execution authority.
 
 ## Purpose and scope
 

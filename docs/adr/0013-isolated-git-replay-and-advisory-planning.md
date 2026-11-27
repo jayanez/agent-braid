@@ -1,6 +1,6 @@
 # ADR 0013: Isolated Git replay and advisory planning
 
-- **Status:** Accepted by explicit founder decision on 2026-09-24 for the bounded first cut.
+- **Status:** Accepted — by explicit founder decision on 2026-09-24 for the bounded first cut.
 - **Date:** 2026-09-23; accepted 2026-09-24
 - **Deciders:** Juan Antonio Yáñez García, founder
 - **Constitutional articles:** 2, 4, 6, 7, 9, 12–14, 19–21, 23–25

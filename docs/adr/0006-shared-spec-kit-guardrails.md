@@ -1,9 +1,7 @@
 # ADR 0006: Shared Spec Kit guardrails for Codex and Claude Code
 
-## Status
-
-Accepted for implementation by the founder's explicit integration request.
-This is not a constitutional amendment or approval of future feature reviews.
+- **Status:** Accepted — for implementation by the founder's explicit integration request.
+  This is not a constitutional amendment or approval of future feature reviews.
 
 ## Context
 

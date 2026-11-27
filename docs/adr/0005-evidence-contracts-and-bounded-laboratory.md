@@ -1,6 +1,6 @@
 # ADR 0005: Evidence contracts and bounded laboratory
 
-- **Status:** accepted by the founder on 2026-09-16
+- **Status:** Accepted — by the founder on 2026-09-16
 - **Date:** 2026-09-15
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 3, 4, 6, 13, 14, 16, 20, 24

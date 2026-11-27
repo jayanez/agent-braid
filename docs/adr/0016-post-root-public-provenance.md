@@ -1,12 +1,10 @@
 # ADR 0016: Post-root public provenance supplement
 
-## Status
-
-Accepted by explicit founder decision on 2026-09-26 for the local provenance
-supplement and portable validation boundary. The
-[decision record](../releases/publication/adr-0016-founder-decision.json) binds
-the reviewed proposal bytes and approval scope. This does not approve a release,
-remote history operation, SPEC-014/015 review or scientific claim.
+- **Status:** Accepted — by explicit founder decision on 2026-09-26 for the local provenance
+  supplement and portable validation boundary. The
+  [decision record](../releases/publication/adr-0016-founder-decision.json) binds
+  the reviewed proposal bytes and approval scope. This does not approve a release,
+  remote history operation, SPEC-014/015 review or scientific claim.
 
 ## Context
 

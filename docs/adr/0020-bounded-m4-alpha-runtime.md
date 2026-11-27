@@ -1,6 +1,6 @@
 # ADR 0020: Complete bounded M4 alpha runtime
 
-- Status: Accepted by explicit founder decision on 2026-10-04 for SPEC-021 candidate 0de9d31; G1 and final closure remain separate gates.
+- **Status:** Accepted — by explicit founder decision on 2026-10-04 for SPEC-021 candidate 0de9d31; G1 and final closure remain separate gates.
 - Date: 2026-10-04
 - Decider: Juan Antonio Yáñez García, founder.
 - Articles: 2–7, 12–16, 19–25.

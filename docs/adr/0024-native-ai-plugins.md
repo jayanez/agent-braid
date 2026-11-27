@@ -1,6 +1,6 @@
 # ADR 0024: Native user-scoped AI plugins
 
-- **Status:** Proposed; owner authorized implementation of the plan on 2026-10-16. This is not capability acceptance or publication approval.
+- **Status:** Proposed — owner authorized implementation of the plan on 2026-10-16. This is not capability acceptance or publication approval.
 - **Date:** 2026-10-16
 - **Articles:** 0, 5, 6, 12–16, 19, 20, 23–25
 

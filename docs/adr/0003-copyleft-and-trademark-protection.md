@@ -1,6 +1,6 @@
 # ADR 0003: Copyleft licensing and trademark protection
 
-- **Status:** accepted
+- **Status:** Accepted
 - **Date:** 2026-09-14
 - **Deciders:** Juan Antonio Yáñez García
 - **Constitutional articles:** 16, 21, 25

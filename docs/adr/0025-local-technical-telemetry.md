@@ -1,6 +1,6 @@
 # ADR 0025: Explicit local aggregate telemetry
 
-- **Status:** proposed; implementation authorized on 2026-10-16, architectural adoption pending
+- **Status:** Proposed — implementation authorized on 2026-10-16, architectural adoption pending
 - **Date:** 2026-10-16
 - **Constitutional articles:** 5, 7, 12–15, 19–21
 

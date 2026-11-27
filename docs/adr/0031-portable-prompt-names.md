@@ -1,6 +1,6 @@
 # ADR 0031: Portable MCP prompt names
 
-- **Status:** Accepted on 2026-10-25 by the founder (conversation decision).
+- **Status:** Accepted — on 2026-10-25 by the founder (conversation decision).
   Adoption authorizes implementation tasks T002-T008 of SPEC-060 only; native
   observation (T009), release (T010), tagging and any package publication remain
   separate founder decisions.

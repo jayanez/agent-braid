@@ -1,6 +1,6 @@
 # ADR 0044: Harness portability tiers and a skill-first harness surface
 
-- **Status:** Accepted on 2026-11-23 by the founder in the SPEC-080 T001 review
+- **Status:** Accepted — on 2026-11-23 by the founder in the SPEC-080 T001 review
   (answer "Aceptar (Recomendado)";
   [record](../../specs/080-harness-skill-every-host/evidence/t001-owner-review.md)).
   Proposed on 2026-11-22. Acceptance authorizes no code, release or execution.

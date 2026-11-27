@@ -1,6 +1,6 @@
 # ADR 0012: MIT boundary for vendored Python skills
 
-- **Status:** accepted by explicit founder decision on 2026-09-23
+- **Status:** Accepted — by explicit founder decision on 2026-09-23
 - **Date:** 2026-09-23
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 16, 21, 25

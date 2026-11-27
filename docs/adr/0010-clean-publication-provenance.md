@@ -1,10 +1,8 @@
 # ADR 0010: Clean publication and portable provenance
 
-## Status
-
-Accepted by explicit founder decision on 2026-09-19. This decision authorizes
-the local architecture and implementation. It does not authorize a remote rename,
-repository creation, push, visibility change, tag or release publication.
+- **Status:** Accepted — by explicit founder decision on 2026-09-19. This decision authorizes
+  the local architecture and implementation. It does not authorize a remote rename,
+  repository creation, push, visibility change, tag or release publication.
 
 ## Context
 
