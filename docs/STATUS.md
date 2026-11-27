@@ -18,7 +18,7 @@ Method: counts computed on 2026-11-26 at `develop` `02b19545` from `specs/`,
 | Item | Value | Source |
 | --- | --- | --- |
 | Specs | 81 (`specs/*/spec.md`), all assigned to a milestone | `specs/`, `github-tracking.json` (`specs`) |
-| Published milestones | 38: 28 closed, 10 open (after the F5 GitHub writes; M4.5 reopened for #425) | GitHub milestones API |
+| Published milestones | 38: 28 closed, 10 open (M4.5 reopened on 2026-11-27 for #425) | GitHub milestones API |
 | Unpublished milestone | 1 (M4.6 — Claude Code dynamic workflows; no remote record) | `github-tracking.json` (`unpublished_milestones`) |
 | Latest plugin release | `0.1.0-alpha.9`, tag `agent-braid--v0.1.0-alpha.9`, published 2026-11-16; rollback target `0.1.0-alpha.8` | [release notes](tooling/RELEASE_NOTES_ALPHA9.md), `git ls-remote --tags` |
 | Python package version | `0.1.0a2` | `pyproject.toml` |
@@ -31,10 +31,11 @@ Issues are open / closed. Closure PRs of 2026-10-31 (#798, #799, #800, #803, #80
 closed M4.5, LAB.1, RES.1, GOV.1, M3.5, FC.1 and PUB.1 and mapped remaining open
 specs to Deferred #24.
 
-The Deferred (#24) and M4.5 (#19) rows and the milestone totals above are
-**post-stage-2 counts**: they hold once the F5 GitHub writes (the closures, the #425
-move and the one new issue) are applied. Before then Deferred reads 72 / 20 and M4.5
-reads 0 / 111, closed. The decisions are in the
+The Deferred (#24) and M4.5 (#19) rows and the milestone totals above include the
+F5 stage-2 GitHub writes applied on 2026-11-27: the 14 closures as not planned,
+#425 moved to M4.5 (reopened for it) and the new issue #1700. The tracking audit
+reports `operations: []`. Before them Deferred read 72 / 20 and M4.5 read 0 / 111,
+closed. The decisions of 2026-11-26 are in the
 [Deferred triage](development/deferred-triage-20261126.md).
 
 | # | Milestone | State | Closed | Issues |
@@ -81,11 +82,13 @@ reads 0 / 111, closed. The decisions are in the
 
 ### Parked work and reopen triggers
 
-What stays in Deferred #24 after the 2026-11-26 triage (57 kept issues plus one new
-measurement issue; none is accepted, cancelled or authorized by being parked). The
-full wording is only in the [triage record](development/deferred-triage-20261126.md);
-this table is a pointer. A review date raises a warning in the weekly tracking audit
-until it is removed (see [GitHub tracking](development/GITHUB_TRACKING.md#parked-work-review-dates)).
+What stays in Deferred #24 after the 2026-11-26 triage (57 kept issues plus the
+new measurement issue [#1700](https://github.com/jayanez/agent-braid/issues/1700),
+which implements the reopen trigger of [triage Q3](development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado);
+none is accepted, cancelled or authorized by being parked). The full wording is
+only in the [triage record](development/deferred-triage-20261126.md); this table is
+a pointer. A review date raises a warning in the weekly tracking audit until it is
+removed (see [GitHub tracking](development/GITHUB_TRACKING.md#parked-work-review-dates)).
 
 | Group | Issues | Reopen when | Review by | Decision |
 | --- | --- | --- | --- | --- |
@@ -97,6 +100,7 @@ until it is removed (see [GitHub tracking](development/GITHUB_TRACKING.md#parked
 | SPEC-041/043 closure | #426, #427, #448, #449 | T001–T008 of the same spec closed or closed by owner decision | – | [Q6](development/deferred-triage-20261126.md#q6-closure-bookkeeping--mantener-parked-con-trigger-recomendado) |
 | SPEC-043 tasks | #440, #442, #447 | the observation criteria of the 2026-10-31 M4.5 record | – | [Q7](development/deferred-triage-20261126.md#q7-spec-043-440-442-447--parked-con-criterio-del-record-recomendado) |
 | Parents SPEC-041, SPEC-043 | #417, #439 | follow their child tasks | – | [Q8](development/deferred-triage-20261126.md#q8-parents-417-spec-041-439-spec-043-321-spec-033) |
+| Codex/OpenCode `analyze-work` validity | [#1700](https://github.com/jayanez/agent-braid/issues/1700) | SPEC-079 T010 (#1513) converges and the owner authorizes the measurement | – | [Q3](development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado) |
 
 ## Work merged by 2026-10-24
 
@@ -239,9 +243,9 @@ acceptance and external review remain distinct.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 122/135 tasks closed (including 10 cancelled SPEC-044 tasks), 13 open, with six closed spec parents (SPEC-039, SPEC-040, SPEC-042, SPEC-044, SPEC-047, SPEC-054) and four open (SPEC-041, SPEC-043, SPEC-046, SPEC-060); SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation and remaining founder decisions are not recorded; the milestone was closed on 2026-10-31 (#799, #800) with remaining specs mapped to Deferred #24. M4.5 was reopened on 2026-11-26 for #425 (SPEC-041 T008, rescued from Deferred; [triage Q5](development/deferred-triage-20261126.md#q5-spec-041-418-423-425--t001t006-parked-t008-rescate-recomendado)). |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 122/135 tasks closed (including 10 cancelled SPEC-044 tasks), 13 open, with six closed spec parents (SPEC-039, SPEC-040, SPEC-042, SPEC-044, SPEC-047, SPEC-054) and four open (SPEC-041, SPEC-043, SPEC-046, SPEC-060); SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation and remaining founder decisions are not recorded; the milestone was closed on 2026-10-31 (#799, #800) with remaining specs mapped to Deferred #24. M4.5 was reopened on 2026-11-27 for #425 (SPEC-041 T008, rescued from Deferred, decided 2026-11-26; [triage Q5](development/deferred-triage-20261126.md#q5-spec-041-418-423-425--t001t006-parked-t008-rescate-recomendado)). |
 | Integration | [M4.7 — AI tooling integration for OpenCode](https://github.com/jayanez/agent-braid/milestone/27) | **Closed 2026-11-05** (plugin `0.1.0-alpha.7` published 2026-11-04). SPEC-068 T001 to T011 are done and plugin `0.1.0-alpha.7` is published ([record](../specs/068-opencode-native-integration/release-acceptance-alpha7.md)); Linux, native host installs of alpha.7 in Claude Code and Codex, and T010 row 23 are not observed, and the `analyze-work` AIM schema limit is tracked in issue #1080. M4.5 is not reopened. |
-| Integration | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) | **Closed 2026-11-13.** [SPEC-069](../specs/069-aim-request-authoring/spec.md) T001–T015 done; [ADR 0038](adr/0038-analyze-work-request-contract.md) (accepted 2026-11-07) defines the published, tested `analyze-work` request contract for host models (origin issue #1080). Released in `0.1.0-alpha.8` (2026-11-13, record PR #1345) and carried in `0.1.0-alpha.9`. T008/T010 closed with an accepted D4 deviation (#1322); the D4 gap was follow-up #1343, closed as not planned on 2026-11-26 ([triage Q3](development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado)). SPEC-069 is still a draft: its freeze and owner review are pending. |
+| Integration | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) | **Closed 2026-11-13.** [SPEC-069](../specs/069-aim-request-authoring/spec.md) T001–T015 done; [ADR 0038](adr/0038-analyze-work-request-contract.md) (accepted 2026-11-07) defines the published, tested `analyze-work` request contract for host models (origin issue #1080). Released in `0.1.0-alpha.8` (2026-11-13, record PR #1345) and carried in `0.1.0-alpha.9`. T008/T010 closed with an accepted D4 deviation (#1322); the D4 gap was follow-up #1343, decided 2026-11-26 ([triage Q3](development/deferred-triage-20261126.md#q3-1343-analyze-work-d4--cerrar-superado-por-079-recomendado)) and closed as not planned on 2026-11-27. SPEC-069 is still a draft: its freeze and owner review are pending. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | The preview is public; historical publication authorization reconciliation is tracked separately (closure PR #806, 2026-10-31). |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | Issue state does not confer human or founder approval (closure PR #803, 2026-10-31). |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | Synthetic-only T002/T004 software is complete; zero real pairs are admitted. Tasks T001, T007, T003 and T005 are open for source admission, protocol, real-feed adaptation, experiment and review; they sit in Deferred #24 since the milestone closed on 2026-10-31 (#803). |
