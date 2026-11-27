@@ -1,0 +1,407 @@
+{
+  "articles": [
+    0,
+    5,
+    13,
+    14,
+    19,
+    20
+  ],
+  "assumptions": "The SPEC-069 driver works for Codex inside the Lightning profile. The SPEC-071 consent gate is host-agnostic. Codex CLI 0.162.0 or newer is the supported stream shape. SPEC-087 registry code exists before this change. The Lightning host-site inventory recorded at 65f101ba is complete.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "c80de0ce5391e597f58c7be78ddc8bc460c32a6abdd29c0d647909fb534efc84",
+      "docs/adr/0001-formalization-before-implementation.md": "4277851acfb78c1c42fa89e69745c311d54f4c4253cb04a9b5af1d38c1425b6e",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "cadbc7d514b43a58cdeaf5ef01ef4e8a8cb7ba10f02ffdddbbf1e20a90bbbcbb",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "a1dadefebeed2bbcf28f6cb268f79210515dd21040b54833c088e1dc03f69019",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "882478fd2966602af9f8cd646fd8d883a4a6cc5309ddb253e166a4426c94401f",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "ca8ff188e3b8bbf149065efe2058f9ee859b83744f067072e9c2c1e0c1f6303a",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "e493af9dd31d1d6296211a795571279b4205543cf5bec8f8d7033178161b7573",
+      "docs/adr/0007-read-only-python-analyzer.md": "df9df5ec22135439dbbac63007db33762cd19dd3d4fef14ed18bb3d4ccbb2c4d",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "016e6f728b0e69fbd56d4f15f48817210bedf4574dc47efd87d33f72057f6665",
+      "docs/adr/0009-transparent-validation-status.md": "6d44bea11643f90c6312bc6895ef59ffb9d91b0476c52b72613b3fc638e41a6a",
+      "docs/adr/0010-clean-publication-provenance.md": "bc8fffe963c4a7b2a878efc907ced423cb6642ed51442d9abaab94a8e838d2c2",
+      "docs/adr/0011-risk-based-validation-gates.md": "44a3362d4b6f2ff329512654ed444cb6f2d093c5871a5912709d99ebd37cc2f4",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "206057a2ebdab5e1b50d7ea5294aa260d4ddd4d99ce5d2a6029d8dafb74291fa",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "244f8c7e22f5c3ae5a473ab06de5e34ff52ac425e54956fb70d8d658624db543",
+      "docs/adr/0014-parallel-integration-contract.md": "627d34c516e48a4a761fc9d4bb230b8a2ec3e193e9248e06eecf13b6268ef254",
+      "docs/adr/0015-real-repository-validation-profile.md": "664a028024fdf2097c1cfcc8d60a99b8540b05e6593fe9cadac52507d588e58a",
+      "docs/adr/0016-post-root-public-provenance.md": "dab388d3e01bec24817f2d0907d077971125c1f3e26665c79e6bb4ce06b49518",
+      "docs/adr/0017-bounded-structured-exchange.md": "2c5bd456938837313fedfa0e7cc677d483b5835b5e0b4f5c71cf47b8a0b9465e",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "3a394e5aa5088575470cac17f2f359a3665d7767cc39ac1696ac1905c1d29c8a",
+      "docs/adr/0019-bounded-local-git-runtime.md": "64a253d60f0ee0ca962794562941ee0441e55af6f0c39f3b71e20c45acaf71d4",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "9dcf0b3ed71b7eb68b7a32247ca7fb1fc7c8885d3125bc67de6ccf5c93531020",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "010fc99e3d17533ccd2e7bb41b7fe21a4762889e8fd3ffd7d42e462953196ac4",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "13d35571a01897d9f3f8a05ed8cd6e7080bdfa2043b1fe789b3ca55ceb878bf3",
+      "docs/adr/0023-second-history-correction-equivalence.md": "b87be90cad0a96806144ae08611f5ef9c6c926b75dc0d34b0e8fa455f0eda380",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "26ef7a9aa1d2a25a49737414ee8044b0e8dea21d3bb8fe7257a668fb60d56478",
+      "docs/adr/0025-local-technical-telemetry.md": "e49d05c57153344ee3366bdd96826a2dd3cd73a0111da97ef9ee985c34ec716d",
+      "docs/adr/0026-pure-owned-work-validation.md": "117eaf4c3cd2dd56999f3580747bc575deccc474285f0653914caad3b1dc6172",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "90da1579982c6a86384c0de0ea125da6b13d4707a918134e039cece1509ab6b9",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "d3ab6b5c93c2c21311721659bfad5ee863bb260b2394a0a2176a2ec6ee18ced7",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "9137ba4952ec46bfd2d123cec54346fabc2835f238737bc235601ffd4ffc0ffe",
+      "docs/adr/0031-portable-prompt-names.md": "00ab10fa03e4d0f6b5ddca15cbe08b189ff7a8b90bbbc423ec7b37a967973da3",
+      "docs/adr/0032-activity-viewer-companion.md": "bca08826416f4cbc06fa61ebcb5f5578a476326b6697077dc46e49bc0805d5cd",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fabde19d7cd5209eb1de4c892ec01d57341d7e3474f68f414fbc0ea486a7d9cd",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "2ef1124558ecd992f2a3bd740edf7452911121eb7b04d7bbceca65ce4485b012",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "18acdade757d498756571bb0b10ec216e5461b8aa4f8259e6c8c134f425a113d",
+      "docs/adr/0036-assurance-profiles.md": "22e43a44bec9d95fcac2ecd7e203817e1d0a7d56e5ab791b57d2f7f8025df06c",
+      "docs/adr/0037-opencode-native-plugin.md": "0c12c3be4f988ce3ac2ab67582313cf1a7412d922a33b0c2b61ae9816bd035ca",
+      "docs/adr/0038-analyze-work-request-contract.md": "887cd3025a07eba3525abe33c41e98e27c300d87e09dc9a411374e4e3d98dc65",
+      "docs/adr/0039-braid-lightning-boundary.md": "56286e36d06a61a956db6f5400bc1045daa8a5d7abca65d3389d1c62842db098",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "fdb5496011db77d0bcd17d49a7784daf317844b8a92efe4cb939fd52d6dcb96a",
+      "docs/adr/0041-braid-lightning-content-traces.md": "188cc3f85b6051f1af9d1a423acc78b75bab8b46cc8c0846eee060643be2166a",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "fcec8771db27e9d0b33e63bdfb76296c28804f103c419ff92d42e2febeaccf50",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
+      "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
+      "docs/adr/README.md": "22e4cb4de6ca5f9b26f6f4042530b2518d0b29f4af9daef76216b2d76cfbc3be",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive for Codex. Defaults, stored records, digests and outputs for claude-code and opencode are unchanged; a reader that predates the change refuses Codex records. Rollback removes codex from the capability and tables and deletes the fixture.",
+  "domain": "The Braid Lightning host path in agent_braid/lightning_*.py and the SPEC-087 registry at the recorded commit; one Codex build as observed by T003.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "None until T011. The change runs fake hosts only; a real Codex rollout is a separate task that needs the owner's explicit yes. executionAuthorization stays false in every plan output.",
+  "human_review": "pending",
+  "hypotheses": "None; engineering specification.",
+  "observation_contract": "The differential record of claude-code and opencode outputs taken from develop before the change (T002) and Codex stream observations recorded by T003; equality of bytes and sets after the change. Equality shows no change for existing hosts at one commit, not that Codex works.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/tooling/HOST_EVENTS.md",
+    "docs/tooling/LIGHTNING.md",
+    "docs/tooling/NATIVE_PLUGINS.md",
+    "specs/071-lightning-rollouts-reward/contracts/refusals.md",
+    "specs/087-host-registry/spec.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "this spec and plan",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T001.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_001",
+          "then": "each open question is decided or deferred in a dated record and the spec is approved, amended or rejected.",
+          "when": "the owner reviews them"
+        }
+      ],
+      "text": "Owner review before code.. The spec and plan are reviewed before any code."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "the registry after this change",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "it returns `claude-code`, `opencode`, `codex` in that order; and given the SPEC-087 guard test, when it runs, then it passes with no new exception file.",
+          "when": "`hosts_with(\"lightning-run\")` is evaluated"
+        }
+      ],
+      "text": "Codex joins `lightning-run` through the registry.. `codex` is added to the `lightning-run` capability of the SPEC-087 registry (its REQ-002, REQ-006), appended after the current members so the order is `claude-code`, `opencode`, `codex`. Each Lightning site that today lists the two hosts reads that capability, and no module outside the registry and SPEC-087's exception files declares a new literal collection of host identifiers (SPEC-087 REQ-010). The capability name may be renamed by SPEC-087 T001; this specification follows the name merged there."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "each table the plan lists",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004, T006, T007.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_003",
+          "then": "each key set equals its capability query; and when `codex` is removed from one table, then the test fails.",
+          "when": "the key-set test runs"
+        }
+      ],
+      "text": "Feature-owned tables gain Codex.. The runner's credential, fake-binary and binary tables, the schema, config and export-terms host checks, and the declared-limit table of REQ-008 each cover exactly the `lightning-run` members, and a key-set test pins each to the capability (SPEC-087 REQ-009). `META_TOOLS` and `PARSERS` (`lightning-tool-classes`) keep their three keys. Per-host credential variable names, binary names, parsers and tool prefixes stay in `agent_braid/lightning_*.py`, never in the registry (SPEC-087 REQ-009)."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "a configuration with `optimizer.host` set to `codex`",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T004, T005.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_004",
+          "then": "it is refused with the existing code and nothing is launched; and given `claude-code`, then it is accepted as before.",
+          "when": "it is validated"
+        }
+      ],
+      "text": "Optimizer stays on `claude-code`.. The registry gains a capability `lightning-optimizer` whose only member is `claude-code`; `optimizer.host` and the CLI `--optimizer-host` accept only its members. `optimizer.host: codex` ends in the existing configuration refusal (`config-enum`) before any run, and `SandboxedHost` keeps refusing every other host. Codex MUST NOT serve optimizer calls (OD-2)."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "recorded fixtures for `lightning init` preview, `run --dry-run`, `run --fake-hosts`, `status`, `report` and the config and schema refusals, recorded on `develop` at 65f101ba",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T005, T010.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_005",
+          "then": "the bytes are identical, except accepted-host lists in refusal text.",
+          "when": "each runs after the change on the same input without `codex`"
+        }
+      ],
+      "text": "Existing hosts and defaults unchanged.. The default `rollout.hosts` stays `['claude-code', 'opencode']` and is no longer derived from the whole `lightning-run` tuple; Codex is opt-in by naming it. For every configuration, preview, run, plan, record, report and refusal that does not name `codex`, the output bytes, digests and refusal codes are identical to those before the change. The one exemption is refusal and usage text that lists the accepted hosts, which may additionally list `codex`."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "every committed Lightning record and fixture",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_006",
+          "then": "each is accepted and unchanged; and given a record with host `codex`, then the new reader accepts it and its schema version string is the old one.",
+          "when": "read after the change"
+        }
+      ],
+      "text": "Additive schema acceptance.. `codex` is accepted additively in the `host` fields of the rollout, model-identity and `attempt_start` records. Schema version strings (`v0.1`) do not change, no stored record is rewritten, and a Codex record read by a reader that predates this change is refused (fail closed) (OD-4)."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "a Codex rollout (fake host) with a provider key in the environment",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T003, T006, T011.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_007",
+          "then": "it is refused with `paid-route-refused` before launch; given a Codex transcript that reports no credential source, then the verdict is `route-unverified`; and given the source observed by T003, then only that value is accepted and any other value ends as `route-unverified`.",
+          "when": "it is planned"
+        }
+      ],
+      "text": "Subscription route, same bar as the other hosts.. A Codex rollout runs only on the subscription route: the existing pre-launch gate refuses any provider key or route variable (`paid-route-refused`, including `CODEX_API_KEY` and `OPENAI_API_KEY`), the runner reads no credential file and writes no credential, and any credential value is held in the environment of the child only and registered with the secret scanner (SPEC-071 REQ-004, REQ-005). After launch the runner accepts a Codex credential source only from a field the host itself reports or from an observation that T003 records and the owner reviews; it does not infer the route from the profile or from the absence of a key (OD-3). Until that evidence exists the key-source verdict for `codex` is `route-unverified`."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a run of `claude-code` and `codex` where Codex reports no source",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "`claude-code` has its normal records, `codex` is a declared limit, and the run status carries no refusal; and given a `claude-code` `route-unverified`, then the run still stops as today.",
+          "when": "it ends"
+        }
+      ],
+      "text": "Unverified Codex route is a declared limit.. When Codex ends as `route-unverified`, the run records `hosts.codex.status = declared-limit` with the reason text, does not set a run-level refusal, and continues with the remaining hosts, as it does for `opencode` today. The set of hosts that end this way is a feature-owned table keyed by the `lightning-run` members, not a literal comparison."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "recorded Codex `exec --json` streams",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T003, T007.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "the tool calls, failure flags and classes equal the recorded expectation, and a stream with a denied tool is classed `denied`; and given a stream with no model field, then the rollout records the model as unobserved.",
+          "when": "`parse_codex` and `tool_class` run on them"
+        }
+      ],
+      "text": "Codex transcripts are parsed from observation, not assumption.. Before any real Codex rollout, `parse_codex`, the Codex tool-name prefix (`agent-braid__`) and the tool-class decision are checked against recorded Codex streams, and the model-identity source of a Codex rollout is recorded; an unknown model is recorded as unobserved, never guessed. The verification is written as obtained evidence and states the Codex build it covers."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "the fixture",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006, T008.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_010",
+          "then": "the pipeline completes, every record is labelled `pipeline-only`, and no network or provider access occurs.",
+          "when": "`lightning run --fake-hosts` names `codex`"
+        }
+      ],
+      "text": "Fake Codex host for the pipeline.. `--fake-hosts` can run Codex through a fixture `tests/fixtures/lightning-fake-hosts/codex`, labelled `pipeline-only` like the existing fixtures, so CI exercises the Codex path without a Codex install, a model or quota."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a report that contains `claude-code` and `codex` rows",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T008.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "they equal those computed from the `claude-code` rows alone, and `requiredHosts` is `[\"claude-code\"]`.",
+          "when": "`h1_outcome` and the SPEC-049 pair are computed"
+        }
+      ],
+      "text": "Required hosts unchanged.. `REQUIRED_HOSTS` MUST NOT change from `(\"claude-code\",)` (OD-1). Codex rows appear in `report` (rates and Wilson intervals) as a non-binding host: the H1 outcome, the SPEC-049 registration and the inputs of the SPEC-073 promotion decision are byte-identical with and without Codex rows. Only a later amendment, backed by Codex measurements, can make Codex binding."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "a Codex run without setup consent",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T002, T010.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_012",
+          "then": "it is refused with `consent-required`; and given consent for the laboratory only, then no content-bearing trace of Codex is written.",
+          "when": "it is invoked"
+        }
+      ],
+      "text": "Consent and traces unchanged.. A Codex host run needs the same setup consent as any host run (`consent-required` otherwise). No consent kind, bypass or default is added, and Codex transcripts enter traces only through the SPEC-074 opt-in sources."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a Codex rollout and no terms record",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T005.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_013",
+          "then": "it refuses with `terms-gate-missing`; and given a synthetic terms record naming host `codex` in a temporary directory, then the record shape validates and no real provider is named.",
+          "when": "export runs"
+        }
+      ],
+      "text": "Export terms gate stays closed.. The export terms-record check accepts `codex` as a host value (it follows `lightning-run`), and nothing more. The gate stays closed (SPEC-075 OD-1 is open): Codex model output MUST NOT export without a recorded owner decision, no real terms record is committed, and no text says that any provider permits training."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "a plan or run for a held-out or test prompt set that names `codex`",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T006.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_014",
+          "then": "it is refused before launch; and given the development set, then it is planned.",
+          "when": "it is invoked"
+        }
+      ],
+      "text": "No held-out use.. The runner refuses a Codex rollout on every frozen, spent or test held-out prompt set (`HELDOUT`, `TEST_SETS`); Codex runs on the development prompt set only until a fresh preregistered split exists (SPEC-089). The refusal reuses an existing code or adds one to the closed vocabulary of SPEC-071's refusal contract in the code phase."
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "`lightning run --dry-run` naming `codex`",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T008, T011.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_015",
+          "then": "`executionAuthorization` is `false` and nothing is launched.",
+          "when": "it prints the plan"
+        }
+      ],
+      "text": "No execution authorization.. This specification grants no authority to run Codex. `executionAuthorization` stays `false` in every plan output, and the first real Codex rollout needs the owner's explicit yes at T011."
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "the change set",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T010.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_016",
+          "then": "none is under `specs/` other than `specs/088-lightning-codex-host/`, none is a `scripts/` driver of SPEC-069 to SPEC-073, none is recorded evidence, and none is `CONSTITUTION.md` or its replica.",
+          "when": "its changed paths are listed"
+        }
+      ],
+      "text": "No other record edited.. This specification's change set MUST NOT edit SPEC-087, SPEC-089, a closed specification, the SPEC-069 or SPEC-072 drivers and scripts, recorded evidence, the Constitution or its replica. Amendments to SPEC-087 are proposed in the plan, not made."
+    },
+    {
+      "id": "REQ-017",
+      "scenarios": [
+        {
+          "given": "the changed documentation and report text",
+          "id": "SC-017",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned for tasks T009, T011.",
+          "test_file": "specs/088-lightning-codex-host/validation-plan.md",
+          "test_name": "procedure_017",
+          "then": "no sentence claims a Codex result, and `docs/tooling/LIGHTNING.md` states the route status and the declared limit.",
+          "when": "inspected"
+        }
+      ],
+      "text": "No claim for an unmeasured host.. Published text of this change MUST NOT state a Codex result. It says that the host path exists, that the route is `route-unverified` until evidence is recorded, and that nothing is measured."
+    }
+  ],
+  "scientific_limits": "Engineering, not a research protocol. No claim that Codex meets D4, is valid, or is on a subscription route; parse_codex is verified only for the observed Codex build and event shapes. A passing profile is not human review or approval.",
+  "scope": "Specify Codex as a Braid Lightning rollout host through the SPEC-087 host registry: codex joins lightning-run, the optimizer stays on claude-code through a separate capability, Codex gets runner table entries, additive schema and export-terms acceptance, a declared-limit path for an unverified route, parser verification and a fake host. REQUIRED_HOSTS does not change. Documentation only: nothing implemented.",
+  "stage": "draft"
+}

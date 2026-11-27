@@ -405,6 +405,14 @@
     "087-host-registry": {
       "milestone": "Host parity",
       "state": "open"
+    },
+    "088-lightning-codex-host": {
+      "milestone": "Host parity",
+      "state": "open"
+    },
+    "089-analyze-work-validity-codex-opencode": {
+      "milestone": "Host parity",
+      "state": "open"
     }
   },
   "task_state_overrides": {
