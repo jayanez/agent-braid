@@ -41,7 +41,7 @@
     "BL.2c — Lightning tool-level kind-choice fix": "Tool-level fix for the units/aim kind choice: disjoint units refusal with redirect, clarified analyze-work and analyze descriptions, preregistered fresh held-out v4 with the OD-1 gate (SPEC-079).",
     "HAR.4 — Harness evaluation platform": "Decidable, portable harness evaluation: task QA and infrastructure controls, capability versus regression evaluations, Harbor containers with a macOS shadow, owner-only promotion pointers and OTel GenAI telemetry (SPEC-082 to SPEC-086).",
     "M4.9 — AI tooling integration for Pi and ThinkRail": "Agent Braid plugin for Pi and JetBrains ThinkRail through a Pi package: skills, MCP entry, installer profile, build target and diagnosis, after an observation of real installs (SPEC-081).",
-    "Host parity": "One host registry for Claude Code, Codex and OpenCode, then host-parity work that registers through it, such as Codex as a Braid Lightning host (SPEC-087)."
+    "Host parity": "One host registry for Claude Code, Codex and OpenCode, then host-parity work that registers through it, such as Codex as a Braid Lightning host (SPEC-088) and the analyze-work validity measurement (SPEC-089)."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -403,6 +403,14 @@
       "state": "open"
     },
     "087-host-registry": {
+      "milestone": "Host parity",
+      "state": "open"
+    },
+    "088-lightning-codex-host": {
+      "milestone": "Host parity",
+      "state": "open"
+    },
+    "089-analyze-work-validity-codex-opencode": {
       "milestone": "Host parity",
       "state": "open"
     }
