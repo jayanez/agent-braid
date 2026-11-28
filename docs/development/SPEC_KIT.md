@@ -173,12 +173,12 @@ that names no requirement and a decision never cited. It does not read meaning:
 it cannot tell whether a citation points at the right rule, only that the rule
 exists. Specs written before this section are not required to pass it.
 
-The script is interim. Reference integrity belongs in SpecTorque, which already
-counts traceability links; this script exists because SpecTorque does not yet
-report these errors for this repository's ID conventions. It is run by hand and
-is not part of CI or the validation profiles. Retire the script, its tests and
-this paragraph when a SpecTorque release covers the same errors; the review
-sequence below stays.
+The script stays in this repository. Its useful checks depend on this
+repository's conventions (`assurance.json`, the `validation-plan.md` table, the
+owner-review task), so SpecTorque does not take them over. It is run by hand
+and is not part of CI or the validation profiles. It would have caught about 20
+of the 128 findings of the SPEC-090 and SPEC-091 reviews: it removes mechanical
+work from a review and does not replace one.
 
 Review sequence for a new or substantially rewritten spec:
 
@@ -189,7 +189,9 @@ Review sequence for a new or substantially rewritten spec:
    and each offered decision option).
 3. Apply the findings in one pass. Rerun the reference check.
 4. Verify the fixes on the difference only: review the commits since the
-   reviewed one, plus the sentences they cite. Repeat a full review only when a
+   reviewed one, plus the unchanged sentences that cite a changed ID. On the
+   SPEC-090 and SPEC-091 drafting this was 21 to 52 % of the text per round,
+   so expect about half the reading of a full review, not less. Repeat a full review only when a
    fix changes a gate rule, an estimand, the set of owner decisions or the task
    order.
 5. Record the SpecTorque score with the highest score its rubric can give, so a

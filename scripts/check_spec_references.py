@@ -12,10 +12,11 @@ does each planned test file belong to the task named as its owner. It reads ``as
 
 Exit status 1 when any error is found. Warnings do not fail the check.
 
-Interim tool. Reference integrity of a specification set is the remit of SpecTorque, the external checker this
-repository already uses (docs/development/SPEC_KIT.md). Retire this script, its tests and its section in
-SPEC_KIT.md when a SpecTorque release reports the same errors for this repository's ID conventions; until then
-it is run by hand and is not wired into CI or the validation profiles.
+Host-specific by design. A replay on the six committed snapshots of the SPEC-090/091 pull request showed that the
+checks which fired (planned test file against the owning task's files, the owner-review decision range) depend on
+this repository's conventions, and that generic ID-existence checks found nothing; SpecTorque, the external
+checker this repository uses, therefore does not take them over. Run by hand; not wired into CI or the
+validation profiles.
 """
 
 from __future__ import annotations
