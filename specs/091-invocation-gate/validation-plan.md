@@ -48,5 +48,7 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-040 | SC-042 | `tests/test_spec091_items.py` | `LabelTests.test_gate_b_item_without_product` | Output of T002. |
 | REQ-041 | SC-043 | `tests/test_lightning_gate_b.py` | `GateBTests.test_selection_rule_and_tie_break` | Output of T019. |
 | REQ-042 | SC-044 | `tests/test_spec091_items.py` | `LabelTests.test_gate_b_audit_disjoint` | Output of T022. |
+| REQ-043 | SC-045 | `tests/test_spec091_levers.py` | `LeverTests.test_description_overlay_only` | Output of T004. |
+| REQ-044 | SC-046 | `tests/test_spec091_pilots.py` | `FactorialTests.test_decisive_cell_named` | Output of T011. |
 
-Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries), SC-035 and SC-036 (verdict), SC-037 (pilot freeze), SC-038 (shared stop rule), SC-040 (same-build certification), SC-041 (listing absence is instrument), SC-042 (gate B item with product name), SC-044 (gate B audit disjoint).
+Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries), SC-035 and SC-036 (verdict), SC-037 (pilot freeze), SC-038 (shared stop rule), SC-040 (same-build certification), SC-041 (listing absence is instrument), SC-042 (gate B item with product name), SC-044 (gate B audit disjoint), SC-045 (canonical SKILL.md unchanged), SC-046 (decisive cell named).

@@ -6,7 +6,7 @@ scientific proof or approval.
 ## Requirement clarity
 
 - [ ] CHK-001: The gate A estimand (majority pass per prompt, 3 repetitions) and the all-fail functional θ = E[(1−p)³] are defined once and used consistently. (spec.md REQ-001, REQ-003; plan.md Design 1)
-- [ ] CHK-002: Every numeric parameter (α, τ, δ, Δ, ε, power, slice, pool, audit, reserve, tripwire, pilot size, clustering tolerance, family-wise α, drift threshold, split size) is an open OD, except those inherited from SPEC-078 OD-1 and the approved strategy (2-of-3 majority, 3 repetitions, 0.80). (spec.md Owner decisions)
+- [ ] CHK-002: Every numeric parameter (α, τ, δ, Δ, ε, power, slice, pool, audit, reserve, tripwire threshold and margin, pilot size and arms, anchor size, clustering tolerance, family-wise α, drift threshold, split size) is an open OD. Fixed values that are not ODs: the 2-of-3 majority, 3 repetitions per gate and confirmation prompt, the 0.80 bound threshold (inherited from SPEC-078 OD-1 and the approved strategy), the class rule's one half, the 8-word leakage window and the 5-prompt example of REQ-031. (spec.md Owner decisions)
 - [ ] CHK-003: The 0.80 bound threshold is inherited from SPEC-078 OD-1 and labelled as such. (REQ-002)
 
 ## Normative references
@@ -22,7 +22,7 @@ scientific proof or approval.
 ## Empirical protocol
 
 - [ ] CHK-008: Simulations (known p, correlation range, error rates, coverage, replay) precede any real run. (REQ-017, evaluation-protocol.md)
-- [ ] CHK-009: Leakage control against SPEC-069, v2, v3 and v4 for the gate A split, the reserve, the twin and the audit set. (REQ-012, REQ-024)
+- [ ] CHK-009: Leakage control against SPEC-069, v2, v3 and v4 for the gate A split, the reserve and the twin (REQ-024), and against the frozen audit set (REQ-012, REQ-024, REQ-027).
 - [ ] CHK-010: Hypotheses H1 to H3 are about procedures, preregistered, and none is a completion condition. (spec.md Scientific boundaries)
 - [ ] CHK-011: Cost and stopping rules are stated; EUR 0; no LLM judge. (REQ-022, evaluation-protocol.md)
 

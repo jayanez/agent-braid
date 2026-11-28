@@ -7,7 +7,7 @@ scientific proof or approval.
 
 - [ ] CHK-001: The three labels and their tests are defined once (OD-B1, rubric) and recall and false-positive rates are defined by label. (spec.md REQ-001, REQ-002)
 - [ ] CHK-002: Each lever is named with the surface it changes and its size cap. (REQ-005, REQ-010)
-- [ ] CHK-003: Every numeric parameter and the hook wording are open ODs; none is fixed in a requirement. (spec.md Owner decisions)
+- [ ] CHK-003: Every numeric parameter and the hook wording are open ODs. Fixed values that are not ODs: 3 repetitions per item, the host caps (1,536 and 4,096 characters, 1,500 approximate tokens under ADR 0038 D12), the 2³ and 2×2 factorial shapes, and the values inherited from SPEC-090. (spec.md Owner decisions)
 
 ## Normative references
 
@@ -29,5 +29,5 @@ scientific proof or approval.
 
 ## Compatibility and boundaries
 
-- [ ] CHK-013: Existing lab profiles and `skill` configurations are unchanged. (REQ-009, REQ-022)
+- [ ] CHK-013: Existing lab profiles and `skill` configurations are unchanged. (REQ-029, REQ-022)
 - [ ] CHK-014: No lever ships by default without promotion and OD-11. (REQ-025)

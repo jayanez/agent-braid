@@ -50,11 +50,19 @@ intent; the observed outcome is whether `analyze-work` was called.
    items × 3); the item is the unit (OD-17); named contrasts and candidate analyses in
    evaluation-protocol.md, one picked by T007; Holm over the main effects (OD-19); the interaction is
    tested for equivalence within ±η (OD-18) by TOST.
-6a. **Lever screening (REQ-033).** `alwaysLoad` and server instructions are screened against the current
+6a. **Description overlay and decisive cell (REQ-043, REQ-044).** The use-case-first description is applied as
+   an overlay when a lever build is assembled; the canonical SKILL.md stays byte-identical. T011 names the
+   one decisive 2×2 cell for REQ-014.
+6b. **Real-run order.** Real-run order, the same in ADR 0046, SPEC-090 and SPEC-091: the gate A noise pilot (SPEC-090 T020) and,
+   independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
+   T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
+   gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
+   and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
+6c. **Lever screening (REQ-033).** `alwaysLoad` and server instructions are screened against the current
    build in T018 before the 2×2 factorial, so every built lever is measured.
-6b. **Verdict (REQ-034).** Conjunctive, so a false `met` stays at or below α by the intersection–union
+6d. **Verdict (REQ-034).** Conjunctive, so a false `met` stays at or below α by the intersection–union
    principle; precedence as SPEC-090 REQ-038.
-6c. **Freezes and stops (REQ-035, REQ-036).** Each development pilot has its own freeze; stops follow
+6e. **Freezes and stops (REQ-035, REQ-036).** Each development pilot has its own freeze; stops follow
    SPEC-090 REQ-037.
 7. **Held-out (REQ-014, REQ-015).** Built only after the factorial meets the paired OD-9 criterion; the arm
    is OD-20; Gate 0 (T021) includes the tripwire.
@@ -80,19 +88,28 @@ intent; the observed outcome is whether `analyze-work` was called.
 
 ## Validation strategy
 
-| REQ | SC | Test | Planned evidence |
+Generated from `assurance.json`; each test file is listed in the Files of the task that owns it.
+
+| Task | REQ | SC | Test file |
 |---|---|---|---|
-| REQ-001, REQ-017, REQ-026, REQ-034, REQ-037 | SC-001, SC-018, SC-027, SC-035, SC-036, SC-039 | `tests/test_lightning_gate_b.py` | T010 |
-| REQ-002, REQ-003, REQ-019, REQ-027, REQ-028 | SC-002, SC-003, SC-020, SC-028, SC-029 | `tests/test_spec091_items.py` | T002 |
-| REQ-004, REQ-021, REQ-022, REQ-031 | SC-004, SC-022, SC-023, SC-032 | `tests/test_spec091_lab.py`, `tests/test_spec091_boundaries.py` | T003 |
-| REQ-005 to REQ-008, REQ-024, REQ-032 | SC-005 to SC-009, SC-025, SC-033 | `tests/test_spec091_levers.py` | T004, T005 |
-| REQ-009, REQ-010, REQ-020, REQ-029 | SC-010, SC-011, SC-021, SC-030 | `tests/test_lightning_resources.py` | T006, T013 |
-| REQ-011, REQ-012, REQ-013, REQ-033, REQ-035 | SC-012 to SC-014, SC-034, SC-037 | `tests/test_spec091_pilots.py` | T008, T009, T011, T018 |
-| REQ-014, REQ-015, REQ-016, REQ-030 | SC-015 to SC-017, SC-031 | `tests/test_lightning_gate_b.py` | T014, T016 |
-| REQ-018 | SC-019 | `tests/test_lightning_sim.py` | T007 |
-| REQ-023, REQ-025, REQ-036, REQ-038 | SC-024, SC-026, SC-038, SC-040 |
-| REQ-039, REQ-041 | SC-041, SC-043 | `tests/test_lightning_gate_b.py` | T010, T019 |
-| REQ-040, REQ-042 | SC-042, SC-044 | `tests/test_spec091_items.py` | T002, T022 | `tests/test_spec091_boundaries.py` | T011, T017 |
+| T002 | REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 | SC-002, SC-003, SC-020, SC-028, SC-029, SC-042 | `tests/test_spec091_items.py` |
+| T003 | REQ-004, REQ-021, REQ-022, REQ-031 | SC-004, SC-022, SC-023, SC-032 | `tests/test_spec091_lab.py`, `tests/test_spec091_boundaries.py` |
+| T004 | REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 | SC-005, SC-007, SC-025, SC-033, SC-045 | `tests/test_spec091_levers.py`, `tests/test_spec091_boundaries.py` |
+| T005 | REQ-005, REQ-007, REQ-008 | SC-006, SC-008, SC-009 | `tests/test_spec091_levers.py` |
+| T006 | REQ-009, REQ-010, REQ-029 | SC-010, SC-011, SC-030 | `tests/test_lightning_resources.py` |
+| T007 | REQ-018 | SC-019 | `tests/test_lightning_sim.py` |
+| T008 | REQ-012, REQ-035 | SC-013, SC-037 | `tests/test_spec091_pilots.py` |
+| T009 | REQ-011 | SC-012 | `tests/test_spec091_pilots.py` |
+| T010 | REQ-001, REQ-017, REQ-026, REQ-034, REQ-037, REQ-039 | SC-001, SC-018, SC-027, SC-035, SC-036, SC-039, SC-041 | `tests/test_lightning_gate_b.py` |
+| T011 | REQ-013, REQ-023, REQ-036, REQ-044 | SC-014, SC-024, SC-038, SC-046 | `tests/test_spec091_pilots.py`, `tests/test_spec091_boundaries.py` |
+| T013 | REQ-020 | SC-021 | `tests/test_lightning_resources.py` |
+| T014 | REQ-014, REQ-015 | SC-015, SC-016 | `tests/test_lightning_gate_b.py` |
+| T016 | REQ-016, REQ-030 | SC-017, SC-031 | `tests/test_lightning_gate_b.py` |
+| T017 | REQ-025 | SC-026 | `tests/test_spec091_boundaries.py` |
+| T018 | REQ-033 | SC-034 | `tests/test_spec091_pilots.py` |
+| T019 | REQ-041 | SC-043 | `tests/test_lightning_gate_b.py` |
+| T022 | REQ-042 | SC-044 | `tests/test_spec091_items.py` |
+| T023 | REQ-038 | SC-040 | `tests/test_spec091_boundaries.py` |
 
 Labels are human proxy labels; disagreements are recorded verbatim and reported with agreement. Missing
 results count as non-calls and are reported separately. Calibration is not claimed.
@@ -104,6 +121,6 @@ precede observation. The hook stays laboratory-only pending OD-11. No blocker.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-26 are open (spec.md). Owner yes required for T008, T009, T018, T012, T019, T023, T021, T015
+OD-1 to OD-28 are open (spec.md). Owner yes required for T008, T009, T018, T012, T019, T023, T021, T015
 and T016. SPEC-079 T009
 is not decided here.

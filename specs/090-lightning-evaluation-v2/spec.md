@@ -23,8 +23,11 @@ behaviour is measured. No actor gains execution authority.
 
 This is engineering plus a research protocol:
 
-- Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007); paired, synchronized selection
-  with an incumbent margin and an audit set (REQ-008 to REQ-012, REQ-019, REQ-027); drift controls, run metadata,
+- Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+  synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+  REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+  REQ-043); Gate 0 (REQ-015, REQ-044); stops, resume and drift (REQ-037, REQ-040); owner yes records
+  (REQ-045); drift controls, run metadata,
   a Gate 0 invocation tripwire and replayable decisions (REQ-013 to REQ-016); runner concurrency kept
   behind an owner decision (REQ-018).
 - Research: simulation tests of the procedures, including a template-clustered scenario, before any real
@@ -66,15 +69,15 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 
 - **REQ-001 — Gate A unit and outcome.** Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result counts as a failed repetition.
   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
-- **REQ-002 — Exact lower bound on the passing share.** Gate A MUST report the exact one-sided Clopper–Pearson lower bound of the passing share at the α of OD-1. The pass threshold for the bound is 0.80, inherited from SPEC-078 OD-1.
+- **REQ-002 — Exact lower bound on the passing share.** Gate A MUST report the exact one-sided Clopper–Pearson lower bound of the passing share at the α of OD-1; this condition holds when the bound is at least 0.80, the threshold inherited from SPEC-078 OD-1.
   - SC-002: Given 88 passing prompts of 100 and α = 0.05, when the bound is computed, then it equals the exact Clopper–Pearson value 0.8128 to four decimals.
   - SC-003: Given a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation error in the independent scenario, and its type I error, power and coverage are reported for the clustered scenario.
-- **REQ-003 — All-fail upper bound.** Gate A MUST report the exact one-sided Clopper–Pearson upper bound of the all-fail rate θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold of OD-2. The rule "no prompt is 0/3" is not used for splits frozen under this specification.
+- **REQ-003 — All-fail upper bound.** Gate A MUST report the exact one-sided Clopper–Pearson upper bound of the all-fail rate θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold τ of OD-2; this condition holds when the bound is at most τ. The rule "no prompt is 0/3" is not used for splits frozen under this specification.
   - SC-004: Given 2 prompts at 0/3 out of 100 and α = 0.05, when the bound is computed, then it equals 0.0616 to four decimals.
   - SC-005: Given prompt populations with known θ, when the bound is simulated (SIM), then its coverage is at least 1 − α within simulation error for every θ in the grid.
 - **REQ-004 — Review of each 0/3 prompt.** Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts; disagreements are recorded verbatim. The verdict is `held` while any 0/3 prompt is unreviewed.
   - SC-006: Given a run with one unreviewed 0/3 prompt, when the gate A analysis runs, then the verdict is held and names the prompt.
-- **REQ-005 — Instrument replacement from a frozen reserve.** For a split frozen under this specification, the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; the next prompt of a reserve frozen by sha256 with the split, in a preregistered draw order, is run in the same session block as the split and its result is added to the report only, up to the cap of OD-8 (a replaced reserve prompt counts toward the cap), under the safeguards adopted in OD-18. Exceeding the cap, or a host change before the reserve run, invalidates the run. SPEC-079, where `instrument` invalidates the run, is unchanged.
+- **REQ-005 — Instrument replacement from a frozen reserve.** For a split frozen under this specification, the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; the next reserve prompt of the same class, in a preregistered per-class draw order from a reserve frozen by sha256 with the split, is run in the same session block as the split and its result is added to the report only, up to the cap of OD-8 (a replaced reserve prompt counts toward the cap), under the safeguards adopted in OD-18. Exceeding the cap, or a host change before the reserve run, invalidates the run. SPEC-079, where `instrument` invalidates the run, is unchanged.
   - SC-007: Given a run that meets the gate only if two `instrument` prompts are dropped, with a cap of three, when replacement runs, then the verdict counts both as 0/3 and stays missed, and the two reserve results appear in the report only.
   - SC-008: Given instrument findings above the cap, when replacement runs, then the verdict is invalidated.
 - **REQ-006 — Class rule.** Gate A MUST also require that every class of the split has at least half of its prompts passing.
@@ -84,8 +87,8 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-008 — Paired comparison on one fixed slice.** Elimination MUST rank candidates by per-prompt paired differences in the valid rate, averaged over repetitions, with every surviving candidate evaluated on the same fixed slice of prompts and repetitions; independent means are never the decision statistic. The finer valid-rate difference is used only to screen; the replacement test of REQ-011 uses per-prompt majority pass, the gate A estimand.
   - SC-011: Given two candidates and a slice, when selection runs, then both are scored on identical prompt and repetition identifiers and the decision statistic is computed from paired differences.
   - SC-012: Given known-p candidates with the within-prompt correlation of the noise pilot, when paired selection and n = 5 independent means are simulated (SIM), then paired selection picks an ε-good candidate (within ε of OD-3 of the best) at a rate at least as high as n = 5, reported with its simulation interval.
-- **REQ-009 — Slice sized from the pilot.** The slice sizes MUST come from the gate A noise pilot of REQ-032 through the formulas in plan.md, at the α and power of OD-1 and OD-4 and the margin δ and target advantage Δ > δ of OD-3: the elimination slice from the variance of the per-prompt valid-rate difference, the confirmation slice from the variance of the per-prompt majority-pass difference, and repetitions per slice prompt r* = max(1, round(√((c_p/c_r)(1−ρ)/ρ))). Sizing is refused when Δ exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it.
-  - SC-013: Given pilot variances, ρ, c_p/c_r, α, power, δ and Δ, and a second input where Δ exceeds the discordance upper bound, when the sizing function runs, then it returns the plan.md formula values computed with Δ − δ and r*, and refuses the second input.
+- **REQ-009 — Slice sized from the pilot.** The confirmation slice size MUST come from the gate A noise pilot of REQ-032 through the plan.md formula, in majority-pass units: variance σ_m² = discordance minus the squared advantage, the margin δ and target advantage Δ > δ of OD-3, the power of OD-4, and the Holm worst-case level, the OD-16 family-wise α divided by the number of challengers that can reach confirmation (OD-7). The elimination slice is a screen with no power target; its size is the OD-4 budget share left after confirmation. Each elimination prompt runs r* = max(1, round(√((c_p/c_r)(1−ρ)/ρ))) repetitions; each confirmation prompt runs 3, as majority pass requires. Sizing is refused when Δ exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it.
+  - SC-013: Given pilot discordance 0.30 with advantage 0.07, ρ 0.5, c_p/c_r 8, family-wise α 0.05 over 3 challengers, power 0.80, δ 0.02 and Δ 0.07, and a second input with Δ 0.35, when the sizing function runs, then it returns the plan.md confirmation size at level 0.05/3 with σ_m² = 0.30 − 0.07², r* = 3, and refuses the second input because Δ exceeds the discordance bound.
 - **REQ-010 — Synchronized elimination.** Elimination MUST be synchronized: in each round all surviving candidates see the same new items. The elimination rule is the one the owner picks in OD-11 after the simulation comparison.
   - SC-014: Given three candidates in a round, when elimination runs, then all three receive the same item identifiers before any is dropped.
 - **REQ-011 — Incumbent kept unless the margin is met.** The incumbent MUST be kept unless a challenger beats it by the preregistered margin δ of OD-3 under the test of OD-11, on per-prompt majority pass, on the confirmation slice of REQ-034, at the family-wise α of OD-16.
@@ -93,7 +96,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-012 — Audit set.** An audit set of the size of OD-5 MUST be frozen by sha256, disjoint by normalized text and fingerprint from every selection slice, development set and held-out split. The selected candidate is reported on it with an exact confidence interval.
   - SC-016: Given a selection run, when its inputs are traced, then no audit item identifier appears in any selection input.
 - **REQ-013 — Drift controls.** Every real run under this specification MUST pin the host CLI version with auto-update off and the model; record the host, model and plugin versions per rollout; include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; interleave arms in randomized blocks with a recorded seed; and require a re-baseline after any host or model change. A re-baseline reruns the A/A pair and the twin on the new host; if any pilot estimate leaves its recorded interval, sizing reruns before the next freeze.
-  - SC-017: Given a host version change between two sessions, when the run continues, then it stops with a re-baseline required refusal.
+  - SC-017: Given a development run whose host version changed between two of its sessions, when the next session starts, then it stops with a re-baseline required refusal; a held-out run in the same case follows REQ-037 instead.
   - SC-018: Given a session, when arms are scheduled, then the block order is reproducible from the seed and contains the A/A anchors.
 - **REQ-014 — Run metadata.** Run reports MUST carry `configDigest`, per-rollout host CLI, model and plugin versions, the server-reported model identifier, the tool-call count and whether the skill was invoked.
   - SC-019: Given a recorded rollout, when the report is built, then every listed field is present and a missing field fails the report.
@@ -101,7 +104,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-020: Given a twin run whose invocation rate is below the threshold, when Gate 0 evaluates the tripwire, then it fails and the held-out run is refused.
 - **REQ-016 — Replayable decisions.** Every selection and gate decision MUST be a pure function of a journal (results, seeds, frozen hashes); replaying a journal gives an identical decision.
   - SC-021: Given a recorded journal, when it is replayed twice, then both decisions and their hashes are identical.
-- **REQ-017 — Simulation before any real run.** The runner MUST reject a real run under this specification unless its protocol carries both the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and the owner's recorded yes; a development pilot (T020) needs T004 to T007 and its own pilot freeze (REQ-039) instead of T019.
+- **REQ-017 — Simulation before any real run.** The runner MUST reject a real run under this specification unless its protocol carries both the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and the owner yes record of REQ-045; a development pilot (T020) needs the T004 to T007 record and its own pilot freeze (REQ-039) in place of T019.
   - SC-022: Given a protocol without the simulation record hash, when a run is requested, then the runner refuses before any rollout.
 - **REQ-018 — Runner concurrency.** The runner MUST reject a `parallel` value above 1 unless the owner adopts concurrency in OD-6; if adopted, A/A anchors measure the effect and a decision replay is identical for any `parallel` value.
   - SC-023: Given a configuration with parallel 2 and no recorded OD-6 adoption, when the run starts, then it refuses.
@@ -115,13 +118,13 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-027: Given a rollout environment holding a provider key variable, when the run starts, then it is rejected before any rollout, as SPEC-071 does, and the key value appears in no record.
 - **REQ-023 — No non-identified gate quantity.** Gate A MUST NOT report, as a gate quantity, the share of prompts whose p is below a threshold, with p, a prompt's per-repetition probability of a valid first attempt.
   - SC-028: Given a gate report, when its fields are listed, then no such quantity appears.
-- **REQ-024 — Fresh gate A held-out split.** Gate A under this specification MUST use a fresh split: one that shares no prompt, fingerprint or normalized 8-word window with the spent v2, v3 or v4 sets.
-  - SC-029: Given a candidate split that shares a normalized 8-word window with v2, v3 or v4, when the builder checks it, then it refuses.
+- **REQ-024 — Fresh gate A held-out split.** Gate A under this specification MUST use a fresh split, reserve and twin: none shares a prompt, fingerprint or normalized 8-word window with the spent v2, v3 or v4 sets or with the frozen audit set.
+  - SC-029: Given a candidate reserve that shares a normalized 8-word window with v4, and a twin that shares a prompt with the frozen audit set, when the builder checks them, then it refuses both.
 - **REQ-025 — Human promotion.** A gate A pass MUST NOT promote a candidate; promotion stays human under SPEC-073 with SPEC-049 noninferiority, and a build that changes the skill description, server instructions, `_meta` or the hook also needs the same-build certification of SPEC-091 REQ-038.
   - SC-030: Given a passed gate, when its outputs are read, then no promotion pointer changes and `executionAuthorization` is false.
 - **REQ-026 — No Wilson verdict.** Gate A MUST NOT use the Wilson interval as its verdict statistic (split from REQ-002).
   - SC-031: Given a gate A report, when its verdict inputs are listed, then only the exact bounds of REQ-002 and REQ-003 and the class rule appear.
-- **REQ-027 — Audit set not read by selection.** Selection MUST NOT read any audit set item (split from REQ-012).
+- **REQ-027 — Audit set not read by selection.** Selection MUST NOT read any audit set item; every selection slice is checked against the frozen audit set by normalized text and fingerprint when it is frozen (split from REQ-012).
   - SC-032: Given a selection call given an audit item identifier, when it runs, then it is rejected.
 - **REQ-028 — No retroactive gate.** The gate A rules of this specification MUST NOT be applied to the SPEC-079 v4 run or any split frozen before this specification (split from REQ-020).
   - SC-033: Given the SPEC-079 v4 run directory, when the gate A analysis is invoked on it, then it is rejected as out of scope.
@@ -130,7 +133,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-030 — Redacted review records.** The 0/3 review record MUST contain only transcripts redacted under SPEC-074, so that no unredacted prompt, file content, personal data or secret enters it.
   - SC-035: Given a review record built from a transcript holding a planted secret marker, when it is saved, then the marker appears nowhere in the record.
 - **REQ-031 — Minimum testable slice.** The sizing function MUST reject a slice whose power at the target advantage Δ, from the plan.md formula, is below the OD-4 power, and MUST name the needed size. A 5-prompt slice is underpowered: a two-sided exact McNemar test cannot reach 0.05 (smallest p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one direction, and McNemar's n counts discordant pairs only (split from REQ-009).
-  - SC-036: Given a requested slice of 5 prompts at the OD-4 power and the OD-3 δ and Δ, when the sizing function runs, then it is rejected as underpowered with the needed size in the message.
+  - SC-036: Given a requested slice of 5 prompts with pilot discordance 0.30, at the OD-4 power and the OD-3 δ and Δ, when the sizing function runs, then it is rejected as underpowered with the needed size in the message.
 - **REQ-032 — Gate A noise pilot.** Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation ρ, the variances of the per-prompt valid-rate and majority-pass differences between two candidate arms, their majority-pass discordance, A/A drift and the invocation rate, each with an interval, and record the cost ratio c_p/c_r (authoring and freezing time per prompt over mean rollout time, both measured).
   - SC-037: Given a gate A noise pilot run, when its report is built, then it holds ρ, both paired-difference variances, the discordance, A/A differences and the invocation rate with intervals, and the measured c_p/c_r, in the sizing input format.
 - **REQ-033 — Template-clustered simulation.** The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances, and report type I error, power and coverage under it against the tolerance of OD-15.
@@ -138,7 +141,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-034 — Confirmation slice.** The replacement test of REQ-011 MUST run on a confirmation slice frozen by sha256 before elimination starts and disjoint by prompt, fingerprint and normalized text from the elimination slice, so that no elimination result enters the test.
   - SC-039: Given a confirmation slice sharing one prompt with the elimination slice, when selection is configured, then it is rejected.
 - **REQ-035 — Family-wise error.** When more than one challenger reaches the confirmation test, the tests MUST be adjusted by Holm over that family at the family-wise α of OD-16.
-  - SC-040: Given three challengers reaching confirmation with raw p-values 0.01, 0.02 and 0.04 at family-wise α 0.05, when the tests are adjusted, then Holm rejects only the first two.
+  - SC-040: Given three challengers reaching confirmation with raw p-values 0.01, 0.03 and 0.04 at family-wise α 0.05 (Holm thresholds 0.0167, 0.025, 0.05), when the tests are adjusted, then Holm rejects only the first.
 - **REQ-036 — Audit scored once per winner.** The audit set MUST be scored once for each selected winner, and its result is never an input to a choice between runs, candidates or configurations.
   - SC-041: Given a second audit scoring of the same winner, or an audit result passed to a choice between runs, when it is requested, then it is rejected.
 - **REQ-037 — Stops, host changes and resume.** A frozen protocol pins the host version and model: a different host or model at start refuses the run before any rollout, requires a refreeze and does not spend the split. A held-out run starts only when the remaining quota estimate covers all its slots. A quota stop or a host or model change during a run MUST stop the session with every completed rollout kept. A resume runs only on the same frozen bytes and the same pinned host and model, after the earlier session's A/A anchors are compared with the new session's under OD-19, and fills exactly the missing (prompt, repetition) slots in their frozen order, never rerunning a completed slot or drawing a new prompt. When a host or model change blocks the resume of a held-out split, the run is `invalidated`, the split is spent and it is not rescored. SPEC-091 applies this rule unchanged.
@@ -150,7 +153,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-046: Given a run whose lower bound and class rule hold but whose all-fail bound exceeds τ, when the verdict is computed, then it is missed.
 - **REQ-039 — Development pilot freeze.** A development pilot (T020) MUST run only after its protocol section, its prompts and the arms under test are frozen by sha256 on a `develop` commit; pilot prompts are development prompts and never enter a held-out split, reserve, twin or audit set.
   - SC-047: Given a pilot run whose prompt file hash differs from the pilot freeze, when it is requested, then it is rejected.
-- **REQ-040 — A/A drift rule.** When an A/A anchor difference exceeds the threshold of OD-19, the runner MUST apply the OD-19 action to that session before its results enter any decision.
+- **REQ-040 — A/A drift rule.** When an A/A anchor difference exceeds the threshold of OD-19, the runner MUST apply the OD-19 action to that session before its results enter any decision: the hold action gives the verdict `held` until a re-baseline, and the invalidate action gives `invalidated` (REQ-038).
   - SC-048: Given an A/A difference above the threshold, when the session closes, then the OD-19 action is applied and recorded.
 - **REQ-041 — Selection stopping rule.** Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent, then go to the confirmation test; the configurator rejects a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice, and there is no default: the owner chooses a smaller pool, a larger Δ or no selection (OD-4).
   - SC-049: Given a session cap smaller than the sized slice, when selection is configured, then it is rejected with the needed size.
@@ -160,6 +163,8 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-051: Given a gate A pool with one item lacking the product name, when the builder runs, then it rejects the pool before any rollout and names the item.
 - **REQ-044 — Static Gate 0.** Before the tripwire run, Gate 0 MUST score, with zero rollouts, the reference answer of every split prompt (all valid) and a rule-violating null baseline per class (gate not met), as SPEC-078 did.
   - SC-052: Given a frozen split with its references and per-class null baselines, when static Gate 0 runs, then every reference is valid, every null baseline misses the gate, and no rollout is spent.
+- **REQ-045 — Owner yes record.** Every run that spends quota MUST have an owner yes record before its first rollout: a dated line in `specs/090-lightning-evaluation-v2/evidence/owner-yes.md` naming the task, the run and the frozen protocol hash, written by the owner; the runner refuses a run whose record is missing or names another hash.
+  - SC-053: Given a frozen protocol with no matching owner yes line, when a run is requested, then the runner refuses before any rollout and names the missing record.
 
 ## Non-functional requirements
 
@@ -218,7 +223,21 @@ The SPEC-091 table gives the gate B budget and the combined total.
 - **Confirmation slice:** a frozen slice disjoint from the elimination slice, used only for the
   replacement test (REQ-034).
 - **ε-good:** within ε of OD-3 of the best candidate's per-prompt majority-pass share (H1, SC-012).
-- **Incumbent:** the current artifact; kept unless a challenger meets the margin (REQ-011).
+- **Shipped build:** the released plugin build at freeze time (tool, skill and server bytes, named by
+  commit and digests). **Incumbent:** the artifact selection compares against, the shipped build unless a
+  protocol names another; kept unless a challenger meets the margin (REQ-011). **Challenger:** a candidate
+  compared with the incumbent.
+- **Elimination slice:** the slice on which challengers are screened (REQ-008); **confirmation slice:** see
+  below.
+- **Missing result:** a rollout that ran but returned no parseable outcome; it counts as a failed
+  repetition (REQ-001). **Unfilled slot:** a (prompt, repetition) not yet run after a stop; it gives `held`
+  until a resume fills it (REQ-037, REQ-038).
+- **Canary:** the SPEC-071 planted token (`CANARY_TOKEN` in `agent_braid/lightning_hosts.py`); its
+  appearance in a rollout transcript is a canary hit.
+- **Invalidating event**, allowed values: canary hit; replacement cap exceeded; host or model change before
+  the reserve run; host or model change that blocks a held-out resume; the OD-19 invalidate action
+  (REQ-005, REQ-037, REQ-038, REQ-040).
+- **Owner yes record:** the dated line of REQ-045.
 - **Audit set:** items never read by selection, used to report the winner (REQ-012).
 - **A/A anchor:** the same arm run twice in a session to measure drift (REQ-013).
 - **Development twin:** a development set built like a held-out split, used by the Gate 0 tripwire
@@ -235,16 +254,21 @@ The SPEC-091 table gives the gate B budget and the combined total.
 Hypotheses (preregistered in [evaluation-protocol.md](evaluation-protocol.md); none is a completion
 condition; all are about procedures under simulation, not about models):
 
-- **H1** — Paired selection on one fixed slice picks an ε-good candidate (ε of OD-3) more often than
-  independent means on n = 5.
-- **H2** — The exact all-fail bound has at least nominal coverage.
-- **H3** — Gate A's type I error at the 0.80 boundary is at most α.
+- **H1** — Paired selection on one fixed slice picks an ε-good candidate (ε of OD-3) more often than independent means on n = 5 (simulation).
+- **H2** — The exact all-fail bound has at least nominal coverage (simulation).
+- **H3** — Gate A's type I error at the 0.80 boundary is at most α (simulation).
 
 Domain: statistical procedures and their simulated behaviour; real runs are one host
 (`claude-code`), one pinned model and one split each. Observation contract: unchanged SPEC-069 scorer
 outcomes, per-prompt majority pass, exact bounds, paired differences. Execution contract: simulations
 only, except T020 (pilot freeze and owner yes), T022 and T017 (T016 freeze and owner yes). Compatibility: new modules; SPEC-078 and SPEC-079 analysis and
 records are unchanged; existing configurations keep `parallel` 1 and `target.kind` `skill`.
+
+Real-run order, the same in ADR 0046, SPEC-090 and SPEC-091: the gate A noise pilot (SPEC-090 T020) and,
+independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
+T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
+gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
+and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
 
 Multiplicity: each gate is conjunctive (gate A: lower bound, all-fail bound and class rule), so a false
 `met` stays at or below α by the intersection–union principle without adjustment (REQ-038); selection
@@ -262,14 +286,17 @@ repository: the SPEC-079 T008 report and diagnosis, and the within-prompt correl
 
 ## Owner decisions (open)
 
-Open questions: OD-1 to OD-20. Each has options, a recommendation and its evidence, or says plainly that no
+Open questions: OD-1 to OD-21. Each has options, a recommendation and its evidence, or says plainly that no
 evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and the approved strategy (the
 2-of-3 majority, 3 repetitions and the 0.80 threshold) are not reopened.
 
 - **OD-1 — α.** Options: one-sided 0.05; 0.025; 0.10. Evidence: SPEC-078 OD-1 says "95 %" but Wilson with
-  z = 1.96 is a one-sided 97.5 % bound; at α = 0.05, 88/100 gives an exact lower bound of 0.8128 (own
-  calculation). Recommendation: 0.05 one-sided for each gate component; the conjunctive verdict keeps a
-  false `met` at or below α (REQ-038). The family-wise α for selection is OD-16.
+  z = 1.96 is a one-sided 97.5 % bound. With the exact Clopper–Pearson bound at α = 0.05, 87/100 already
+  passes (0.8013), one prompt fewer than the SPEC-078 Wilson gate (88/100); at α = 0.025, 88/100 gives
+  0.7998 and 89/100 is needed (0.8117) (own calculation). The owner is choosing whether to loosen the gate
+  by one prompt (0.05) or keep it one prompt stricter (0.025). Recommendation: 0.05 for each gate component;
+  the conjunctive verdict keeps a false `met` at or below α (REQ-038). The family-wise α for selection is
+  OD-16.
 - **OD-2 — All-fail threshold τ.** The 0/3 count is Binomial(n, θ), so the earlier rule "no prompt is 0/3"
   is itself an all-fail test: at α = 0.05 and n = 100 it equals τ in [0.0295, 0.0466), since 0, 1, 2 and 3
   zero-prompts give exact upper bounds 0.0295, 0.0466, 0.0616 and 0.0757 (own calculation). Choosing τ is
@@ -280,19 +307,23 @@ evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and th
   but fails a sound arm whenever one prompt is unlucky; (b) halves that false alarm at the cost of missing
   a defect confined to a single prompt. Evidence: the v2 and v3 0/3 prompts were real defects, reviewed as
   `model`. Recommendation: (a); confirm with T005.
-- **OD-3 — Margin δ, target advantage Δ and ε.** Options for δ: 0, 0.02, 0.05 in per-prompt majority-pass
-  share; for Δ: δ + 0.05 or δ + 0.10; for ε, the tolerance of "ε-good" (within ε of the best candidate):
-  ε = δ or ε = Δ − δ. Evidence: the replacement test rejects "advantage ≤ δ", so its power at a true
-  advantage of exactly δ equals α; the slice grows as 1/(Δ − δ)² (plan.md formula); near ties are not
-  resolvable at any allocation. Recommendation: δ = 0.02, Δ = 0.07 and ε = δ, revised after the gate A
-  noise pilot gives σ_d.
+- **OD-3 — Margin δ, target advantage Δ and ε.** All three are in majority-pass share, the unit of the
+  confirmation test; elimination has no power target (REQ-009). Options for δ: 0, 0.02, 0.05; for Δ: δ + 0.05
+  or δ + 0.10; for ε, the tolerance of "ε-good" (within ε of the best candidate): ε = δ or ε = Δ − δ.
+  Evidence: the replacement test rejects "advantage ≤ δ", so its power at a true advantage of exactly δ
+  equals α. Confirmation prompts per arm from the plan.md formula at 80 % power and the Holm worst case
+  0.05/3 (own calculation): discordance 0.10 gives 335 prompts at Δ − δ = 0.05 and 75 at 0.10; discordance
+  0.30 gives 1,041 and 252. Small gaps are therefore unaffordable unless the pilot's discordance is low.
+  Recommendation: δ = 0.02, Δ = δ + 0.10 and ε = δ, revised after the gate A noise pilot.
 - **OD-4 — Power and slice budget.** Options: 80 % or 90 % power; a per-session quota cap or none; and,
   when the sized budget exceeds the cap, no default: the owner chooses (i) a smaller pool, (ii) a larger Δ
   or (iii) no selection (REQ-041). Evidence: no pilot exists yet, so no slice size can be computed; a
   5-prompt slice is underpowered (REQ-031). Recommendation: 80 %, one five-hour quota window as the cap,
   and the choice among (i) to (iii) made when the sizes are known.
-- **OD-5 — Audit set size.** Options: 128 items (about ±4.5 points); 64 (about ±6); other. Evidence:
-  2610.09239 (lead). Recommendation: 128, authored and frozen in T021.
+- **OD-5 — Audit set size.** Options: 128 items; 64. Evidence: the winner's-curse bias removal has RMSE
+  near 4.5 points at 128 items and near 6 at 64 (2610.09239, lead); the exact 95 % interval at p ≈ 0.85 is
+  about 0.78 to 0.91 at 128 items (about ±6.5 points) and about 0.73 to 0.92 at 64 (about ±9.5) (own
+  calculation). Recommendation: 128, authored and frozen in T021.
 - **OD-6 — `parallel` above 1.** Options: keep 1; implement up to 2; up to 4. Evidence: the runner is
   sequential (`agent_braid/lightning_runner.py`, header comment) though the configuration accepts more;
   concurrency effects on quota and host behaviour are unmeasured. Recommendation: keep 1 for gates;
@@ -315,13 +346,14 @@ evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and th
   by the owner. Evidence: no milestone for Lightning evaluation exists in `github-tracking.json`.
   Recommendation: a new milestone; tracking moves after it exists.
 - **OD-11 — Elimination rule and confirmation test.** Elimination options: synchronized successive
-  halving; SySRs; paired racing. Confirmation test options: (a) the exact conditional McNemar test, valid
-  only when δ = 0, because it conditions on the discordant pairs and tests equality; (b) an exact
-  unconditional margin test on the paired majority-pass difference, maximizing the p-value over the
-  nuisance discordance (Berger–Boos style), valid for δ > 0; (c) a sign-flip permutation test on the
-  per-prompt differences minus δ. Evidence: none of these has been compared under this noise model (SySRs
-  was shown on deterministic scores only). Recommendation: decide from T006; prior choice synchronized
-  halving with (b), or (a) if OD-3 sets δ = 0.
+  halving; SySRs; paired racing. Confirmation test options: (a) a one-sided exact unconditional test of the
+  paired majority-pass difference against δ, maximizing the p-value over the nuisance discordance
+  (Berger–Boos style), exact for any δ ≥ 0; (b) a sign-flip permutation test on the per-prompt
+  majority-pass difference minus δ, which is exact only when those differences are symmetric about δ under
+  the null; per-prompt differences take only the values −1, 0 and 1, so that holds at δ = 0 and not for
+  δ > 0, where the test is approximate and its size is checked in T006; (c) the exact conditional McNemar
+  test, only when δ = 0. Evidence: none has been compared under this noise model (SySRs was shown on
+  deterministic scores only). Recommendation: decide from T006; prior choice synchronized halving with (a).
 - **OD-12 — Sequential prompt-level gate.** Options: fixed sample only; a sequential version with a
   prefixed random order, admissible only if a sequential exact bound and its simulation are added to this
   specification first, because it invalidates the fixed-n bounds of REQ-002 and REQ-003 and their
@@ -330,20 +362,22 @@ evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and th
 - **OD-13 — Gate A split size and class plan.** Options: 100 prompts as in SPEC-078 and SPEC-079; a size
   from power. Evidence: comparability with the OD-1 arithmetic. Recommendation: 100, class plan written
   in T016.
-- **OD-14 — Gate A noise pilot size.** Options: about 20 fresh product-naming prompts × 3 repetitions for
-  two candidate arms plus one A/A pair (about 180 rollouts); 40 prompts. Evidence: within-prompt
-  correlation (ANOVA ICC of per-prompt pass counts) ranged 0.41 to 0.81 on v2 to v4, so each endpoint
-  needs its own pilot. Recommendation: 20 prompts.
+- **OD-14 — Gate A noise pilot size.** Options: 20 fresh product-naming prompts × 3 repetitions × 3 runs
+  (the two OD-21 arms, plus one repeated run of the shipped build for the A/A pair): 180 rollouts; 40
+  prompts (360). Evidence: within-prompt correlation (ANOVA ICC of per-prompt pass counts) ranged 0.41 to
+  0.81 on v2 to v4, so each endpoint needs its own pilot. Recommendation: 20 prompts.
 - **OD-15 — Tolerance under clustering and fallback.** Options: accept the exact bounds when simulated
   coverage under the clustered scenario stays within 0.01 of 1 − α, or within 0.02; otherwise a fallback:
   (a) a class-level resampling bound, only with at least 10 classes; (b) a design-effect-adjusted exact
-  bound with effective size n / (1 + (m − 1)ρ_class). Evidence: exact bounds hold by construction only for
-  independent prompts; v4 had 7 classes, too few for a reliable class-level resampling bound.
-  Recommendation: tolerance 0.01; fallback (b), with (a) only when there are at least 10 classes.
+  bound with effective size n / (1 + (m − 1)ρ_class), where m is the mean number of prompts per class and
+  ρ_class the between-class intraclass correlation of prompt pass outcomes. Evidence: exact bounds hold by
+  construction only for independent prompts; v4 had 7 classes, too few for (a). Recommendation: tolerance
+  0.01; fallback (b), with (a) only when there are at least 10 classes.
 - **OD-16 — Family-wise α for selection.** Options: 0.05 with Holm over the challengers reaching
-  confirmation; 0.10 with Holm. The option "a single surviving challenger only" was removed: it conflicts
-  with REQ-035 and REQ-041 when several survive. Evidence: up to 10 challengers (OD-7) would inflate a
-  false replacement without adjustment. Recommendation: 0.05 with Holm.
+  confirmation; 0.10 with Holm. Sizing uses the Holm worst case, this α divided by the number of
+  challengers that can reach confirmation (REQ-009). The option "a single surviving challenger only" was
+  removed: it conflicts with REQ-035 and REQ-041 when several survive. Evidence: up to 10 challengers
+  (OD-7) would inflate a false replacement without adjustment. Recommendation: 0.05 with Holm.
 - **OD-17 — Arm under test in T016 and T017.** Options: (a) the build shipped at freeze time (current tool
   and skill); (b) a build proposed under SPEC-091 REQ-038 (same-build certification) on a fresh gate A
   split; (a) then (b). The option "the winner of a selection run" was removed: no task in this
@@ -363,6 +397,11 @@ evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and th
 - **OD-20 — A/A anchor size.** Options: 10 or 20 development prompts × 1 repetition × 2 runs per session.
   Evidence: no A/A data exist yet; 20 prompts give 40 rollouts, about 6 to 11 minutes per session at 8.5
   to 17 s per rollout. Recommendation: 10 prompts (20 rollouts per session).
+- **OD-21 — Pilot arms.** No candidate exists before any selection, so the pilot's "two candidate arms"
+  need a definition. Options: (a) the shipped build and one named variant (for example the skill body
+  with its first example removed), digests frozen in the pilot freeze; (b) the shipped build twice only
+  (A/A, no discordance estimate). Evidence: the slice formula needs a paired discordance between two
+  different arms (REQ-009). Recommendation: (a), with the variant named by the owner at T001.
 
 ## Risks and assumptions
 
@@ -380,12 +419,12 @@ evidence exists; none is decided. Parameters inherited from SPEC-078 OD-1 and th
 
 ## Exit criteria
 
-Verification is complete when the obtained evidence for SC-001 to SC-052 in the
+Verification is complete when the obtained evidence for SC-001 to SC-053 in the
 [validation plan](validation-plan.md) exists, the simulation record (T004 to T007) is committed, the
 protocol is frozen (T016), and the T018 converge record is written. A negative simulation result, a
 missed gate or an inconclusive run is a valid completion when recorded. Passing checks are not approval.
 
 ## Open questions
 
-- OD-1 to OD-20 above; owner: the founder.
+- OD-1 to OD-21 above; owner: the founder.
 - Whether the gate A real run (T017) happens at all; owner: the founder.

@@ -1,0 +1,340 @@
+# SpecTorque report: 090-lightning-evaluation-v2
+
+Revision: `a4c5619caae36c8a03c25f8488b21269d25df4b8d8002b702c1533b25510a5f9`
+Engine: 0.1.16 · Rubric: epic-heuristic-1
+
+Score: 20/30
+
+This is an evidence-based heuristic, not an EPIC author score, ISO certification or a prediction of software correctness.
+
+## Dimensions
+
+- E1 Unambiguity: 2
+- E2 Singularity: 2
+- E3 Verifiability: 2
+- P1 Dependency control: 2
+- P2 Completeness: 2
+- I1 Conformance: 2
+- I2 Consistency: 2
+- I3 Comprehensibility: 2
+- C1 Scope discipline: 2
+- C2 Implementation planning: 2
+
+## Practices
+
+### E1.1 Explicit clarification-seeking — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:289: Open questions: OD-1 to OD-21. Each has options, a recommendation and its evidence, or says plainly that no
+- specs/090-lightning-evaluation-v2/spec.md:427: ## Open questions
+Next: Record unresolved decisions as specific questions, or explicitly state that none remain.
+
+### E1.2 Quantified and measurable requirements — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:70: - **REQ-001 — Gate A unit and outcome.** Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result counts as 
+- specs/090-lightning-evaluation-v2/spec.md:72: - **REQ-002 — Exact lower bound on the passing share.** Gate A MUST report the exact one-sided Clopper–Pearson lower bound of the passing share at the α of OD-1; this condition holds when the bound is at least 0.80, the threshold inherited from SPEC-078 OD-1.
+- specs/090-lightning-evaluation-v2/spec.md:103: - **REQ-015 — Gate 0 invocation tripwire.** Gate 0 MUST reject a held-out run when the invocation rate on its development twin is below that gate's own threshold: for gate A, the T020 invocation rate on product-naming prompts minus the OD-9 margin; for gate B, the threshold of SPEC-091 REQ-015. One 
+- specs/090-lightning-evaluation-v2/spec.md:107: - **REQ-017 — Simulation before any real run.** The runner MUST reject a real run under this specification unless its protocol carries both the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and the owner yes record of REQ-045; a development pilot (T
+Next: State the measurable outcome and operating conditions; ask for unknown values.
+
+### E1.3 Bounded vocabulary and enumerations — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:237: - **Invalidating event**, allowed values: canary hit; replacement cap exceeded; host or model change before
+- specs/090-lightning-evaluation-v2/spec.md:245: - **Zero-prompt classes**, allowed values: `model`, `instrument` (REQ-004).
+- specs/090-lightning-evaluation-v2/spec.md:246: - **Gate verdicts**, allowed values: `met`, `missed`, `held`, `invalidated`; precedence `invalidated` >
+- specs/090-lightning-evaluation-v2/spec.md:248: - **Repetition outcomes**, allowed values: valid, invalid, missing; missing counts as invalid (REQ-001).
+Next: Define domain terms and enumerate supported values.
+
+### E1.4 Normative and structural consistency — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:70: - **REQ-001 — Gate A unit and outcome.** Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result counts as 
+- specs/090-lightning-evaluation-v2/spec.md:72: - **REQ-002 — Exact lower bound on the passing share.** Gate A MUST report the exact one-sided Clopper–Pearson lower bound of the passing share at the α of OD-1; this condition holds when the bound is at least 0.80, the threshold inherited from SPEC-078 OD-1.
+- specs/090-lightning-evaluation-v2/spec.md:75: - **REQ-003 — All-fail upper bound.** Gate A MUST report the exact one-sided Clopper–Pearson upper bound of the all-fail rate θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its compa
+- specs/090-lightning-evaluation-v2/spec.md:78: - **REQ-004 — Review of each 0/3 prompt.** Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts; disagreements are recorded verbatim. The verdict is `held` while any 0/3 prompt is unreviewed.
+Next: Use intentional MUST, SHOULD or MAY wording consistently; preserve the chosen obligation.
+
+### E1.5 Scope and verification boundaries — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:37: Out of scope, each stated as a requirement: frozen SPEC-069, SPEC-078 and SPEC-079 records (REQ-020) and
+- specs/090-lightning-evaluation-v2/spec.md:113: - **REQ-020 — Frozen records untouched.** This specification MUST NOT edit the SPEC-069 scorer or prompt sets, the SPEC-078 or SPEC-079 splits, protocols or FREEZE files.
+- specs/090-lightning-evaluation-v2/spec.md:115: - **REQ-021 — No adaptive allocation in frozen data.** Held-out and audit data MUST NOT be collected with adaptive allocation, including Thompson Sampling.
+- specs/090-lightning-evaluation-v2/spec.md:117: - **REQ-022 — Cost and route.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+Next: State explicit exclusions and the boundaries of verification.
+
+### E2.1 Atomic behavioral statements — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:26: - Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+- specs/090-lightning-evaluation-v2/spec.md:27:   synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+- specs/090-lightning-evaluation-v2/spec.md:28:   REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+- specs/090-lightning-evaluation-v2/spec.md:29:   REQ-043); Gate 0 (REQ-015, REQ-044); stops, resume and drift (REQ-037, REQ-040); owner yes records
+Next: Split independent obligations while keeping conditions of the same obligation together.
+
+### E2.2 Singular architecture and design facts — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:5: - New modules: `agent_braid/lightning_stats.py` (exact bounds and tests), `agent_braid/lightning_selection.py`
+- specs/090-lightning-evaluation-v2/plan.md:8: - Changed modules: `agent_braid/lightning_runner.py` and `agent_braid/lightning_store.py` (metadata, drift
+Next: Record each design fact as a separate statement in the plan.
+
+### E2.3 Isolated risks, assumptions and edge cases — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:408: - Risk: templated prompts are clustered, so prompt independence is optimistic (REQ-002, REQ-003, T004).
+- specs/090-lightning-evaluation-v2/spec.md:409: - Risk: the simulation model omits a real noise source, such as host drift within a session
+- specs/090-lightning-evaluation-v2/spec.md:411: - Risk: the replacement reserve turns a bad split into a new split (REQ-005, OD-8).
+- specs/090-lightning-evaluation-v2/spec.md:412: - Risk: three repetitions are not optimal if prompt cost differs from the assumed 6 to 10 rollouts
+Next: Give each risk, assumption or edge case its own entry.
+
+### E2.4 Singular definitions and scenarios — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:71:   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
+- specs/090-lightning-evaluation-v2/spec.md:73:   - SC-002: Given 88 passing prompts of 100 and α = 0.05, when the bound is computed, then it equals the exact Clopper–Pearson value 0.8128 to four decimals.
+- specs/090-lightning-evaluation-v2/spec.md:74:   - SC-003: Given a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation erro
+- specs/090-lightning-evaluation-v2/spec.md:76:   - SC-004: Given 2 prompts at 0/3 out of 100 and α = 0.05, when the bound is computed, then it equals 0.0616 to four decimals.
+Next: Define one behavior per scenario and one concept per definition.
+
+### E2.5 Singular security and privacy properties — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:117: - **REQ-022 — Cost and route.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+- specs/090-lightning-evaluation-v2/spec.md:133: - **REQ-030 — Redacted review records.** The 0/3 review record MUST contain only transcripts redacted under SPEC-074, so that no unredacted prompt, file content, personal data or secret enters it.
+- specs/090-lightning-evaluation-v2/spec.md:200: - The 0/3 review record MUST contain only SPEC-074-redacted transcripts, so no personal data or secret enters it (REQ-030).
+- specs/090-lightning-evaluation-v2/spec.md:201: - A run MUST NOT read or accept a provider API key or other secret (REQ-022).
+Next: State applicable security and privacy obligations as separate, testable requirements.
+
+### E3.1 Verification criteria and outcomes — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:68: ## Requirements and acceptance scenarios
+- specs/090-lightning-evaluation-v2/spec.md:71:   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
+- specs/090-lightning-evaluation-v2/spec.md:73:   - SC-002: Given 88 passing prompts of 100 and α = 0.05, when the bound is computed, then it equals the exact Clopper–Pearson value 0.8128 to four decimals.
+- specs/090-lightning-evaluation-v2/spec.md:74:   - SC-003: Given a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation erro
+Next: Connect each requirement to observable acceptance criteria.
+
+### E3.2 Validation methods — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:100: | T005 | REQ-003 | SC-005 | `tests/test_lightning_sim.py` |
+- specs/090-lightning-evaluation-v2/plan.md:102: | T007 | REQ-016 | SC-021 | `tests/test_lightning_selection.py` |
+- specs/090-lightning-evaluation-v2/plan.md:105: | T010 | REQ-005 | SC-007, SC-008 | `tests/test_lightning_gate_a.py` |
+- specs/090-lightning-evaluation-v2/plan.md:108: | T013 | REQ-015 | SC-020 | `tests/test_lightning_gate_a.py` |
+Next: Describe an executable or manual method for checking each outcome.
+
+### E3.3 Verification coverage — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:71:   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
+- specs/090-lightning-evaluation-v2/spec.md:82:   - SC-008: Given instrument findings above the cap, when replacement runs, then the verdict is invalidated.
+- specs/090-lightning-evaluation-v2/spec.md:149:   - SC-043: Given a held-out run stopped by quota after which the host version changed, when a resume is requested, then it is rejected, the verdict is invalidated and the split is marked spent.
+- specs/090-lightning-evaluation-v2/spec.md:152:   - SC-045: Given a run with an unreviewed 0/3 prompt and a canary hit, when the verdict is computed, then it is invalidated.
+Next: Cover normal, exceptional and boundary scenarios.
+
+### E3.4 Verification completion and readiness — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:420: ## Exit criteria
+- specs/090-lightning-evaluation-v2/spec.md:422: Verification is complete when the obtained evidence for SC-001 to SC-053 in the
+Next: State what evidence is required to consider verification complete.
+
+### P1.1 Declared assumptions and dependencies — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:408: - Risk: templated prompts are clustered, so prompt independence is optimistic (REQ-002, REQ-003, T004).
+- specs/090-lightning-evaluation-v2/spec.md:415: - Assumption: repetitions are independent given p, a prompt's per-repetition probability of a valid
+- specs/090-lightning-evaluation-v2/spec.md:417: - Assumption: the SPEC-069 scorer and fixture workspace are reused unchanged (REQ-001, REQ-020).
+- specs/090-lightning-evaluation-v2/spec.md:418: - Assumption: the gate A noise pilot runs in the current laboratory before sizing (REQ-032, T020).
+Next: Declare dependencies and assumptions, including an explicit absence where applicable.
+
+### P1.2 Explicit constraints and scope — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:37: Out of scope, each stated as a requirement: frozen SPEC-069, SPEC-078 and SPEC-079 records (REQ-020) and
+- specs/090-lightning-evaluation-v2/spec.md:113: - **REQ-020 — Frozen records untouched.** This specification MUST NOT edit the SPEC-069 scorer or prompt sets, the SPEC-078 or SPEC-079 splits, protocols or FREEZE files.
+- specs/090-lightning-evaluation-v2/spec.md:115: - **REQ-021 — No adaptive allocation in frozen data.** Held-out and audit data MUST NOT be collected with adaptive allocation, including Thompson Sampling.
+- specs/090-lightning-evaluation-v2/spec.md:117: - **REQ-022 — Cost and route.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+Next: Document constraints that affect feasible solutions.
+
+### P1.3 Requirement-level dependency traceability — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/validation-plan.md:23: | REQ-013 | SC-017 | `tests/test_lightning_drift.py` | `DriftTests.test_host_change_requires_rebaseline` | Output of T012. |
+Next: Link each dependency or risk to the requirement or task it affects.
+
+### P1.4 Dependency verification and failure handling — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:89: 15. **Dependency failure.** If the gate A noise pilot (T020, dependency of T019) fails or is unavailable,
+- specs/090-lightning-evaluation-v2/spec.md:375:   0.01; fallback (b), with (a) only when there are at least 10 classes.
+- specs/090-lightning-evaluation-v2/tasks.md:20: - [ ] T002 (REQ-002, REQ-003 / SC-002, SC-004): Exact Clopper–Pearson lower and upper bounds by bisection on binomial sums (no new dependency), the all-fail count, exact sign and McNemar tests, Holm adjustment, and the slice-sizing formula of plan.md with δ and Δ. Files: `agent_braid/lightning_stats
+- specs/090-lightning-evaluation-v2/tasks.md:22: - [ ] T004 (REQ-002, REQ-017, REQ-033 / SC-003, SC-038): SIM: gate A type I error at the 0.80 boundary and power at chosen alternatives, for each OD-1 option, the class rule and the conjunctive verdict, in the independent and the clustered scenarios. Success: type I error at most α within simulation
+Next: State how dependencies are checked and what happens when they fail.
+
+### P2.1 Functional and user requirement coverage — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:26: - Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+- specs/090-lightning-evaluation-v2/spec.md:27:   synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+- specs/090-lightning-evaluation-v2/spec.md:28:   REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+Next: Identify intended actors, capabilities and scope; completeness still needs domain review.
+
+### P2.2 Exceptional behavior and scope definition — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:50: [ADR 0039](../../docs/adr/0039-braid-lightning-boundary.md) (Lightning boundary, unchanged);
+- specs/090-lightning-evaluation-v2/spec.md:71:   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
+- specs/090-lightning-evaluation-v2/spec.md:74:   - SC-003: Given a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation erro
+- specs/090-lightning-evaluation-v2/spec.md:80: - **REQ-005 — Instrument replacement from a frozen reserve.** For a split frozen under this specification, the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; the next reserve prompt of the same class, in a preregistered per-class draw order from a reserve frozen b
+Next: Describe relevant invalid input, failures, empty states and exclusions.
+
+### P2.3 Operational and quality constraints — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:169: ## Non-functional requirements
+Next: Describe applicable operational and non-functional expectations.
+
+### P2.4 Dependency and delivery planning — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/tasks.md:3: **Milestone:** provisional, BL.2c (OD-10).
+- specs/090-lightning-evaluation-v2/tasks.md:14: ## Phase P0 — owner review
+- specs/090-lightning-evaluation-v2/tasks.md:18: ## Phase P1 — statistical core and simulation (no quota)
+- specs/090-lightning-evaluation-v2/tasks.md:27: ## Phase P2 — run machinery (no quota)
+Next: Describe a delivery order and its prerequisites.
+
+### P2.5 Completeness management — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:289: Open questions: OD-1 to OD-21. Each has options, a recommendation and its evidence, or says plainly that no
+- specs/090-lightning-evaluation-v2/spec.md:427: ## Open questions
+Next: Track unanswered questions until a decision and owner are recorded.
+
+### I1.1 Standardized document structure — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:1: # Agent Braid contributor instructions
+- AGENTS.md:43: ## Steps
+- AGENTS.md:52: ## CodeGraph
+- AGENTS.md:59: ### Selective CodeGraph workflow
+Next: Organize documents by purpose using recognizable headings.
+
+### I1.2 Stable unique requirement identifiers — supported
+The deterministic check is satisfied; semantic review may still find gaps.
+- specs/090-lightning-evaluation-v2/spec.md:26: - Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+- specs/090-lightning-evaluation-v2/spec.md:27:   synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+- specs/090-lightning-evaluation-v2/spec.md:28:   REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+- specs/090-lightning-evaluation-v2/spec.md:29:   REQ-043); Gate 0 (REQ-015, REQ-044); stops, resume and drift (REQ-037, REQ-040); owner yes records
+Next: Give each requirement a stable, unique identifier.
+
+### I1.3 Explicit template declaration — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:46: 2. Pick the best match (ID format: `/org/project`) by: exact name match, description relevance, code snippet count, source reputation (High/Medium preferred), and benchmark score (higher is better). If results don't look right, try alternate names or queries (e.g., "next.js" not "nextjs", or rephras
+Next: Declare the document convention and validate it.
+
+### I2.1 Shared terminology — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:205: ## Terminology
+- specs/090-lightning-evaluation-v2/spec.md:250: - Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md).
+Next: Use a shared glossary and consistent domain names.
+
+### I2.2 Uniform identifiers and notation — supported
+The deterministic check is satisfied; semantic review may still find gaps.
+- specs/090-lightning-evaluation-v2/spec.md:26: - Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+- specs/090-lightning-evaluation-v2/spec.md:27:   synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+- specs/090-lightning-evaluation-v2/spec.md:28:   REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+- specs/090-lightning-evaluation-v2/spec.md:29:   REQ-043); Gate 0 (REQ-015, REQ-044); stops, resume and drift (REQ-037, REQ-040); owner yes records
+Next: Keep identifier syntax and references consistent.
+
+### I2.3 Cross-artifact alignment — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:10:   step only, REQ-019).
+- specs/090-lightning-evaluation-v2/plan.md:12:   and SPEC-079 split, protocol and FREEZE file (REQ-020).
+- specs/090-lightning-evaluation-v2/plan.md:18: observation (REQ-017, T016); evidence bounded to its domain (one host, model, split per run); replayable
+- specs/090-lightning-evaluation-v2/plan.md:19: decisions (Article 14, REQ-016); negative results recorded (T018); EUR 0 (ADR 0021); Lightning boundary
+Next: Reference requirement identifiers from plans and tasks, then inspect semantic agreement.
+
+### I2.4 Consistent organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:7: ## Purpose and scope
+- specs/090-lightning-evaluation-v2/spec.md:68: ## Requirements and acceptance scenarios
+Next: Use a predictable organization across related artifacts.
+
+### I3.1 Structured document organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:1: # Agent Braid contributor instructions
+- AGENTS.md:43: ## Steps
+- AGENTS.md:52: ## CodeGraph
+- AGENTS.md:59: ### Selective CodeGraph workflow
+Next: Group information in navigable sections with meaningful headings.
+
+### I3.2 Cross-document navigation — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:24: See [research.md](research.md). No user, telemetry or third-party data is used; prompts are authored
+- specs/090-lightning-evaluation-v2/plan.md:116: Negative controls are listed in [validation-plan.md](validation-plan.md). Labels are scorer outcomes; the
+- specs/090-lightning-evaluation-v2/spec.md:5: **Decision record:** [ADR 0046](../../docs/adr/0046-lightning-evaluation-design.md) (Proposed).
+- specs/090-lightning-evaluation-v2/spec.md:11: ([diagnosis](../079-kind-choice-tool-fix/evidence/t008-diagnosis-and-strategy-review.md)). Two endpoints
+Next: Link related specifications, plans and tasks.
+
+### I3.3 Comprehension support — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:7: ## Purpose and scope
+- specs/090-lightning-evaluation-v2/spec.md:401:   need a definition. Options: (a) the shipped build and one named variant (for example the skill body
+- specs/090-lightning-evaluation-v2/spec.md:402:   with its first example removed), digests frozen in the pilot freeze; (b) the shipped build twice only
+Next: Explain the product purpose and include a concrete example.
+
+### C1.1 Behavioral product specification — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/spec.md:26: - Engineering: exact bounds and the all-fail bound (REQ-001 to REQ-007, REQ-026, REQ-038); paired,
+- specs/090-lightning-evaluation-v2/spec.md:27:   synchronized selection with an incumbent margin, a confirmation slice, Holm and an audit set (REQ-008 to
+- specs/090-lightning-evaluation-v2/spec.md:28:   REQ-012, REQ-019, REQ-027, REQ-031, REQ-034 to REQ-036, REQ-041); split construction (REQ-024, REQ-042,
+Next: State required behavior from the user or system perspective.
+
+### C1.2 Separation of product and project concerns — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:3: ## Technical context and scope
+- specs/090-lightning-evaluation-v2/plan.md:68:    class rule. A false `met` requires at least one component's null to be true while every component
+- specs/090-lightning-evaluation-v2/plan.md:69:    passes; each component at level α bounds that probability by α (intersection–union principle), so no
+- specs/090-lightning-evaluation-v2/tasks.md:16: - [ ] T001 (OD-1..OD-19, ADR 0046): Owner review of this specification and ADR 0046: record the 2026-11-28 strategy approval with its date; record the deliberate deviations from the approved plan, each with its reason: (1) the plan's section 5 says the development factorial "explains" the v3 to v4 c
+Next: Keep behavior identifiable and place implementation choices in supporting artifacts.
+
+### C1.3 Traceable transition to implementation — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/tasks.md:20: - [ ] T002 (REQ-002, REQ-003 / SC-002, SC-004): Exact Clopper–Pearson lower and upper bounds by bisection on binomial sums (no new dependency), the all-fail count, exact sign and McNemar tests, Holm adjustment, and the slice-sizing formula of plan.md with δ and Δ. Files: `agent_braid/lightning_stats
+- specs/090-lightning-evaluation-v2/tasks.md:21: - [ ] T003 (REQ-017, REQ-033): Simulation harness: candidate pools with known p (a prompt's per-repetition probability of a valid first attempt) drawn from a beta distribution matched to a given within-prompt correlation (range 0.41 to 0.81 from v2 to v4, replaced by the pilot value in T019), plus a
+- specs/090-lightning-evaluation-v2/tasks.md:22: - [ ] T004 (REQ-002, REQ-017, REQ-033 / SC-003, SC-038): SIM: gate A type I error at the 0.80 boundary and power at chosen alternatives, for each OD-1 option, the class rule and the conjunctive verdict, in the independent and the clustered scenarios. Success: type I error at most α within simulation
+- specs/090-lightning-evaluation-v2/tasks.md:23: - [ ] T005 (REQ-003, REQ-017, REQ-033 / SC-005): SIM: coverage of the all-fail bound over a grid of θ, for each OD-2 option, in the independent and the clustered scenarios (success as T004); report the detection rate of a deterministic defect affecting 2 to 3 % of prompts. Files: `specs/090-lightnin
+Next: Connect tasks to the requirements they implement.
+
+### C2.1 Technical context and foundations — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:3: ## Technical context and scope
+Next: Document the technical context and required compatibility in the plan.
+
+### C2.2 Task organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/tasks.md:16: - [ ] T001 (OD-1..OD-19, ADR 0046): Owner review of this specification and ADR 0046: record the 2026-11-28 strategy approval with its date; record the deliberate deviations from the approved plan, each with its reason: (1) the plan's section 5 says the development factorial "explains" the v3 to v4 c
+- specs/090-lightning-evaluation-v2/tasks.md:20: - [ ] T002 (REQ-002, REQ-003 / SC-002, SC-004): Exact Clopper–Pearson lower and upper bounds by bisection on binomial sums (no new dependency), the all-fail count, exact sign and McNemar tests, Holm adjustment, and the slice-sizing formula of plan.md with δ and Δ. Files: `agent_braid/lightning_stats
+- specs/090-lightning-evaluation-v2/tasks.md:21: - [ ] T003 (REQ-017, REQ-033): Simulation harness: candidate pools with known p (a prompt's per-repetition probability of a valid first attempt) drawn from a beta distribution matched to a given within-prompt correlation (range 0.41 to 0.81 from v2 to v4, replaced by the pilot value in T019), plus a
+- specs/090-lightning-evaluation-v2/tasks.md:22: - [ ] T004 (REQ-002, REQ-017, REQ-033 / SC-003, SC-038): SIM: gate A type I error at the 0.80 boundary and power at chosen alternatives, for each OD-1 option, the class rule and the conjunctive verdict, in the independent and the clustered scenarios. Success: type I error at most α within simulation
+Next: Break delivery into individually checkable tasks.
+
+### C2.3 Requirements-to-implementation traceability — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/tasks.md:20: - [ ] T002 (REQ-002, REQ-003 / SC-002, SC-004): Exact Clopper–Pearson lower and upper bounds by bisection on binomial sums (no new dependency), the all-fail count, exact sign and McNemar tests, Holm adjustment, and the slice-sizing formula of plan.md with δ and Δ. Files: `agent_braid/lightning_stats
+- specs/090-lightning-evaluation-v2/tasks.md:21: - [ ] T003 (REQ-017, REQ-033): Simulation harness: candidate pools with known p (a prompt's per-repetition probability of a valid first attempt) drawn from a beta distribution matched to a given within-prompt correlation (range 0.41 to 0.81 from v2 to v4, replaced by the pilot value in T019), plus a
+- specs/090-lightning-evaluation-v2/tasks.md:22: - [ ] T004 (REQ-002, REQ-017, REQ-033 / SC-003, SC-038): SIM: gate A type I error at the 0.80 boundary and power at chosen alternatives, for each OD-1 option, the class rule and the conjunctive verdict, in the independent and the clustered scenarios. Success: type I error at most α within simulation
+- specs/090-lightning-evaluation-v2/tasks.md:23: - [ ] T005 (REQ-003, REQ-017, REQ-033 / SC-005): SIM: coverage of the all-fail bound over a grid of θ, for each OD-2 option, in the independent and the clustered scenarios (success as T004); report the detection rate of a deterministic defect affecting 2 to 3 % of prompts. Files: `specs/090-lightnin
+Next: Record the requirement IDs served by each task; links alone do not prove implementation.
+
+### C2.4 Data models and evolution — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/090-lightning-evaluation-v2/plan.md:86: 14. **Data model and evolution.** The journal, the gate A report and the simulation record each carry a
+- specs/090-lightning-evaluation-v2/plan.md:87:     `schema` version string; a reader rejects an unknown version instead of guessing. The SPEC-078 and
+- specs/090-lightning-evaluation-v2/plan.md:88:     SPEC-079 report schemas are not changed; new fields go into the new schema versions only.
+Next: Describe relevant data or interface contracts and evolution requirements.
+
+## Findings
+
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:70)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:105)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:111)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:115)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:117)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:135)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:139)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:147)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/090-lightning-evaluation-v2/spec.md:160)
+  Check whether the obligations can fail independently; split them if so.
+
+## Open decisions
+
+No explicit clarification markers detected; this does not establish completeness.

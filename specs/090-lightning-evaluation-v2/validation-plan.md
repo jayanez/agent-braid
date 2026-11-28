@@ -25,7 +25,7 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-014 | SC-019 | `tests/test_lightning_runner.py` | `RunnerTests.test_metadata_fields` | Output of T008. |
 | REQ-015 | SC-020 | `tests/test_lightning_gate_a.py` | `Gate0Tests.test_tripwire_blocks` | Output of T013. |
 | REQ-016 | SC-021 | `tests/test_lightning_selection.py` | `ReplayTests.test_replay_identical` | Output of T007. |
-| REQ-017 | SC-022 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_simulation_required` | Output of T016. |
+| REQ-017 | SC-022 | `tests/test_lightning_runner.py` | `RunnerTests.test_simulation_required` | Output of T008. |
 | REQ-018 | SC-023 | `tests/test_lightning_runner.py` | `RunnerTests.test_parallel_refused_without_decision` | Output of T015. |
 | REQ-019 | SC-024 | `tests/test_lightning_selection.py` | `SelectionTests.test_gepa_apo_use_paired` | Output of T014. |
 | REQ-020 | SC-025 | `tests/test_spec090_boundaries.py` | `BoundaryTests.test_frozen_paths_untouched` | Output of T016. |
@@ -56,5 +56,6 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-042 | SC-050 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_seeded_partition` | Output of T016. |
 | REQ-043 | SC-051 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_gate_a_item_names_product` | Output of T016. |
 | REQ-044 | SC-052 | `tests/test_lightning_gate_a.py` | `Gate0Tests.test_static_gate0` | Output of T023. |
+| REQ-045 | SC-053 | `tests/test_lightning_runner.py` | `RunnerTests.test_owner_yes_required` | Output of T008. |
 
 Negative controls: SC-008 (instrument counted as 0/3), SC-009 (class rule), SC-015 (incumbent kept below the margin), SC-017 (host change), SC-020 (tripwire blocks), SC-022 (simulation required), SC-023 (parallel refused), SC-036 (underpowered slice), SC-039 (confirmation slice disjoint), SC-041 (audit once), SC-042 (host mismatch refused before rollout), SC-043 (blocked resume), SC-045 and SC-046 (verdict), SC-047 (pilot freeze), SC-049 (cap does not shrink), SC-051 (gate A item without product name), SC-052 (null baselines), SC-025 to SC-030 and SC-032 to SC-035 (boundaries).

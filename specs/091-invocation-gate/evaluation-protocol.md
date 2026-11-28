@@ -23,9 +23,11 @@ held-out set or its twin.
 
 ### Gate B noise pilot (T008)
 
-Fresh development prompts that do not name the product, in the gate B laboratory; A/A pairs of the current build and two candidate arms. Outputs: within-prompt
-correlation, candidate disagreement rate, A/A differences, each with an interval, in the SPEC-090 input
-format, for gate B selection and the [OD-7] sizes; gate A has its own pilot (SPEC-090 REQ-032). Descriptive.
+Fresh development prompts that do not name the product, in the gate B laboratory, at the [OD-23] size;
+the two [OD-27] arms (the shipped build and one named lever build) and an A/A pair of the shipped build.
+Outputs: within-item correlation, paired per-item difference variance, discordance, A/A differences and
+item-level recall, each with an interval, in the SPEC-090 input format, for gate B selection, the [OD-7]
+sizes and the [OD-22] threshold; gate A has its own pilot (SPEC-090 REQ-032). Descriptive.
 
 ### Development factorial (T009, H3)
 
@@ -36,7 +38,7 @@ does not isolate the v3 to v4 change.
 
 ### Lever screening (T018, H1)
 
-The `alwaysLoad` arm and the server-instruction arm, each against the current build, on the same labelled
+The `alwaysLoad` arm and the server-instruction arm, each against the shipped build, on the same labelled
 development items; item-level recall and false-positive rate; Holm over the four tests at [OD-19].
 
 ## 2×2 factorial (T011, T012; H1, H2)
@@ -52,7 +54,8 @@ is tested for equivalence within ±[OD-18] by TOST, otherwise reported descripti
 recall on necessary and beneficial items and the false-positive rate on `tool-unnecessary` items
 (including near-misses), each with the [OD-17] item-level bound. False positives are a noninferiority condition: the
 exact upper bound on the paired false-positive difference at or below the [OD-9] margin. Criterion to
-proceed to a held-out, paired on the same items: [OD-9]. If the hook arm is unavailable, the preregistered
+proceed to a held-out, paired on the same items in the decisive cell named in T011 (REQ-044), at
+α = [OD-19]: [OD-9]. If the hook arm is unavailable, the preregistered
 description-only paired comparison (hook absent) replaces the factorial for that criterion. Each rollout
 records whether the hook context appeared, any host safety notice, and whether the skill and
 `analyze-work` were listed; a missing listing is an instrument event.

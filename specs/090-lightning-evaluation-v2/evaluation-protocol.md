@@ -35,14 +35,16 @@ changes.
 - Three repetitions per prompt (REQ-007). Missing results count as failed repetitions.
 - Gate 0: first static, with zero rollouts (every reference valid, a rule-violating null baseline per class
   below the gate); then the invocation tripwire on the twin at the T020 rate minus the [OD-9] margin.
-- Gate met when all hold:
+- Verdict (REQ-038). `met` when all three hold:
   1. exact one-sided Clopper–Pearson lower bound of the passing share at α = [OD-1] is at least 0.80;
   2. exact upper bound of the all-fail rate at α = [OD-1] is at most τ = [OD-2];
-  3. every class has at least half its prompts passing;
-  4. no 0/3 prompt is unreviewed; every `instrument` prompt counts as 0/3; reserve prompts run in the same
-     session block and are reported only, within the cap [OD-8].
-  The gate is conjunctive, so a false `met` stays at or below α (intersection–union); precedence
-  `invalidated` > `held` > `missed` and `met`.
+  3. every class has at least half its prompts passing.
+  Otherwise `missed`, unless an earlier rule applies, in this precedence: `invalidated` (an invalidating
+  event: canary hit, cap [OD-8] exceeded, host or model change before the reserve run, blocked held-out
+  resume, the [OD-19] invalidate action) over `held` (an unreviewed 0/3 prompt, an unfilled slot, or the
+  [OD-19] hold action) over `missed` and `met`. Every `instrument` prompt counts as 0/3; the next reserve
+  prompt of the same class runs in the same session block and is reported only. The gate is conjunctive,
+  so a false `met` stays at or below α (intersection–union).
 
 ## Selection (development use)
 

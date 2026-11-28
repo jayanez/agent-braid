@@ -8,7 +8,7 @@
   those specifications, not a value fixed here.
 - **Date:** 2026-11-28
 - **Deciders:** Juan Antonio Yáñez García (founder)
-- **Constitutional articles:** 0, 9, 12, 13, 14, 19, 20, 21, 23, 25
+- **Constitutional articles:** 0, 9, 12, 13, 14, 19, 20, 21, 23
 - **Specifications:** [SPEC-090](../../specs/090-lightning-evaluation-v2/spec.md) (statistical machinery and gate A), [SPEC-091](../../specs/091-invocation-gate/spec.md) (gate B)
 - **Relation to other ADRs:** builds on [ADR 0039](0039-braid-lightning-boundary.md) (unchanged) and [ADR 0040](0040-braid-lightning-mit-vendoring.md); [ADR 0042](0042-braid-lightning-local-weight-training.md) stays deferred. [ADR 0038](0038-analyze-work-request-contract.md) needs an amendment only if SPEC-091 changes tool `_meta` or MCP server instructions (SPEC-091 OD-10).
 
@@ -54,7 +54,7 @@ direction, and McNemar's n counts discordant pairs only.
      not in the prompt, for example repository state), `tool-beneficial` (the product gives a verified,
      auditable artifact the prose answer does not), or `tool-unnecessary`. Recall is measured and bounded
      on the first two labels together; the false-positive rate is measured and bounded on
-     `tool-unnecessary` items and near-misses. The item, not the rollout, is the unit of both bounds,
+     `tool-unnecessary` items, including near-misses. The item, not the rollout, is the unit of both bounds,
      because rollouts of one prompt are correlated (ANOVA ICC of per-prompt pass counts 0.81 on v4); the per-item outcome is an open decision
      (SPEC-091 OD-17). Neither bound is combined into one score.
 2. **Identified estimands only.** Gate A reports:
@@ -68,7 +68,7 @@ direction, and McNemar's n counts discordant pairs only.
      0.075 are excluded because they pass v3 (and from 0.0757 also v2) with the `units` defect present. Replaced prompts count
      as 0/3 in the verdict. Each 0/3 prompt is still reviewed by the owner as `model` or `instrument`; `instrument`
      prompts are replaced from a reserve frozen before the run, within a preregistered cap. A share such as
-     "prompts with p below τ" is not reported as a gate quantity.
+     "prompts with p below c" (for a cutoff c) is not reported as a gate quantity.
    - The class rule is kept.
    The gate is conjunctive, so a false `met` stays at or below α by the intersection–union principle.
    Three repetitions are kept: with the measured within-prompt correlation (0.41 to 0.52) and a prompt cost
@@ -90,7 +90,7 @@ direction, and McNemar's n counts discordant pairs only.
    refuses the run before any rollout without spending the split. Reports carry `configDigest`,
    per-rollout versions, the server-reported model identifier, tool-call counts and whether the skill was
    invoked.
-6. **Gate 0 invocation tripwire.** Every future Gate 0 includes an invocation-rate tripwire on a
+6. **Gate 0 invocation tripwire.** Every Gate 0 of a split frozen under SPEC-090 or SPEC-091 includes an invocation-rate tripwire on a
    development twin of the held-out set (about 20 prompts, a few minutes at the observed 8.5 s per
    rollout), so a collapse such as T008's is seen before a held-out set is spent. The threshold is per
    gate: gate A uses its pilot's rate on product-naming prompts, gate B its pilot's rate on recall-labelled
@@ -127,12 +127,12 @@ direction, and McNemar's n counts discordant pairs only.
   all-fail test at τ in [0.0295, 0.0466) for α = 0.05 and n = 100. It is not discarded but restated as an
   explicit τ (SPEC-090 OD-2), so that keeping or loosening it is a recorded owner choice; without any such
   rule v2 and v3 would have passed (95 and 91) with the defect inside.
-- **Share of prompts with p below τ as the second-stage gate.** Not identifiable from 3 repetitions
+- **Share of prompts with p below a cutoff c as the second-stage gate.** Not identifiable from 3 repetitions
   (2609.09245, Thm 1). Rejected.
 - **Thompson Sampling (including top-two) for allocation.** Evaluated and not adopted:
   - it changes how rollouts are allocated, while the bottleneck is the power of each comparison;
   - pools are 5 to 20 near-tied candidates that fail on the same hard prompts, so pairing on a fixed
-    slice removes shared noise that adaptive allocation does not, and the required sample grows as 1/Δ²
+    slice removes shared noise that adaptive allocation does not, and the required sample grows as 1/gap², for the true gap between candidates,
     under any allocation;
   - top-two Thompson Sampling pays off for wide, well-separated pools;
   - adaptively collected data biases arm means and can double false-positive and false-negative rates
@@ -163,9 +163,13 @@ direction, and McNemar's n counts discordant pairs only.
 
 SPEC-090 and SPEC-091 plan, before any real run, simulation tests with known-p candidates and the pilot's
 within-prompt correlation: selection accuracy against n = 5, type I and II error of gate A, coverage of
-the all-fail bound, and replay determinism of a journal. The real-run order is: development factorial,
-noise pilot, then a preregistered 2×2 factorial (description × hook) in development, and only then
-frozen held-out sets. None has run.
+the all-fail bound, and replay determinism of a journal. None has run.
+
+Real-run order, the same in ADR 0046, SPEC-090 and SPEC-091: the gate A noise pilot (SPEC-090 T020) and,
+independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
+T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
+gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
+and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
 
 ## Research (leads, not facts)
 

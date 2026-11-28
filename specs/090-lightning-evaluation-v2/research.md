@@ -38,7 +38,7 @@ Decision: pair. Pairing alone gives about 2.25× in sample size; the "3 to 6×" 
 repeated runs too (2512.21326, paper). Five-case minibatches support no test (own calculation). SySRs
 (2606.07726, paper) was shown on deterministic scores without comparison to racing or covariance-adaptive
 best-arm identification (2306.02630), so the rule is chosen by simulation (OD-11). Near ties need samples
-growing as 1/Δ² under any allocation.
+growing as 1/gap² (gap: the true difference between candidates) under any allocation.
 
 ## R5 — Audit set
 

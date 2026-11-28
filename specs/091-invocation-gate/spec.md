@@ -24,9 +24,11 @@ behaviour is measured. No actor gains execution authority.
 
 This is engineering plus a research protocol:
 
-- Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028); the laboratory
-  (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032); the optimizer target and
-  caps (REQ-009, REQ-010, REQ-020, REQ-029); reports (REQ-001, REQ-017, REQ-026).
+- Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+  laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+  optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+  (REQ-001, REQ-017, REQ-026, REQ-034, REQ-039); same-build certification and selection (REQ-038,
+  REQ-041); freezes and stops (REQ-035, REQ-036).
 - Research: simulations first (REQ-018), then the noise pilot (REQ-012), the development factorial
   (REQ-011), the 2×2 factorial (REQ-013) and the held-out (REQ-014, REQ-015), each a separate owner yes.
 
@@ -87,13 +89,13 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-011: Given a description candidate one character over its cap, when it is validated, then it is refused with a size code.
 - **REQ-011 — Development factorial pilot.** Before any gate B held-out, a 2³ factorial on fresh development prompts (plus spent v4 prompts only if and as OD-1 allows) MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It estimates the effect of three of the seven v3/v4 differences on fresh prompts; it does not isolate the v3 to v4 change, and it is not a gate.
   - SC-012: Given the pilot design, when it is built, then each of the 8 cells has the OD-6 count and every prompt is fresh, except spent v4 prompts in the form OD-1 allows.
-- **REQ-012 — Noise pilot.** A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, the within-prompt correlation of invocation, the disagreement rate between candidates and A/A drift, and publish them in the SPEC-090 sizing input format for gate B selection (T013) and the OD-7 sizes; gate A is sized from its own pilot (SPEC-090 REQ-032).
-  - SC-013: Given a noise pilot run, when its report is built, then it contains the correlation, the disagreement rate and A/A differences with intervals in the SPEC-090 input format.
+- **REQ-012 — Noise pilot.** A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, using the two OD-27 arms, the within-item correlation of invocation, the variance of paired per-item differences in the item outcome, the discordance between the two arms (share of items whose item outcomes differ), A/A drift and item-level recall on recall-labelled items, and publish them in the SPEC-090 sizing input format for gate B selection (T019), the OD-7 sizes and the OD-22 threshold; gate A is sized from its own pilot (SPEC-090 REQ-032).
+  - SC-013: Given a noise pilot run, when its report is built, then it contains the within-item correlation, the paired per-item difference variance, the discordance, A/A differences and item-level recall with intervals in the SPEC-090 input format.
 - **REQ-013 — Preregistered 2×2 factorial.** The description × hook factorial MUST be preregistered and frozen before its run as a within-item design (every item runs in all four cells), with arms interleaved in randomized blocks and the items per cell of OD-7 (rollouts derived as items × 3); the protocol names the contrasts (description main effect, hook main effect, interaction as the difference of differences), the candidate analyses (exact paired McNemar per contrast on the item outcome; a logistic mixed model with an item random effect; a sign-flip permutation test on item-level differences) from which T007 picks one, Holm over the recall main effects at the OD-19 family-wise α with false-positive noninferiority per effect, and the TOST equivalence test of the interaction within ±η of OD-18. If the hook arm is recorded as unavailable (REQ-039), the factorial reduces to the preregistered description-only paired comparison (use-case-first against current, hook absent), and REQ-014 uses that comparison.
   - SC-014: Given a factorial schedule, when it is generated from the frozen seed, then arms interleave in blocks and the counts per cell match the protocol.
-- **REQ-014 — Gate B held-out.** A gate B held-out set MUST be frozen by sha256 and scored once, and MAY be built only after the 2×2 factorial meets the paired OD-9 criterion, or its preregistered description-only fallback does (REQ-013): on the same items, the recall difference against the current build has a lower bound above zero, and false positives are noninferior, with the exact upper bound on the paired false-positive difference at or below the OD-9 margin.
+- **REQ-014 — Gate B held-out.** A gate B held-out set MUST be frozen by sha256 and scored once, and MAY be built only after the 2×2 factorial meets the paired OD-9 criterion in the decisive cell named under REQ-044, at the OD-19 family-wise α, or its preregistered description-only fallback does (REQ-013): on the same items, the recall difference against the shipped build has a lower bound above zero, and false positives are noninferior, with the exact upper bound on the paired false-positive difference at or below the OD-9 margin.
   - SC-015: Given a factorial report that misses the OD-9 criterion, when a held-out freeze is requested, then it refuses.
-- **REQ-015 — Gate B tripwire.** Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items drawn with the split and reserve by the seeded partition of SPEC-090 REQ-042, with the gate B threshold: the T008 invocation rate on recall-labelled items minus the OD-22 margin. The gate A threshold is never used for gate B.
+- **REQ-015 — Gate B tripwire.** Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items drawn with the split and reserve by the seeded partition of SPEC-090 REQ-042, with the gate B threshold: the T008 item-level recall (item outcome of OD-17) on `tool-necessary` and `tool-beneficial` items, minus the OD-22 margin; the twin size is OD-22. The gate A threshold is never used for gate B.
   - SC-016: Given a twin below the tripwire threshold, when Gate 0 runs, then the held-out run is refused.
 - **REQ-016 — Official harness contrast.** If OD-13 adopts it, `claude plugin eval` MUST be run once as a contrast with its version recorded.
   - SC-017: Given an adopted OD-13, when the contrast task runs, then one contrast record exists with the harness version.
@@ -119,7 +121,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-027: Given a gate B report, when its fields are listed, then no field combines the two metrics.
 - **REQ-027 — Measured labels immutable.** A label change after measurement MUST create a new item-set version, leaving the measured version unchanged (split from REQ-002).
   - SC-028: Given a relabelled item, when the record is saved, then a new version is created and the measured version is unchanged.
-- **REQ-028 — Counts stated before authoring.** Each gate B item set MUST state its per-label and per-class counts, at the sizes of OD-8, before its prompts are authored (split from REQ-003).
+- **REQ-028 — Counts stated before authoring.** Each gate B item set MUST state its per-label and per-class counts, at the counts its OD sets (OD-6, OD-7, OD-8, OD-22 to OD-25), before its prompts are authored (split from REQ-003).
   - SC-029: Given an item set whose counts were recorded after its prompts, when it is checked, then it is rejected.
 - **REQ-029 — Skill configurations replay.** Existing `skill` target configurations MUST replay byte-identically after the target extension (split from REQ-009).
   - SC-030: Given an existing SPEC-072 skill configuration, when it is replayed, then the candidate hashes are identical to the recorded ones.
@@ -129,27 +131,31 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-032: Given a reward or label configuration naming a model-graded component, when it is validated, then it is rejected.
 - **REQ-032 — D12 cap kept.** The compact `analyze-work` definition MUST stay within the ADR 0038 D12 cap of 1,500 approximate tokens in every lever build (split from REQ-024).
   - SC-033: Given every lever build, when the definition size is measured, then it is at most 1,500 approximate tokens.
-- **REQ-033 — Lever screening run.** Before the 2×2 factorial, the `alwaysLoad` and server-instruction arms MUST each be compared with the current build on the same items in one preregistered, frozen screening run (T018), on item-level recall (superiority) and false positives (noninferiority: exact upper bound on the paired difference at or below the OD-9 margin).
-  - SC-034: Given the screening protocol, when it is frozen, then it names both arms, the current build, the shared items and the Holm family of REQ-037.
-- **REQ-034 — Gate B verdict.** The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below α by the intersection–union principle. Allowed values and precedence follow SPEC-090 REQ-038: `invalidated` over `held` over `missed` and `met`; `held` while a resumable slot is unfilled or a label review is open.
+- **REQ-033 — Lever screening run.** Before the 2×2 factorial, the `alwaysLoad` and server-instruction arms MUST each be compared with the shipped build on the same items in one preregistered, frozen screening run (T018), on item-level recall (superiority) and false positives (noninferiority: exact upper bound on the paired difference at or below the OD-9 margin).
+  - SC-034: Given the screening protocol, when it is frozen, then it names both arms, the shipped build, the shared items and the Holm family of REQ-037.
+- **REQ-034 — Gate B verdict.** The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below α by the intersection–union principle. Allowed values and precedence follow SPEC-090 REQ-038: `invalidated` over `held` over `missed` and `met`; `held` while a slot is unfilled after a stop or a label disagreement is not yet adjudicated under OD-2; invalidating events are those of SPEC-090 REQ-038.
   - SC-035: Given a run whose recall bound meets OD-3 and whose false-positive bound does not, when the verdict is computed, then it is missed.
   - SC-036: Given a run with an open label review and a canary hit, when the verdict is computed, then it is invalidated.
-- **REQ-035 — Development pilot freezes.** Each development pilot (T008, T009, T018) MUST run only after its protocol section, its labelled items and its pinned builds are frozen by sha256 on a `develop` commit and the owner says yes; pilot items never enter a held-out set or its twin.
+- **REQ-035 — Development pilot freezes.** Each development pilot and the contrast run (T008, T009, T018, T016) MUST run only after its protocol section, its labelled items and its pinned builds are frozen by sha256 on a `develop` commit and the owner says yes; pilot items never enter a held-out set or its twin.
   - SC-037: Given a pilot run whose item file hash differs from its pilot freeze, when it is requested, then it is rejected.
 - **REQ-036 — Stops and resume.** Quota stops, host or model changes and resumes MUST follow SPEC-090 REQ-037 unchanged.
   - SC-038: Given a gate B held-out run stopped by quota after which the model changed, when a resume is requested, then it is rejected and the run is invalidated as SPEC-090 REQ-037 states.
-- **REQ-037 — Family-wise error for levers and effects.** Recall superiority tests of H1 (each lever against the current build) and of the 2×2 main effects MUST be adjusted by Holm within each family at the family-wise α of OD-19; false positives enter as a noninferiority condition per comparison (exact upper bound on the paired difference at or below the OD-9 margin), never as a superiority test, and a lever is accepted only when both hold (intersection–union).
+- **REQ-037 — Family-wise error for levers and effects.** Recall superiority tests of H1 (each lever against the shipped build) and of the 2×2 main effects MUST be adjusted by Holm within each family at the family-wise α of OD-19; false positives enter as a noninferiority condition per comparison (exact upper bound on the paired difference at or below the OD-9 margin), never as a superiority test, and a lever is accepted only when both hold (intersection–union).
   - SC-039: Given two levers with recall p-values 0.01 and 0.04 at family-wise α 0.05, the second with a false-positive upper bound above the margin, when the family is adjusted, then Holm rejects both recall nulls but only the first lever is accepted.
-- **REQ-038 — Same-build certification.** A build that changes the skill description, the server instructions, `_meta` or the hook MUST be proposed for promotion only when gate B is met on it and, on that same build, gate A is met or it is noninferior to the shipped build under SPEC-049 on a fresh gate A split (SPEC-090 OD-17 option b).
+- **REQ-038 — Same-build certification.** A build that changes the skill description, the server instructions, `_meta` or the hook MUST be proposed for promotion only when gate B is met on it and, on that same build, at least one of these holds: gate A is met; it is noninferior to the shipped build under SPEC-049 on a fresh gate A split (SPEC-090 OD-17 option b).
   - SC-040: Given a build that met gate B but has no gate A or SPEC-049 result on the same build, when a promotion proposal is checked, then it is rejected.
 - **REQ-039 — Per-rollout session facts.** Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout, and an arm whose hook context never appears is recorded as unavailable.
   - SC-041: Given a rollout whose session listing lacks `analyze-work`, when it is scored, then it is recorded as an instrument event, not as a non-call.
 - **REQ-040 — Product name absent from gate B items.** The gate B builder MUST reject, with zero rollouts, any gate B item that contains the product name.
   - SC-042: Given a gate B pool with one item naming the product, when the builder runs, then it rejects the pool before any rollout and names the item.
-- **REQ-041 — Gate B selection rule.** Gate B selection (T019) MUST follow a preregistered rule: the incumbent is the 2×2 cell that met OD-9; a challenger replaces it only with item-level recall superiority (Holm, OD-19) and false-positive noninferiority (OD-9 margin), with no combined score; when several challengers are accepted the tie-break is the largest lower bound on recall advantage, then the shortest artifact, then the lowest candidate id; the winner is scored once on the labelled gate B audit set and once on the SPEC-090 gate A audit set, each with noninferiority to the incumbent.
+- **REQ-041 — Gate B selection rule.** Gate B selection (T019) MUST follow a preregistered rule: the incumbent is the 2×2 cell that met OD-9; elimination ranks challengers by the paired item-level recall difference against the incumbent; a challenger replaces the incumbent only when its recall advantage exceeds δ_B of OD-28 and the exact upper bound on its false-positive increase is at or below the OD-9 margin, each tested at the OD-19 family-wise α with Holm over the challengers, with no combined score; when several challengers are accepted the tie-break is the largest lower bound on recall advantage, then the shortest artifact, then the lowest candidate id; the winner is scored once on the labelled gate B audit set (REQ-042) for both gate B metrics, and once on the SPEC-090 gate A audit set, whose items name the product by design, for authoring validity only, each with noninferiority to the incumbent.
   - SC-043: Given two accepted challengers with equal recall lower bounds, when the winner is chosen, then the shorter artifact wins and both audits are scored once with noninferiority against the incumbent.
 - **REQ-042 — Labelled gate B audit set.** A labelled gate B audit set of the OD-25 size MUST be authored from its own pool, labelled under REQ-002, frozen by sha256, kept disjoint from every slice, pilot, split and twin, and scored once per winner.
   - SC-044: Given a selection input that contains a gate B audit item, when selection is configured, then it is rejected.
+- **REQ-043 — Description lever as an overlay.** The use-case-first skill description MUST be a laboratory overlay applied when a lever build is assembled; the canonical `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md`, which is the optimizer's origin path and default target, stays byte-identical.
+  - SC-045: Given a lever build with the description overlay, when the repository files are hashed after the build, then the canonical SKILL.md hash is unchanged and only the build output carries the overlay.
+- **REQ-044 — Preregistered decisive cell.** The T011 freeze MUST name the one preregistered 2×2 cell whose paired comparison against the shipped-build cell must meet OD-9 for REQ-014, tested at the OD-19 family-wise α.
+  - SC-046: Given a 2×2 protocol that names no decisive cell, when the freeze check runs, then it is rejected.
 
 ## Non-functional requirements
 
@@ -157,7 +163,7 @@ Operational and quality constraints, each with its source:
 
 - Size caps per host documentation, re-verified at T004: 1,536 characters for a skill description, 4,096
   for server instructions; the ADR 0038 D12 cap of 1,500 approximate tokens for `analyze-work` (REQ-010,
-  REQ-024).
+  REQ-032).
 - Determinism: factorial schedules and journals replay from a recorded seed (REQ-013, REQ-018).
 - Cost: EUR 0 on the subscription route (REQ-021). Every quota-spending task has its own freeze and the
   owner's yes.
@@ -171,18 +177,18 @@ Budget from T001 to the gate B verdict, at the recommended OD values:
 | T009 development factorial | 25 items × 8 cells × 1 (OD-6) | 200 | 28 min | 57 min |
 | T018 lever screening | (60 + 60) items × 3 × 3 arms (OD-24) | 1,080 | 2.6 h | 5.1 h |
 | T012 2×2 factorial | (150 + 60) items × 3 × 4 cells (OD-7, OD-8) | 2,520 | 6.0 h | 11.9 h |
-| T019 selection (only if OD-20 (a) needs it) | elimination 60 items × 1 over 10, 5 and 3 candidates; confirmation 3 arms × 60 × 3; gate B audit 90 × 3; gate A audit 128 × 3 | 2,274 | 5.4 h | 10.7 h |
+| T019 selection (only if OD-20 (a) needs it) | elimination 60 items × 1 over 10, 5 and 3 candidates (1,080); confirmation (75 recall + 60 `tool-unnecessary`) items × 3 arms × 3 (1,215; illustrative: discordance 0.10, gap 0.10, OD-28); gate B audit 90 × 3; gate A audit 128 × 3 | 2,949 | 7.0 h | 13.9 h |
 | T023 gate A on the same build (REQ-038) | 100 × 3 plus reserve 5 × 3, twin 20 × 1 | 335 | 47 min | 95 min |
 | T021 Gate 0 tripwire | twin 20 × 1 (OD-22) | 20 | 3 min | 6 min |
 | T015 gate B held-out | (150 + 60) items × 3 (OD-25) | 630 | 1.5 h | 3.0 h |
 | T016 contrast | 20 items × 3 × 2 (OD-13) | 120 | 17 min | 34 min |
 | A/A anchors | 20 per session × 10 sessions (SPEC-090 OD-20) | 200 | 28 min | 57 min |
-| **Total with selection** | | **7,559** | **17.8 h** | **35.7 h** |
+| **Total with selection** | | **8,234** | **19.4 h** | **38.9 h** |
 | **Total without selection** | | **5,285** | **12.5 h** | **25.0 h** |
 
-Combined with gate A (SPEC-090, 575 rollouts): 8,134 rollouts with selection (19.2 h at 8.5 s, 38.4 h at
+Combined with gate A (SPEC-090, 575 rollouts): 8,809 rollouts with selection (20.8 h at 8.5 s, 41.6 h at
 17 s) or 5,860 without (13.8 h, 27.7 h). Subscription quota windows, not cash, bind these runs.
-- Compatibility: existing `skill` configurations replay byte-identically (REQ-009).
+- Compatibility: existing `skill` configurations replay byte-identically (REQ-029).
 
 ## Security and privacy
 
@@ -203,6 +209,10 @@ Combined with gate A (SPEC-090, 575 rollouts): 8,134 rollouts with selection (19
 - **Recall:** share of `tool-necessary` and `tool-beneficial` items whose item outcome is a call (REQ-001).
 - **False-positive rate:** share of `tool-unnecessary` items (including near-misses) whose item outcome is a
   call (REQ-001).
+- **Item:** a gate B prompt; **within-item** correlation is SPEC-090's within-prompt correlation for items.
+- **Discordance:** the share of items whose item outcomes differ between two arms (REQ-012).
+- **Shipped build, incumbent, challenger, missing result, unfilled slot, canary, invalidating event,
+  owner yes record:** as defined in SPEC-090 Terminology.
 - **Agreed-only subset:** items both labellers labelled alike (REQ-017).
 - **Gate B twin:** recall-labelled items drawn with the split by the seeded partition (REQ-015).
 - **Incumbent (gate B selection):** the 2×2 cell that met OD-9 (REQ-041).
@@ -223,16 +233,15 @@ Combined with gate A (SPEC-090, 575 rollouts): 8,134 rollouts with selection (19
 Hypotheses (preregistered per run in [evaluation-protocol.md](evaluation-protocol.md); none is a
 completion condition):
 
-- **H1** — At least one lever (screened in T018 or in the 2×2 factorial) raises item-level recall over the
-  current build without a false-positive rise beyond the OD-9 margin, with Holm over the levers and both
-  metrics at the OD-19 family-wise α (REQ-037).
-- **H2** — In the 2×2 factorial the description × hook interaction lies within ±η (OD-18), shown by two
-  one-sided tests (TOST). If equivalence is not shown, the interaction is reported descriptively and no
-  additivity is claimed; a non-significant interaction test alone supports nothing. At the recommended
-  sizes H2 is likely inconclusive unless OD-7 reaches the item count that OD-18 states.
-- **H3** — Product name, form and the completeness sentence each change the invocation rate in the
-  development factorial (descriptive). It estimates the effect of three of the seven v3/v4 differences
-  on fresh prompts; it does not isolate the v3 to v4 change.
+- **H1** — At least one lever (screened in T018 or in the 2×2 factorial) raises item-level recall over the incumbent, with Holm over the levers at the OD-19 family-wise α, while its false positives are noninferior within the OD-9 margin (REQ-037).
+- **H2** — In the 2×2 factorial the description × hook interaction lies within ±η (OD-18), shown by two one-sided tests (TOST); if equivalence is not shown, the interaction is reported descriptively and no additivity is claimed, because a non-significant interaction test alone supports nothing; at the recommended sizes H2 is likely inconclusive unless OD-7 reaches the item count that OD-18 states.
+- **H3** — Product name, form and the completeness sentence each change the invocation rate in the development factorial (descriptive); it estimates the effect of three of the seven v3/v4 differences on fresh prompts and does not isolate the v3 to v4 change.
+
+Real-run order, the same in ADR 0046, SPEC-090 and SPEC-091: the gate A noise pilot (SPEC-090 T020) and,
+independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
+T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
+gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
+and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
 
 Multiplicity: gate B is conjunctive (recall bound and false-positive bound), so a false `met` stays at or
 below α by the intersection–union principle (REQ-034); H1 and the 2×2 main effects are adjusted by Holm
@@ -256,7 +265,7 @@ repository: the SPEC-079 T008 report with its invocation block, and the diagnosi
 
 ## Owner decisions (open)
 
-Open questions: OD-1 to OD-26. Each has options, a recommendation and its evidence, or says plainly that no
+Open questions: OD-1 to OD-28. Each has options, a recommendation and its evidence, or says plainly that no
 evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-prompt pass counts on v4.
 
 - **OD-1 — Spent v4 prompts as development material.** Options: (a) no reuse, as the SPEC-079 protocol
@@ -271,7 +280,7 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
 - **OD-3 — Gate B bounds.** Options for the rule that fixes them: (i) fixed values chosen now: recall lower
   bound 0.6, 0.7 or 0.8, false-positive upper bound 0.05, 0.10 or 0.20; (ii) a rule applied after the 2×2
   factorial and before any held-out, with floors fixed at T001: recall bound = max(best 2×2 cell's
-  item-level lower bound, R_min) and false-positive bound = min(current build's 2×2 upper bound plus the
+  item-level lower bound, R_min) and false-positive bound = min(shipped build's 2×2 upper bound plus the
   OD-9 margin, F_max), with R_min and F_max owner parameters (options: R_min 0.5 or 0.6; F_max 0.10 or
   0.20). Without the floors, a best cell at recall 0.20 would yield a `met` for a useless arm, and an arm
   equal to that cell would be tested against its own earlier bound (about a coin flip). α follows
@@ -292,12 +301,14 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
   rollouts); × 3 repetitions (about 600). Evidence: no development factorial has run; at 25 items per
   cell an exact 95 % interval on a cell rate near 0.5 is about ±0.2 (own calculation), enough to see large
   effects only. Recommendation: 25 × 1, reported as descriptive.
-- **OD-7 — 2×2 recall-labelled items per cell.** Options: 67, 150 or 300 `tool-necessary` and
-  `tool-beneficial` items per cell, at 3 repetitions; the `tool-unnecessary` count is OD-8. Evidence:
-  detecting an item-level recall rise from 18 % to 30 % needs about 156 items per arm one-sided at 80 %
-  power (own calculation); the earlier 156-per-arm figure counted rollouts and ignored clustering within
-  items (ICC 0.81 on v4). At 67 items per cell H2 is inconclusive at any η in OD-18 up to ±0.15 (standard
-  error about 0.12). Recommendation: 150 items per cell, revised from the gate B noise pilot.
+- **OD-7 — 2×2 recall-labelled items per cell.** Options: 67, 156 or 300 `tool-necessary` and
+  `tool-beneficial` items per cell, at 3 repetitions; the `tool-unnecessary` count is OD-8, so a cell holds
+  OD-7 + OD-8 items. Evidence: an unpaired one-sided test at 80 % power needs 156 units per arm to detect
+  recall 0.18 against 0.30 (own calculation); here the unit is the item, so 156 recall-labelled items per
+  arm. The within-item design pairs arms on the same items and needs fewer, computed from the gate B
+  noise pilot's discordance (REQ-012). At 67 recall items per cell H2 is inconclusive at any η in OD-18 up
+  to ±0.15. Recommendation: 156 recall items per cell, reduced to the paired size once T008 reports the
+  discordance.
 - **OD-8 — `tool-unnecessary` items per comparison and label shares.** False positives are a
   noninferiority condition: the exact one-sided 95 % upper bound on the paired false-positive difference,
   taken conservatively as the bound on the share of items where only the lever arm calls, is met when it
@@ -307,12 +318,12 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
   (tolerates one extra call); (b) 60 items with margin 0.10 (tolerates one); (c) 200 items with margin
   0.05 (tolerates three). At least one quarter are near-misses, reported separately. Evidence: no
   labelled pool exists. Recommendation: (b), the cheapest attainable option.
-- **OD-9 — Paired criterion before a held-out.** Rule: on the same items, the recall difference (lever arm
-  minus current build) has an exact lower bound above zero, and false positives are noninferior: the
-  exact upper bound on the paired false-positive difference is at or below the margin. Options for the
-  margin: 0.05 (needs about 120 `tool-unnecessary` items, OD-8) or 0.10 (needs about 60). Evidence: no
-  2×2 data yet; a superiority framing would let over-callers through. Recommendation: margin 0.10 with
-  OD-8 (b).
+- **OD-9 — Paired criterion before a held-out.** Rule: in the decisive cell named under REQ-044, on the
+  same items, the recall difference (that cell minus the shipped-build cell) has an exact lower bound above
+  zero, and false positives are noninferior: the exact upper bound on the paired false-positive difference
+  is at or below the margin; both at the OD-19 family-wise α. Options for the margin: 0.05 (needs about 120
+  `tool-unnecessary` items, OD-8) or 0.10 (needs about 60). Evidence: no 2×2 data yet; a superiority
+  framing would let over-callers through. Recommendation: margin 0.10 with OD-8 (b), at OD-19 α 0.05.
 - **OD-10 — ADR 0038 and the tool contract.** Options: amend ADR 0038 before `_meta` or server
   instructions ship; a new ADR. The former option "drop those arms" was removed: REQ-033 and OD-14
   require them; they stay laboratory-only until the decision is recorded. Evidence: ADR 0038 governs the
@@ -339,27 +350,31 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
   natural file-type trigger. Recommendation: only if the development factorial points to file-type
   triggers.
 - **OD-17 — Per-item outcome for gate B.** Options: (a) item majority call (at least 2 of 3 rollouts call
-  `analyze-work`) with an exact Clopper–Pearson bound over items; (b) item mean call rate with a cluster
-  bootstrap or beta-binomial bound, admissible only as a secondary description, because OD-3 and OD-9 use
-  exact bounds. The former option "rollout-level shares" was removed: it contradicts REQ-001 and is
-  anti-conservative (ICC 0.81 on v4). Evidence: gate A uses (a) for the same reason. Recommendation: (a),
-  with (b) reported.
+  `analyze-work`) for both metrics, with exact Clopper–Pearson bounds over items; (b) item mean call rate
+  with a cluster bootstrap or beta-binomial bound, admissible only as a secondary description, because
+  OD-3 and OD-9 use exact bounds; (d) majority call for recall and any call (at least 1 of 3) for the
+  false-positive metric, with exact bounds. The former option "rollout-level shares" was removed: it
+  contradicts REQ-001 and is anti-conservative (ICC 0.81 on v4). Evidence: majority call is lenient for
+  false positives, since a call in 1 of 3 rollouts on an unnecessary item is not counted although the
+  user would have seen it. Recommendation: (d), with (b) reported.
 - **OD-18 — Equivalence margin η for the interaction.** Options: ±0.10, ±0.15 or ±0.20 on the difference of
   differences in item-level recall (and separately in the false-positive rate). Evidence: at p near 0.5 the
-  standard error of the item-level difference of differences is about 1/√k for k items per cell (own
-  calculation): 67 items give about 0.12, so TOST at ±0.10 has almost no power; about 80 % power at a true
-  interaction of zero needs about 856 items per cell for ±0.10, 381 for ±0.15 and 214 for ±0.20.
-  Recommendation: ±0.15 if OD-7 reaches about 380 items per cell; otherwise state before the run that H2 is
-  likely inconclusive at the planned size.
+  standard error of the item-level difference of differences is about 1/√k for k items per cell counted
+  for that metric (own calculation): 67 recall items give about 0.12, so TOST at ±0.10 has almost no power;
+  about 80 % power at a true interaction of zero needs about 856 recall-labelled items per cell for ±0.10,
+  381 for ±0.15 and 214 for ±0.20, and as many `tool-unnecessary` items for the false-positive metric.
+  Recommendation: ±0.15 if OD-7 reaches about 380 recall items per cell; otherwise state before the run
+  that H2 is likely inconclusive at the planned size.
 - **OD-19 — Family-wise α for levers and effects.** Options: 0.05 with Holm within each family (H1 levers ×
   two metrics; the two 2×2 main effects); 0.10 with Holm; no adjustment, reported as exploratory.
   Evidence: up to five levers on two metrics would inflate false claims without adjustment.
   Recommendation: 0.05 with Holm.
 - **OD-20 — Arm under test in T014 and T015.** Options: (a) the best 2×2 cell that met OD-9, with text
   optimization (T013, T019) only if that cell misses the OD-3 bounds on its 2×2 estimates; (b) always the
-  T019 selection winner; (c) both, on two held-out sets. Evidence: selection adds about 2,270 rollouts
-  (Budget table) and one contrastive rewrite captures most of the gain while further iterations move F1
-  by less than 0.5 % (2606.30775, paper). Recommendation: (a).
+  T019 selection winner; (c) both, on two held-out sets. It is recorded before T019 runs, never after an
+  audit result is visible. Evidence: selection adds about 2,950 rollouts (Budget table) and one
+  contrastive rewrite captures most of the gain while further iterations move F1 by less than 0.5 %
+  (2606.30775, paper). Recommendation: (a).
 - **OD-21 — Label agreement threshold.** Options: Cohen's κ of at least 0.6 or 0.8 on each label pair.
   Evidence: no labels exist yet; below the threshold the rubric is revised and items relabelled (REQ-002).
   Recommendation: 0.6, with both metrics also reported on the agreed-only subset.
@@ -378,11 +393,20 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
   (T022): 90 or 180 items. Evidence: OD-7 and OD-8 arithmetic. Recommendation: 150 plus 60, and 90.
 - **OD-26 — Product scope: explicit-only or unprompted invocation.** Options: (a) explicit-only: gate B is
   not run, and the documented command (OD-12) is the supported path; (b) unprompted invocation is a
-  requirement and gate B runs. Evidence: v4 baseline 53/300 unprompted calls; gate B costs about 7,560
+  requirement and gate B runs. Evidence: v4 baseline 53/300 unprompted calls; gate B costs about 8,230
   rollouts with selection or 5,290 without (Budget table, about 12 to 36 hours at 8.5 to 17 s per
   rollout), against about 575 for gate A. Trade-off: (a) saves that budget and the hook's authority and
   privacy surface but leaves users who do not name the product without the tool; (b) pursues that use at
   the stated cost. Recommendation: none; this is the owner's product call.
+- **OD-27 — Gate B pilot arms.** No candidate exists before selection, so the noise pilot's two arms need
+  a definition. Options: (a) the shipped build and one named lever build (for example the use-case-first
+  description overlay), digests frozen in the pilot freeze; (b) the shipped build twice only (A/A, no
+  discordance estimate). Evidence: the paired sizes of OD-7 and T019 need a discordance between two
+  different arms (REQ-012). Recommendation: (a), with the lever named by the owner at T001.
+- **OD-28 — Gate B selection margin δ_B.** Options: 0, 0.02 or 0.05 in item-level recall advantage over
+  the incumbent. Evidence: as SPEC-090 OD-3, the confirmation size grows as 1/(Δ_B − δ_B)²; with discordance
+  0.10 and a gap of 0.10, about 75 recall items per arm at the Holm worst case 0.05/3 (own calculation).
+  Recommendation: 0.02.
 
 ## Risks and assumptions
 
@@ -397,12 +421,12 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
 
 ## Exit criteria
 
-Verification is complete when the obtained evidence for SC-001 to SC-044 in the
+Verification is complete when the obtained evidence for SC-001 to SC-046 in the
 [validation plan](validation-plan.md) exists, the simulation record (T007) and the pilot reports (T008,
 T009) are committed, the 2×2 factorial result is recorded (T012), and the T017 converge record is written.
 A null, negative or invalidated result is a valid completion when recorded. Passing checks are not approval.
 
 ## Open questions
 
-- OD-1 to OD-26 above; owner: the founder.
+- OD-1 to OD-28 above; owner: the founder.
 - Whether each real run (T008, T009, T018, T012, T019, T023, T021, T015, T016) happens; owner: the founder.

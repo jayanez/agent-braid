@@ -43,9 +43,11 @@ rewrite of a description captures most of the gain; further iterations move F1 b
 
 ## R6 — Sizes
 
-Detecting a recall rise from 18 % to 30 % needs about 156 rollouts per arm one-sided at 80 % power without
-clustering (own calculation); it treats rollouts as independent. With the item as the unit (OD-17) and
-within-item correlation of 0.81 on v4 (the ANOVA ICC of per-prompt pass counts), the effective sample is close to the number of items. The development factorial at
+An unpaired one-sided test at 80 % power needs 156 units per arm to detect recall 0.18 against 0.30 (own
+calculation). The unit here is the item, so 156 recall-labelled items per arm (OD-7); rollouts of one item
+are correlated (ANOVA ICC of per-prompt pass counts 0.81 on v4) and add little. The approved plan's "about
+200 rollouts per cell" counted rollouts; T001 records that deviation. The within-item design pairs arms
+on the same items and needs fewer items, computed from the gate B noise pilot's discordance. The development factorial at
 about 25 prompts per cell is a pilot, not a gate.
 
 ## R7 — Official harness

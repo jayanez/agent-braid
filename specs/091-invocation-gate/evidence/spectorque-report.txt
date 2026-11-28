@@ -1,0 +1,336 @@
+# SpecTorque report: 091-invocation-gate
+
+Revision: `88aef70aa113e42a4fe692731b0290dc06588300fee94036cc88d125cbe20395`
+Engine: 0.1.16 · Rubric: epic-heuristic-1
+
+Score: 20/30
+
+This is an evidence-based heuristic, not an EPIC author score, ISO certification or a prediction of software correctness.
+
+## Dimensions
+
+- E1 Unambiguity: 2
+- E2 Singularity: 2
+- E3 Verifiability: 2
+- P1 Dependency control: 2
+- P2 Completeness: 2
+- I1 Conformance: 2
+- I2 Consistency: 2
+- I3 Comprehensibility: 2
+- C1 Scope discipline: 2
+- C2 Implementation planning: 2
+
+## Practices
+
+### E1.1 Explicit clarification-seeking — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:268: Open questions: OD-1 to OD-28. Each has options, a recommendation and its evidence, or says plainly that no
+- specs/091-invocation-gate/spec.md:429: ## Open questions
+Next: Record unresolved decisions as specific questions, or explicitly state that none remain.
+
+### E1.2 Quantified and measurable requirements — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:73: - **REQ-003 — Item pool composition.** The item-set builder MUST reject a gate B item set that holds no near-miss items (prompts that resemble a tool use but are `tool-unnecessary`).
+- specs/091-invocation-gate/spec.md:80: - **REQ-006 — One difference per arm.** The comparison configurator MUST reject two compared arms that differ in more than one lever outside the preregistered factorials; compared arms share the pinned plugin build, host and model.
+- specs/091-invocation-gate/spec.md:88: - **REQ-010 — Size caps.** The candidate validator MUST reject, without truncating, a candidate above its host limit (re-verified against host documentation at T004; documented today as at most 1,536 characters for a skill description and at most 4,096 for server instructions) or above the ADR 0038 
+- specs/091-invocation-gate/spec.md:149: - **REQ-040 — Product name absent from gate B items.** The gate B builder MUST reject, with zero rollouts, any gate B item that contains the product name.
+Next: State the measurable outcome and operating conditions; ask for unknown values.
+
+### E1.3 Bounded vocabulary and enumerations — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:136: - **REQ-034 — Gate B verdict.** The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below α by the intersection–union principle. Allowed values and precedence follow SPEC-090 REQ-038: `invalidat
+- specs/091-invocation-gate/spec.md:205: - **Labels**, allowed values: `tool-necessary`, `tool-beneficial`, `tool-unnecessary` (OD-B1, REQ-002).
+- specs/091-invocation-gate/spec.md:219: - **Gate verdicts**, allowed values: `met`, `missed`, `held`, `invalidated`; precedence as SPEC-090 REQ-038
+- specs/091-invocation-gate/spec.md:221: - **Lever**, an architecture change measured as an arm; allowed values: `alwaysLoad`, server instructions,
+Next: Define domain terms and enumerate supported values.
+
+### E1.4 Normative and structural consistency — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:69: - **REQ-001 — Gate B metrics.** Gate B MUST score prompts that do not name the product with two separate metrics whose unit is the item, not the rollout, each with its own bound at the α of OD-3 computed from the per-item outcome of OD-17: recall over `tool-necessary` and `tool-beneficial` items, an
+- specs/091-invocation-gate/spec.md:71: - **REQ-002 — Labels before measurement.** Every gate B item MUST carry one label, `tool-necessary`, `tool-beneficial` or `tool-unnecessary` (OD-B1, 2026-11-27), assigned by the OD-2 procedure from a written rubric and frozen by sha256 before any rollout on it; labels freeze only when Cohen's κ betw
+- specs/091-invocation-gate/spec.md:73: - **REQ-003 — Item pool composition.** The item-set builder MUST reject a gate B item set that holds no near-miss items (prompts that resemble a tool use but are `tool-unnecessary`).
+- specs/091-invocation-gate/spec.md:75: - **REQ-004 — Realistic laboratory.** Gate B measurements MUST run in a laboratory profile with the OD-5 competing host tools enabled, the OD-5 pinned co-installed skills present, both recorded in the configuration digest.
+Next: Use intentional MUST, SHOULD or MAY wording consistently; preserve the chosen obligation.
+
+### E1.5 Scope and verification boundaries — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:35: Out of scope, each stated as a requirement: spent v4 prompts as a held-out set, and as development
+- specs/091-invocation-gate/spec.md:84: - **REQ-008 — Hook data handling.** The hook MUST NOT store, log or transmit the user prompt, which may hold personal data or secrets; its only output is its frozen context string.
+- specs/091-invocation-gate/spec.md:106: - **REQ-019 — Spent v4 prompts.** Spent v4 prompts MUST NOT be used as a gate B held-out set, nor as gate B development material unless the owner allows it in OD-1, in the form OD-1 states.
+- specs/091-invocation-gate/spec.md:110: - **REQ-021 — Provider secrets.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+Next: State explicit exclusions and the boundaries of verification.
+
+### E2.1 Atomic behavioral statements — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:27: - Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+- specs/091-invocation-gate/spec.md:28:   laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+- specs/091-invocation-gate/spec.md:29:   optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+- specs/091-invocation-gate/spec.md:30:   (REQ-001, REQ-017, REQ-026, REQ-034, REQ-039); same-build certification and selection (REQ-038,
+Next: Split independent obligations while keeping conditions of the same obligation together.
+
+### E2.2 Singular architecture and design facts — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:5: - New module `agent_braid/lightning_gate_b.py`: gate B analysis.
+- specs/091-invocation-gate/plan.md:6: - New module `scripts/spec091_build_items.py`: labelled item sets and factorial cells.
+- specs/091-invocation-gate/plan.md:7: - New module `scripts/spec091_freeze.py`: freezes and checks; new document `specs/091-invocation-gate/labelling-rubric.md`.
+Next: Record each design fact as a separate statement in the plan.
+
+### E2.3 Isolated risks, assumptions and edge cases — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:413: - Risk: labels encode intent that the owner later revises, splitting item versions (REQ-002, T002).
+- specs/091-invocation-gate/spec.md:414: - Risk: the lab's tool and skill set does not represent the owner's real sessions (REQ-004, OD-5).
+- specs/091-invocation-gate/spec.md:415: - Risk: `alwaysLoad` behaves differently for plugin-provided servers (REQ-005, T004).
+- specs/091-invocation-gate/spec.md:416: - Risk: a hook raises recall by keyword triggering, raising false positives (REQ-007, REQ-020, H1).
+Next: Give each risk, assumption or edge case its own entry.
+
+### E2.4 Singular definitions and scenarios — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:70:   - SC-001: Given a labelled run with three repetitions per item and known per-item calls, when the gate B analysis runs, then it reports recall and the false-positive rate over items, with the OD-17 bound, and no rollout-level bound.
+- specs/091-invocation-gate/spec.md:72:   - SC-002: Given an item set whose label record hash differs from the frozen one, when a run is requested, then the runner refuses.
+- specs/091-invocation-gate/spec.md:74:   - SC-003: Given an item set without near-miss items, when the builder checks it, then it refuses.
+- specs/091-invocation-gate/spec.md:76:   - SC-004: Given the gate B lab profile, when its configuration is built, then the OD-5 tools are allowed, the pinned skills are installed and both are in configDigest.
+Next: Define one behavior per scenario and one concept per definition.
+
+### E2.5 Singular security and privacy properties — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:84: - **REQ-008 — Hook data handling.** The hook MUST NOT store, log or transmit the user prompt, which may hold personal data or secrets; its only output is its frozen context string.
+- specs/091-invocation-gate/spec.md:110: - **REQ-021 — Provider secrets.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+- specs/091-invocation-gate/spec.md:195: - The hook MUST NOT store, log or transmit the user prompt, which may hold personal data or secrets (REQ-008).
+- specs/091-invocation-gate/spec.md:196: - A run MUST NOT read or accept a provider API key or other secret (REQ-021).
+Next: State applicable security and privacy obligations as separate, testable requirements.
+
+### E3.1 Verification criteria and outcomes — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:67: ## Requirements and acceptance scenarios
+- specs/091-invocation-gate/spec.md:70:   - SC-001: Given a labelled run with three repetitions per item and known per-item calls, when the gate B analysis runs, then it reports recall and the false-positive rate over items, with the OD-17 bound, and no rollout-level bound.
+- specs/091-invocation-gate/spec.md:72:   - SC-002: Given an item set whose label record hash differs from the frozen one, when a run is requested, then the runner refuses.
+- specs/091-invocation-gate/spec.md:74:   - SC-003: Given an item set without near-miss items, when the builder checks it, then it refuses.
+Next: Connect each requirement to observable acceptance criteria.
+
+### E3.2 Validation methods — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:100: | T007 | REQ-018 | SC-019 | `tests/test_lightning_sim.py` |
+- specs/091-invocation-gate/plan.md:102: | T009 | REQ-011 | SC-012 | `tests/test_spec091_pilots.py` |
+- specs/091-invocation-gate/plan.md:105: | T013 | REQ-020 | SC-021 | `tests/test_lightning_resources.py` |
+- specs/091-invocation-gate/plan.md:108: | T017 | REQ-025 | SC-026 | `tests/test_spec091_boundaries.py` |
+Next: Describe an executable or manual method for checking each outcome.
+
+### E3.3 Verification coverage — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:138:   - SC-036: Given a run with an open label review and a canary hit, when the verdict is computed, then it is invalidated.
+- specs/091-invocation-gate/spec.md:142:   - SC-038: Given a gate B held-out run stopped by quota after which the model changed, when a resume is requested, then it is rejected and the run is invalidated as SPEC-090 REQ-037 states.
+- specs/091-invocation-gate/validation-plan.md:28: | REQ-021 | SC-022 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_subscription_only` | Output of T003. |
+- specs/091-invocation-gate/validation-plan.md:30: | REQ-023 | SC-024 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_frozen_paths_untouched` | Output of T011. |
+Next: Cover normal, exceptional and boundary scenarios.
+
+### E3.4 Verification completion and readiness — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:422: ## Exit criteria
+- specs/091-invocation-gate/spec.md:424: Verification is complete when the obtained evidence for SC-001 to SC-046 in the
+Next: State what evidence is required to consider verification complete.
+
+### P1.1 Declared assumptions and dependencies — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:73: 9. **Dependency failure.** If a SPEC-090 dependency (bounds, selection, drift controls) is unavailable, the
+- specs/091-invocation-gate/spec.md:419: - Assumption: host documentation of the lever mechanics is current (REQ-005, REQ-010).
+- specs/091-invocation-gate/spec.md:420: - Assumption: SPEC-090 delivers bounds, selection and drift controls before real runs (REQ-018, T007).
+- specs/091-invocation-gate/tasks.md:22: - [ ] T001 (OD-1..OD-28, OD-B1, ADR 0046): Owner review of this specification and ADR 0046: commit the dated OD-B1 record (2026-11-27) and the strategy approval (2026-11-28); record the deliberate deviations from the approved plan, each with its reason: (1) its section 5 says the development factori
+Next: Declare dependencies and assumptions, including an explicit absence where applicable.
+
+### P1.2 Explicit constraints and scope — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:35: Out of scope, each stated as a requirement: spent v4 prompts as a held-out set, and as development
+- specs/091-invocation-gate/spec.md:84: - **REQ-008 — Hook data handling.** The hook MUST NOT store, log or transmit the user prompt, which may hold personal data or secrets; its only output is its frozen context string.
+- specs/091-invocation-gate/spec.md:106: - **REQ-019 — Spent v4 prompts.** Spent v4 prompts MUST NOT be used as a gate B held-out set, nor as gate B development material unless the owner allows it in OD-1, in the form OD-1 states.
+- specs/091-invocation-gate/spec.md:110: - **REQ-021 — Provider secrets.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
+Next: Document constraints that affect feasible solutions.
+
+### P1.3 Requirement-level dependency traceability — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/tasks.md:31: - [ ] T007 (REQ-018 / SC-019): SIM: coverage of the item-level recall and false-positive bounds, type I and II error of each named 2×2 candidate analysis (paired McNemar per contrast, logistic mixed model with an item random effect, sign-flip permutation) for the main effects with Holm and for the T
+- specs/091-invocation-gate/tasks.md:32: - [ ] T010 (REQ-001, REQ-017, REQ-026, REQ-034, REQ-037, REQ-039 / SC-001, SC-018, SC-027, SC-035, SC-036, SC-039, SC-041): Gate B analysis: recall and false-positive rate over items with the OD-17 per-item outcome and bound, by label and class, near-misses separately, agreed-only subset; per-rollou
+- specs/091-invocation-gate/tasks.md:36: - [ ] T008 (REQ-012, REQ-035 / SC-013, SC-037): Gate B noise pilot: freeze its protocol section, items and builds, then, after the owner's yes, run it in the gate B laboratory on fresh development prompts that do not name the product: within-item correlation of invocation, candidate discordance, A/A
+- specs/091-invocation-gate/tasks.md:47: - [ ] T013 (REQ-009, REQ-020 / SC-021): Only when the best 2×2 cell that met OD-9 misses the OD-3 bounds on its 2×2 estimates (OD-20 (a)): generate one to three rounds of contrastive rewrites of the adopted targets from false positives and false negatives (5 to 20 candidates, SPEC-090 OD-7), with a 
+Next: Link each dependency or risk to the requirement or task it affects.
+
+### P1.4 Dependency verification and failure handling — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:73: 9. **Dependency failure.** If a SPEC-090 dependency (bounds, selection, drift controls) is unavailable, the
+- specs/091-invocation-gate/spec.md:96: - **REQ-014 — Gate B held-out.** A gate B held-out set MUST be frozen by sha256 and scored once, and MAY be built only after the 2×2 factorial meets the paired OD-9 criterion in the decisive cell named under REQ-044, at the OD-19 family-wise α, or its preregistered description-only fallback does (RE
+- specs/091-invocation-gate/tasks.md:42: - [ ] T011 (REQ-013, REQ-023, REQ-036, REQ-044 / SC-014, SC-024, SC-038, SC-046): Write and freeze the 2×2 protocol: within-item design, description × hook, OD-7 recall-labelled and OD-8 `tool-unnecessary` items per cell (rollouts derived), the preregistered description-only fallback if the hook arm
+Next: State how dependencies are checked and what happens when they fail.
+
+### P2.1 Functional and user requirement coverage — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:27: - Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+- specs/091-invocation-gate/spec.md:28:   laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+- specs/091-invocation-gate/spec.md:29:   optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+Next: Identify intended actors, capabilities and scope; completeness still needs domain review.
+
+### P2.2 Exceptional behavior and scope definition — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:50: [ADR 0039](../../docs/adr/0039-braid-lightning-boundary.md) (Lightning boundary, unchanged);
+- specs/091-invocation-gate/spec.md:115:   - SC-024: Given the diff of every task, when the boundary test runs, then no frozen path changed.
+- specs/091-invocation-gate/spec.md:136: - **REQ-034 — Gate B verdict.** The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below α by the intersection–union principle. Allowed values and precedence follow SPEC-090 REQ-038: `invalidat
+- specs/091-invocation-gate/spec.md:138:   - SC-036: Given a run with an open label review and a canary hit, when the verdict is computed, then it is invalidated.
+Next: Describe relevant invalid input, failures, empty states and exclusions.
+
+### P2.3 Operational and quality constraints — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:160: ## Non-functional requirements
+Next: Describe applicable operational and non-functional expectations.
+
+### P2.4 Dependency and delivery planning — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/tasks.md:3: **Milestone:** provisional, BL.2c (OD-15).
+- specs/091-invocation-gate/tasks.md:20: ## Phase P0 — owner review
+- specs/091-invocation-gate/tasks.md:24: ## Phase P1 — items, laboratory, levers and target (no quota)
+- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md 
+Next: Describe a delivery order and its prerequisites.
+
+### P2.5 Completeness management — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:268: Open questions: OD-1 to OD-28. Each has options, a recommendation and its evidence, or says plainly that no
+- specs/091-invocation-gate/spec.md:429: ## Open questions
+Next: Track unanswered questions until a decision and owner are recorded.
+
+### I1.1 Standardized document structure — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:1: # Agent Braid contributor instructions
+- AGENTS.md:43: ## Steps
+- AGENTS.md:52: ## CodeGraph
+- AGENTS.md:59: ### Selective CodeGraph workflow
+Next: Organize documents by purpose using recognizable headings.
+
+### I1.2 Stable unique requirement identifiers — supported
+The deterministic check is satisfied; semantic review may still find gaps.
+- specs/091-invocation-gate/spec.md:27: - Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+- specs/091-invocation-gate/spec.md:28:   laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+- specs/091-invocation-gate/spec.md:29:   optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+- specs/091-invocation-gate/spec.md:30:   (REQ-001, REQ-017, REQ-026, REQ-034, REQ-039); same-build certification and selection (REQ-038,
+Next: Give each requirement a stable, unique identifier.
+
+### I1.3 Explicit template declaration — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:46: 2. Pick the best match (ID format: `/org/project`) by: exact name match, description relevance, code snippet count, source reputation (High/Medium preferred), and benchmark score (higher is better). If results don't look right, try alternate names or queries (e.g., "next.js" not "nextjs", or rephras
+Next: Declare the document convention and validate it.
+
+### I2.1 Shared terminology — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:202: ## Terminology
+- specs/091-invocation-gate/spec.md:215:   owner yes record:** as defined in SPEC-090 Terminology.
+- specs/091-invocation-gate/spec.md:229: - Shared terms follow the root [TERMINOLOGY.md](../../TERMINOLOGY.md); SPEC-090 terms apply.
+Next: Use a shared glossary and consistent domain names.
+
+### I2.2 Uniform identifiers and notation — supported
+The deterministic check is satisfied; semantic review may still find gaps.
+- specs/091-invocation-gate/spec.md:27: - Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+- specs/091-invocation-gate/spec.md:28:   laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+- specs/091-invocation-gate/spec.md:29:   optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+- specs/091-invocation-gate/spec.md:30:   (REQ-001, REQ-017, REQ-026, REQ-034, REQ-039); same-build certification and selection (REQ-038,
+Next: Keep identifier syntax and references consistent.
+
+### I2.3 Cross-artifact alignment — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:13: - Unchanged: the SPEC-069 scorer and sets, SPEC-078 and SPEC-079 records (REQ-023).
+- specs/091-invocation-gate/plan.md:18: before observation (REQ-002, REQ-013, REQ-014); evidence bounded to the laboratory, host and model;
+- specs/091-invocation-gate/plan.md:21: every prompt is a new authority and privacy surface; it stays laboratory-only (OD-11, REQ-025).
+- specs/091-invocation-gate/plan.md:31: 1. **Items (REQ-002, REQ-003, REQ-019).** A rubric states each label's test: necessary when the needed fact
+Next: Reference requirement identifiers from plans and tasks, then inspect semantic agreement.
+
+### I2.4 Consistent organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:7: ## Purpose and scope
+- specs/091-invocation-gate/spec.md:67: ## Requirements and acceptance scenarios
+Next: Use a predictable organization across related artifacts.
+
+### I3.1 Structured document organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- AGENTS.md:1: # Agent Braid contributor instructions
+- AGENTS.md:43: ## Steps
+- AGENTS.md:52: ## CodeGraph
+- AGENTS.md:59: ### Selective CodeGraph workflow
+Next: Group information in navigable sections with meaningful headings.
+
+### I3.2 Cross-document navigation — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:25: See [research.md](research.md). Items are authored synthetic prompts over the SPEC-069 fixture workspace,
+- specs/091-invocation-gate/spec.md:5: **Decision record:** [ADR 0046](../../docs/adr/0046-lightning-evaluation-design.md) (Proposed).
+- specs/091-invocation-gate/spec.md:11: ([diagnosis](../079-kind-choice-tool-fix/evidence/t008-diagnosis-and-strategy-review.md)). Seven things
+- specs/091-invocation-gate/spec.md:19: frozen gate B held-out. The statistics are those of [SPEC-090](../090-lightning-evaluation-v2/spec.md).
+Next: Link related specifications, plans and tasks.
+
+### I3.3 Comprehension support — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:7: ## Purpose and scope
+- specs/091-invocation-gate/spec.md:60:   in the prompt, for example repository state), `tool-beneficial` (the product gives a verified, auditable
+- specs/091-invocation-gate/spec.md:402:   a definition. Options: (a) the shipped build and one named lever build (for example the use-case-first
+Next: Explain the product purpose and include a concrete example.
+
+### C1.1 Behavioral product specification — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/spec.md:27: - Engineering: labels and item sets (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040, REQ-042); the
+- specs/091-invocation-gate/spec.md:28:   laboratory (REQ-004, REQ-022); the levers (REQ-005 to REQ-008, REQ-024, REQ-025, REQ-032, REQ-043); the
+- specs/091-invocation-gate/spec.md:29:   optimizer target and caps (REQ-009, REQ-010, REQ-020, REQ-029); reports, verdict and session facts
+Next: State required behavior from the user or system perspective.
+
+### C1.2 Separation of product and project concerns — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:3: ## Technical context and scope
+- specs/091-invocation-gate/tasks.md:22: - [ ] T001 (OD-1..OD-28, OD-B1, ADR 0046): Owner review of this specification and ADR 0046: commit the dated OD-B1 record (2026-11-27) and the strategy approval (2026-11-28); record the deliberate deviations from the approved plan, each with its reason: (1) its section 5 says the development factori
+- specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+Next: Keep behavior identifiable and place implementation choices in supporting artifacts.
+
+### C1.3 Traceable transition to implementation — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/tasks.md:9: and the owner's yes: T008, T009 and T018 (development pilots, REQ-035), T012 (2×2 factorial), T019
+- specs/091-invocation-gate/tasks.md:13: Stops and resumes follow SPEC-090 REQ-037 (REQ-036).
+- specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+Next: Connect tasks to the requirements they implement.
+
+### C2.1 Technical context and foundations — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:3: ## Technical context and scope
+Next: Document the technical context and required compatibility in the plan.
+
+### C2.2 Task organization — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/tasks.md:22: - [ ] T001 (OD-1..OD-28, OD-B1, ADR 0046): Owner review of this specification and ADR 0046: commit the dated OD-B1 record (2026-11-27) and the strategy approval (2026-11-28); record the deliberate deviations from the approved plan, each with its reason: (1) its section 5 says the development factori
+- specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md 
+Next: Break delivery into individually checkable tasks.
+
+### C2.3 Requirements-to-implementation traceability — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/tasks.md:9: and the owner's yes: T008, T009 and T018 (development pilots, REQ-035), T012 (2×2 factorial), T019
+- specs/091-invocation-gate/tasks.md:13: Stops and resumes follow SPEC-090 REQ-037 (REQ-036).
+- specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+Next: Record the requirement IDs served by each task; links alone do not prove implementation.
+
+### C2.4 Data models and evolution — partial
+Textual signals found. Presence does not establish completeness or correctness.
+- specs/091-invocation-gate/plan.md:69: 8. **Data model and evolution.** The label record, the item set, the lever catalogue and the gate B report
+- specs/091-invocation-gate/plan.md:70:    each carry a `schema` version string; a relabel or a new lever adds a version and never rewrites a
+- specs/091-invocation-gate/plan.md:72:    explicit values only (REQ-009); existing configuration files need no migration (REQ-029).
+Next: Describe relevant data or interface contracts and evolution requirements.
+
+## Findings
+
+- **warning** This statement may contain independent obligations. (specs/091-invocation-gate/spec.md:90)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/091-invocation-gate/spec.md:134)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/091-invocation-gate/spec.md:139)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/091-invocation-gate/spec.md:141)
+  Check whether the obligations can fail independently; split them if so.
+- **warning** This statement may contain independent obligations. (specs/091-invocation-gate/spec.md:143)
+  Check whether the obligations can fail independently; split them if so.
+
+## Open decisions
+
+No explicit clarification markers detected; this does not establish completeness.
