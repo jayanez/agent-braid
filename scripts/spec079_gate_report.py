@@ -4,7 +4,8 @@
 Re-scores the stored results of the run with the unchanged SPEC-069 scorer, applies the preregistered analysis
 (``lightning_heldout_v2.analyse``, OD-1) and adds the H1, H3 and H4 counts of the evaluation protocol: ``units``
 usage per class and overall, ``units-cannot-answer-independence`` refusals and their ``aim`` retries, rollouts
-that call ``analyze`` and never ``analyze-work``, and the ``validWithinRetry`` passing share. A missing rollout
+that call ``analyze`` and never ``analyze-work``, the ``validWithinRetry`` passing share, the run's config digest
+and how many traced rollouts made no tool call or used ``ToolSearch``, ``Skill`` and ``analyze-work``. A missing rollout
 result counts as a failed rollout. No prompt text, transcript or model text is written, only ids, classes, counts
 and the scorer's first reason per failure.
 
@@ -41,6 +42,16 @@ def _tool(name: str) -> str:
 def _share(passing: int, n: int) -> dict:
     low, high = v2.wilson_interval(passing, n)
     return {'passing': passing, 'of': n, 'share': passing / n, 'wilson95': [low, high]}
+
+
+def invocation(tool_lists: list[list[str]]) -> dict:
+    """How many rollouts reached each step towards ``analyze-work``, from the recorded tool names alone."""
+    names = [{_tool(name) for name in tools} for tools in tool_lists]
+    return {'tracedRollouts': len(names),
+            'noToolCall': sum(1 for n in names if not n),
+            'toolSearch': sum(1 for n in names if 'ToolSearch' in n),
+            'skill': sum(1 for n in names if 'Skill' in n),
+            'analyzeWork': sum(1 for n in names if ANALYZE_WORK in n)}
 
 
 def report(home: Path, run_id: str, review: dict | None = None) -> dict:
@@ -127,6 +138,8 @@ def report(home: Path, run_id: str, review: dict | None = None) -> dict:
         'h4ValidWithinRetry': {'withinRetry': _share(within_pass, len(cases)),
                                'firstAttempt': _share(first_pass, len(cases))},
         'firstRequestKind': dict(sorted(first_kind.items())),
+        'configDigest': run.manifest()['configDigest'],
+        'invocation': invocation([[c['tool'] for c in t.get('toolCalls', [])] for t in traces.values()]),
         'failures': failures, 'executionAuthorization': False,
     }
 

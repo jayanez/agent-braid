@@ -826,6 +826,7 @@
   ]
  },
  "canaryHits": 0,
+ "configDigest": "c9e2317762f2786320b71b2ca2b95b5739cfa0a2030ac14c3ec134acff1dc103",
  "endedAt": "2026-11-27T19:36:12Z",
  "executionAuthorization": false,
  "failures": [
@@ -2141,6 +2142,13 @@
  },
  "hostVersions": {
   "2.1.311 (Claude Code)": 300
+ },
+ "invocation": {
+  "analyzeWork": 53,
+  "noToolCall": 221,
+  "skill": 24,
+  "toolSearch": 57,
+  "tracedRollouts": 300
  },
  "keySources": {
   "none": 300
