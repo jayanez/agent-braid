@@ -37,5 +37,11 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-030 | SC-031 | `tests/test_lightning_gate_b.py` | `GateBTests.test_contrast_non_gating` | Output of T016. |
 | REQ-031 | SC-032 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_no_llm_judge` | Output of T003. |
 | REQ-032 | SC-033 | `tests/test_spec091_levers.py` | `LeverTests.test_d12_cap_kept` | Output of T004. |
+| REQ-033 | SC-034 | `tests/test_spec091_pilots.py` | `FactorialTests.test_screening_protocol` | Output of T018. |
+| REQ-034 | SC-035 | `tests/test_lightning_gate_b.py` | `GateBTests.test_conjunctive_verdict` | Output of T010. |
+| REQ-034 | SC-036 | `tests/test_lightning_gate_b.py` | `GateBTests.test_verdict_precedence` | Output of T010. |
+| REQ-035 | SC-037 | `tests/test_spec091_pilots.py` | `PilotTests.test_pilot_freeze_required` | Output of T008. |
+| REQ-036 | SC-038 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_shared_stop_rule` | Output of T011. |
+| REQ-037 | SC-039 | `tests/test_lightning_gate_b.py` | `GateBTests.test_holm_levers` | Output of T010. |
 
-Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries).
+Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries), SC-035 and SC-036 (verdict), SC-037 (pilot freeze), SC-038 (shared stop rule).

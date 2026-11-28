@@ -46,10 +46,18 @@ intent; the observed outcome is whether `analyze-work` was called.
    A has its own pilot (SPEC-090 REQ-032). The development factorial crosses three of the seven v3/v4
    differences over fresh prompts at OD-6; it does not isolate the v3 to v4 change.
 6. **2×2 factorial (REQ-013).** Description (current, use-case-first) × hook (absent, present), on one
-   pinned build per cell, seeded interleaved blocks, OD-7 rollouts per cell and metric; the item is the
-   unit (OD-17); per-cell comparisons chosen by T007 simulation; the interaction is tested for
-   equivalence within ±η (OD-18) by TOST.
-7. **Held-out (REQ-014, REQ-015).** Built only after the factorial meets OD-9; Gate 0 includes the tripwire.
+   pinned build per cell, within-item design, seeded interleaved blocks, OD-7 items per cell (rollouts =
+   items × 3); the item is the unit (OD-17); named contrasts and candidate analyses in
+   evaluation-protocol.md, one picked by T007; Holm over the main effects (OD-19); the interaction is
+   tested for equivalence within ±η (OD-18) by TOST.
+6a. **Lever screening (REQ-033).** `alwaysLoad` and server instructions are screened against the current
+   build in T018 before the 2×2 factorial, so every built lever is measured.
+6b. **Verdict (REQ-034).** Conjunctive, so a false `met` stays at or below α by the intersection–union
+   principle; precedence as SPEC-090 REQ-038.
+6c. **Freezes and stops (REQ-035, REQ-036).** Each development pilot has its own freeze; stops follow
+   SPEC-090 REQ-037.
+7. **Held-out (REQ-014, REQ-015).** Built only after the factorial meets the paired OD-9 criterion; the arm
+   is OD-20; Gate 0 (T021) includes the tripwire.
 8. **Data model and evolution.** The label record, the item set, the lever catalogue and the gate B report
    each carry a `schema` version string; a relabel or a new lever adds a version and never rewrites a
    measured one (REQ-027); a reader rejects an unknown version. The `target.kind` enumeration grows by
@@ -63,15 +71,15 @@ intent; the observed outcome is whether `analyze-work` was called.
 
 | REQ | SC | Test | Planned evidence |
 |---|---|---|---|
-| REQ-001, REQ-017, REQ-026 | SC-001, SC-018, SC-027 | `tests/test_lightning_gate_b.py` | T010 |
+| REQ-001, REQ-017, REQ-026, REQ-034, REQ-037 | SC-001, SC-018, SC-027, SC-035, SC-036, SC-039 | `tests/test_lightning_gate_b.py` | T010 |
 | REQ-002, REQ-003, REQ-019, REQ-027, REQ-028 | SC-002, SC-003, SC-020, SC-028, SC-029 | `tests/test_spec091_items.py` | T002 |
 | REQ-004, REQ-021, REQ-022, REQ-031 | SC-004, SC-022, SC-023, SC-032 | `tests/test_spec091_lab.py`, `tests/test_spec091_boundaries.py` | T003 |
 | REQ-005 to REQ-008, REQ-024, REQ-032 | SC-005 to SC-009, SC-025, SC-033 | `tests/test_spec091_levers.py` | T004, T005 |
 | REQ-009, REQ-010, REQ-020, REQ-029 | SC-010, SC-011, SC-021, SC-030 | `tests/test_lightning_resources.py` | T006, T013 |
-| REQ-011, REQ-012, REQ-013 | SC-012 to SC-014 | `tests/test_spec091_pilots.py` | T008, T009, T011 |
+| REQ-011, REQ-012, REQ-013, REQ-033, REQ-035 | SC-012 to SC-014, SC-034, SC-037 | `tests/test_spec091_pilots.py` | T008, T009, T011, T018 |
 | REQ-014, REQ-015, REQ-016, REQ-030 | SC-015 to SC-017, SC-031 | `tests/test_lightning_gate_b.py` | T014, T016 |
 | REQ-018 | SC-019 | `tests/test_lightning_sim.py` | T007 |
-| REQ-023, REQ-025 | SC-024, SC-026 | `tests/test_spec091_boundaries.py` | T011, T017 |
+| REQ-023, REQ-025, REQ-036 | SC-024, SC-026, SC-038 | `tests/test_spec091_boundaries.py` | T011, T017 |
 
 Labels are human proxy labels; disagreements are recorded verbatim and reported with agreement. Missing
 results count as non-calls and are reported separately. Calibration is not claimed.
@@ -83,5 +91,6 @@ precede observation. The hook stays laboratory-only pending OD-11. No blocker.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-16 are open (spec.md). Owner yes required for T008, T009, T012, T015 and T016. SPEC-079 T009
+OD-1 to OD-20 are open (spec.md). Owner yes required for T008, T009, T018, T012, T019, T021, T015 and
+T016. SPEC-079 T009
 is not decided here.

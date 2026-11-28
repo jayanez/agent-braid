@@ -45,7 +45,7 @@ rewrite of a description captures most of the gain; further iterations move F1 b
 
 Detecting a recall rise from 18 % to 30 % needs about 156 rollouts per arm one-sided at 80 % power without
 clustering (own calculation); it treats rollouts as independent. With the item as the unit (OD-17) and
-within-item correlation of 0.81 on v4, the effective sample is close to the number of items. The development factorial at
+within-item correlation of 0.81 on v4 (the ANOVA ICC of per-prompt pass counts), the effective sample is close to the number of items. The development factorial at
 about 25 prompts per cell is a pilot, not a gate.
 
 ## R7 — Official harness

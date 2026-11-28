@@ -38,7 +38,9 @@ v2" plan found, in this repository:
 
 It also found two statistical pieces unsound: with p a prompt's per-repetition probability of a valid
 first attempt, the share of prompts with p below a threshold is not identifiable from a few repetitions (only moments up to degree n are, with n rollouts per item),
-and five-case minibatches support no test (the smallest exact two-sided McNemar p-value at n = 5 is 0.0625).
+and five-case minibatches are underpowered: a two-sided exact McNemar test cannot reach 0.05 (smallest
+p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one
+direction, and McNemar's n counts discordant pairs only.
 
 ## Decision (proposed)
 
@@ -66,12 +68,14 @@ and five-case minibatches support no test (the smallest exact two-sided McNemar 
      prompts are replaced from a reserve frozen before the run, within a preregistered cap. A share such as
      "prompts with p below τ" is not reported as a gate quantity.
    - The class rule is kept.
+   The gate is conjunctive, so a false `met` stays at or below α by the intersection–union principle.
    Three repetitions are kept: with the measured within-prompt correlation (0.41 to 0.52) and a prompt cost
    of about 6 to 10 rollouts, the optimum is near 3 (own calculation from 2611.26592; the cost ratio is an
    assumption the noise pilot must measure).
 3. **Paired selection on one fixed slice.** Candidate text artifacts are compared on the same fixed slice
-   of prompts, sized from a pilot (never n = 5). Differences are paired per prompt and averaged over
-   repetitions. Elimination is synchronized (all surviving candidates see the same items per round). The
+   of prompts, sized from a pilot (a 5-prompt slice is underpowered). Elimination pairs per-prompt valid
+   rates averaged over repetitions; the final replacement test runs on a separate confirmation slice, on
+   per-prompt majority pass (the gate A estimand), with Holm when several challengers reach it. Elimination is synchronized (all surviving candidates see the same items per round). The
    incumbent is kept unless a preregistered margin δ is met (an ε-good objective); the slice is sized for
    power at a target advantage Δ greater than δ (both open, SPEC-090 OD-3). The elimination rule is
    chosen by simulation with the pilot's parameters before any real run.

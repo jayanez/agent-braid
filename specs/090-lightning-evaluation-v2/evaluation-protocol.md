@@ -1,9 +1,11 @@
 # SPEC-090 evaluation protocol (draft skeleton): gate A and paired selection
 
 Status: draft, not approved and not frozen. Every bracketed value is an open owner decision of spec.md and
-stays open until T001. T016 completes this file and freezes it by sha256 on a `develop` commit. No real
-rollout may start before that freeze, the committed simulation record (T004 to T007, T019) and the owner's
-yes (T017), which is a separate decision.
+stays open until T001. T016 completes this file and freezes it by sha256 on a `develop` commit. No held-out
+rollout (T022 Gate 0, T017 gate A run) may start before that freeze, the committed simulation record
+(T004 to T007 and T019) and the owner's yes for that run. The gate A noise pilot (T020) is a development
+run: it needs the simulation record of T004 to T007, its own pilot freeze (protocol section, prompts and
+arms by sha256, REQ-039) and the owner's yes; it never uses held-out, reserve, twin or audit prompts.
 
 ## Simulation stage (no quota)
 
@@ -41,8 +43,9 @@ changes.
 
 Candidates are compared on one fixed slice sized from the gate A noise pilot of [OD-14] by the plan.md
 formula with [OD-3] (δ and Δ) and [OD-4],
-synchronized rounds, the rule and test of [OD-11], the incumbent kept unless the margin is met, and the
-winner reported on the audit set of [OD-5].
+synchronized rounds stopped when one candidate survives or the budget is spent, the rule of [OD-11], then
+the majority-pass replacement test on a disjoint confirmation slice with Holm at [OD-16], the incumbent kept
+unless the margin is met, and the winner scored once on the audit set of [OD-5].
 
 ## Report
 
@@ -53,6 +56,10 @@ A/A anchor results; every frozen hash. No LLM judge.
 ## Stopping rules
 
 - A split is scored once; v2, v3 and v4 are never used as gate A held-out splits.
-- A quota stop ends the run; it resumes only with `--resume` on the same frozen bytes.
-- A host or model change refuses the session and requires a re-baseline.
+- Quota stops and host or model changes follow REQ-037: completed rollouts are kept; a resume fills only
+  the missing (prompt, repetition) slots in frozen order on the same bytes, host and model; a host or
+  model change that blocks the resume of a held-out split makes the run `invalidated` and the split spent;
+  any other session needs a re-baseline before it continues.
+- An A/A difference above the [OD-19] threshold triggers the [OD-19] action; during held-out runs anchors
+  use development prompts only.
 - A canary hit invalidates the run. A missed gate or an invalidated run is a valid outcome.

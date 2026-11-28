@@ -16,35 +16,55 @@ and its own owner yes. No rollout precedes the simulation record (T007).
   reported and counted as non-calls. No LLM judge.
 - Drift: SPEC-090 controls (versions per rollout, A/A anchors, seeded interleaved blocks, re-baseline).
 
-## Gate B noise pilot (T008)
+## Development pilots (T008, T009, T018)
+
+Each pilot runs only after its own pilot freeze and the owner's yes (REQ-035); pilot items never enter a
+held-out set or its twin.
+
+### Gate B noise pilot (T008)
 
 Fresh development prompts that do not name the product, in the gate B laboratory; A/A pairs of the current build and two candidate arms. Outputs: within-prompt
 correlation, candidate disagreement rate, A/A differences, each with an interval, in the SPEC-090 input
 format, for gate B selection and the [OD-7] sizes; gate A has its own pilot (SPEC-090 REQ-032). Descriptive.
 
-## Development factorial (T009, H3)
+### Development factorial (T009, H3)
 
 2³ cells: product name (present, absent) × form (directive, question) × completeness sentence (present,
 absent); [OD-6] prompts per cell, fresh except as [OD-1] allows. Per-cell invocation rates with exact
 intervals; descriptive; not a gate. It estimates three of the seven v3/v4 differences on fresh prompts and
 does not isolate the v3 to v4 change.
 
+### Lever screening (T018, H1)
+
+The `alwaysLoad` arm and the server-instruction arm, each against the current build, on the same labelled
+development items; item-level recall and false-positive rate; Holm over the four tests at [OD-19].
+
 ## 2×2 factorial (T011, T012; H1, H2)
 
-Description (current, use-case-first) × hook (absent, present with the [OD-4] text). [OD-7] rollouts per
-cell and metric; arms interleaved in seeded randomized blocks. Report per cell: recall on necessary and
-beneficial items, false-positive rate on unnecessary and near-miss items, each with the [OD-17] item-level bound;
-main effects with the test chosen by T007; the interaction tested for equivalence within ±[OD-18] by TOST,
-otherwise reported descriptively. Criterion to proceed to a held-out: [OD-9].
+Description (current, use-case-first) × hook (absent, present with the [OD-4] text). Within-item design:
+every item runs in all four cells. [OD-7] items per cell at 3 repetitions (rollouts = items × 3 × 4); arms
+interleaved in seeded randomized blocks. Contrasts: description main effect (use-case-first minus current,
+averaged over hook levels), hook main effect (present minus absent, averaged over description levels),
+interaction (the difference of differences). Candidate analyses, one picked by T007 before data: exact
+paired McNemar per contrast on the [OD-17] item outcome; a logistic mixed model with an item random effect;
+a sign-flip permutation test on item-level differences. Main effects use Holm at [OD-19]; the interaction
+is tested for equivalence within ±[OD-18] by TOST, otherwise reported descriptively. Report per cell:
+recall on necessary and beneficial items and the false-positive rate on `tool-unnecessary` items
+(including near-misses), each with the [OD-17] item-level bound. Criterion to proceed to a held-out, paired
+on the same items: [OD-9].
 
 ## Gate B held-out (T014, T015)
 
 A fresh labelled set frozen and scored once, with a labelled development twin and the SPEC-090 tripwire.
-Gate met when the recall lower bound is at least [OD-3] and the false-positive upper bound is at most
-[OD-3], at α = SPEC-090 [OD-1].
+The arm is [OD-20]. Gate met when the recall lower bound is at least [OD-3] and the false-positive upper
+bound is at most [OD-3], at α = SPEC-090 [OD-1]; the gate is conjunctive, so a false `met` stays at or below
+α (intersection–union). Verdicts and precedence as SPEC-090 REQ-038 (REQ-034).
 
 ## Stopping rules
 
-- Each set is scored once; quota stops resume only with `--resume` on the same frozen bytes.
-- A canary hit or a host or model change invalidates the session.
+- Each set is scored once.
+- Quota stops, host or model changes and resumes follow SPEC-090 REQ-037 unchanged (REQ-036): completed
+  rollouts are kept, a resume fills only missing slots in frozen order on the same bytes, host and model,
+  and a blocked resume of a held-out set invalidates it and spends it.
+- A canary hit invalidates the run.
 - Null, negative and invalidated results are valid outcomes and are recorded.
