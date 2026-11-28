@@ -1,0 +1,2255 @@
+{
+ "analysis": {
+  "allRepetitionsValid": 13,
+  "od1": "held",
+  "passing": 17,
+  "perClass": {
+   "analyze-tempting": {
+    "of": 10,
+    "passing": 6
+   },
+   "dependency-order": {
+    "of": 15,
+    "passing": 0
+   },
+   "disjoint-parallel": {
+    "of": 20,
+    "passing": 1
+   },
+   "git-branch": {
+    "of": 10,
+    "passing": 10
+   },
+   "kind-choice-probe": {
+    "of": 20,
+    "passing": 0
+   },
+   "overlap-write": {
+    "of": 15,
+    "passing": 0
+   },
+   "read-only-shared": {
+    "of": 10,
+    "passing": 0
+   }
+  },
+  "perPrompt": [
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-001",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-002",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-003",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-004",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-005",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-006",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-007",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-008",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-009",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-010",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-011",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-012",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-013",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-014",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-015",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-016",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-017",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-018",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-019",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint-parallel",
+    "id": "V4T-020",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-021",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-022",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-023",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-024",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-025",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-026",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-027",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-028",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-029",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-030",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-031",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-032",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-033",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-034",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "overlap-write",
+    "id": "V4T-035",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-036",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-037",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-038",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-039",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-040",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-041",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-042",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-043",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-044",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-045",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-046",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-047",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-048",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-049",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "dependency-order",
+    "id": "V4T-050",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-051",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-052",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-053",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-054",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-055",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-056",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-057",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-058",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-059",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-only-shared",
+    "id": "V4T-060",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-061",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-062",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-063",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-064",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-065",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-066",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-067",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-068",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-069",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-070",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-071",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-072",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-073",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-074",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-075",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-076",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-077",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-078",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-079",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "kind-choice-probe",
+    "id": "V4T-080",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-081",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-082",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-083",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-084",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-085",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-086",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-087",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-088",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-089",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "analyze-tempting",
+    "id": "V4T-090",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-091",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-092",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-093",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-094",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-095",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-096",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-097",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-098",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-099",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git-branch",
+    "id": "V4T-100",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   }
+  ],
+  "prompts": 100,
+  "review": {},
+  "trialRate": 0.17,
+  "trialRateClusteredSE": 0.03529417816504131,
+  "wilson95": [
+   0.10893476059773155,
+   0.25548181233642975
+  ],
+  "zeroPrompts": [
+   "V4T-002",
+   "V4T-003",
+   "V4T-004",
+   "V4T-005",
+   "V4T-006",
+   "V4T-007",
+   "V4T-008",
+   "V4T-009",
+   "V4T-010",
+   "V4T-011",
+   "V4T-014",
+   "V4T-015",
+   "V4T-016",
+   "V4T-017",
+   "V4T-018",
+   "V4T-019",
+   "V4T-020",
+   "V4T-021",
+   "V4T-022",
+   "V4T-023",
+   "V4T-024",
+   "V4T-025",
+   "V4T-026",
+   "V4T-027",
+   "V4T-028",
+   "V4T-029",
+   "V4T-030",
+   "V4T-031",
+   "V4T-032",
+   "V4T-033",
+   "V4T-034",
+   "V4T-035",
+   "V4T-036",
+   "V4T-037",
+   "V4T-038",
+   "V4T-039",
+   "V4T-040",
+   "V4T-041",
+   "V4T-042",
+   "V4T-043",
+   "V4T-044",
+   "V4T-045",
+   "V4T-046",
+   "V4T-047",
+   "V4T-048",
+   "V4T-049",
+   "V4T-050",
+   "V4T-051",
+   "V4T-052",
+   "V4T-053",
+   "V4T-054",
+   "V4T-055",
+   "V4T-056",
+   "V4T-057",
+   "V4T-058",
+   "V4T-059",
+   "V4T-060",
+   "V4T-061",
+   "V4T-062",
+   "V4T-063",
+   "V4T-064",
+   "V4T-065",
+   "V4T-066",
+   "V4T-067",
+   "V4T-068",
+   "V4T-069",
+   "V4T-070",
+   "V4T-071",
+   "V4T-072",
+   "V4T-073",
+   "V4T-074",
+   "V4T-075",
+   "V4T-076",
+   "V4T-077",
+   "V4T-078",
+   "V4T-079",
+   "V4T-080",
+   "V4T-084",
+   "V4T-088"
+  ]
+ },
+ "canaryHits": 0,
+ "configDigest": "c9e2317762f2786320b71b2ca2b95b5739cfa0a2030ac14c3ec134acff1dc103",
+ "endedAt": "2026-11-27T19:36:12Z",
+ "executionAuthorization": false,
+ "failures": [
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-001.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-001.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-002.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-002.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-002.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-003.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-003.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-003.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-004.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-004.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-004.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-005.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-005.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-005.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-006.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-006.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-006.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-007.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-007.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-007.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-008.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "first attempt: refused: analyze-work refused: units cannot report independence: its coverage is always partial, so disjoint units only come back unknown. For a parallel or overlap question call analyze-work with kind aim (copyable example in the agent-braid-analyze skill). result.constructedRequest is an AIM envelope to ed",
+   "rolloutId": "claude-code.V4T-008.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-008.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-009.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-009.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-009.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-010.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-010.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-010.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-011.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-011.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-011.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-012.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-012.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-013.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-014.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-014.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-014.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-015.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-015.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-015.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-016.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-016.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-016.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-017.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-017.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-017.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-018.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-018.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-018.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-019.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-019.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-019.r3"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-020.r1"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-020.r2"
+  },
+  {
+   "class": "disjoint-parallel",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-020.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-021.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-021.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-021.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-022.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-022.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-022.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-023.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-023.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-023.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-024.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-024.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-024.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-025.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-025.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-025.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-026.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-026.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-026.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-027.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-027.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-027.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-028.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-028.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-028.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-029.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-029.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-029.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-030.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-030.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-030.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-031.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-031.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-031.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-032.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-032.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-032.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-033.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-033.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-033.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-034.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-034.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-034.r3"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-035.r1"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-035.r2"
+  },
+  {
+   "class": "overlap-write",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-035.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-036.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-036.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-036.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-037.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-037.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-037.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-038.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-038.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-038.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-039.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-039.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-039.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-040.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-040.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-040.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-041.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-041.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-041.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-042.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-042.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-042.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-043.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-043.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-043.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-044.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-044.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-044.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-045.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-045.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-045.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-046.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-046.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-046.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-047.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-047.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-047.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-048.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-048.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-048.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-049.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-049.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-049.r3"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-050.r1"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-050.r2"
+  },
+  {
+   "class": "dependency-order",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-050.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-051.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-051.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-051.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-052.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-052.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-052.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-053.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-053.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-053.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-054.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-054.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-054.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-055.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-055.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-055.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-056.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-056.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-056.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-057.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-057.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-057.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-058.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-058.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-058.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-059.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-059.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-059.r3"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-060.r1"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-060.r2"
+  },
+  {
+   "class": "read-only-shared",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-060.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-061.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-061.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-061.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-062.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-062.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-062.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-063.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-063.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-063.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-064.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-064.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-064.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-065.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-065.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-065.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-066.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-066.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-066.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-067.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-067.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-067.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-068.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-068.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-068.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-069.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-069.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-069.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-070.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-070.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-070.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-071.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-071.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-071.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-072.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-072.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-072.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-073.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-073.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-073.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-074.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-074.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-074.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-075.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-075.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-075.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-076.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-076.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-076.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-077.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-077.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-077.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-078.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-078.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-078.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-079.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-079.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-079.r3"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-080.r1"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-080.r2"
+  },
+  {
+   "class": "kind-choice-probe",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-080.r3"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "first attempt: refused: analyze-work refused: units cannot report independence: its coverage is always partial, so disjoint units only come back unknown. For a parallel or overlap question call analyze-work with kind aim (copyable example in the agent-braid-analyze skill). result.constructedRequest is an AIM envelope to ed",
+   "rolloutId": "claude-code.V4T-081.r1"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-082.r1"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-082.r3"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-083.r1"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-083.r3"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-084.r1"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-084.r2"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-084.r3"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-088.r1"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-088.r2"
+  },
+  {
+   "class": "analyze-tempting",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-088.r3"
+  },
+  {
+   "class": "git-branch",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-096.r1"
+  },
+  {
+   "class": "git-branch",
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V4T-100.r1"
+  }
+ ],
+ "firstRequestKind": {
+  "aim": 23,
+  "git": 28,
+  "none": 247,
+  "units": 2
+ },
+ "freezeCommit": "331a384eeed0c52d39186ce64fc8344f4a23a759",
+ "frozenFiles": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
+  "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+  "agent_braid/tooling_mcp.py": "4c1e12fe9da2a37121e7bd20f15b4599cf8511c92798e4b3eeef7741118dcdd7",
+  "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+  "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
+  "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
+  "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
+  "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+  "scripts/spec079_build_v4.py": "3f415da4f397c44c6caaf25ad814c4d72af744208847f94e4a36c7d77a04d2be",
+  "specs/079-kind-choice-tool-fix/evaluation-protocol.md": "76365fd5aaa9241319f64029e2c03816f3487a574bfac3874bd2d1de68fb75df",
+  "specs/079-kind-choice-tool-fix/evidence/gate0-v4-report.json": "6468ddc5619883dd5dc3ea73cf041608df20565c832f08a713affc2ca03ae9a2",
+  "specs/079-kind-choice-tool-fix/prompts/v4-test.json": "6a4fa339a353776430141b11244c656c27b72abbaac56832ea1aa43b0455d8af"
+ },
+ "h1UnitsUsage": {
+  "byClass": {
+   "analyze-tempting": 1,
+   "disjoint-parallel": 1
+  },
+  "kind-choice-probe": {
+   "of": 60,
+   "rollouts": 0
+  },
+  "overall": {
+   "of": 300,
+   "rollouts": 2
+  },
+  "v3TestReference": "19/300"
+ },
+ "h3AnalyzeOnly": {
+  "byClass": {},
+  "of": 300,
+  "overall": 0,
+  "threshold": "fewer than 6 of 300"
+ },
+ "h4ValidWithinRetry": {
+  "firstAttempt": {
+   "of": 100,
+   "passing": 17,
+   "share": 0.17,
+   "wilson95": [
+    0.10893476059773155,
+    0.25548181233642975
+   ]
+  },
+  "withinRetry": {
+   "of": 100,
+   "passing": 17,
+   "share": 0.17,
+   "wilson95": [
+    0.10893476059773155,
+    0.25548181233642975
+   ]
+  }
+ },
+ "hostVersions": {
+  "2.1.311 (Claude Code)": 300
+ },
+ "invocation": {
+  "analyzeWork": 53,
+  "noToolCall": 221,
+  "skill": 24,
+  "toolSearch": 57,
+  "tracedRollouts": 300
+ },
+ "keySources": {
+  "none": 300
+ },
+ "missingResults": [],
+ "models": {
+  "claude-sonnet-5-5": 300
+ },
+ "pluginCommit": "331a384eeed0c52d39186ce64fc8344f4a23a759",
+ "pluginVersion": "0.1.0a2",
+ "promptSet": "v4-test",
+ "promptSetSha256": "6a4fa339a353776430141b11244c656c27b72abbaac56832ea1aa43b0455d8af",
+ "redirectRefusals": {
+  "count": 2,
+  "followedByValidAim": 2
+ },
+ "refusals": {},
+ "rollouts": 300,
+ "runId": "run-20261127T185317Z-609ad1",
+ "schema": "braid-lightning-v4-gate/v0.1",
+ "startedAt": "2026-11-27T18:53:34Z",
+ "stops": {},
+ "zeroPrompts": [
+  "V4T-002",
+  "V4T-003",
+  "V4T-004",
+  "V4T-005",
+  "V4T-006",
+  "V4T-007",
+  "V4T-008",
+  "V4T-009",
+  "V4T-010",
+  "V4T-011",
+  "V4T-014",
+  "V4T-015",
+  "V4T-016",
+  "V4T-017",
+  "V4T-018",
+  "V4T-019",
+  "V4T-020",
+  "V4T-021",
+  "V4T-022",
+  "V4T-023",
+  "V4T-024",
+  "V4T-025",
+  "V4T-026",
+  "V4T-027",
+  "V4T-028",
+  "V4T-029",
+  "V4T-030",
+  "V4T-031",
+  "V4T-032",
+  "V4T-033",
+  "V4T-034",
+  "V4T-035",
+  "V4T-036",
+  "V4T-037",
+  "V4T-038",
+  "V4T-039",
+  "V4T-040",
+  "V4T-041",
+  "V4T-042",
+  "V4T-043",
+  "V4T-044",
+  "V4T-045",
+  "V4T-046",
+  "V4T-047",
+  "V4T-048",
+  "V4T-049",
+  "V4T-050",
+  "V4T-051",
+  "V4T-052",
+  "V4T-053",
+  "V4T-054",
+  "V4T-055",
+  "V4T-056",
+  "V4T-057",
+  "V4T-058",
+  "V4T-059",
+  "V4T-060",
+  "V4T-061",
+  "V4T-062",
+  "V4T-063",
+  "V4T-064",
+  "V4T-065",
+  "V4T-066",
+  "V4T-067",
+  "V4T-068",
+  "V4T-069",
+  "V4T-070",
+  "V4T-071",
+  "V4T-072",
+  "V4T-073",
+  "V4T-074",
+  "V4T-075",
+  "V4T-076",
+  "V4T-077",
+  "V4T-078",
+  "V4T-079",
+  "V4T-080",
+  "V4T-084",
+  "V4T-088"
+ ]
+}
