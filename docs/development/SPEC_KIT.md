@@ -152,37 +152,57 @@ false positive.
 
 ### Reference check and review sequence
 
-Proposed 2026-11-28 after the SPEC-090 and SPEC-091 drafting, where five full
-review rounds each found regressions introduced by the previous fixes. It takes
-effect when the owner merges this section.
+Proposed 2026-11-28 after the SPEC-090 and SPEC-091 drafting (pull request
+#1744), where five full review rounds each found regressions introduced by the
+previous fixes. It takes effect when the owner merges this section. The figures
+below are the author's measurements on that pull request and have no evidence
+record in this repository.
 
-Mechanical questions are answered by a script, not by a reviewer:
+A script answers the mechanical part of a review:
 
 ```bash
 python3 -m scripts.check_spec_references specs/NNN-your-feature [specs/MMM-other ...]
 ```
 
-The script reads `assurance.json` (REQ and SC), `tasks.md` (tasks) and `spec.md`
-(owner decisions written `**OD-n`). It reports as errors: an ID cited and not
-defined, including `SPEC-NNN <id>` citations into another feature; a requirement
-without a scenario; a requirement or scenario no task traces; a task dependency
-cycle, within and across the named features; a T001 decision range that stops
-short of the highest decision; and a planned test file in `validation-plan.md`
-that the task named as its owner does not list. It reports as warnings a task
-that names no requirement and a decision never cited. It does not read meaning:
-it cannot tell whether a citation points at the right rule, only that the rule
-exists. Specs written before this section are not required to pass it.
+It reads these conventions. The last four are new with this section; the owner
+adopts them by merging it:
+
+- `assurance.json` defines REQ and SC IDs, and `tasks.md` defines tasks.
+- `spec.md` defines an owner decision as a list item that starts `**OD-<id>`.
+- A task states dependencies in a `Dependencies:` clause and files in a `Files:`
+  clause. `Dependencies: none` means none; text in brackets is a note.
+- A `validation-plan.md` row whose last column reads `Output of T0nn` names the
+  task whose `Files:` clause must list the planned test file.
+- `Task ID T0nn is retired` in `tasks.md` declares a task ID that is not used.
+- `SPEC-NNN <id>` cites an ID of another feature.
+
+Errors (exit status 1): an ID cited and not defined; `SPEC-NNN` that does not
+exist or matches two folders; an ID cited directly after `SPEC-NNN` that the
+other feature does not define (an ID after a bracket or a conjunction passes
+when either feature defines it); a requirement without a scenario; a
+requirement or scenario no task traces; a task that depends on itself; a
+dependency cycle, within and across features; an owner-review task (T001) whose
+decision range ends below the highest decision; a planned test file missing
+from its owning task's files. Warnings: a task that names no requirement; a
+decision never cited; a feature without a readable `assurance.json` or without
+`tasks.md`, whose IDs of that kind are then not checked. Exit status 2 means an
+argument is not a feature folder.
+
+The check does not read meaning: it shows that a cited ID exists, not that it
+is the right one, and an unqualified citation of another feature's ID is
+reported as undefined. Specs written before this section are not required to
+pass it.
 
 The script stays in this repository. Its useful checks depend on this
-repository's conventions (`assurance.json`, the `validation-plan.md` table, the
-owner-review task), so SpecTorque does not take them over. It is run by hand
-and is not part of CI or the validation profiles. It would have caught about 20
-of the 128 findings of the SPEC-090 and SPEC-091 reviews: it removes mechanical
-work from a review and does not replace one.
+repository's conventions, so SpecTorque does not take them over. It is run by
+hand and is not part of CI or the validation profiles. On pull request #1744 it
+would have caught about 20 of 128 review findings: it removes mechanical work
+from a review and does not replace one.
 
 Review sequence for a new or substantially rewritten spec:
 
-1. Run the reference check and fix every error before any review.
+1. Run the reference check before any review. Fix every error, or record it
+   as a false positive of the check; do not edit a spec to silence one.
 2. Before the first pull request, run one adversarial review (contradictions,
    ambiguous normative sentences, recomputed numbers, protocol order) and one
    counterfactual review (walk the text through past failures, plausible futures
@@ -191,11 +211,13 @@ Review sequence for a new or substantially rewritten spec:
 4. Verify the fixes on the difference only: review the commits since the
    reviewed one, plus the unchanged sentences that cite a changed ID. On the
    SPEC-090 and SPEC-091 drafting this was 21 to 52 % of the text per round,
-   so expect about half the reading of a full review, not less. Repeat a full review only when a
-   fix changes a gate rule, an estimand, the set of owner decisions or the task
-   order.
+   so expect about half the reading of a full review, not less. Repeat a full
+   review only when a fix changes a gate rule, an estimand, the set of owner
+   decisions or the task order.
 5. Record the SpecTorque score with the highest score its rubric can give, so a
    score at that ceiling is not read as unfinished work.
+
+Steps 2 to 5 are a new working rule, separate from the script.
 
 ## Assurance record
 

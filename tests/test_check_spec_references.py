@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """The mechanical cross-reference check finds broken citations, gaps and cycles; no model is used."""
+import contextlib
+import io
 import json
 import tempfile
 import unittest
@@ -73,7 +75,7 @@ class ReferenceCheckTests(unittest.TestCase):
     def test_a_stale_owner_review_range_is_an_error(self):
         spec = SPEC + '- **OD-3 — Late decision.** Used by REQ-001 and OD-3.\n'
         errors, _ = refs.check([self.feature('001-a', spec=spec)])
-        self.assertEqual(errors, ['001-a/tasks.md: T001 covers OD-1..OD-2 but the highest decision is OD-3'])
+        self.assertEqual(errors, ['001-a/tasks.md: T001 covers decisions up to OD-2 but the highest decision is OD-3'])
 
     def test_a_plan_file_outside_the_owning_task_is_an_error(self):
         errors, _ = refs.check([self.feature('001-a', plan=PLAN.replace('test_b.py', 'test_c.py'))])
@@ -101,10 +103,65 @@ class ReferenceCheckTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, ['001-a/tasks.md: T005 names no requirement', '001-a: OD-3 is defined and never cited'])
 
+    def test_a_wrapped_task_keeps_its_files_and_dependencies(self):
+        wrapped = TASKS.replace(' Files: `tests/test_b.py`. Dependencies: T002.',
+                                '\n  Files: `tests/test_b.py`.\n  Dependencies: T002.')
+        self.assertEqual(refs.check([self.feature('001-a', tasks=wrapped)]), ([], []))
+        cyclic = wrapped.replace('Dependencies: T001.', 'Dependencies: T001, T003.')
+        self.assertEqual(refs.check([self.feature('002-b', tasks=cyclic)])[0],
+                         ['dependency cycle: 002-b:T002 -> 002-b:T003 -> 002-b:T002'])
+
+    def test_a_dependency_note_is_not_an_edge_and_a_self_dependency_is_an_error(self):
+        noted = TASKS.replace('Dependencies: T001.', 'Dependencies: none (parallelizable with T003).')
+        self.assertEqual(refs.check([self.feature('001-a', tasks=noted)])[0], [])
+        own = TASKS.replace('Dependencies: T002.', 'Dependencies: T002, T003.')
+        self.assertEqual(refs.check([self.feature('002-b', tasks=own)])[0], ['002-b/tasks.md: T003 depends on itself'])
+
+    def test_a_citation_wrapped_or_linked_is_still_foreign(self):
+        self.feature('002-b', spec=SPEC + '- **OD-5 — Only here.** See OD-5.\n',
+                     tasks=TASKS.replace('OD-2)', 'OD-5)'))
+        wrapped = self.feature('001-a', spec=SPEC + '\nReuses SPEC-002\n  OD-5 and [SPEC-002](../002-b/spec.md) OD-5.\n')
+        self.assertEqual(refs.check([wrapped])[0], [])
+
+    def test_an_id_after_a_bracket_may_belong_to_either_feature(self):
+        self.feature('002-b')
+        local = self.feature('001-a', spec=SPEC + '\nHands over to SPEC-002 (REQ-001) and SPEC-002 OD-1 and T003.\n')
+        self.assertEqual(refs.check([local])[0], [])
+        neither = self.feature('003-c', spec=SPEC + '\nHands over to SPEC-002 (REQ-009).\n')
+        self.assertEqual(refs.check([neither])[0], ['003-c/spec.md:12: SPEC-002 REQ-009 is cited but not defined'])
+
+    def test_two_folders_with_one_number_are_checked_apart_and_cited_ambiguously(self):
+        broken = self.feature('002-a', spec=SPEC + '\nSee REQ-009.\n')
+        clean = self.feature('002-b')
+        self.assertEqual(refs.check([broken, clean])[0], ['002-a/spec.md:12: REQ-009 is cited but not defined'])
+        citing = self.feature('001-a', spec=SPEC + '\nUses SPEC-002 OD-1.\n')
+        self.assertEqual(refs.check([citing])[0], ['001-a/spec.md:12: SPEC-002 is ambiguous: 002-a, 002-b'])
+
+    def test_letter_decisions_and_a_bold_citation(self):
+        spec = SPEC.replace('OD-1', 'OD-A').replace('OD-2', 'OD-B') + '- **OD-C — Third.** See OD-A.\n'
+        errors, _ = refs.check([self.feature('001-a', spec=spec, tasks=TASKS.replace('OD-1..OD-2', 'OD-A to OD-B'))])
+        self.assertEqual(errors, ['001-a/tasks.md: T001 covers decisions up to OD-B but the highest decision is OD-C'])
+        errors, _ = refs.check([self.feature('002-b', spec=SPEC + '\nAs **OD-9** says, and OD-7a too.\n')])
+        self.assertEqual(errors, ['002-b/spec.md:12: OD-7a is cited but not defined',
+                                  '002-b/spec.md:12: OD-9 is cited but not defined'])
+
+    def test_a_missing_record_or_task_file_is_one_warning(self):
+        folder = self.feature('001-a')
+        (folder / 'assurance.json').write_text('{"requirements": [{"id": "REQ-001", "scenarios": ["SC-001"]}]}')
+        (folder / 'tasks.md').unlink()
+        self.assertEqual(refs.check([folder]), ([], [
+            '001-a: assurance.json is not readable; REQ and SC citations are not checked',
+            '001-a: no tasks.md; task citations are not checked']))
+
+    def test_an_id_in_a_url_or_a_longer_word_is_ignored(self):
+        spec = SPEC + '\nSee https://example.org/T998 and test_T997, T0010 and SC-001-b.\n'
+        self.assertEqual(refs.check([self.feature('001-a', spec=spec)])[0], [])
+
     def test_the_command_fails_on_errors_and_refuses_a_non_feature(self):
-        self.assertEqual(refs.main([str(self.feature('001-a'))]), 0)
-        self.assertEqual(refs.main([str(self.feature('002-b', spec=SPEC + '\nSee T099.\n'))]), 1)
-        self.assertEqual(refs.main([str(self.specs)]), 2)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(refs.main([str(self.feature('001-a'))]), 0)
+            self.assertEqual(refs.main([str(self.feature('002-b', spec=SPEC + '\nSee T099.\n'))]), 1)
+            self.assertEqual(refs.main([str(self.specs)]), 2)
 
 
 if __name__ == '__main__':
