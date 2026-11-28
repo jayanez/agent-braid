@@ -80,7 +80,7 @@ intent; the observed outcome is whether `analyze-work` was called.
 7. **Held-out (REQ-014, REQ-015).** Built only after the factorial meets the paired OD-9 criterion in the
    decisive cell (REQ-044); its pool shares no item, fingerprint or normalized 8-word window with any pilot,
    screening, 2×2, selection or audit item, nor with the SPEC-069, v2, v3 or v4 sets; the arm is OD-20;
-   Gate 0 (T021) compares the twin's rollout-level call rate with that of the OD-20 arm on recall-labelled
+   Gate 0 (T021) compares the twin's rollout-level call rate with that of the decisive cell (REQ-044) on recall-labelled
    items in T012, minus the OD-22 margin. Gate B has no reserve: a rollout with an instrument event is
    excluded and re-run once (REQ-039).
 8. **Data model and evolution.** The label record, the item set, the lever catalogue and the gate B report

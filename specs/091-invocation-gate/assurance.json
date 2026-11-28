@@ -448,7 +448,7 @@
           "when": "it is validated"
         }
       ],
-      "text": "Gate B tripwire. (a) Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items, of the OD-22 size, drawn with the split by the seeded partition, stratified by label, of SPEC-090 REQ-042. (b) The tripwire MUST compare the twin's rollout-level call rate (calls of `analyze-work` over twin rollouts, 1 repetition per item) with the rollout-level call rate of the OD-20 arm on recall-labelled items in T012, minus the OD-22 margin. (c) Gate B MUST NOT use the gate A threshold."
+      "text": "Gate B tripwire. (a) Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items, of the OD-22 size, drawn with the split by the seeded partition, stratified by label, of SPEC-090 REQ-042. (b) The tripwire MUST compare the twin's rollout-level call rate (calls of `analyze-work` over twin rollouts, 1 repetition per item) with the rollout-level call rate of the decisive cell (REQ-044) on recall-labelled items in T012, minus the OD-22 margin. (c) Gate B MUST NOT use the gate A threshold."
     },
     {
       "id": "REQ-016",
@@ -862,7 +862,7 @@
           "when": "it is scored"
         }
       ],
-      "text": "Per-rollout session facts. Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout. A rollout with an instrument event MUST be excluded from its item's outcome and re-run once in the same session; an item with fewer than 3 scored rollouts MUST give `held`. An arm whose hook context appears in none of the hook-arm rollouts of T018 or T012 MUST be recorded as unavailable."
+      "text": "Per-rollout session facts. Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout. A rollout with an instrument event MUST be excluded from its item's outcome and re-run once in the same session; an item with fewer than 3 scored rollouts MUST give `held`. An arm whose hook context appears in none of the hook-arm rollouts of T012 MUST be recorded as unavailable."
     },
     {
       "id": "REQ-040",

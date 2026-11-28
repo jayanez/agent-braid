@@ -170,7 +170,7 @@ Before any gate B held-out, a 2³ factorial MUST cross product name (present or 
 #### REQ-015 — Gate B tripwire
 
 - (a) Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items, of the OD-22 size, drawn with the split by the seeded partition, stratified by label, of SPEC-090 REQ-042.
-- (b) The tripwire MUST compare the twin's rollout-level call rate (calls of `analyze-work` over twin rollouts, 1 repetition per item) with the rollout-level call rate of the OD-20 arm on recall-labelled items in T012, minus the OD-22 margin.
+- (b) The tripwire MUST compare the twin's rollout-level call rate (calls of `analyze-work` over twin rollouts, 1 repetition per item) with the rollout-level call rate of the decisive cell (REQ-044) on recall-labelled items in T012, minus the OD-22 margin.
 - (c) Gate B MUST NOT use the gate A threshold.
 - SC-016: Given a twin below the tripwire threshold, when Gate 0 runs, then the held-out run is refused.
 - SC-052: Given a gate B Gate 0 configured with the gate A threshold, when it is validated, then it is refused.
@@ -320,7 +320,7 @@ A build that changes the skill description, the server instructions, `_meta` or 
 
 #### REQ-039 — Per-rollout session facts
 
-Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout. A rollout with an instrument event MUST be excluded from its item's outcome and re-run once in the same session; an item with fewer than 3 scored rollouts MUST give `held`. An arm whose hook context appears in none of the hook-arm rollouts of T018 or T012 MUST be recorded as unavailable.
+Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout. A rollout with an instrument event MUST be excluded from its item's outcome and re-run once in the same session; an item with fewer than 3 scored rollouts MUST give `held`. An arm whose hook context appears in none of the hook-arm rollouts of T012 MUST be recorded as unavailable.
 
 - SC-041: Given a rollout whose session listing lacks `analyze-work`, when it is scored, then it is recorded as an instrument event, not as a non-call.
 
@@ -609,7 +609,7 @@ evidence exists; none is decided. The 0.81 figure below is the ANOVA ICC of per-
   Evidence: no labels exist yet; below the threshold the rubric is revised and items relabelled (REQ-002).
   Recommendation: 0.6, with both metrics also reported on the agreed-only subset.
 - **OD-22 — Gate B tripwire: twin size and margin.** Options: twin of 20 or 40 recall-labelled items × 1
-  repetition; margin 0.05 or 0.10 below the rollout-level call rate of the OD-20 arm on recall-labelled items
+  repetition; margin 0.05 or 0.10 below the rollout-level call rate of the decisive cell (REQ-044) on recall-labelled items
   in T012 (REQ-015). Evidence: on v4 the unprompted call rate was 53/300, about 0.18, so the gate A
   threshold would refuse every gate B split. False refusals (binomial, own calculation, with the reference
   rate taken as known and the arm unchanged): at 20 × 1 and margin 0.10, 0.107, 0.132 and 0.113 at true

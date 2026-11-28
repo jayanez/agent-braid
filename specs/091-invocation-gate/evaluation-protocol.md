@@ -66,7 +66,7 @@ proceed to a held-out, paired on the same items in the decisive cell named in T0
 description-only paired comparison (hook absent) replaces the factorial for that criterion. Each rollout
 records whether the hook context appeared, any host safety notice, and whether the skill and
 `analyze-work` were listed; a missing listing is an instrument event. The hook arm is unavailable when its
-context appears in none of the hook-arm rollouts of T018 or T012 (REQ-039).
+context appears in none of the hook-arm rollouts of T012 (REQ-039).
 
 ## Gate B selection (T013, T019; only when [OD-20] requires it)
 
