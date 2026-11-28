@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "Prompts of a split are treated as an independent sample of the authoring distribution; repetitions are independent given a prompt's pass probability; the SPEC-069 scorer is reused unchanged; the SPEC-091 noise pilot supplies the variance and correlation used for sizing; claude-code on the subscription route; ADR 0046 Proposed.",
+  "assumptions": "Prompts of a split are treated as an independent sample of the authoring distribution; repetitions are independent given p, a prompt's per-repetition probability of a valid first attempt; the SPEC-069 scorer is reused unchanged; the gate A noise pilot (REQ-032) supplies the variance and correlation used for sizing; claude-code on the subscription route; ADR 0046 Proposed.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "22021f9bf25be5eec27519c884d22af625a5e2ad522aeb83e999b1fc74cbe11a",
+      "docs/adr/0046-lightning-evaluation-design.md": "9307665040ae14f5f8985dbf78c3fab0cad1efb325f8840ea4c4ea659b440d21",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -170,13 +170,13 @@
           "when": "the bound is computed"
         },
         {
-          "given": "a candidate pool with known pass probabilities and the measured within-prompt correlation",
+          "given": "a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario",
           "id": "SC-003",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T004.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "SimGateATests.test_type_i_and_ii",
-          "then": "its type I error at the boundary does not exceed \u03b1 within simulation error and its power is reported",
+          "then": "its type I error at the boundary does not exceed \u03b1 within simulation error in the independent scenario, and its type I error, power and coverage are reported for the clustered scenario",
           "when": "the gate is simulated (SIM)"
         }
       ],
@@ -206,7 +206,7 @@
           "when": "the bound is simulated (SIM)"
         }
       ],
-      "text": "All-fail upper bound. Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold of OD-2. The rule \"no prompt is 0/3\" is not used for splits frozen under this specification."
+      "text": "All-fail upper bound. Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold of OD-2. The rule \"no prompt is 0/3\" is not used for splits frozen under this specification."
     },
     {
       "id": "REQ-004",
@@ -322,7 +322,7 @@
           "when": "the sizing function runs"
         }
       ],
-      "text": "Slice sized from the pilot. The slice size MUST come from the SPEC-091 noise pilot (variance of paired differences, discordance rate) through the formula in plan.md, at the \u03b1, power and margin of OD-1, OD-3 and OD-4."
+      "text": "Slice sized from the pilot. The slice size MUST come from the gate A noise pilot of REQ-032 (variance of paired differences, discordance rate) through the formula in plan.md, at the \u03b1 and power of OD-1 and OD-4 and the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3."
     },
     {
       "id": "REQ-010",
@@ -407,7 +407,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T008.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
-          "test_name": "ReportTests.test_metadata_fields",
+          "test_name": "RunnerTests.test_metadata_fields",
           "then": "every listed field is present and a missing field fails the report",
           "when": "the report is built"
         }
@@ -488,7 +488,7 @@
           "planned_evidence": "Test or procedure output, T014.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "SelectionTests.test_gepa_apo_use_paired",
-          "then": "the choice comes from the paired selection module and not from a top-k mean",
+          "then": "the choice comes from the paired selection module, not from GEPA's minibatch-mean acceptance against the parent or APO's top-k beam",
           "when": "its survivors are chosen"
         }
       ],
@@ -519,7 +519,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
-          "test_name": "BoundaryTests.test_no_adaptive_allocation",
+          "test_name": "DriftTests.test_no_adaptive_allocation",
           "then": "any allocation other than the fixed uniform schedule is refused",
           "when": "it is validated"
         }
@@ -556,7 +556,7 @@
           "when": "its fields are listed"
         }
       ],
-      "text": "No non-identified gate quantity. Gate A MUST NOT report a share of prompts with pass probability below a threshold as a gate quantity."
+      "text": "No non-identified gate quantity. Gate A MUST NOT report, as a gate quantity, the share of prompts whose p is below a threshold, with p, a prompt's per-repetition probability of a valid first attempt."
     },
     {
       "id": "REQ-024",
@@ -631,7 +631,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T009.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
-          "test_name": "BoundaryTests.test_no_retroactive_gate",
+          "test_name": "GateATests.test_no_retroactive_gate",
           "then": "it is rejected as out of scope",
           "when": "the gate A analysis is invoked on it"
         }
@@ -685,6 +685,38 @@
         }
       ],
       "text": "Minimum testable slice. The sizing function MUST reject a slice smaller than the least size at which the OD-11 exact test can reach the selection \u03b1; a slice of 5 prompts is below it for a two-sided exact McNemar test at 0.05 (split from REQ-009)."
+    },
+    {
+      "id": "REQ-032",
+      "scenarios": [
+        {
+          "given": "a gate A noise pilot run",
+          "id": "SC-037",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T020.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "PilotTests.test_gate_a_noise_report",
+          "then": "it holds the correlation, the paired-difference variance, the discordance rate and A/A differences with intervals in the sizing input format",
+          "when": "its report is built"
+        }
+      ],
+      "text": "Gate A noise pilot. Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation, the variance of paired per-prompt differences between two candidate arms, their discordance rate and A/A drift, each with an interval."
+    },
+    {
+      "id": "REQ-033",
+      "scenarios": [
+        {
+          "given": "a clustered scenario with nonzero between-class variance",
+          "id": "SC-038",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SimGateATests.test_clustered_scenario",
+          "then": "type I error, power and coverage are reported per variance and compared with the OD-15 tolerance",
+          "when": "the gate A and all-fail simulations run"
+        }
+      ],
+      "text": "Template-clustered simulation. The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances, and report type I error, power and coverage under it against the tolerance of OD-15."
     }
   ],
   "scientific_limits": "Simulations show properties of the procedures under their stated models only; real prompts are templated and clustered, so independence across prompts is an assumption; one host and model per run; cited 2026 preprints are leads; nothing is claimed about other hosts or real sessions.",

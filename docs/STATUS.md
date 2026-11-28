@@ -11,6 +11,8 @@ review; the evidence-boundary table below says what each record covers.
 
 ## Current state — 2026-11-26
 
+Spec count updated on 2026-11-28 for SPEC-090 and SPEC-091; the other counts below are as of 2026-11-26.
+
 Method: counts computed on 2026-11-26 at `develop` `02b19545` from `specs/`,
 [github-tracking.json](development/github-tracking.json) and the read-only query
 `gh api 'repos/jayanez/agent-braid/milestones?state=all'`.

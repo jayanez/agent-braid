@@ -8,11 +8,12 @@ Sources are labelled as in the [T008 diagnosis](../079-kind-choice-tool-fix/evid
 Decision: exact Clopper–Pearson. The current gate uses Wilson with z = 1.96, which is a one-sided 97.5 %
 bound with no coverage guarantee; an exact bound is preregisterable (own calculation, diagnosis §3.2).
 Alternative: Wilson at z = 1.645 (rejected: still no guarantee). Limit: exactness holds for the binomial
-model, not for template clustering.
+model, not for template clustering, which REQ-033 simulates.
 
 ## R2 — All-fail bound replaces "no prompt is 0/3"
 
-Decision: bound θ = E[(1−p)³]. The 0/3 count is binomial in θ when prompts are independent and
+Decision: bound θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt.
+The 0/3 count is binomial in θ when prompts are independent and
 repetitions are independent given p (own derivation). With n rollouts per item only moments up to degree n
 are identified (2609.09245, paper; 2610.04135, minimax barrier), so θ is identified and a share of prompts
 below a threshold is not. The rule did not fail on noise: the v2 and v3 0/3 prompts were deterministic
@@ -24,7 +25,7 @@ calculation).
 
 Decision: keep 3. Extra rollouts of one prompt saturate at 1/ρ effective samples; with a per-prompt cost the
 optimum is n* = √((c_p/c_r)(1−ρ)/ρ) (2611.26592, paper). With ρ = 0.41 to 0.52 and c_p/c_r of 6 to 10, n*
-is near 3 (own calculation). Limit: the cost ratio is an assumption; the SPEC-091 noise pilot measures ρ.
+is near 3 (own calculation). Limit: the cost ratio is an assumption; the gate A noise pilot (REQ-032) measures ρ.
 Alternative: 300 × 1 (rejected: changes the estimand to E[p]; would have passed v3 at 272/300 while losing
 the per-prompt signal).
 

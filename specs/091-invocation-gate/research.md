@@ -13,7 +13,7 @@ prompt and absent from every v4 prompt (repo). Seven differences confound v3 aga
 
 With a strong model, a prompt that lists every fact may not need a tool, so not calling can be correct
 (2605.14038, ToolFailBench, When2Call; leads). It is a product failure only when Agent Braid adds something
-the prose answer lacks. The owner decided labels before measurement (OD-B1, 2026-11-27). An invocation-only
+the prose answer lacks. The owner stated on 2026-11-27 that labels are assigned before measurement (OD-B1, not yet committed; T001 records it). An invocation-only
 reward teaches keyword-triggered calls (2609.16268, abstract), so gate B measures false positives too.
 
 ## R3 — Levers
@@ -21,7 +21,7 @@ reward teaches keyword-triggered calls (2609.16268, abstract), so gate B measure
 - Skill description decides automatic loading and is truncated at 1,536 characters; MCP tools are deferred
   behind tool search unless a tool sets `anthropic/alwaysLoad`; server instructions (up to 4,096
   characters) say when to search; a `UserPromptSubmit` hook adds context deterministically and should be
-  factual (docs). The current skill description is a generic sentence (repo, `SKILL.md`).
+  factual (docs). The current skill description is a generic sentence (repo, `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md`).
 - A forced-evaluation hook reached 100 % skill activation against 50 to 55 % on 22 prompts (community, small
   sample, earlier models). Always-on skills were listed 198 times and opened 0; path-gated skills 28 of 66
   (2610.14216, paper).
@@ -44,7 +44,8 @@ rewrite of a description captures most of the gain; further iterations move F1 b
 ## R6 — Sizes
 
 Detecting a recall rise from 18 % to 30 % needs about 156 rollouts per arm one-sided at 80 % power without
-clustering (own calculation); the review's "about 200" allows for clustering. The development factorial at
+clustering (own calculation); it treats rollouts as independent. With the item as the unit (OD-17) and
+within-item correlation of 0.81 on v4, the effective sample is close to the number of items. The development factorial at
 about 25 prompts per cell is a pilot, not a gate.
 
 ## R7 — Official harness

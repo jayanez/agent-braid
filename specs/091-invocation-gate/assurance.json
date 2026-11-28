@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "22021f9bf25be5eec27519c884d22af625a5e2ad522aeb83e999b1fc74cbe11a",
+      "docs/adr/0046-lightning-evaluation-design.md": "9307665040ae14f5f8985dbf78c3fab0cad1efb325f8840ea4c4ea659b440d21",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -119,8 +119,8 @@
   },
   "execution_contract": "executionAuthorization stays false; simulations spend no quota; every real run (noise pilot, development factorial, 2x2 factorial, held-out) needs its own frozen protocol and the owner's yes; subscription route only, EUR 0; levers ship only after promotion.",
   "human_review": "pending",
-  "hypotheses": "H1: at least one architecture lever raises recall on tool-necessary and tool-beneficial items over the current build without a false-positive rise beyond the OD-9 margin. H2: the description and hook effects in the 2x2 factorial are additive (no interaction). H3: product name, form and the completeness sentence each change the invocation rate in the development factorial (descriptive). A null or negative result completes the protocol.",
-  "observation_contract": "Per-rollout whether analyze-work was called, from transcript tool names, by item label; recall and false-positive rates with exact bounds; per-cell factorial rates; for calls, validFirstAttempt from the unchanged SPEC-069 scorer as a secondary measure.",
+  "hypotheses": "H1: at least one architecture lever raises recall on tool-necessary and tool-beneficial items over the current build without a false-positive rise beyond the OD-9 margin. H2: the description x hook interaction in the 2x2 factorial lies within plus or minus eta (OD-18), shown by two one-sided tests (TOST); if equivalence is not shown the interaction is reported descriptively and no additivity is claimed. H3: product name, form and the completeness sentence each change the invocation rate in the development factorial (descriptive; three of the seven v3/v4 differences, measured on fresh prompts, not an isolation of the v3 to v4 change). A null or negative result completes the protocol.",
+  "observation_contract": "Per-rollout whether analyze-work was called, from transcript tool names, aggregated to a per-item outcome (OD-17) by item label; recall and false-positive rates over items with the OD-17 bound; per-cell factorial rates; for calls, validFirstAttempt from the unchanged SPEC-069 scorer as a secondary measure.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -144,17 +144,17 @@
       "id": "REQ-001",
       "scenarios": [
         {
-          "given": "a labelled run with known counts per label",
+          "given": "a labelled run with three repetitions per item and known per-item calls",
           "id": "SC-001",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T010.",
           "test_file": "specs/091-invocation-gate/validation-plan.md",
           "test_name": "GateBTests.test_two_metrics",
-          "then": "it reports recall and the false-positive rate with exact bounds and no combined score",
+          "then": "it reports recall and the false-positive rate over items, with the OD-17 bound, and no rollout-level bound",
           "when": "the gate B analysis runs"
         }
       ],
-      "text": "Gate B metrics. Gate B MUST score prompts that do not name the product with two separate metrics, each with its own exact bound at the \u03b1 of OD-3: recall, the share of `tool-necessary` and `tool-beneficial` rollouts that call `analyze-work`; and the false-positive rate, the share of `tool-unnecessary` and near-miss rollouts that call it."
+      "text": "Gate B metrics. Gate B MUST score prompts that do not name the product with two separate metrics whose unit is the item, not the rollout, each with its own bound at the \u03b1 of OD-3 computed from the per-item outcome of OD-17: recall over `tool-necessary` and `tool-beneficial` items, and the false-positive rate over `tool-unnecessary` and near-miss items, where an item counts as calling `analyze-work` by the OD-17 rule."
     },
     {
       "id": "REQ-002",
@@ -320,11 +320,11 @@
           "planned_evidence": "Test or procedure output, T009.",
           "test_file": "specs/091-invocation-gate/validation-plan.md",
           "test_name": "PilotTests.test_factorial_cells",
-          "then": "each of the 8 cells has the OD-6 count and no prompt comes from a spent set unless OD-1 allows it",
+          "then": "each of the 8 cells has the OD-6 count and every prompt is fresh, except spent v4 prompts in the form OD-1 allows",
           "when": "it is built"
         }
       ],
-      "text": "Development factorial pilot. Before any gate B held-out, a 2\u00b3 factorial on fresh development prompts MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It explains the v3 to v4 change; it is not a gate."
+      "text": "Development factorial pilot. Before any gate B held-out, a 2\u00b3 factorial on fresh development prompts (plus spent v4 prompts only if and as OD-1 allows) MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It estimates the effect of three of the seven v3/v4 differences on fresh prompts; it does not isolate the v3 to v4 change, and it is not a gate."
     },
     {
       "id": "REQ-012",
@@ -340,7 +340,7 @@
           "when": "its report is built"
         }
       ],
-      "text": "Noise pilot. A noise pilot MUST estimate the within-prompt correlation, the disagreement rate between candidates and A/A drift, and publish them in a file consumed by SPEC-090 sizing."
+      "text": "Noise pilot. A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, the within-prompt correlation of invocation, the disagreement rate between candidates and A/A drift, and publish them in the SPEC-090 sizing input format for gate B selection (T013) and the OD-7 sizes; gate A is sized from its own pilot (SPEC-090 REQ-032)."
     },
     {
       "id": "REQ-013",
@@ -356,7 +356,7 @@
           "when": "it is generated from the frozen seed"
         }
       ],
-      "text": "Preregistered 2\u00d72 factorial. The description \u00d7 hook factorial MUST be preregistered and frozen before its run, with arms interleaved in randomized blocks and the rollouts per cell and metric of OD-7; the analysis reports both metrics per cell, the main effects and the interaction."
+      "text": "Preregistered 2\u00d72 factorial. The description \u00d7 hook factorial MUST be preregistered and frozen before its run, with arms interleaved in randomized blocks and the rollouts per cell and metric of OD-7; the analysis reports both metrics per cell, the main effects and the interaction, and tests the interaction for equivalence within \u00b1\u03b7 of OD-18 by two one-sided tests (TOST)."
     },
     {
       "id": "REQ-014",

@@ -27,7 +27,8 @@ transcripts for the 0/3 review follow SPEC-074.
 
 ## Design
 
-1. **Estimands (REQ-001 to REQ-003).** For prompt i with pass probability p_i and three repetitions
+1. **Estimands (REQ-001 to REQ-003).** For prompt i with p_i, its per-repetition probability of a valid
+   first attempt, and three repetitions
    independent given p_i: the prompt passes with probability π(p_i) = 3p_i² − 2p_i³ and is 0/3 with
    probability (1 − p_i)³. With prompts drawn independently, the passing count is Binomial(n, E[π(p)]) and
    the 0/3 count is Binomial(n, θ) with θ = E[(1 − p)³]. Both bounds are exact Clopper–Pearson bounds on
@@ -37,8 +38,10 @@ transcripts for the 0/3 review follow SPEC-074.
    `instrument` prompt is replaced by the next reserve prompt, scored in a separate run of the same arm, up to
    the OD-8 cap.
 3. **Slice sizing (REQ-009).** With d_i the per-prompt paired difference averaged over r repetitions,
-   σ_d² = σ_b² + σ_w²/r from the noise pilot, the slice size is n = ⌈((z₁₋α + z₁₋β)·σ_d/δ)²⌉ at the α, power
-   and margin δ of OD-1, OD-4 and OD-3. A size below the smallest n whose exact test can reach α is refused
+   σ_d² = σ_b² + σ_w²/r from the gate A noise pilot (REQ-032), the slice size is
+   n = ⌈((z₁₋α + z₁₋β)·σ_d/(Δ − δ))²⌉ at the α and power of OD-1 and OD-4, the margin δ and the target
+   advantage Δ > δ of OD-3. This is power to reject "advantage ≤ δ" when the true advantage is Δ; at a true
+   advantage of exactly δ the power equals α, so sizing on δ alone would be wrong. A size below the smallest n whose exact test can reach α is refused
    (at n = 5 the smallest two-sided exact McNemar p-value is 0.0625).
 4. **Selection (REQ-008, REQ-010, REQ-011).** Each round assigns the same new items to every surviving
    candidate; the OD-11 rule drops candidates; the incumbent is replaced only when the OD-11 test rejects
@@ -55,7 +58,7 @@ transcripts for the 0/3 review follow SPEC-074.
 10. **Data model and evolution.** The journal, the gate A report and the simulation record each carry a
     `schema` version string; a reader rejects an unknown version instead of guessing. The SPEC-078 and
     SPEC-079 report schemas are not changed; new fields go into the new schema versions only.
-11. **Dependency failure.** If the SPEC-091 noise pilot (dependency of T019) fails or is unavailable, T019
+11. **Dependency failure.** If the gate A noise pilot (T020, dependency of T019) fails or is unavailable, T019
     does not run, the slice size stays undecided and T016 stays blocked; no default size is substituted.
 
 ## Validation strategy
@@ -64,7 +67,8 @@ transcripts for the 0/3 review follow SPEC-074.
 |---|---|---|---|
 | REQ-001, REQ-004, REQ-006, REQ-023, REQ-026, REQ-028, REQ-030 | SC-001, SC-006, SC-009, SC-028, SC-031, SC-033, SC-035 | `tests/test_lightning_gate_a.py` | unit test output, T009 |
 | REQ-002, REQ-003 | SC-002, SC-004 | `tests/test_lightning_stats.py` | reference values, T002 |
-| REQ-002, REQ-003 | SC-003, SC-005 | `scripts/spec090_simulate.py` | simulation records, T004, T005 |
+| REQ-002, REQ-003, REQ-033 | SC-003, SC-005, SC-038 | `tests/test_lightning_sim.py`, `scripts/spec090_simulate.py` | simulation records, T004, T005 |
+| REQ-032 | SC-037 | `tests/test_spec090_pilot.py` | pilot report, T020 |
 | REQ-005 | SC-007, SC-008 | `tests/test_lightning_gate_a.py` | unit test output, T010 |
 | REQ-008 to REQ-011, REQ-031 | SC-011 to SC-015, SC-036 | `tests/test_lightning_selection.py`, simulation | T006 |
 | REQ-012, REQ-016, REQ-019, REQ-027 | SC-016, SC-021, SC-024, SC-032 | `tests/test_lightning_selection.py` | T007, T011, T014 |
@@ -76,7 +80,8 @@ transcripts for the 0/3 review follow SPEC-074.
 
 Negative controls are listed in [validation-plan.md](validation-plan.md). Labels are scorer outcomes; the
 only human judgment is the 0/3 review. Missing results count as failed repetitions. Calibration is not
-claimed. Cost: simulations spend no quota; the gate A run (T017) is about 300 rollouts plus reserve, EUR 0.
+claimed. Cost: simulations spend no quota; the gate A noise pilot (T020) is about 180 rollouts at the OD-14
+recommendation; the gate A run (T017) is about 300 rollouts plus reserve, EUR 0.
 
 ## Constitution check after design
 

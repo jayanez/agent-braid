@@ -1,9 +1,11 @@
 # ADR 0046: Lightning evaluation design (best-arm selection, gates A and B, identified estimands)
 
 - **Status:** Proposed — (2026-11-28). Not accepted, and it implements and runs nothing. The owner
-  approved the corrected strategy on 2026-11-28 as a planning decision; the founder accepts or
-  rejects this ADR in the SPEC-090 T001 and SPEC-091 T001 reviews. Every numeric parameter is an
-  open owner decision (OD) in those specifications, not a value fixed here.
+  approved the corrected strategy on 2026-11-28 as a planning decision; that approval has no committed
+  record yet, and SPEC-090 T001 and SPEC-091 T001 record it. The founder accepts or rejects this ADR in
+  those reviews. Every numeric parameter other than those inherited from SPEC-078 OD-1 and the approved
+  strategy (the 2-of-3 majority, 3 repetitions and the 0.80 threshold) is an open owner decision (OD) in
+  those specifications, not a value fixed here.
 - **Date:** 2026-11-28
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 0, 9, 12, 13, 14, 19, 20, 21, 23, 25
@@ -34,8 +36,8 @@ v2" plan found, in this repository:
   positives there do not describe a session with competing tools and skills;
 - an `instrument` finding invalidates a whole run under the SPEC-079 protocol and cannot replace single prompts.
 
-It also found two statistical pieces unsound: a share of prompts with pass probability below a threshold
-is not identifiable from a few repetitions (only moments up to degree n are, with n rollouts per item),
+It also found two statistical pieces unsound: with p a prompt's per-repetition probability of a valid
+first attempt, the share of prompts with p below a threshold is not identifiable from a few repetitions (only moments up to degree n are, with n rollouts per item),
 and five-case minibatches support no test (the smallest exact two-sided McNemar p-value at n = 5 is 0.0625).
 
 ## Decision (proposed)
@@ -45,16 +47,20 @@ and five-case minibatches support no test (the smallest exact two-sided McNemar 
      passes when at least 2 of its 3 repetitions are valid first attempts. The primary estimand is the
      share of prompts that pass (one binary result per prompt, treated as independent across prompts).
    - **Gate B (unprompted invocation).** Prompts that do not name the product. Every item carries a label
-     fixed before measurement (owner decision OD-B1 of 2026-11-27): `tool-necessary` (the needed fact is
+     fixed before measurement (owner decision OD-B1, stated on 2026-11-27; it has no committed record
+     yet, and SPEC-091 T001 records it): `tool-necessary` (the needed fact is
      not in the prompt, for example repository state), `tool-beneficial` (the product gives a verified,
      auditable artifact the prose answer does not), or `tool-unnecessary`. Recall is measured and bounded
      on the first two labels together; the false-positive rate is measured and bounded on
-     `tool-unnecessary` items and near-misses. Neither bound is combined into one score.
+     `tool-unnecessary` items and near-misses. The item, not the rollout, is the unit of both bounds,
+     because rollouts of one prompt are correlated (0.81 on v4); the per-item outcome is an open decision
+     (SPEC-091 OD-17). Neither bound is combined into one score.
 2. **Identified estimands only.** Gate A reports:
    - an **exact one-sided Clopper–Pearson lower bound** on the share of passing prompts, at an α declared
      before measurement (the Wilson interval with z = 1.96 is a one-sided 97.5 % bound without a coverage
      guarantee and is not used);
-   - an **exact upper bound on the all-fail rate** E[(1−p)³], where p is a prompt's pass probability. This
+   - an **exact upper bound on the all-fail rate** E[(1−p)³], where p is a prompt's per-repetition probability of a valid first
+     attempt. This
      is the functional identified by the number of prompts with 0 of 3, and it replaces the rule "no prompt
      is 0/3". Each 0/3 prompt is still reviewed by the owner as `model` or `instrument`; `instrument`
      prompts are replaced from a reserve frozen before the run, within a preregistered cap. A share such as
@@ -66,7 +72,8 @@ and five-case minibatches support no test (the smallest exact two-sided McNemar 
 3. **Paired selection on one fixed slice.** Candidate text artifacts are compared on the same fixed slice
    of prompts, sized from a pilot (never n = 5). Differences are paired per prompt and averaged over
    repetitions. Elimination is synchronized (all surviving candidates see the same items per round). The
-   incumbent is kept unless a preregistered margin is met (an ε-good objective). The elimination rule is
+   incumbent is kept unless a preregistered margin δ is met (an ε-good objective); the slice is sized for
+   power at a target advantage Δ greater than δ (both open, SPEC-090 OD-3). The elimination rule is
    chosen by simulation with the pilot's parameters before any real run.
 4. **Audit set.** An audit set of items (128 proposed; the size is an OD) is never used for selection. The
    selected winner is reported on it with a confidence interval, to expose the winner's curse.
@@ -87,8 +94,9 @@ and five-case minibatches support no test (the smallest exact two-sided McNemar 
 9. **Vendored APO is legacy.** The APO code vendored under ADR 0040 comes from the `v0.x` branch of
    microsoft/agent-lightning, which has had no development since January 2026; agent-lightning v1.x is
    reinforcement learning for open-weight models. APO and GEPA stay available for the skill body under
-   gate A, with the corrected selection of decision 3 replacing their current top-k-by-mean steps
-   (`agent_braid/lightning_gepa.py`, `agent_braid/lightning_apo.py`).
+   gate A, with the corrected selection of decision 3 replacing their current selection steps: GEPA
+   accepts a child when its minibatch mean beats its parent's and then keeps a Pareto front
+   (`agent_braid/lightning_gepa.py`); APO keeps a top-k beam by mean (`agent_braid/lightning_apo.py`).
 10. **Thompson Sampling: evaluated, not adopted.** See Alternatives. It is excluded from any frozen gate.
 11. **Boundaries unchanged.** EUR 0 on the subscription route (ADR 0021, ADR 0039 decision 2); no LLM
     judge as a reward source (ADR 0039 decision 5); promotion stays human with SPEC-049 noninferiority;

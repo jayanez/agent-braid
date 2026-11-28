@@ -10,8 +10,8 @@ On SPEC-079's v4 held-out set, where no prompt names the product, the model call
 300 rollouts; 221 rollouts made no tool call, 57 used `ToolSearch` and 24 invoked the skill
 ([diagnosis](../079-kind-choice-tool-fix/evidence/t008-diagnosis-and-strategy-review.md)). Seven things
 changed between v3 and v4, so the cause is not isolated. Whether Agent Braid is to be invoked at all when
-the user does not name it was not decided anywhere in the repository until the owner decided, on
-2026-11-27 (OD-B1), that items are labelled before measurement and scored by label.
+the user does not name it was not decided anywhere in the repository. The owner stated on 2026-11-27
+(OD-B1, not yet committed; T001 records it) that items are labelled before measurement and scored by label.
 
 This specification defines gate B of ADR 0046 and the work it needs: labelled items, a laboratory with
 competing tools and co-installed skills, architecture levers measured as arms, an optimizer target beyond
@@ -60,8 +60,8 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 
 ## Requirements and acceptance scenarios
 
-- **REQ-001 — Gate B metrics.** Gate B MUST score prompts that do not name the product with two separate metrics, each with its own exact bound at the α of OD-3: recall, the share of `tool-necessary` and `tool-beneficial` rollouts that call `analyze-work`; and the false-positive rate, the share of `tool-unnecessary` and near-miss rollouts that call it.
-  - SC-001: Given a labelled run with known counts per label, when the gate B analysis runs, then it reports recall and the false-positive rate with exact bounds and no combined score.
+- **REQ-001 — Gate B metrics.** Gate B MUST score prompts that do not name the product with two separate metrics whose unit is the item, not the rollout, each with its own bound at the α of OD-3 computed from the per-item outcome of OD-17: recall over `tool-necessary` and `tool-beneficial` items, and the false-positive rate over `tool-unnecessary` and near-miss items, where an item counts as calling `analyze-work` by the OD-17 rule.
+  - SC-001: Given a labelled run with three repetitions per item and known per-item calls, when the gate B analysis runs, then it reports recall and the false-positive rate over items, with the OD-17 bound, and no rollout-level bound.
 - **REQ-002 — Labels before measurement.** Every gate B item MUST carry one label, `tool-necessary`, `tool-beneficial` or `tool-unnecessary` (OD-B1, 2026-11-27), assigned by the OD-2 procedure from a written rubric and frozen by sha256 before any rollout on it.
   - SC-002: Given an item set whose label record hash differs from the frozen one, when a run is requested, then the runner refuses.
 - **REQ-003 — Item pool composition.** The item-set builder MUST reject a gate B item set that holds no near-miss items (prompts that resemble a tool use but are `tool-unnecessary`).
@@ -81,11 +81,11 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-010: Given a skill-description candidate, when it is recombined with the skill file, then only the description field differs and the other bytes hash as before.
 - **REQ-010 — Size caps.** The candidate validator MUST reject, without truncating, a candidate above its host limit (re-verified against host documentation at T004; documented today as at most 1,536 characters for a skill description and at most 4,096 for server instructions) or above the ADR 0038 D12 cap of 1,500 approximate tokens for the compact `analyze-work` definition.
   - SC-011: Given a description candidate one character over its cap, when it is validated, then it is refused with a size code.
-- **REQ-011 — Development factorial pilot.** Before any gate B held-out, a 2³ factorial on fresh development prompts MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It explains the v3 to v4 change; it is not a gate.
-  - SC-012: Given the pilot design, when it is built, then each of the 8 cells has the OD-6 count and no prompt comes from a spent set unless OD-1 allows it.
-- **REQ-012 — Noise pilot.** A noise pilot MUST estimate the within-prompt correlation, the disagreement rate between candidates and A/A drift, and publish them in a file consumed by SPEC-090 sizing.
+- **REQ-011 — Development factorial pilot.** Before any gate B held-out, a 2³ factorial on fresh development prompts (plus spent v4 prompts only if and as OD-1 allows) MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It estimates the effect of three of the seven v3/v4 differences on fresh prompts; it does not isolate the v3 to v4 change, and it is not a gate.
+  - SC-012: Given the pilot design, when it is built, then each of the 8 cells has the OD-6 count and every prompt is fresh, except spent v4 prompts in the form OD-1 allows.
+- **REQ-012 — Noise pilot.** A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, the within-prompt correlation of invocation, the disagreement rate between candidates and A/A drift, and publish them in the SPEC-090 sizing input format for gate B selection (T013) and the OD-7 sizes; gate A is sized from its own pilot (SPEC-090 REQ-032).
   - SC-013: Given a noise pilot run, when its report is built, then it contains the correlation, the disagreement rate and A/A differences with intervals in the SPEC-090 input format.
-- **REQ-013 — Preregistered 2×2 factorial.** The description × hook factorial MUST be preregistered and frozen before its run, with arms interleaved in randomized blocks and the rollouts per cell and metric of OD-7; the analysis reports both metrics per cell, the main effects and the interaction.
+- **REQ-013 — Preregistered 2×2 factorial.** The description × hook factorial MUST be preregistered and frozen before its run, with arms interleaved in randomized blocks and the rollouts per cell and metric of OD-7; the analysis reports both metrics per cell, the main effects and the interaction, and tests the interaction for equivalence within ±η of OD-18 by two one-sided tests (TOST).
   - SC-014: Given a factorial schedule, when it is generated from the frozen seed, then arms interleave in blocks and the counts per cell match the protocol.
 - **REQ-014 — Gate B held-out.** A gate B held-out set MUST be frozen by sha256 and scored once, and MAY be built only after the 2×2 factorial meets the OD-9 criterion (recall rising with a stable false-positive rate).
   - SC-015: Given a factorial report that misses the OD-9 criterion, when a held-out freeze is requested, then it refuses.
@@ -153,8 +153,11 @@ Operational and quality constraints, each with its source:
 - **Gate B:** the unprompted-invocation gate (REQ-001).
 - **Labels**, allowed values: `tool-necessary`, `tool-beneficial`, `tool-unnecessary` (OD-B1, REQ-002).
 - **Near-miss item:** a `tool-unnecessary` prompt that resembles a tool use (REQ-003).
-- **Recall:** share of `tool-necessary` and `tool-beneficial` rollouts that call `analyze-work` (REQ-001).
-- **False-positive rate:** share of `tool-unnecessary` and near-miss rollouts that call it (REQ-001).
+- **Item outcome:** whether an item counts as calling `analyze-work`, by the OD-17 rule over its rollouts
+  (REQ-001).
+- **Recall:** share of `tool-necessary` and `tool-beneficial` items whose item outcome is a call (REQ-001).
+- **False-positive rate:** share of `tool-unnecessary` and near-miss items whose item outcome is a call
+  (REQ-001).
 - **Lever**, an architecture change measured as an arm; allowed values: `alwaysLoad`, server instructions,
   skill description, hook, explicit command (REQ-005).
 - **Competing tools, co-installed skills:** the OD-5 laboratory set (REQ-004).
@@ -172,9 +175,12 @@ completion condition):
 
 - **H1** — At least one lever raises recall over the current build without a false-positive rise beyond
   the OD-9 margin.
-- **H2** — In the 2×2 factorial the description and hook effects are additive (no interaction).
+- **H2** — In the 2×2 factorial the description × hook interaction lies within ±η (OD-18), shown by two
+  one-sided tests (TOST). If equivalence is not shown, the interaction is reported descriptively and no
+  additivity is claimed; a non-significant interaction test alone supports nothing.
 - **H3** — Product name, form and the completeness sentence each change the invocation rate in the
-  development factorial (descriptive; explains, without a paired test, the v3 to v4 change).
+  development factorial (descriptive). It estimates the effect of three of the seven v3/v4 differences
+  on fresh prompts; it does not isolate the v3 to v4 change.
 
 Domain: one host (`claude-code`), one pinned model, the OD-5 laboratory, labelled synthetic prompts.
 Observation contract: transcript tool names per rollout, by label; SPEC-069 `validFirstAttempt` for calls
@@ -194,10 +200,10 @@ repository: the SPEC-079 T008 report with its invocation block, and the diagnosi
 
 ## Owner decisions (open)
 
-Open questions: OD-1 to OD-16. Each has options, a recommendation and its evidence; none is decided.
+Open questions: OD-1 to OD-18. Each has options, a recommendation and its evidence; none is decided.
 
 - **OD-1 — Spent v4 prompts as development material.** Options: (a) no reuse, as the SPEC-079 protocol
-  says v4 is never reused; (b) reuse, labelled, as development material for the pilots only, never as a
+  says "v4 is not reused for a second arm"; (b) reuse, labelled, as development material for the pilots only, never as a
   held-out; (c) read their recorded traces descriptively only, with no new rollout on them. Evidence: v4 is
   confounded by seven changes and unlabelled; reuse saves authoring but any future held-out from the same
   templates would leak. Recommendation: (c).
@@ -219,8 +225,10 @@ Open questions: OD-1 to OD-16. Each has options, a recommendation and its eviden
 - **OD-6 — Development factorial size.** Options: about 25 prompts × 1 repetition per cell (about 200
   rollouts); × 3 repetitions. Recommendation: 25 × 1.
 - **OD-7 — 2×2 rollouts per cell and metric.** Options: 150, 200 or 300. Evidence: detecting 18 % to 30 %
-  recall needs about 156 rollouts per arm one-sided at 80 % power without clustering, more with it (own
-  calculation). Recommendation: 200, revised from the noise pilot.
+  recall needs about 156 rollouts per arm one-sided at 80 % power (own calculation); that figure treats
+  rollouts as independent and ignores clustering within items (correlation 0.81 on v4), so with the item
+  as the unit (OD-17) the effective sample is closer to the number of items. Recommendation: 200 rollouts
+  per cell as a floor, with the item count set from the gate B noise pilot.
 - **OD-8 — Item pool sizes and label shares.** Options: equal thirds; weighted to recall labels; a fixed
   near-miss share. Recommendation: set per run from OD-7, with at least one quarter near-miss among
   `tool-unnecessary` items.
@@ -237,6 +245,15 @@ Open questions: OD-1 to OD-16. Each has options, a recommendation and its eviden
 - **OD-14 — Target kinds.** Options: skill description; server instructions; tool description (bound by
   the D12 cap). Recommendation: the first two.
 - **OD-15 — Milestone.** As SPEC-090 OD-10.
+- **OD-17 — Per-item outcome for gate B.** Options: (a) item majority call (at least 2 of 3 rollouts call
+  `analyze-work`) with an exact Clopper–Pearson bound over items; (b) item mean call rate with a cluster
+  bootstrap or beta-binomial bound; (c) rollout-level shares, rejected as anti-conservative because
+  rollouts of one item are correlated (0.81 on v4). Evidence: gate A uses (a) for the same reason.
+  Recommendation: (a) as the gate statistic, (b) reported as a secondary description.
+- **OD-18 — Equivalence margin η for the interaction.** Options: ±0.05, ±0.10 or ±0.15 on the difference
+  of differences in recall (and separately in the false-positive rate). Evidence: with about 200 rollouts
+  per cell the standard error of a difference of differences near p = 0.5 is about 0.07 before clustering
+  (own calculation), so ±0.05 is not attainable at that size. Recommendation: ±0.10.
 - **OD-16 — Skill `paths` field.** Options: measure it as a lever; skip. Recommendation: only if the
   development factorial points to file-type triggers.
 
@@ -260,5 +277,5 @@ A null, negative or invalidated result is a valid completion when recorded. Pass
 
 ## Open questions
 
-- OD-1 to OD-16 above; owner: the founder.
+- OD-1 to OD-18 above; owner: the founder.
 - Whether each real run (T008, T009, T012, T015) happens; owner: the founder.

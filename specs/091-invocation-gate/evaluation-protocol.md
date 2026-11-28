@@ -10,28 +10,32 @@ and its own owner yes. No rollout precedes the simulation record (T007).
 - Laboratory: the gate B profile with [OD-5] tools and pinned co-installed skills; `configDigest` recorded.
 - Items: labelled `tool-necessary`, `tool-beneficial` or `tool-unnecessary` by [OD-2] before any rollout;
   near-miss items included; label record frozen by sha256. Spent v4 prompts only as [OD-1] allows.
-- Observation: whether `analyze-work` was called in the rollout (transcript tool names); for calls,
+- Observation: whether `analyze-work` was called in the rollout (transcript tool names), aggregated to
+  a per-item outcome by [OD-17]; the item, not the rollout, is the unit of every bound; for calls,
   `validFirstAttempt` from the unchanged SPEC-069 scorer as a secondary measure. Missing results are
   reported and counted as non-calls. No LLM judge.
 - Drift: SPEC-090 controls (versions per rollout, A/A anchors, seeded interleaved blocks, re-baseline).
 
-## Noise pilot (T008)
+## Gate B noise pilot (T008)
 
-Fresh development prompts; A/A pairs of the current build and two candidate arms. Outputs: within-prompt
+Fresh development prompts that do not name the product, in the gate B laboratory; A/A pairs of the current build and two candidate arms. Outputs: within-prompt
 correlation, candidate disagreement rate, A/A differences, each with an interval, in the SPEC-090 input
-format. Descriptive.
+format, for gate B selection and the [OD-7] sizes; gate A has its own pilot (SPEC-090 REQ-032). Descriptive.
 
 ## Development factorial (T009, H3)
 
 2³ cells: product name (present, absent) × form (directive, question) × completeness sentence (present,
-absent); [OD-6] prompts per cell. Per-cell invocation rates with exact intervals; descriptive; not a gate.
+absent); [OD-6] prompts per cell, fresh except as [OD-1] allows. Per-cell invocation rates with exact
+intervals; descriptive; not a gate. It estimates three of the seven v3/v4 differences on fresh prompts and
+does not isolate the v3 to v4 change.
 
 ## 2×2 factorial (T011, T012; H1, H2)
 
 Description (current, use-case-first) × hook (absent, present with the [OD-4] text). [OD-7] rollouts per
 cell and metric; arms interleaved in seeded randomized blocks. Report per cell: recall on necessary and
-beneficial items, false-positive rate on unnecessary and near-miss items, each with an exact bound; main
-effects and the interaction with the test chosen by T007. Criterion to proceed to a held-out: [OD-9].
+beneficial items, false-positive rate on unnecessary and near-miss items, each with the [OD-17] item-level bound;
+main effects with the test chosen by T007; the interaction tested for equivalence within ±[OD-18] by TOST,
+otherwise reported descriptively. Criterion to proceed to a held-out: [OD-9].
 
 ## Gate B held-out (T014, T015)
 

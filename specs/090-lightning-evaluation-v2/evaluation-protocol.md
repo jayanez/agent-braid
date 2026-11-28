@@ -13,10 +13,13 @@ Before any real run, `scripts/spec090_simulate.py` records, with seeds:
    [OD-1], with the class rule.
 2. **All-fail coverage (H2).** Coverage of the exact upper bound over a grid of θ, and the detection rate of a
    deterministic defect affecting 2 to 3 % of prompts, for each τ of [OD-2].
-3. **Selection (H1).** Known-p candidate pools of size [OD-7] with within-prompt correlation from 0.41 to
+3. **Clustering.** Items 1 and 2 are repeated in a template-clustered scenario (prompts of one class share
+   a latent effect on p, the per-repetition probability of a valid first attempt) over a grid of
+   between-class variances; the success criterion is the [OD-15] tolerance.
+4. **Selection (H1).** Known-p candidate pools of size [OD-7] with within-prompt correlation from 0.41 to
    0.81, then the noise-pilot value: rate of picking an ε-good candidate for each rule and test of [OD-11]
-   against top-k on n = 5 independent means.
-4. **Replay.** A journal replayed twice yields identical decisions and hashes.
+   against top-k on n = 5 independent means; sizing uses [OD-3] δ and Δ.
+5. **Replay.** A journal replayed twice yields identical decisions and hashes.
 
 A simulation result that contradicts H1, H2 or H3 is recorded and blocks the real stage until the design
 changes.
@@ -36,7 +39,8 @@ changes.
 
 ## Selection (development use)
 
-Candidates are compared on one fixed slice of size from the plan.md formula with [OD-3] and [OD-4],
+Candidates are compared on one fixed slice sized from the gate A noise pilot of [OD-14] by the plan.md
+formula with [OD-3] (δ and Δ) and [OD-4],
 synchronized rounds, the rule and test of [OD-11], the incumbent kept unless the margin is met, and the
 winner reported on the audit set of [OD-5].
 

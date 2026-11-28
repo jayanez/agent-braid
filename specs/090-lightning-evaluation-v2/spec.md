@@ -23,7 +23,8 @@ This is engineering plus a research protocol:
   with an incumbent margin and an audit set (REQ-008 to REQ-012, REQ-019, REQ-027); drift controls, run metadata,
   a Gate 0 invocation tripwire and replayable decisions (REQ-013 to REQ-016); runner concurrency kept
   behind an owner decision (REQ-018).
-- Research: simulation tests of the procedures before any real run (REQ-017; H1 to H3), then a
+- Research: simulation tests of the procedures, including a template-clustered scenario, before any real
+  run (REQ-017, REQ-033; H1 to H3), a gate A noise pilot that sizes the slice (REQ-032), then a
   preregistered gate A split (T016) whose run is a separate owner decision.
 
 Out of scope, each stated as a requirement: frozen SPEC-069, SPEC-078 and SPEC-079 records (REQ-020) and
@@ -31,7 +32,7 @@ any retroactive use of the new gate on v4 (REQ-028); the Wilson verdict (REQ-026
 held-out or audit data (REQ-021); provider keys and other secrets (REQ-022); LLM judges (REQ-029); a non-identified gate
 quantity (REQ-023); spent sets as a gate A held-out split (REQ-024); automatic promotion (REQ-025).
 Not covered here at all: gate B, item labels, the invocation lab and its levers, the optimizer target
-extension and the pilots, which are SPEC-091; weight training (ADR 0042, deferred); hosts other than
+extension and the gate B pilots, which are SPEC-091; weight training (ADR 0042, deferred); hosts other than
 `claude-code`; SPEC-079 T009, which stays the owner's decision.
 
 ## Authorities
@@ -52,9 +53,10 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 
 - **Strategy approval (2026-11-28).** The owner approved the corrected strategy that ADR 0046 records,
   as a planning decision. No dated record exists in the repository yet; T001 records it.
-- **OD-B1 (2026-11-27).** Gate B items are labelled before measurement; it binds SPEC-091 and is
-  recorded there.
-- Every numeric parameter below is open (Owner decisions). None is filled in.
+- **OD-B1 (2026-11-27).** Gate B items are labelled before measurement; it has no committed record yet,
+  binds SPEC-091, and SPEC-091 T001 records it.
+- Every numeric parameter other than those inherited from SPEC-078 OD-1 and the approved strategy (the
+  2-of-3 majority, 3 repetitions and the 0.80 threshold) is open (Owner decisions). None is filled in.
 
 ## Requirements and acceptance scenarios
 
@@ -62,8 +64,8 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-001: Given a prompt with repetition outcomes valid, valid, invalid, when the gate A analysis scores it, then the prompt passes; with valid, invalid, missing it fails.
 - **REQ-002 — Exact lower bound on the passing share.** Gate A MUST report the exact one-sided Clopper–Pearson lower bound of the passing share at the α of OD-1. The pass threshold for the bound is 0.80, inherited from SPEC-078 OD-1.
   - SC-002: Given 88 passing prompts of 100 and α = 0.05, when the bound is computed, then it equals the exact Clopper–Pearson value 0.8128 to four decimals .
-  - SC-003: Given a candidate pool with known pass probabilities and the measured within-prompt correlation, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation error and its power is reported.
-- **REQ-003 — All-fail upper bound.** Gate A MUST report the exact one-sided Clopper–Pearson upper bound of the all-fail rate θ = E[(1−p)³], estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold of OD-2. The rule "no prompt is 0/3" is not used for splits frozen under this specification.
+  - SC-003: Given a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario, when the gate is simulated (SIM), then its type I error at the boundary does not exceed α within simulation error in the independent scenario, and its type I error, power and coverage are reported for the clustered scenario.
+- **REQ-003 — All-fail upper bound.** Gate A MUST report the exact one-sided Clopper–Pearson upper bound of the all-fail rate θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold of OD-2. The rule "no prompt is 0/3" is not used for splits frozen under this specification.
   - SC-004: Given 2 prompts at 0/3 out of 100 and α = 0.05, when the bound is computed, then it equals 0.0616 to four decimals.
   - SC-005: Given prompt populations with known θ, when the bound is simulated (SIM), then its coverage is at least 1 − α within simulation error for every θ in the grid.
 - **REQ-004 — Review of each 0/3 prompt.** Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts; disagreements are recorded verbatim. The verdict is `held` while any 0/3 prompt is unreviewed.
@@ -78,7 +80,7 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-008 — Paired comparison on one fixed slice.** Candidate selection MUST decide on per-prompt paired differences, averaged over repetitions, with every surviving candidate evaluated on the same fixed slice of prompts and repetitions; independent means are never the decision statistic.
   - SC-011: Given two candidates and a slice, when selection runs, then both are scored on identical prompt and repetition identifiers and the decision statistic is computed from paired differences.
   - SC-012: Given known-p candidates with the within-prompt correlation of the noise pilot, when paired selection and n = 5 independent means are simulated (SIM), then paired selection picks an ε-good candidate at a rate at least as high as n = 5, reported with its simulation interval.
-- **REQ-009 — Slice sized from the pilot.** The slice size MUST come from the SPEC-091 noise pilot (variance of paired differences, discordance rate) through the formula in plan.md, at the α, power and margin of OD-1, OD-3 and OD-4.
+- **REQ-009 — Slice sized from the pilot.** The slice size MUST come from the gate A noise pilot of REQ-032 (variance of paired differences, discordance rate) through the formula in plan.md, at the α and power of OD-1 and OD-4 and the margin δ and target advantage Δ > δ of OD-3.
   - SC-013: Given pilot variance, α, power and margin, when the sizing function runs, then it returns the documented formula value .
 - **REQ-010 — Synchronized elimination.** Elimination MUST be synchronized: in each round all surviving candidates see the same new items. The elimination rule is the one the owner picks in OD-11 after the simulation comparison.
   - SC-014: Given three candidates in a round, when elimination runs, then all three receive the same item identifiers before any is dropped.
@@ -100,14 +102,14 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 - **REQ-018 — Runner concurrency.** The runner MUST reject a `parallel` value above 1 unless the owner adopts concurrency in OD-6; if adopted, A/A anchors measure the effect and a decision replay is identical for any `parallel` value.
   - SC-023: Given a configuration with parallel 2 and no recorded OD-6 adoption, when the run starts, then it refuses.
 - **REQ-019 — Optimizer selection steps.** The GEPA and APO selection steps (`agent_braid/lightning_gepa.py`, `agent_braid/lightning_apo.py`) MUST use the paired selection of REQ-008 to REQ-011 for splits under this specification; their candidate target stays the skill body.
-  - SC-024: Given a GEPA round over three candidates, when its survivors are chosen, then the choice comes from the paired selection module and not from a top-k mean.
+  - SC-024: Given a GEPA round over three candidates, when its survivors are chosen, then the choice comes from the paired selection module, not from GEPA's minibatch-mean acceptance against the parent or APO's top-k beam.
 - **REQ-020 — Frozen records untouched.** This specification MUST NOT edit the SPEC-069 scorer or prompt sets, the SPEC-078 or SPEC-079 splits, protocols or FREEZE files.
   - SC-025: Given the diff of every task, when the boundary test runs, then no frozen path changed.
 - **REQ-021 — No adaptive allocation in frozen data.** Held-out and audit data MUST NOT be collected with adaptive allocation, including Thompson Sampling.
   - SC-026: Given a held-out or audit run configuration, when it is validated, then any allocation other than the fixed uniform schedule is refused.
 - **REQ-022 — Cost and route.** A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only.
   - SC-027: Given a rollout environment holding a provider key variable, when the run starts, then it is rejected before any rollout, as SPEC-071 does, and the key value appears in no record.
-- **REQ-023 — No non-identified gate quantity.** Gate A MUST NOT report a share of prompts with pass probability below a threshold as a gate quantity.
+- **REQ-023 — No non-identified gate quantity.** Gate A MUST NOT report, as a gate quantity, the share of prompts whose p is below a threshold, with p, a prompt's per-repetition probability of a valid first attempt.
   - SC-028: Given a gate report, when its fields are listed, then no such quantity appears.
 - **REQ-024 — Fresh gate A held-out split.** Gate A under this specification MUST use a fresh split: one that shares no prompt, fingerprint or normalized 8-word window with the spent v2, v3 or v4 sets.
   - SC-029: Given a candidate split that shares a normalized 8-word window with v2, v3 or v4, when the builder checks it, then it refuses.
@@ -125,6 +127,10 @@ Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
   - SC-035: Given a review record built from a transcript holding a planted secret marker, when it is saved, then the marker appears nowhere in the record.
 - **REQ-031 — Minimum testable slice.** The sizing function MUST reject a slice smaller than the least size at which the OD-11 exact test can reach the selection α; a slice of 5 prompts is below it for a two-sided exact McNemar test at 0.05 (split from REQ-009).
   - SC-036: Given a requested slice of 5 prompts at α = 0.05 two-sided, when the sizing function runs, then it is rejected with the minimum size in the message.
+- **REQ-032 — Gate A noise pilot.** Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation, the variance of paired per-prompt differences between two candidate arms, their discordance rate and A/A drift, each with an interval.
+  - SC-037: Given a gate A noise pilot run, when its report is built, then it holds the correlation, the paired-difference variance, the discordance rate and A/A differences with intervals in the sizing input format.
+- **REQ-033 — Template-clustered simulation.** The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances, and report type I error, power and coverage under it against the tolerance of OD-15.
+  - SC-038: Given a clustered scenario with nonzero between-class variance, when the gate A and all-fail simulations run, then type I error, power and coverage are reported per variance and compared with the OD-15 tolerance.
 
 ## Non-functional requirements
 
@@ -134,6 +140,7 @@ Operational and quality constraints, each with its source:
   agreement with reference values to four decimals (REQ-002, REQ-003).
 - Determinism: decisions replay bit-identically from a journal; seeds are recorded (REQ-016).
 - Cost: simulations spend no quota; real runs use the subscription route at EUR 0 (REQ-017, REQ-022).
+- Cost of the gate A noise pilot: about 180 rollouts at the recommended OD-14 size (REQ-032).
 - Throughput: the runner stays sequential unless OD-6 says otherwise (REQ-018). At the observed 8.5 to
   17.9 s per rollout, 300 rollouts take about 43 to 90 minutes (SPEC-079 evidence).
 - Sizes, α, margins and thresholds come from the owner decisions below; no value is assumed.
@@ -150,7 +157,10 @@ Operational and quality constraints, each with its source:
 - **Gate A:** the authoring-validity gate over prompts that name the product (REQ-001 to REQ-007).
 - **Gate B:** the unprompted-invocation gate of SPEC-091.
 - **Passing prompt:** at least 2 of 3 `validFirstAttempt` repetitions (REQ-001).
+- **p:** a prompt's per-repetition probability of a valid first attempt (REQ-001 to REQ-003).
 - **All-fail rate θ:** E[(1−p)³] over the prompt population, estimated by the 0/3 count (REQ-003).
+- **Margin δ and target advantage Δ:** δ is the advantage above which a challenger replaces the
+  incumbent; Δ > δ is the true advantage at which the slice is sized for power (REQ-009, REQ-011).
 - **Reserve:** prompts frozen with a split, used in a preregistered order to replace `instrument`
   prompts (REQ-005).
 - **Slice:** the fixed prompts and repetitions on which all candidates are compared (REQ-008).
@@ -193,7 +203,7 @@ repository: the SPEC-079 T008 report and diagnosis, and the within-prompt correl
 
 ## Owner decisions (open)
 
-Open questions: OD-1 to OD-13. Each has options, a recommendation and its evidence; none is decided.
+Open questions: OD-1 to OD-15. Each has options, a recommendation and its evidence; none is decided.
 
 - **OD-1 — α.** Options: one-sided 0.05; 0.025; 0.10; separate α for selection. Evidence: SPEC-078 OD-1
   says "95 %" but Wilson with z = 1.96 is a one-sided 97.5 % bound; at α = 0.05, 88/100 gives an exact
@@ -204,9 +214,11 @@ Open questions: OD-1 to OD-13. Each has options, a recommendation and its eviden
   two 0/3 prompts, all reviewed as `model` and tied to the deterministic `units` defect that SPEC-079
   fixed. Recommendation: 0.05, so that two or three 0/3 prompts per 100 still fail the gate; confirm
   with the T005 coverage results.
-- **OD-3 — Paired margin δ.** Options: 0.02, 0.05, 0.10 in mean paired difference of the per-prompt
-  valid rate. Evidence: the slice grows as 1/δ² (plan.md formula); near ties are not resolvable at any
-  allocation. Recommendation: 0.05, revised after the noise pilot gives σ_d.
+- **OD-3 — Paired margin δ and target advantage Δ.** Options for δ: 0, 0.02, 0.05 in mean paired
+  difference of the per-prompt valid rate; options for Δ: δ + 0.05 or δ + 0.10. Evidence: the replacement
+  test rejects "advantage ≤ δ", so its power at a true advantage of exactly δ equals α; the slice grows as
+  1/(Δ − δ)² (plan.md formula); near ties are not resolvable at any allocation. Recommendation: δ = 0.02
+  and Δ = 0.07, revised after the gate A noise pilot gives σ_d.
 - **OD-4 — Power and slice size.** Options: 80 % or 90 % power; slice size computed from the noise
   pilot; a fixed cap per session. Evidence: no pilot yet; n = 5 supports no test. Recommendation: 80 %,
   size from the formula, capped by one session's quota.
@@ -236,6 +248,14 @@ Open questions: OD-1 to OD-13. Each has options, a recommendation and its eviden
 - **OD-12 — Sequential prompt-level gate.** Options: adopt a sequential version with a prefixed random
   order; fixed sample only. Evidence: the review estimates 35 to 45 % fewer prompts (lead, not verified
   here). Recommendation: fixed sample for the first gate A split.
+- **OD-14 — Gate A noise pilot size.** Options: about 20 fresh product-naming prompts × 3 repetitions
+  for two candidate arms plus one A/A pair (about 180 rollouts); 40 prompts. Evidence: within-prompt
+  correlation on v2 to v4 ranged 0.41 to 0.81, so each endpoint needs its own pilot. Recommendation: 20
+  prompts.
+- **OD-15 — Tolerance under clustering.** Options: accept the exact bounds when simulated coverage under
+  the clustered scenario stays within 0.01 of 1 − α; within 0.02; otherwise switch to a class-level
+  (cluster) resampling bound. Evidence: exact bounds hold by construction only for independent prompts;
+  templated prompts share class effects. Recommendation: 0.01, with the cluster bound as fallback.
 - **OD-13 — Gate A split size and class plan.** Options: 100 prompts as in SPEC-078 and SPEC-079; a
   size from power. Evidence: comparability with OD-1 arithmetic. Recommendation: 100, class plan written
   in T016.
@@ -247,20 +267,21 @@ Open questions: OD-1 to OD-13. Each has options, a recommendation and its eviden
   (REQ-013, T006).
 - Risk: the replacement reserve turns a bad split into a new split (REQ-005, OD-8).
 - Risk: three repetitions are not optimal if prompt cost differs from the assumed 6 to 10 rollouts
-  (REQ-007, SPEC-091 noise pilot).
+  (REQ-007, REQ-032).
 - Risk: changing the GEPA and APO selection steps alters SPEC-072 replay (REQ-019, T014).
-- Assumption: repetitions are independent given a prompt's pass probability (REQ-003).
+- Assumption: repetitions are independent given p, a prompt's per-repetition probability of a valid
+  first attempt (REQ-003); template clustering across prompts is simulated, not assumed away (REQ-033).
 - Assumption: the SPEC-069 scorer and fixture workspace are reused unchanged (REQ-001, REQ-020).
-- Assumption: SPEC-091 runs the noise pilot that sizes the slice (REQ-009, T006).
+- Assumption: the gate A noise pilot runs in the current laboratory before sizing (REQ-032, T020).
 
 ## Exit criteria
 
-Verification is complete when the obtained evidence for SC-001 to SC-036 in the
+Verification is complete when the obtained evidence for SC-001 to SC-038 in the
 [validation plan](validation-plan.md) exists, the simulation record (T004 to T007) is committed, the
 protocol is frozen (T016), and the T018 converge record is written. A negative simulation result, a
 missed gate or an inconclusive run is a valid completion when recorded. Passing checks are not approval.
 
 ## Open questions
 
-- OD-1 to OD-13 above; owner: the founder.
+- OD-1 to OD-15 above; owner: the founder.
 - Whether the gate A real run (T017) happens at all; owner: the founder.

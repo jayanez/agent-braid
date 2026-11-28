@@ -35,17 +35,20 @@ intent; the observed outcome is whether `analyze-work` was called.
 2. **Laboratory (REQ-004, REQ-022).** A new profile enables the OD-5 tools and installs the pinned skills;
    every other tool stays disabled and the SPEC-071 disposable profile rules hold.
 3. **Levers (REQ-005 to REQ-008).** Each lever is a build flag producing a distinct digest. `alwaysLoad`
-   and server instructions change the MCP surface; the skill description leads with the use case within
-   its cap; the hook prints only its frozen factual string; the explicit command calls `analyze-work`.
+   and server instructions change the MCP surface; the skill description
+   (`integrations/agent-braid/skills/agent-braid-analyze/SKILL.md` front matter) leads with the use case
+   within its cap; the hook prints only its frozen factual string; the explicit command calls `analyze-work`.
 4. **Target kinds (REQ-009, REQ-010).** `target.kind` adds the OD-14 kinds. `lightning_resources` extracts
    the target field (front-matter `description`, or the server-instructions string), mutates only it, and
    re-assembles with the rest hashed; the `skill` path keeps its current byte behaviour.
-5. **Pilots (REQ-011, REQ-012).** The noise pilot runs A/A pairs and two candidate arms on fresh
-   development prompts and writes the SPEC-090 sizing input. The development factorial crosses the three
-   prompt factors over fresh prompts at OD-6.
+5. **Pilots (REQ-011, REQ-012).** The gate B noise pilot runs A/A pairs and two candidate arms on fresh
+   development prompts that do not name the product and writes the SPEC-090 sizing input for gate B; gate
+   A has its own pilot (SPEC-090 REQ-032). The development factorial crosses three of the seven v3/v4
+   differences over fresh prompts at OD-6; it does not isolate the v3 to v4 change.
 6. **2×2 factorial (REQ-013).** Description (current, use-case-first) × hook (absent, present), on one
-   pinned build per cell, seeded interleaved blocks, OD-7 rollouts per cell and metric; logistic or exact
-   per-cell comparison chosen by T007 simulation.
+   pinned build per cell, seeded interleaved blocks, OD-7 rollouts per cell and metric; the item is the
+   unit (OD-17); per-cell comparisons chosen by T007 simulation; the interaction is tested for
+   equivalence within ±η (OD-18) by TOST.
 7. **Held-out (REQ-014, REQ-015).** Built only after the factorial meets OD-9; Gate 0 includes the tripwire.
 8. **Data model and evolution.** The label record, the item set, the lever catalogue and the gate B report
    each carry a `schema` version string; a relabel or a new lever adds a version and never rewrites a

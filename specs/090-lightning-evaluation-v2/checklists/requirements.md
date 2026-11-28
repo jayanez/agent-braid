@@ -6,7 +6,7 @@ scientific proof or approval.
 ## Requirement clarity
 
 - [ ] CHK-001: The gate A estimand (majority pass per prompt, 3 repetitions) and the all-fail functional θ = E[(1−p)³] are defined once and used consistently. (spec.md REQ-001, REQ-003; plan.md Design 1)
-- [ ] CHK-002: Every numeric parameter (α, τ, δ, power, slice, pool, audit, reserve, tripwire, split size) is an open OD and no requirement fixes a value. (spec.md Owner decisions)
+- [ ] CHK-002: Every numeric parameter (α, τ, δ, Δ, power, slice, pool, audit, reserve, tripwire, pilot size, clustering tolerance, split size) is an open OD, except those inherited from SPEC-078 OD-1 and the approved strategy (2-of-3 majority, 3 repetitions, 0.80). (spec.md Owner decisions)
 - [ ] CHK-003: The 0.80 bound threshold is inherited from SPEC-078 OD-1 and labelled as such. (REQ-002)
 
 ## Normative references
