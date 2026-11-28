@@ -1,0 +1,1027 @@
+{
+  "articles": [
+    0,
+    9,
+    12,
+    13,
+    14,
+    19,
+    20,
+    21,
+    23
+  ],
+  "assumptions": "Prompts of a split are treated as an independent sample of the authoring distribution; repetitions are independent given p, a prompt's per-repetition probability of a valid first attempt; the SPEC-069 scorer is reused unchanged; the gate A noise pilot (REQ-032) supplies the variance and correlation used for sizing; claude-code on the subscription route; ADR 0046 Proposed.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "c80de0ce5391e597f58c7be78ddc8bc460c32a6abdd29c0d647909fb534efc84",
+      "docs/adr/0001-formalization-before-implementation.md": "4277851acfb78c1c42fa89e69745c311d54f4c4253cb04a9b5af1d38c1425b6e",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "cadbc7d514b43a58cdeaf5ef01ef4e8a8cb7ba10f02ffdddbbf1e20a90bbbcbb",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "a1dadefebeed2bbcf28f6cb268f79210515dd21040b54833c088e1dc03f69019",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "882478fd2966602af9f8cd646fd8d883a4a6cc5309ddb253e166a4426c94401f",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "ca8ff188e3b8bbf149065efe2058f9ee859b83744f067072e9c2c1e0c1f6303a",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "e493af9dd31d1d6296211a795571279b4205543cf5bec8f8d7033178161b7573",
+      "docs/adr/0007-read-only-python-analyzer.md": "df9df5ec22135439dbbac63007db33762cd19dd3d4fef14ed18bb3d4ccbb2c4d",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "016e6f728b0e69fbd56d4f15f48817210bedf4574dc47efd87d33f72057f6665",
+      "docs/adr/0009-transparent-validation-status.md": "6d44bea11643f90c6312bc6895ef59ffb9d91b0476c52b72613b3fc638e41a6a",
+      "docs/adr/0010-clean-publication-provenance.md": "bc8fffe963c4a7b2a878efc907ced423cb6642ed51442d9abaab94a8e838d2c2",
+      "docs/adr/0011-risk-based-validation-gates.md": "44a3362d4b6f2ff329512654ed444cb6f2d093c5871a5912709d99ebd37cc2f4",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "206057a2ebdab5e1b50d7ea5294aa260d4ddd4d99ce5d2a6029d8dafb74291fa",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "244f8c7e22f5c3ae5a473ab06de5e34ff52ac425e54956fb70d8d658624db543",
+      "docs/adr/0014-parallel-integration-contract.md": "627d34c516e48a4a761fc9d4bb230b8a2ec3e193e9248e06eecf13b6268ef254",
+      "docs/adr/0015-real-repository-validation-profile.md": "664a028024fdf2097c1cfcc8d60a99b8540b05e6593fe9cadac52507d588e58a",
+      "docs/adr/0016-post-root-public-provenance.md": "dab388d3e01bec24817f2d0907d077971125c1f3e26665c79e6bb4ce06b49518",
+      "docs/adr/0017-bounded-structured-exchange.md": "2c5bd456938837313fedfa0e7cc677d483b5835b5e0b4f5c71cf47b8a0b9465e",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "3a394e5aa5088575470cac17f2f359a3665d7767cc39ac1696ac1905c1d29c8a",
+      "docs/adr/0019-bounded-local-git-runtime.md": "64a253d60f0ee0ca962794562941ee0441e55af6f0c39f3b71e20c45acaf71d4",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "9dcf0b3ed71b7eb68b7a32247ca7fb1fc7c8885d3125bc67de6ccf5c93531020",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "010fc99e3d17533ccd2e7bb41b7fe21a4762889e8fd3ffd7d42e462953196ac4",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "13d35571a01897d9f3f8a05ed8cd6e7080bdfa2043b1fe789b3ca55ceb878bf3",
+      "docs/adr/0023-second-history-correction-equivalence.md": "b87be90cad0a96806144ae08611f5ef9c6c926b75dc0d34b0e8fa455f0eda380",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "26ef7a9aa1d2a25a49737414ee8044b0e8dea21d3bb8fe7257a668fb60d56478",
+      "docs/adr/0025-local-technical-telemetry.md": "e49d05c57153344ee3366bdd96826a2dd3cd73a0111da97ef9ee985c34ec716d",
+      "docs/adr/0026-pure-owned-work-validation.md": "117eaf4c3cd2dd56999f3580747bc575deccc474285f0653914caad3b1dc6172",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "90da1579982c6a86384c0de0ea125da6b13d4707a918134e039cece1509ab6b9",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "d3ab6b5c93c2c21311721659bfad5ee863bb260b2394a0a2176a2ec6ee18ced7",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "9137ba4952ec46bfd2d123cec54346fabc2835f238737bc235601ffd4ffc0ffe",
+      "docs/adr/0031-portable-prompt-names.md": "00ab10fa03e4d0f6b5ddca15cbe08b189ff7a8b90bbbc423ec7b37a967973da3",
+      "docs/adr/0032-activity-viewer-companion.md": "bca08826416f4cbc06fa61ebcb5f5578a476326b6697077dc46e49bc0805d5cd",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fabde19d7cd5209eb1de4c892ec01d57341d7e3474f68f414fbc0ea486a7d9cd",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "2ef1124558ecd992f2a3bd740edf7452911121eb7b04d7bbceca65ce4485b012",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "18acdade757d498756571bb0b10ec216e5461b8aa4f8259e6c8c134f425a113d",
+      "docs/adr/0036-assurance-profiles.md": "22e43a44bec9d95fcac2ecd7e203817e1d0a7d56e5ab791b57d2f7f8025df06c",
+      "docs/adr/0037-opencode-native-plugin.md": "0c12c3be4f988ce3ac2ab67582313cf1a7412d922a33b0c2b61ae9816bd035ca",
+      "docs/adr/0038-analyze-work-request-contract.md": "887cd3025a07eba3525abe33c41e98e27c300d87e09dc9a411374e4e3d98dc65",
+      "docs/adr/0039-braid-lightning-boundary.md": "56286e36d06a61a956db6f5400bc1045daa8a5d7abca65d3389d1c62842db098",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "fdb5496011db77d0bcd17d49a7784daf317844b8a92efe4cb939fd52d6dcb96a",
+      "docs/adr/0041-braid-lightning-content-traces.md": "188cc3f85b6051f1af9d1a423acc78b75bab8b46cc8c0846eee060643be2166a",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "fcec8771db27e9d0b33e63bdfb76296c28804f103c419ff92d42e2febeaccf50",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
+      "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
+      "docs/adr/0046-lightning-evaluation-design.md": "41b112ff949521b258869ec31b742e405619c97489649ab9f5eca29a205a4c03",
+      "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "New modules and new gate rules for splits frozen under this specification only; SPEC-078 and SPEC-079 protocols, splits, analysis modules and the scorer are unchanged; existing Lightning configurations keep parallel 1 and target kind skill.",
+  "domain": "Statistical machinery for Braid Lightning: gate A over prompts that name the product, paired candidate selection, audit set, drift controls and replay, for one host and model per run.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "executionAuthorization stays false; simulations spend no quota; any real rollout needs the recorded simulation evidence, a frozen protocol (for development pilots, a pilot freeze) and the owner's yes; subscription route only, EUR 0; no promotion.",
+  "human_review": "pending",
+  "hypotheses": "H1 \u2014 Paired selection on one fixed slice picks an \u03b5-good candidate (\u03b5 of OD-3) more often than independent means on n = 5 (simulation). H2 \u2014 The exact all-fail bound has at least nominal coverage (simulation). H3 \u2014 Gate A's type I error at the 0.80 boundary is at most \u03b1 (simulation). A null or negative simulation result completes the protocol and blocks real runs until redesigned.",
+  "observation_contract": "Per-trial validFirstAttempt from scripts/spec069_scoring.score_case; per-prompt pass at >= 2 of 3; exact Clopper-Pearson lower bound of the passing share and exact upper bound of the all-fail rate; per-class passing counts; paired per-prompt differences for selection; per-rollout versions and invocation counts.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "AGENTS.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/adr/0039-braid-lightning-boundary.md",
+    "docs/adr/0040-braid-lightning-mit-vendoring.md",
+    "docs/adr/0042-braid-lightning-local-weight-training.md",
+    "docs/adr/0046-lightning-evaluation-design.md",
+    "docs/tooling/LIGHTNING.md",
+    "specs/078-lightning-heldout-v2/spec.md",
+    "specs/079-kind-choice-tool-fix/spec.md",
+    "specs/079-kind-choice-tool-fix/evaluation-protocol.md",
+    "specs/079-kind-choice-tool-fix/evidence/t008-diagnosis-and-strategy-review.md",
+    "specs/091-invocation-gate/spec.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "a prompt with repetition outcomes valid, valid, invalid",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_majority_pass_per_prompt",
+          "then": "the prompt passes; with valid, invalid, missing it fails",
+          "when": "the gate A analysis scores it"
+        }
+      ],
+      "text": "Gate A unit and outcome. Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result MUST count as a failed repetition."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "88 passing prompts of 100 and \u03b1 = 0.05",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "StatsTests.test_clopper_pearson_lower",
+          "then": "it equals the exact Clopper\u2013Pearson value 0.8128 to four decimals",
+          "when": "the bound is computed"
+        },
+        {
+          "given": "a candidate pool with known per-repetition probabilities of a valid first attempt, the measured within-prompt correlation and, separately, a template-clustered scenario",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SimGateATests.test_type_i_and_ii",
+          "then": "its type I error at the boundary does not exceed \u03b1 within simulation error in the independent scenario, and its type I error, power and coverage are reported for the clustered scenario",
+          "when": "the gate is simulated (SIM)"
+        }
+      ],
+      "text": "Exact lower bound on the passing share. Gate A MUST report the exact one-sided Clopper\u2013Pearson lower bound of the passing share at the \u03b1 of OD-1; this condition holds when the bound is at least 0.80, the threshold inherited from SPEC-078 OD-1."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "2 prompts at 0/3 out of 100 and \u03b1 = 0.05",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "StatsTests.test_all_fail_upper",
+          "then": "it equals 0.0616 to four decimals",
+          "when": "the bound is computed"
+        },
+        {
+          "given": "prompt populations with known \u03b8",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T005.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SimAllFailTests.test_coverage",
+          "then": "its coverage is at least 1 \u2212 \u03b1 within simulation error for every \u03b8 in the grid",
+          "when": "the bound is simulated (SIM)"
+        },
+        {
+          "given": "a protocol under this specification that states the rule \"no prompt is 0/3\" as a gate condition",
+          "id": "SC-054",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_zero_prompt_rule_refused",
+          "then": "it refuses",
+          "when": "the freeze check runs"
+        }
+      ],
+      "text": "All-fail upper bound. (a) Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions. (b) This condition holds when the bound is at most the preregistered threshold \u03c4 of OD-2. (c) The rule \"no prompt is 0/3\" MUST NOT be used for splits frozen under this specification."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "a run with one unreviewed 0/3 prompt",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_held_until_review",
+          "then": "the verdict is held and names the prompt",
+          "when": "the gate A analysis runs"
+        }
+      ],
+      "text": "Review of each 0/3 prompt. Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts. The verdict MUST be `held` while any 0/3 prompt is unreviewed."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "a run that meets the gate only if two `instrument` prompts are dropped, with a cap of three",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_reserve_replacement",
+          "then": "the verdict counts both as 0/3 and stays missed, and the two reserve results appear in the report only",
+          "when": "replacement runs"
+        },
+        {
+          "given": "instrument findings above the cap, or a host or model change before the reserve run",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_reserve_cap_invalidates",
+          "then": "the verdict is invalidated",
+          "when": "replacement runs"
+        },
+        {
+          "given": "a split with one prompt classified `instrument`",
+          "id": "SC-055",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_reserve_order_same_bytes_host_model",
+          "then": "the next reserve prompt of the same class in the preregistered draw order runs on the same frozen bytes and the same pinned host and model as the split",
+          "when": "replacement runs"
+        },
+        {
+          "given": "a split whose record of the safeguard adopted in OD-18 is missing",
+          "id": "SC-056",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_instrument_safeguard_record_required",
+          "then": "it is refused and names the missing record",
+          "when": "replacement is requested"
+        }
+      ],
+      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification: (a) the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; (b) after the owner classifies a prompt `instrument`, the runner MUST run the next reserve prompt of the same class, in the preregistered per-class draw order of the reserve frozen by sha256 with the split, on the same frozen bytes and the same pinned host and model as the split; (c) the runner MUST add that reserve result to the report only; (d) replacements MUST NOT exceed the cap of OD-8, and a replaced reserve prompt MUST count toward the cap; (e) the replacements MUST follow the safeguards adopted in OD-18; (f) exceeding the cap, or a host or model change before the reserve run, MUST invalidate the run. (g) This requirement MUST NOT change SPEC-079, where `instrument` invalidates the run."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "a class with 4 of 10 prompts passing",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_class_rule",
+          "then": "the gate is not met whatever the bounds",
+          "when": "the gate A analysis runs"
+        }
+      ],
+      "text": "Class rule. Gate A MUST also require that every class of the split has at least half of its prompts passing."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "a protocol declaring 2 repetitions without a recorded decision",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_repetitions_fixed",
+          "then": "it refuses",
+          "when": "the freeze check runs"
+        }
+      ],
+      "text": "Three repetitions. Gate A MUST use 3 repetitions per prompt. The freeze check MUST refuse a different number unless a new owner decision is recorded before the split is frozen."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "two candidates and a slice",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_paired_same_slice",
+          "then": "both are scored on identical prompt and repetition identifiers and the decision statistic is computed from paired differences",
+          "when": "selection runs"
+        },
+        {
+          "given": "known-p candidates with within-prompt correlation over the 0.41 to 0.81 range before the pilots and with the pilot's parameters in the re-run (T019) before any selection or held-out run",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SimSelectionTests.test_paired_beats_n5",
+          "then": "paired selection picks an \u03b5-good candidate (within \u03b5 of OD-3 of the best) at a rate at least as high as n = 5, reported with its simulation interval",
+          "when": "paired selection and n = 5 independent means are simulated (SIM)"
+        }
+      ],
+      "text": "Paired comparison on one fixed slice. Elimination MUST rank candidates by per-prompt paired differences in the valid rate, averaged over repetitions, with every surviving candidate evaluated on the same fixed slice of prompts and repetitions; independent means MUST NOT be the decision statistic. The finer valid-rate difference MUST be used only to screen; the replacement test of REQ-011 MUST use per-prompt majority pass, the gate A estimand."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "pilot discordance estimate 0.30 with exact upper bound 0.33, \u03c1 0.5, c_p/c_r 8, family-wise \u03b1 0.05 over 3 challengers, power 0.80, \u03b4 0.02 and \u0394 0.07, and a second input with \u0394 0.35",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_slice_sizing",
+          "then": "it returns the plan.md confirmation size at level 0.05/3 with \u03c3_m\u00b2 = 0.30 \u2212 0.07\u00b2, r* = 3, and refuses the second input because \u0394 exceeds the discordance bound",
+          "when": "the sizing function runs"
+        }
+      ],
+      "text": "Slice sized from the pilot. The confirmation slice size MUST come from the gate A noise pilot of REQ-032 through the plan.md formula, in majority-pass units: variance \u03c3_m\u00b2 = discordance minus the squared advantage a\u00b2 (\u03c3_m\u00b2 uses the pilot's point estimate of the discordance and a = \u0394), the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3, the power of OD-4, and the Holm worst-case level, the OD-16 family-wise \u03b1 divided by the maximum number of challengers admitted to confirmation (OD-7). The elimination slice is a screen with no power target; its size MUST be the OD-4 budget share left after confirmation. Each elimination prompt MUST run r* = max(1, round(\u221a((c_p/c_r)(1\u2212\u03c1)/\u03c1))) repetitions; each confirmation prompt MUST run 3, as majority pass requires. The sizing function MUST refuse an input whose \u0394 exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "three candidates in a round",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_synchronized_rounds",
+          "then": "all three receive the same item identifiers before any is dropped",
+          "when": "elimination runs"
+        }
+      ],
+      "text": "Synchronized elimination. Elimination MUST be synchronized: in each round all surviving candidates see the same new items. The elimination rule MUST be the one the owner picks in OD-11 after the simulation comparison."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a challenger whose paired majority-pass advantage on the confirmation slice is below the margin, although its elimination-slice advantage exceeds it",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_incumbent_kept",
+          "then": "the incumbent is kept and the elimination-slice result is not used in the test",
+          "when": "selection decides"
+        }
+      ],
+      "text": "Incumbent kept unless the margin is met. The incumbent MUST be kept unless a challenger beats it by the preregistered margin \u03b4 of OD-3 under the test of OD-11, on per-prompt majority pass, on the confirmation slice of REQ-034, at the family-wise \u03b1 of OD-16."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "a selection run",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "AuditTests.test_audit_never_selected",
+          "then": "no audit item identifier appears in any selection input",
+          "when": "its inputs are traced"
+        }
+      ],
+      "text": "Audit set. An audit set of the size of OD-5 MUST be frozen by sha256, disjoint by normalized text and fingerprint from every selection slice, development set and held-out split. The selected candidate MUST be reported on it with an exact 1 \u2212 \u03b1 confidence interval (OD-1)."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a development run whose host version changed between two of its sessions",
+          "id": "SC-017",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_host_change_requires_rebaseline",
+          "then": "it stops with a re-baseline required refusal; a held-out run in the same case follows REQ-037 instead",
+          "when": "the next session starts"
+        },
+        {
+          "given": "a session",
+          "id": "SC-018",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_interleaved_blocks",
+          "then": "the block order is reproducible from the seed and contains the A/A anchors at the OD-20 size, drawn from development prompts only when the run is a held-out run",
+          "when": "arms are scheduled"
+        },
+        {
+          "given": "a run configuration without a pinned host CLI version, with host auto-update on, or without a pinned model",
+          "id": "SC-057",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_pins_required",
+          "then": "the runner refuses before any rollout",
+          "when": "a real run is requested"
+        },
+        {
+          "given": "a re-baseline after which a pilot estimate lies outside its recorded interval",
+          "id": "SC-058",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_resize_after_rebaseline",
+          "then": "it is refused until sizing has rerun",
+          "when": "the next freeze is requested"
+        }
+      ],
+      "text": "Drift controls. Every real run under this specification: (a) MUST pin the host CLI version with auto-update off, and the model; (b) MUST record the host, model and plugin versions per rollout; (c) MUST include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; (d) MUST interleave arms in randomized blocks with a recorded seed; (e) MUST re-baseline after any host or model change, with the runner rerunning the A/A pair and the twin on the new host; (f) when any pilot estimate leaves its recorded interval after a re-baseline, sizing MUST rerun before the next freeze."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "a recorded rollout",
+          "id": "SC-019",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T008.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "RunnerTests.test_metadata_fields",
+          "then": "every listed field is present and a missing field fails the report",
+          "when": "the report is built"
+        }
+      ],
+      "text": "Run metadata. Run reports MUST carry `configDigest`, per-rollout host CLI, model and plugin versions, the server-reported model identifier, the tool-call count and whether the skill was invoked."
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "a twin run whose invocation rate is below the threshold",
+          "id": "SC-020",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T013.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "Gate0Tests.test_tripwire_blocks",
+          "then": "it fails and the held-out run is refused",
+          "when": "Gate 0 evaluates the tripwire"
+        }
+      ],
+      "text": "Gate 0 invocation tripwire. Gate 0 MUST reject a held-out run when the invocation rate on its development twin is below that gate's own threshold: for gate A, the T020 invocation rate of the shipped-build arm on product-naming prompts minus the OD-9 margin; for gate B, the threshold of SPEC-091 REQ-015. One threshold MUST NOT be applied to both gates."
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "a recorded journal",
+          "id": "SC-021",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T007.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "ReplayTests.test_replay_identical",
+          "then": "both decisions and their hashes are identical",
+          "when": "it is replayed twice"
+        }
+      ],
+      "text": "Replayable decisions. (a) Every selection and gate decision MUST be a pure function of a journal (results, seeds, frozen hashes). (b) A replay of a journal MUST give an identical decision."
+    },
+    {
+      "id": "REQ-017",
+      "scenarios": [
+        {
+          "given": "a protocol without the simulation record hash",
+          "id": "SC-022",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T008.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "RunnerTests.test_simulation_required",
+          "then": "the runner refuses before any rollout",
+          "when": "a run is requested"
+        }
+      ],
+      "text": "Simulation before any real run. The runner MUST reject a real run under this specification unless its frozen protocol carries the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and an owner yes record (REQ-045) names that protocol's hash; a development pilot (T020) needs the T004 to T007 record and its own pilot freeze (REQ-039) in place of T019."
+    },
+    {
+      "id": "REQ-018",
+      "scenarios": [
+        {
+          "given": "a configuration with parallel 2 and no recorded OD-6 adoption",
+          "id": "SC-023",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T015.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "RunnerTests.test_parallel_refused_without_decision",
+          "then": "it refuses",
+          "when": "the run starts"
+        }
+      ],
+      "text": "Runner concurrency. The runner MUST reject a `parallel` value above 1 unless the owner adopts concurrency in OD-6; if adopted, A/A anchors MUST measure the effect and a decision replay MUST be identical for any `parallel` value."
+    },
+    {
+      "id": "REQ-019",
+      "scenarios": [
+        {
+          "given": "a GEPA round over three candidates",
+          "id": "SC-024",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_gepa_apo_use_paired",
+          "then": "the choice comes from the paired selection module, not from GEPA's minibatch-mean acceptance against the parent or APO's top-k beam",
+          "when": "its survivors are chosen"
+        }
+      ],
+      "text": "Optimizer selection steps. For splits under this specification: (a) the GEPA and APO selection steps (`agent_braid/lightning_gepa.py`, `agent_braid/lightning_apo.py`) MUST use the paired selection of REQ-008 to REQ-011; (b) their candidate target MUST stay the skill body."
+    },
+    {
+      "id": "REQ-020",
+      "scenarios": [
+        {
+          "given": "the diff of every task",
+          "id": "SC-025",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "BoundaryTests.test_frozen_paths_untouched",
+          "then": "no frozen path changed",
+          "when": "the boundary test runs"
+        }
+      ],
+      "text": "Frozen records untouched. This specification MUST NOT edit the SPEC-069 scorer or prompt sets, the SPEC-078 or SPEC-079 splits, protocols or FREEZE files."
+    },
+    {
+      "id": "REQ-021",
+      "scenarios": [
+        {
+          "given": "a held-out or audit run configuration",
+          "id": "SC-026",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_no_adaptive_allocation",
+          "then": "any allocation other than the fixed uniform schedule is refused",
+          "when": "it is validated"
+        }
+      ],
+      "text": "No adaptive allocation in frozen data. Adaptive allocation, including Thompson Sampling, MUST NOT be used to collect held-out or audit data."
+    },
+    {
+      "id": "REQ-022",
+      "scenarios": [
+        {
+          "given": "a rollout environment holding a provider key variable",
+          "id": "SC-027",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "BoundaryTests.test_subscription_only",
+          "then": "it is rejected before any rollout, as SPEC-071 does, and the key value appears in no record",
+          "when": "the run starts"
+        }
+      ],
+      "text": "Cost and route. A run MUST NOT read or accept a provider API key or other secret. A run MUST use only the subscription route at EUR 0."
+    },
+    {
+      "id": "REQ-023",
+      "scenarios": [
+        {
+          "given": "a gate report",
+          "id": "SC-028",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "ReportTests.test_no_threshold_share",
+          "then": "no such quantity appears",
+          "when": "its fields are listed"
+        }
+      ],
+      "text": "No non-identified gate quantity. Gate A MUST NOT report, as a gate quantity, the share of prompts whose p is below a threshold, with p, a prompt's per-repetition probability of a valid first attempt."
+    },
+    {
+      "id": "REQ-024",
+      "scenarios": [
+        {
+          "given": "a candidate reserve that shares a normalized 8-word window with v4, and a twin that shares a prompt with the frozen audit set",
+          "id": "SC-029",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_fresh_split",
+          "then": "it refuses both",
+          "when": "the builder checks them"
+        }
+      ],
+      "text": "Fresh gate A held-out split. Gate A under this specification MUST use a fresh split, reserve and twin: none shares a prompt, fingerprint or normalized 8-word window with SPEC-069, v2, v3, v4 and the frozen audit set."
+    },
+    {
+      "id": "REQ-025",
+      "scenarios": [
+        {
+          "given": "a passed gate",
+          "id": "SC-030",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_no_promotion",
+          "then": "no promotion pointer changes and `executionAuthorization` is false",
+          "when": "its outputs are read"
+        }
+      ],
+      "text": "Human promotion. A gate A pass MUST NOT promote a candidate; promotion MUST stay human under SPEC-073 with SPEC-049 noninferiority, and a build that changes the skill description, server instructions, `_meta` or the hook also needs the same-build certification of SPEC-091 REQ-038."
+    },
+    {
+      "id": "REQ-026",
+      "scenarios": [
+        {
+          "given": "a gate A report",
+          "id": "SC-031",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "ReportTests.test_no_wilson_verdict",
+          "then": "only the exact bounds of REQ-002 and REQ-003 and the class rule appear",
+          "when": "its verdict inputs are listed"
+        }
+      ],
+      "text": "No Wilson verdict. Gate A MUST NOT use the Wilson interval as its verdict statistic (split from REQ-002)."
+    },
+    {
+      "id": "REQ-027",
+      "scenarios": [
+        {
+          "given": "a selection call given an audit item identifier",
+          "id": "SC-032",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "AuditTests.test_selection_rejects_audit_items",
+          "then": "it is rejected",
+          "when": "it runs"
+        }
+      ],
+      "text": "Audit set not read by selection. Selection MUST NOT read any audit set item; the freeze check MUST check every selection slice against the frozen audit set by normalized text and fingerprint when the slice is frozen (split from REQ-012)."
+    },
+    {
+      "id": "REQ-028",
+      "scenarios": [
+        {
+          "given": "the SPEC-079 v4 run directory",
+          "id": "SC-033",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_no_retroactive_gate",
+          "then": "it is rejected as out of scope",
+          "when": "the gate A analysis is invoked on it"
+        }
+      ],
+      "text": "No retroactive gate. The gate A rules of this specification MUST NOT be applied to the SPEC-079 v4 run or any split frozen before this specification (split from REQ-020)."
+    },
+    {
+      "id": "REQ-029",
+      "scenarios": [
+        {
+          "given": "a reward configuration naming a model-graded component",
+          "id": "SC-034",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "BoundaryTests.test_no_llm_judge",
+          "then": "it is rejected",
+          "when": "it is validated"
+        }
+      ],
+      "text": "No LLM judge. A run MUST NOT use an LLM judge as a reward, label or gate source (split from REQ-022)."
+    },
+    {
+      "id": "REQ-030",
+      "scenarios": [
+        {
+          "given": "a review record built from a transcript holding a planted secret marker",
+          "id": "SC-035",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_review_record_redacted",
+          "then": "the marker appears nowhere in the record",
+          "when": "it is saved"
+        }
+      ],
+      "text": "Redacted review records. The 0/3 review record MUST contain only transcripts redacted under SPEC-074, so that no unredacted prompt, file content, personal data or secret enters it."
+    },
+    {
+      "id": "REQ-031",
+      "scenarios": [
+        {
+          "given": "a requested slice of 5 prompts with pilot discordance 0.30, at the OD-4 power and the OD-3 \u03b4 and \u0394",
+          "id": "SC-036",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_minimum_slice_rejected",
+          "then": "it is rejected as underpowered with the needed size in the message",
+          "when": "the sizing function runs"
+        }
+      ],
+      "text": "Minimum testable slice. (a) The sizing function MUST reject a slice whose power at the target advantage \u0394, from the plan.md formula, is below the OD-4 power. (b) When it rejects a slice, the sizing function MUST name the needed size. (c) A 5-prompt slice is underpowered: a two-sided exact McNemar test cannot reach 0.05 (smallest p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one direction, and McNemar's n counts discordant pairs only (split from REQ-009)."
+    },
+    {
+      "id": "REQ-032",
+      "scenarios": [
+        {
+          "given": "a gate A noise pilot run",
+          "id": "SC-037",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T020.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "PilotTests.test_gate_a_noise_report",
+          "then": "it holds \u03c1, both paired-difference variances, the discordance, A/A differences and the invocation rate with intervals, and the measured c_p/c_r, in the sizing input format",
+          "when": "its report is built"
+        }
+      ],
+      "text": "Gate A noise pilot. Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation \u03c1, the variances of the per-prompt valid-rate and majority-pass differences between two candidate arms, their majority-pass discordance, A/A drift and the invocation rate, each with an interval, and record the cost ratio c_p/c_r (authoring and freezing time per prompt over mean rollout time, both measured)."
+    },
+    {
+      "id": "REQ-033",
+      "scenarios": [
+        {
+          "given": "a clustered scenario with nonzero between-class variance",
+          "id": "SC-038",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SimGateATests.test_clustered_scenario",
+          "then": "type I error, power and coverage are reported per variance and compared with the OD-15 tolerance",
+          "when": "the gate A and all-fail simulations run"
+        }
+      ],
+      "text": "Template-clustered simulation. (a) The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances. (b) Each of those simulations MUST report type I error, power and coverage under that scenario against the tolerance of OD-15."
+    },
+    {
+      "id": "REQ-034",
+      "scenarios": [
+        {
+          "given": "a confirmation slice sharing one prompt with the elimination slice",
+          "id": "SC-039",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_confirmation_slice_disjoint",
+          "then": "it is rejected",
+          "when": "selection is configured"
+        }
+      ],
+      "text": "Confirmation slice. The replacement test of REQ-011 MUST run on a confirmation slice frozen by sha256 before elimination starts and disjoint by prompt, fingerprint and normalized text from the elimination slice, so that no elimination result enters the test."
+    },
+    {
+      "id": "REQ-035",
+      "scenarios": [
+        {
+          "given": "three challengers reaching confirmation with raw p-values 0.01, 0.03 and 0.04 at family-wise \u03b1 0.05 (Holm thresholds 0.0167, 0.025, 0.05)",
+          "id": "SC-040",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_holm_family",
+          "then": "Holm rejects only the first",
+          "when": "the tests are adjusted"
+        }
+      ],
+      "text": "Family-wise error. When more than one challenger reaches the confirmation test, the tests MUST be adjusted by Holm over that family at the family-wise \u03b1 of OD-16."
+    },
+    {
+      "id": "REQ-036",
+      "scenarios": [
+        {
+          "given": "a second audit scoring of the same winner, or an audit result passed to a choice between runs",
+          "id": "SC-041",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "AuditTests.test_audit_once_per_winner",
+          "then": "it is rejected",
+          "when": "it is requested"
+        }
+      ],
+      "text": "Audit scored once per winner and incumbent. The audit set MUST be scored once for each selected winner and once for its incumbent, and its result MUST NOT be an input to a choice between runs, candidates or configurations."
+    },
+    {
+      "id": "REQ-037",
+      "scenarios": [
+        {
+          "given": "a frozen protocol whose pinned host differs from the installed host",
+          "id": "SC-042",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_host_mismatch_refuses_before_rollout",
+          "then": "it is refused before any rollout and the split stays unspent",
+          "when": "a run is requested"
+        },
+        {
+          "given": "a held-out run stopped by quota after which the host version changed",
+          "id": "SC-043",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_blocked_resume_invalidates",
+          "then": "it is rejected, the verdict is invalidated and the split is marked spent",
+          "when": "a resume is requested"
+        },
+        {
+          "given": "a run stopped by quota with the host unchanged",
+          "id": "SC-044",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_resume_fills_missing_slots",
+          "then": "the runner first compares the earlier session's A/A anchors with the new session's under OD-19, only the missing slots run, in frozen order, and completed slots are untouched",
+          "when": "it is resumed"
+        },
+        {
+          "given": "a held-out run whose remaining quota estimate covers fewer than all its slots",
+          "id": "SC-059",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_quota_must_cover_all_slots",
+          "then": "the runner refuses before any rollout",
+          "when": "it is requested"
+        },
+        {
+          "given": "a split recorded as spent",
+          "id": "SC-060",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_spent_split_not_rescored",
+          "then": "it is rejected",
+          "when": "a second scoring of it is requested"
+        }
+      ],
+      "text": "Stops, host changes and resume. A frozen protocol MUST pin the host version and model. (a) When the host or model at start differs from the pinned one, the runner MUST refuse the run before any rollout; the split MUST stay unspent, and the run MUST wait for a refreeze. (b) A held-out run MUST start only when the remaining quota estimate covers all its slots. (c) When a quota stop or a host or model change occurs during a run, the runner MUST stop the session and keep every completed rollout. (d) A resume MUST run only on the same frozen bytes and the same pinned host and model, after the runner compares the earlier session's A/A anchors with the new session's under OD-19; when the between-session anchor difference exceeds the OD-19 threshold, the runner MUST apply the OD-19 action (REQ-040). (e) A resume MUST fill exactly the unfilled (prompt, repetition) slots in their frozen order. (f) A resume MUST NOT rerun a completed slot or draw a new prompt. (g) When a host or model change blocks the resume of a held-out split, the run MUST be recorded as `invalidated`, and the split MUST be marked spent. (h) A spent split MUST NOT be rescored. (i) SPEC-091 MUST apply this rule unchanged."
+    },
+    {
+      "id": "REQ-038",
+      "scenarios": [
+        {
+          "given": "a run with an unreviewed 0/3 prompt and a canary hit",
+          "id": "SC-045",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_verdict_precedence",
+          "then": "it is invalidated",
+          "when": "the verdict is computed"
+        },
+        {
+          "given": "a run whose lower bound and class rule hold but whose all-fail bound exceeds \u03c4",
+          "id": "SC-046",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_conjunctive_verdict",
+          "then": "it is missed",
+          "when": "the verdict is computed"
+        },
+        {
+          "given": "a run with one unfilled slot and no invalidating event, and a second run with a session under the OD-19 hold action and no invalidating event",
+          "id": "SC-061",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_held_on_unfilled_slot_or_hold_action",
+          "then": "both are held",
+          "when": "each verdict is computed"
+        }
+      ],
+      "text": "Gate A verdict. (a) The gate A verdict MUST be `met` only when the passing-share lower bound, the all-fail upper bound and the class rule all hold; requiring every condition keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST apply the precedence `invalidated` over `held` over `missed` and `met`. (c) An invalidating event MUST give `invalidated`. (d) Otherwise, an unreviewed 0/3 prompt, an unfilled slot or the OD-19 hold action (REQ-040) MUST give `held`. (e) Otherwise, the verdict MUST be `met` or `missed`."
+    },
+    {
+      "id": "REQ-039",
+      "scenarios": [
+        {
+          "given": "a pilot run whose prompt file hash differs from the pilot freeze",
+          "id": "SC-047",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T020.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_pilot_freeze_required",
+          "then": "it is rejected",
+          "when": "it is requested"
+        }
+      ],
+      "text": "Development pilot freeze. A development pilot (T020) MUST run only after its protocol section, its prompts and the arms under test are frozen by sha256 on a `develop` commit; pilot prompts are development prompts and MUST NOT enter a held-out split, reserve, twin or audit set."
+    },
+    {
+      "id": "REQ-040",
+      "scenarios": [
+        {
+          "given": "an A/A difference above the threshold",
+          "id": "SC-048",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_aa_threshold_action",
+          "then": "the OD-19 action is applied and recorded",
+          "when": "the session closes"
+        }
+      ],
+      "text": "A/A drift rule. When an A/A anchor difference exceeds the threshold of OD-19, the runner MUST apply the OD-19 action to that session before its results enter any decision: the hold action gives the verdict `held` until a re-baseline, and the invalidate action gives `invalidated` (REQ-038)."
+    },
+    {
+      "id": "REQ-041",
+      "scenarios": [
+        {
+          "given": "a session cap smaller than the sized slice",
+          "id": "SC-049",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "SelectionTests.test_cap_does_not_shrink_slice",
+          "then": "it is rejected with the needed size",
+          "when": "selection is configured"
+        }
+      ],
+      "text": "Selection stopping rule. Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent; the OD-11 rule MUST leave at most the OD-7 maximum number of challengers, which then go to the confirmation test; the configurator MUST reject a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice, and there is no default: the owner chooses a smaller pool, a larger \u0394 or no selection (OD-4)."
+    },
+    {
+      "id": "REQ-042",
+      "scenarios": [
+        {
+          "given": "an authored pool and a seed",
+          "id": "SC-050",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_seeded_partition",
+          "then": "both draws are identical and the three parts are disjoint and cover the pool",
+          "when": "the partition is drawn twice"
+        }
+      ],
+      "text": "Seeded partition of one pool. (a) The split, the reserve and the twin of a gate MUST be drawn by a seeded random partition of one authored pool. (b) The freeze MUST record the seed."
+    },
+    {
+      "id": "REQ-043",
+      "scenarios": [
+        {
+          "given": "a gate A pool with one item lacking the product name",
+          "id": "SC-051",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_gate_a_item_names_product",
+          "then": "it rejects the pool before any rollout and names the item",
+          "when": "the builder runs"
+        }
+      ],
+      "text": "Product name in gate A items. The gate A builder MUST reject, with zero rollouts, any gate A item that does not name the product."
+    },
+    {
+      "id": "REQ-044",
+      "scenarios": [
+        {
+          "given": "a frozen split with its references and per-class null baselines",
+          "id": "SC-052",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T023.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "Gate0Tests.test_static_gate0",
+          "then": "every reference is valid, every null baseline misses the gate, and no rollout is spent",
+          "when": "static Gate 0 runs"
+        }
+      ],
+      "text": "Static Gate 0. Before the tripwire run, Gate 0 MUST score, with zero rollouts, the reference answer of every split prompt (all valid) and a rule-violating null baseline per class (gate not met), as SPEC-078 did."
+    },
+    {
+      "id": "REQ-045",
+      "scenarios": [
+        {
+          "given": "a frozen protocol with no matching owner yes line",
+          "id": "SC-053",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T008.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "RunnerTests.test_owner_yes_required",
+          "then": "the runner refuses before any rollout and names the missing record",
+          "when": "a run is requested"
+        }
+      ],
+      "text": "Owner yes record. Every run that spends quota MUST have an owner yes record before its first rollout: a dated line in `specs/090-lightning-evaluation-v2/evidence/owner-yes.md` naming the specification, the task, the run and the frozen protocol hash, written by the owner; the runner MUST refuse a run whose record is missing or names another hash."
+    }
+  ],
+  "scientific_limits": "Simulations show properties of the procedures under their stated models only; real prompts are templated and clustered, so independence across prompts is an assumption; one host and model per run; cited 2026 preprints are leads; nothing is claimed about other hosts or real sessions.",
+  "scope": "Braid Lightning evaluation v2 (ADR 0046): exact gate A estimands, the all-fail bound with reserve replacement, paired synchronized selection with an incumbent margin, an audit set, drift controls, a Gate 0 invocation tripwire, run metadata and simulation tests before any real run.",
+  "stage": "draft"
+}

@@ -1,0 +1,977 @@
+{
+  "articles": [
+    0,
+    9,
+    12,
+    13,
+    14,
+    19,
+    20,
+    21,
+    23
+  ],
+  "assumptions": "Item labels assigned before measurement describe the product intent of OD-B1; the competing tools and co-installed skills of OD-5 approximate a real session; the host documentation describes the lever mechanics; claude-code on the subscription route; SPEC-090 supplies the statistical machinery; ADR 0046 Proposed.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "c80de0ce5391e597f58c7be78ddc8bc460c32a6abdd29c0d647909fb534efc84",
+      "docs/adr/0001-formalization-before-implementation.md": "4277851acfb78c1c42fa89e69745c311d54f4c4253cb04a9b5af1d38c1425b6e",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "cadbc7d514b43a58cdeaf5ef01ef4e8a8cb7ba10f02ffdddbbf1e20a90bbbcbb",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "a1dadefebeed2bbcf28f6cb268f79210515dd21040b54833c088e1dc03f69019",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "882478fd2966602af9f8cd646fd8d883a4a6cc5309ddb253e166a4426c94401f",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "ca8ff188e3b8bbf149065efe2058f9ee859b83744f067072e9c2c1e0c1f6303a",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "e493af9dd31d1d6296211a795571279b4205543cf5bec8f8d7033178161b7573",
+      "docs/adr/0007-read-only-python-analyzer.md": "df9df5ec22135439dbbac63007db33762cd19dd3d4fef14ed18bb3d4ccbb2c4d",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "016e6f728b0e69fbd56d4f15f48817210bedf4574dc47efd87d33f72057f6665",
+      "docs/adr/0009-transparent-validation-status.md": "6d44bea11643f90c6312bc6895ef59ffb9d91b0476c52b72613b3fc638e41a6a",
+      "docs/adr/0010-clean-publication-provenance.md": "bc8fffe963c4a7b2a878efc907ced423cb6642ed51442d9abaab94a8e838d2c2",
+      "docs/adr/0011-risk-based-validation-gates.md": "44a3362d4b6f2ff329512654ed444cb6f2d093c5871a5912709d99ebd37cc2f4",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "206057a2ebdab5e1b50d7ea5294aa260d4ddd4d99ce5d2a6029d8dafb74291fa",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "244f8c7e22f5c3ae5a473ab06de5e34ff52ac425e54956fb70d8d658624db543",
+      "docs/adr/0014-parallel-integration-contract.md": "627d34c516e48a4a761fc9d4bb230b8a2ec3e193e9248e06eecf13b6268ef254",
+      "docs/adr/0015-real-repository-validation-profile.md": "664a028024fdf2097c1cfcc8d60a99b8540b05e6593fe9cadac52507d588e58a",
+      "docs/adr/0016-post-root-public-provenance.md": "dab388d3e01bec24817f2d0907d077971125c1f3e26665c79e6bb4ce06b49518",
+      "docs/adr/0017-bounded-structured-exchange.md": "2c5bd456938837313fedfa0e7cc677d483b5835b5e0b4f5c71cf47b8a0b9465e",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "3a394e5aa5088575470cac17f2f359a3665d7767cc39ac1696ac1905c1d29c8a",
+      "docs/adr/0019-bounded-local-git-runtime.md": "64a253d60f0ee0ca962794562941ee0441e55af6f0c39f3b71e20c45acaf71d4",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "9dcf0b3ed71b7eb68b7a32247ca7fb1fc7c8885d3125bc67de6ccf5c93531020",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "010fc99e3d17533ccd2e7bb41b7fe21a4762889e8fd3ffd7d42e462953196ac4",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "13d35571a01897d9f3f8a05ed8cd6e7080bdfa2043b1fe789b3ca55ceb878bf3",
+      "docs/adr/0023-second-history-correction-equivalence.md": "b87be90cad0a96806144ae08611f5ef9c6c926b75dc0d34b0e8fa455f0eda380",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "26ef7a9aa1d2a25a49737414ee8044b0e8dea21d3bb8fe7257a668fb60d56478",
+      "docs/adr/0025-local-technical-telemetry.md": "e49d05c57153344ee3366bdd96826a2dd3cd73a0111da97ef9ee985c34ec716d",
+      "docs/adr/0026-pure-owned-work-validation.md": "117eaf4c3cd2dd56999f3580747bc575deccc474285f0653914caad3b1dc6172",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "90da1579982c6a86384c0de0ea125da6b13d4707a918134e039cece1509ab6b9",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "d3ab6b5c93c2c21311721659bfad5ee863bb260b2394a0a2176a2ec6ee18ced7",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "9137ba4952ec46bfd2d123cec54346fabc2835f238737bc235601ffd4ffc0ffe",
+      "docs/adr/0031-portable-prompt-names.md": "00ab10fa03e4d0f6b5ddca15cbe08b189ff7a8b90bbbc423ec7b37a967973da3",
+      "docs/adr/0032-activity-viewer-companion.md": "bca08826416f4cbc06fa61ebcb5f5578a476326b6697077dc46e49bc0805d5cd",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fabde19d7cd5209eb1de4c892ec01d57341d7e3474f68f414fbc0ea486a7d9cd",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "2ef1124558ecd992f2a3bd740edf7452911121eb7b04d7bbceca65ce4485b012",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "18acdade757d498756571bb0b10ec216e5461b8aa4f8259e6c8c134f425a113d",
+      "docs/adr/0036-assurance-profiles.md": "22e43a44bec9d95fcac2ecd7e203817e1d0a7d56e5ab791b57d2f7f8025df06c",
+      "docs/adr/0037-opencode-native-plugin.md": "0c12c3be4f988ce3ac2ab67582313cf1a7412d922a33b0c2b61ae9816bd035ca",
+      "docs/adr/0038-analyze-work-request-contract.md": "887cd3025a07eba3525abe33c41e98e27c300d87e09dc9a411374e4e3d98dc65",
+      "docs/adr/0039-braid-lightning-boundary.md": "56286e36d06a61a956db6f5400bc1045daa8a5d7abca65d3389d1c62842db098",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "fdb5496011db77d0bcd17d49a7784daf317844b8a92efe4cb939fd52d6dcb96a",
+      "docs/adr/0041-braid-lightning-content-traces.md": "188cc3f85b6051f1af9d1a423acc78b75bab8b46cc8c0846eee060643be2166a",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "fcec8771db27e9d0b33e63bdfb76296c28804f103c419ff92d42e2febeaccf50",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
+      "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
+      "docs/adr/0046-lightning-evaluation-design.md": "41b112ff949521b258869ec31b742e405619c97489649ab9f5eca29a205a4c03",
+      "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Lever arms exist in laboratory builds only until a promotion decision; target.kind gains kinds without changing skill configurations; tool contract changes wait for the ADR 0038 decision; SPEC-069, SPEC-078 and SPEC-079 records are unchanged.",
+  "domain": "Unprompted invocation of analyze-work by one host and model in a laboratory with competing tools and co-installed skills, on labelled synthetic prompts that do not name the product.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "executionAuthorization stays false; simulations spend no quota; every real run (noise pilot, development factorial, lever screening, 2x2 factorial, selection, same-build gate A run, Gate 0 tripwire, held-out and contrast) needs its own frozen protocol carrying the hash of the simulation record and the owner yes record of REQ-045; subscription route only, EUR 0; levers ship only after promotion.",
+  "human_review": "pending",
+  "hypotheses": "H1 \u2014 At least one lever (screened in T018 or in the 2\u00d72 factorial) raises item-level recall over the shipped build, with Holm over the recall superiority tests of its family at the OD-19 family-wise \u03b1, while its false positives are noninferior within the OD-9 margin (REQ-037). H2 \u2014 In the 2\u00d72 factorial the description \u00d7 hook interaction lies within \u00b1\u03b7 (OD-18), shown by two one-sided tests (TOST); if equivalence is not shown, the interaction is reported descriptively and no additivity is claimed, because a non-significant interaction test alone supports nothing; at the recommended sizes H2 is likely inconclusive unless OD-7 reaches the item count that OD-18 states. H3 \u2014 Product name, form and the completeness sentence each change the invocation rate in the development factorial (descriptive); it estimates the effect of three of the seven v3/v4 differences on fresh prompts and does not isolate the v3 to v4 change. A null or negative result completes the protocol.",
+  "observation_contract": "Per-rollout whether analyze-work was called, from transcript tool names, aggregated to a per-item outcome (OD-17) by item label; recall and false-positive rates over items with the OD-17 bound; per-cell factorial rates; for calls, validFirstAttempt from the unchanged SPEC-069 scorer as a secondary measure.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "AGENTS.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/adr/0030-native-plugin-surface-naming.md",
+    "docs/adr/0035-native-claude-laboratory-containment.md",
+    "docs/adr/0038-analyze-work-request-contract.md",
+    "docs/adr/0039-braid-lightning-boundary.md",
+    "docs/adr/0046-lightning-evaluation-design.md",
+    "docs/tooling/LIGHTNING.md",
+    "specs/079-kind-choice-tool-fix/spec.md",
+    "specs/079-kind-choice-tool-fix/evaluation-protocol.md",
+    "specs/079-kind-choice-tool-fix/evidence/t008-diagnosis-and-strategy-review.md",
+    "specs/090-lightning-evaluation-v2/spec.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "a labelled run with three repetitions per item and known per-item calls",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_two_metrics",
+          "then": "it reports recall and the false-positive rate over items, with the OD-17 bound, and no rollout-level bound",
+          "when": "the gate B analysis runs"
+        }
+      ],
+      "text": "Gate B metrics. Gate B MUST score prompts that do not name the product, with 3 repetitions per item, with two separate metrics whose unit is the item, not the rollout, each with its own bound at the \u03b1 of OD-3 computed from the per-item outcome of OD-17: recall over `tool-necessary` and `tool-beneficial` items, and the false-positive rate over `tool-unnecessary` items (including near-misses), where an item counts as calling `analyze-work` by the OD-17 rule."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "an item set whose label record hash differs from the frozen one",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_labels_frozen_before_run",
+          "then": "the runner refuses",
+          "when": "a run is requested"
+        },
+        {
+          "given": "two label records whose Cohen's \u03ba on one label pair is below the OD-21 threshold",
+          "id": "SC-047",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_kappa_threshold_gates_freeze",
+          "then": "it is refused until the rubric is revised and the items are relabelled",
+          "when": "the label freeze is requested"
+        }
+      ],
+      "text": "Labels before measurement. (a) Every gate B item MUST carry one label, `tool-necessary`, `tool-beneficial` or `tool-unnecessary` (OD-B1, 2026-11-27), assigned by the OD-2 procedure from a written rubric and frozen by sha256 before any rollout on it. (b) Labels MUST freeze only when Cohen's \u03ba between the two labellers reaches the OD-21 threshold on each label pair; otherwise the rubric MUST be revised and the items relabelled."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "an item set without near-miss items",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_near_miss_required",
+          "then": "it refuses",
+          "when": "the builder checks it"
+        }
+      ],
+      "text": "Item pool composition. The item-set builder MUST reject a gate B item set that holds no near-miss items (prompts that resemble a tool use but are `tool-unnecessary`)."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "the gate B lab profile",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T003.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabTests.test_competitors_present",
+          "then": "the OD-5 tools are allowed, the pinned skills are installed and both are in configDigest",
+          "when": "its configuration is built"
+        }
+      ],
+      "text": "Realistic laboratory. Gate B measurements MUST run in a laboratory profile with the OD-5 competing host tools enabled, the OD-5 pinned co-installed skills present, both recorded in the configuration digest."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "the lever catalogue",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LeverTests.test_one_arm_per_lever",
+          "then": "one arm exists per lever, each with its own digest",
+          "when": "arms are built"
+        },
+        {
+          "given": "the explicit command arm",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T005.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LeverTests.test_explicit_command_entry",
+          "then": "every rollout reaches analyze-work",
+          "when": "it is run on its check prompts"
+        }
+      ],
+      "text": "Lever arms. Each lever MUST be a separately measurable arm: `anthropic/alwaysLoad` in the `analyze-work` tool `_meta`; MCP server instructions; a skill description that leads with the use case; a factual `UserPromptSubmit` hook; and a documented explicit command. The explicit command MUST be checked as a deterministic entry (it reaches `analyze-work` on every rollout) and MUST NOT be scored for recall."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "two arms differing in two levers outside a factorial",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LeverTests.test_single_difference",
+          "then": "it refuses",
+          "when": "the comparison is configured"
+        }
+      ],
+      "text": "One difference per arm. The comparison configurator MUST reject two compared arms that differ in more than one lever outside the preregistered factorials; compared arms MUST share the pinned plugin commit, host and model and differ only in lever flags."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "a hook text that differs from the frozen hash",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T005.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "HookTests.test_hook_text_frozen",
+          "then": "the build refuses",
+          "when": "the hook arm is built"
+        }
+      ],
+      "text": "Factual hook text. The `UserPromptSubmit` hook text MUST be the factual, non-imperative wording the owner approves in OD-4, frozen by sha256 with the protocol that uses it."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a prompt containing a marker string",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T005.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "HookTests.test_prompt_not_persisted",
+          "then": "the marker appears in no file, log or output written by the hook",
+          "when": "the hook runs"
+        }
+      ],
+      "text": "Hook data handling. The hook MUST NOT store, log or transmit the user prompt, which may hold personal data or secrets; its only output is its frozen context string."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a skill-description candidate",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "TargetTests.test_description_target_isolated",
+          "then": "only the description field differs and the other bytes hash as before",
+          "when": "it is recombined with the skill file"
+        }
+      ],
+      "text": "Optimizer target beyond the skill body. `target.kind` in `agent_braid/lightning_config.py` MUST accept the kinds adopted in OD-14 (proposed: the skill description and the MCP server instructions) besides `skill`, with `agent_braid/lightning_resources.py` splitting and recombining each target so that every byte outside the target is unchanged and hashed."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a description candidate one character over its cap",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "TargetTests.test_caps_refuse",
+          "then": "it is refused with a size code",
+          "when": "it is validated"
+        }
+      ],
+      "text": "Size caps. The candidate validator MUST reject, without truncating, a candidate above its host limit (re-verified against host documentation at T004; documented today as at most 1,536 characters for a skill description and at most 4,096 for server instructions) or above the ADR 0038 D12 cap of 1,500 approximate tokens for the compact `analyze-work` definition."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "the pilot design",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "PilotTests.test_factorial_cells",
+          "then": "each of the 8 cells has the OD-6 count and every prompt is fresh, except spent v4 prompts in the form OD-1 allows",
+          "when": "it is built"
+        }
+      ],
+      "text": "Development factorial pilot. Before any gate B held-out, a 2\u00b3 factorial MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent) on fresh development prompts, plus spent v4 prompts only to the extent OD-1 allows, at the size of OD-6, reported descriptively with exact intervals per cell. The pilot estimates the effect of three of the seven v3/v4 differences on fresh prompts; the pilot does not isolate the v3 to v4 change and is not a gate."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "a noise pilot run",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T008.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "PilotTests.test_noise_report_format",
+          "then": "it contains the within-item correlation, the paired per-item difference variance, the discordance, A/A differences and item-level recall with intervals in the SPEC-090 input format",
+          "when": "its report is built"
+        }
+      ],
+      "text": "Noise pilot. (a) A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, using the two OD-27 arms: the within-item correlation of invocation, the variance of paired per-item differences in the item outcome, the discordance between the two arms (share of items whose item outcomes differ), A/A drift and item-level recall on recall-labelled items. (b) The pilot MUST publish these estimates in the SPEC-090 sizing input format for gate B selection (T019), the OD-7 sizes and the OD-22 twin size and margin. (c) Gate A sizing MUST NOT use this pilot; gate A has its own (SPEC-090 REQ-032)."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a factorial schedule",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FactorialTests.test_blocks_and_counts",
+          "then": "arms interleave in blocks and the counts per cell match the protocol",
+          "when": "it is generated from the frozen seed"
+        },
+        {
+          "given": "a 2\u00d72 protocol that omits the named contrasts, the candidate analyses, the Holm statement over the two recall main effects or the TOST statement for the interaction",
+          "id": "SC-048",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FactorialTests.test_protocol_names_contrasts_and_tests",
+          "then": "it is refused and names the missing part",
+          "when": "the freeze check runs"
+        },
+        {
+          "given": "a hook arm recorded as unavailable (REQ-039)",
+          "id": "SC-049",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_hook_unavailable_fallback",
+          "then": "it reduces to the preregistered description-only paired comparison and the REQ-014 criterion uses that comparison",
+          "when": "the factorial is analysed"
+        }
+      ],
+      "text": "Preregistered 2\u00d72 factorial. (a) The description \u00d7 hook factorial MUST be preregistered and frozen before its run as a within-item design (every item runs in all four cells), with arms interleaved in randomized blocks and the OD-7 recall-labelled plus OD-8 `tool-unnecessary` items per cell (rollouts derived as items \u00d7 3). (b) The protocol MUST name the contrasts (description main effect, hook main effect, interaction as the difference of differences). (c) The protocol MUST name the candidate analyses (exact paired McNemar per contrast on the item outcome; a logistic mixed model with an item random effect; a sign-flip permutation test on item-level differences), from which T007 picks one. (d) The protocol MUST state Holm over the two recall main effects at the OD-19 family-wise \u03b1, with false-positive noninferiority per effect at the OD-9 margin (REQ-037). (e) The protocol MUST state the TOST equivalence test of the interaction within \u00b1\u03b7 of OD-18. (f) If the hook arm is recorded as unavailable (REQ-039), the factorial MUST reduce to the preregistered description-only paired comparison (use-case-first against current, hook absent). (g) In that case REQ-014 MUST use the description-only comparison."
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "a factorial report that misses the OD-9 criterion",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_heldout_requires_factorial",
+          "then": "it refuses",
+          "when": "a held-out freeze is requested"
+        },
+        {
+          "given": "a gate B held-out set that was scored once",
+          "id": "SC-050",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_heldout_scored_once",
+          "then": "it is rejected",
+          "when": "a second scoring is requested"
+        },
+        {
+          "given": "a gate B held-out pool that shares a normalized 8-word window with a 2\u00d72 item, and a second pool that shares an item with the gate B audit set",
+          "id": "SC-051",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FreezeTests.test_heldout_pool_fresh",
+          "then": "it refuses both",
+          "when": "the builder checks them"
+        }
+      ],
+      "text": "Gate B held-out. (a) A gate B held-out set MUST be frozen by sha256 and scored once. (b) A gate B held-out set MUST NOT be built before the 2\u00d72 factorial meets the paired OD-9 criterion in the decisive cell named under REQ-044, at the OD-19 family-wise \u03b1, or its preregistered description-only fallback does (REQ-013): on the same items, the recall difference against the shipped build has a lower bound above zero, and false positives are noninferior, with the exact upper bound on the paired false-positive difference at or below the OD-9 margin. (c) The gate B held-out pool MUST share no item, fingerprint or normalized 8-word window with any pilot, screening, 2\u00d72, selection or audit item, nor with the SPEC-069, v2, v3 or v4 sets; the builder MUST refuse otherwise."
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "a twin below the tripwire threshold",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_tripwire",
+          "then": "the held-out run is refused",
+          "when": "Gate 0 runs"
+        },
+        {
+          "given": "a gate B Gate 0 configured with the gate A threshold",
+          "id": "SC-052",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_gate_a_threshold_refused",
+          "then": "it is refused",
+          "when": "it is validated"
+        }
+      ],
+      "text": "Gate B tripwire. (a) Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items, of the OD-22 size, drawn with the split by the seeded partition, stratified by label, of SPEC-090 REQ-042. (b) The tripwire MUST compare the twin's rollout-level call rate (calls of `analyze-work` over twin rollouts, 1 repetition per item) with the rollout-level call rate of the decisive cell (REQ-044) on recall-labelled items in T012, minus the OD-22 margin. (c) Gate B MUST NOT use the gate A threshold."
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "an adopted OD-13",
+          "id": "SC-017",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_contrast_recorded",
+          "then": "one contrast record exists with the harness version",
+          "when": "the contrast task runs"
+        }
+      ],
+      "text": "Official harness contrast. If OD-13 adopts it, `claude plugin eval` MUST be run once as a contrast with its version recorded."
+    },
+    {
+      "id": "REQ-017",
+      "scenarios": [
+        {
+          "given": "a recorded run",
+          "id": "SC-018",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_report_fields",
+          "then": "every listed field is present",
+          "when": "the report is built"
+        }
+      ],
+      "text": "Gate B report. Gate B reports MUST carry per-label and per-class recall and false-positive counts, with near-misses reported separately from other `tool-unnecessary` items, both metrics also on the agreed-only subset (items both labellers labelled alike), invocation and skill-invoked counts, the lever arm, `configDigest` and per-rollout versions (SPEC-090 REQ-014)."
+    },
+    {
+      "id": "REQ-018",
+      "scenarios": [
+        {
+          "given": "known recall and false-positive rates per cell",
+          "id": "SC-019",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T007.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "SimGateBTests.test_coverage_and_errors",
+          "then": "bound coverage is at least nominal and the error rates are reported per design option",
+          "when": "the analysis is simulated (SIM)"
+        }
+      ],
+      "text": "Simulation before any real run. Before any real rollout under this specification, simulations MUST record: coverage of the recall and false-positive bounds; type I and II error of the 2\u00d72 analysis with known effects and the correlation range 0.41 to 0.81; and replay determinism of the factorial journal."
+    },
+    {
+      "id": "REQ-019",
+      "scenarios": [
+        {
+          "given": "an item set containing a v4 prompt without a recorded OD-1 allowance",
+          "id": "SC-020",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_v4_reuse_refused",
+          "then": "the builder refuses",
+          "when": "it is checked"
+        }
+      ],
+      "text": "Spent v4 prompts. Spent v4 prompts MUST NOT be used as a gate B held-out set, nor as gate B development material unless the owner allows it in OD-1, in the form OD-1 states."
+    },
+    {
+      "id": "REQ-020",
+      "scenarios": [
+        {
+          "given": "a reward configuration with recall only",
+          "id": "SC-021",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T013.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "TargetTests.test_invocation_only_reward_refused",
+          "then": "it is refused",
+          "when": "it is validated"
+        }
+      ],
+      "text": "No invocation-only reward. An optimizer reward for invocation MUST include the false-positive component on `tool-unnecessary` items, so that no invocation-only reward is used."
+    },
+    {
+      "id": "REQ-021",
+      "scenarios": [
+        {
+          "given": "a rollout environment holding a provider key variable",
+          "id": "SC-022",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T003.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_subscription_only",
+          "then": "it is rejected before any rollout, as SPEC-071 does, and the key value appears in no record",
+          "when": "the run starts"
+        }
+      ],
+      "text": "Provider secrets. A run MUST NOT read or accept a provider API key or other secret. A run MUST use the subscription route at EUR 0 only."
+    },
+    {
+      "id": "REQ-022",
+      "scenarios": [
+        {
+          "given": "a lab profile requesting a tool outside OD-5",
+          "id": "SC-023",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T003.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabTests.test_containment_kept",
+          "then": "the build refuses",
+          "when": "it is built"
+        }
+      ],
+      "text": "Containment kept. Enabling competing tools MUST NOT weaken the laboratory containment: tools outside OD-5 MUST stay disabled and the disposable profile and workspace rules of SPEC-071 MUST stay in force."
+    },
+    {
+      "id": "REQ-023",
+      "scenarios": [
+        {
+          "given": "the diff of every task",
+          "id": "SC-024",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_frozen_paths_untouched",
+          "then": "no frozen path changed",
+          "when": "the boundary test runs"
+        }
+      ],
+      "text": "Frozen records untouched. This specification MUST NOT edit the SPEC-069 scorer or prompt sets, or the SPEC-078 and SPEC-079 splits, protocols and FREEZE files, and MUST NOT change any path bound by those FREEZE files (`scripts/spec079_freeze.py` BOUND)."
+    },
+    {
+      "id": "REQ-024",
+      "scenarios": [
+        {
+          "given": "a shipped build with alwaysLoad and no recorded OD-10 decision",
+          "id": "SC-025",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_adr0038_decision_required",
+          "then": "it fails",
+          "when": "the release check runs"
+        }
+      ],
+      "text": "Tool contract changes behind a decision. `_meta` or MCP server instructions of `analyze-work` MUST NOT change in a shipped build before the OD-10 decision on ADR 0038 is recorded."
+    },
+    {
+      "id": "REQ-025",
+      "scenarios": [
+        {
+          "given": "a release build",
+          "id": "SC-026",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T017.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_levers_not_default",
+          "then": "no lever is enabled without a recorded promotion decision",
+          "when": "its plugin manifest is checked"
+        },
+        {
+          "given": "a release build with a lever enabled for a host other than claude-code and no non-regression measurement recorded for that host",
+          "id": "SC-053",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T017.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_levers_scoped_to_claude_code",
+          "then": "it fails",
+          "when": "the release check runs"
+        }
+      ],
+      "text": "No default shipping of levers. (a) A lever MUST NOT ship enabled by default in a release without the owner's promotion decision under SPEC-073, the hook policy of OD-11 and the same-build certification of REQ-038. (b) Because the plugin is shared by codex, claude and opencode (`integrations/agent-braid/hosts.json`), a lever MUST ship scoped to claude-code only unless a non-regression measurement exists on each other host; SPEC-089 (a skeleton for analyze-work validity on Codex and OpenCode) does not yet specify that measurement."
+    },
+    {
+      "id": "REQ-026",
+      "scenarios": [
+        {
+          "given": "a gate B report",
+          "id": "SC-027",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_no_combined_score",
+          "then": "no field combines the two metrics",
+          "when": "its fields are listed"
+        }
+      ],
+      "text": "No combined score. Gate B MUST NOT combine recall and the false-positive rate into one score (split from REQ-001)."
+    },
+    {
+      "id": "REQ-027",
+      "scenarios": [
+        {
+          "given": "a relabelled item",
+          "id": "SC-028",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_relabel_is_new_version",
+          "then": "a new version is created and the measured version is unchanged",
+          "when": "the record is saved"
+        }
+      ],
+      "text": "Measured labels immutable. A label change after measurement MUST create a new item-set version, leaving the measured version unchanged (split from REQ-002)."
+    },
+    {
+      "id": "REQ-028",
+      "scenarios": [
+        {
+          "given": "an item set whose counts were recorded after its prompts",
+          "id": "SC-029",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_counts_before_authoring",
+          "then": "it is rejected",
+          "when": "it is checked"
+        }
+      ],
+      "text": "Counts stated before authoring. Each gate B item set MUST state its per-label and per-class counts, at the counts its OD sets (OD-6, OD-7, OD-8, OD-22 to OD-25), before its prompts are authored (split from REQ-003)."
+    },
+    {
+      "id": "REQ-029",
+      "scenarios": [
+        {
+          "given": "an existing SPEC-072 skill configuration",
+          "id": "SC-030",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T006.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "TargetTests.test_skill_target_unchanged",
+          "then": "the candidate hashes are identical to the recorded ones",
+          "when": "it is replayed"
+        }
+      ],
+      "text": "Skill configurations replay. Existing `skill` target configurations MUST replay byte-identically after the target extension (split from REQ-009)."
+    },
+    {
+      "id": "REQ-030",
+      "scenarios": [
+        {
+          "given": "a contrast result that disagrees with the lab",
+          "id": "SC-031",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_contrast_non_gating",
+          "then": "the verdict is unchanged and the disagreement is reported",
+          "when": "the gate verdict is computed"
+        }
+      ],
+      "text": "Contrast never gates. A `claude plugin eval` result MUST NOT change a gate verdict (split from REQ-016)."
+    },
+    {
+      "id": "REQ-031",
+      "scenarios": [
+        {
+          "given": "a reward or label configuration naming a model-graded component",
+          "id": "SC-032",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T003.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_no_llm_judge",
+          "then": "it is rejected",
+          "when": "it is validated"
+        }
+      ],
+      "text": "No LLM judge. A run MUST NOT use an LLM judge for labels, rewards or gates (split from REQ-021)."
+    },
+    {
+      "id": "REQ-032",
+      "scenarios": [
+        {
+          "given": "every lever build",
+          "id": "SC-033",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LeverTests.test_d12_cap_kept",
+          "then": "it is at most 1,500 approximate tokens",
+          "when": "the definition size is measured"
+        }
+      ],
+      "text": "D12 cap kept. The compact `analyze-work` definition MUST stay within the ADR 0038 D12 cap of 1,500 approximate tokens in every lever build (split from REQ-024)."
+    },
+    {
+      "id": "REQ-033",
+      "scenarios": [
+        {
+          "given": "the screening protocol",
+          "id": "SC-034",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T018.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FactorialTests.test_screening_protocol",
+          "then": "it names both arms, the shipped build, the shared items and the Holm family of REQ-037",
+          "when": "it is frozen"
+        }
+      ],
+      "text": "Lever screening run. Before the 2\u00d72 factorial, each lever arm (`alwaysLoad`, server instructions) MUST be compared with the shipped build on the same items in one preregistered, frozen screening run (T018), on item-level recall (superiority, with Holm over the two recall tests, REQ-037) and false positives (noninferiority: an exact one-sided upper bound on the paired difference, at the OD-19 \u03b1, unadjusted, at or below the OD-9 margin)."
+    },
+    {
+      "id": "REQ-034",
+      "scenarios": [
+        {
+          "given": "a run whose recall bound meets OD-3 and whose false-positive bound does not",
+          "id": "SC-035",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_conjunctive_verdict",
+          "then": "it is missed",
+          "when": "the verdict is computed"
+        },
+        {
+          "given": "a run with an instrument-event rollout awaiting its re-run and a canary hit, and a second run with only the awaited re-run",
+          "id": "SC-036",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_verdict_precedence",
+          "then": "the first is invalidated and the second is held",
+          "when": "each verdict is computed"
+        }
+      ],
+      "text": "Gate B verdict. (a) The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST use the allowed values and precedence of SPEC-090 REQ-038: `invalidated` over `held` over `missed` and `met`, with the invalidating events listed in SPEC-090 Terminology. (c) The verdict MUST be `held` while a slot is unfilled after a stop or an instrument-event rollout awaits its re-run (REQ-039)."
+    },
+    {
+      "id": "REQ-035",
+      "scenarios": [
+        {
+          "given": "a pilot run whose item file hash differs from its pilot freeze",
+          "id": "SC-037",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T008.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "PilotTests.test_pilot_freeze_required",
+          "then": "it is rejected",
+          "when": "it is requested"
+        },
+        {
+          "given": "a held-out pool or twin that contains a pilot item",
+          "id": "SC-054",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T014.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FreezeTests.test_pilot_items_excluded",
+          "then": "it refuses",
+          "when": "the builder checks it"
+        }
+      ],
+      "text": "Development pilot freezes. (a) Each development pilot and the contrast run (T008, T009, T018, T016) MUST run only after its protocol section, its labelled items and its pinned builds are frozen by sha256 on a `develop` commit and the owner says yes. (b) Pilot items MUST NOT enter a held-out set or its twin."
+    },
+    {
+      "id": "REQ-036",
+      "scenarios": [
+        {
+          "given": "a gate B held-out run stopped by quota after which the model changed",
+          "id": "SC-038",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_shared_stop_rule",
+          "then": "it is rejected and the run is invalidated as SPEC-090 REQ-037 states",
+          "when": "a resume is requested"
+        }
+      ],
+      "text": "Stops and resume. Every quota stop, host or model change, or resume MUST follow SPEC-090 REQ-037 unchanged."
+    },
+    {
+      "id": "REQ-037",
+      "scenarios": [
+        {
+          "given": "two levers with recall p-values 0.01 and 0.04 at family-wise \u03b1 0.05, the second with a false-positive upper bound above the margin",
+          "id": "SC-039",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_holm_levers",
+          "then": "Holm rejects both recall nulls but only the first lever is accepted",
+          "when": "the family is adjusted"
+        }
+      ],
+      "text": "Family-wise error for levers and effects. (a) Recall superiority tests of H1 (each screened lever against the shipped build) and of the two 2\u00d72 recall main effects MUST be adjusted by Holm within each family at the family-wise \u03b1 of OD-19. (b) False positives MUST enter as a noninferiority condition per comparison (an exact one-sided upper bound on the paired difference, at the OD-19 \u03b1, unadjusted, at or below the OD-9 margin), never as a superiority test. (c) A lever MUST be accepted only when both hold (intersection\u2013union)."
+    },
+    {
+      "id": "REQ-038",
+      "scenarios": [
+        {
+          "given": "a build that met gate B but has no gate A or SPEC-049 result on the same build",
+          "id": "SC-040",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T023.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_same_build_certification",
+          "then": "it is rejected",
+          "when": "a promotion proposal is checked"
+        }
+      ],
+      "text": "Same-build certification. A build that changes the skill description, the server instructions, `_meta` or the hook MUST be proposed for promotion only when gate B is met on it and, on that same build, at least one of these holds: gate A is met; it is noninferior to the shipped build under SPEC-049 on a fresh gate A split (SPEC-090 OD-17 option b)."
+    },
+    {
+      "id": "REQ-039",
+      "scenarios": [
+        {
+          "given": "a rollout whose session listing lacks `analyze-work`",
+          "id": "SC-041",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_listing_absence_is_instrument",
+          "then": "it is recorded as an instrument event, not as a non-call",
+          "when": "it is scored"
+        }
+      ],
+      "text": "Per-rollout session facts. Each rollout MUST record whether the hook context appeared, whether the host emitted a safety notice, and whether the skill and the `analyze-work` tool were present in the session listing; a missing skill or tool is an `instrument` event for that rollout. A rollout with an instrument event MUST be excluded from its item's outcome and re-run once in the same session; an item with fewer than 3 scored rollouts MUST give `held`. An arm whose hook context appears in none of the hook-arm rollouts of T012 MUST be recorded as unavailable."
+    },
+    {
+      "id": "REQ-040",
+      "scenarios": [
+        {
+          "given": "a gate B pool with one item naming the product",
+          "id": "SC-042",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T002.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_gate_b_item_without_product",
+          "then": "it rejects the pool before any rollout and names the item",
+          "when": "the builder runs"
+        }
+      ],
+      "text": "Product name absent from gate B items. The gate B builder MUST reject, with zero rollouts, any gate B item that contains the product name."
+    },
+    {
+      "id": "REQ-041",
+      "scenarios": [
+        {
+          "given": "two accepted challengers with equal recall lower bounds",
+          "id": "SC-043",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T019.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_selection_rule_and_tie_break",
+          "then": "the shorter artifact wins, the winner and the incumbent are each scored once on both audit sets, the paired differences are reported with exact intervals and the audit result leaves the selection unchanged",
+          "when": "the winner is chosen"
+        },
+        {
+          "given": "a challenger whose recall advantage exceeds \u03b4_B but whose exact upper bound on the false-positive increase is above the OD-9 margin",
+          "id": "SC-055",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T019.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "GateBTests.test_false_positives_block_replacement",
+          "then": "the incumbent is kept",
+          "when": "selection decides"
+        }
+      ],
+      "text": "Gate B selection rule. Gate B selection (T019) MUST follow a preregistered rule, with no combined score: (a) Selection MUST take as incumbent the decisive cell (REQ-044). (b) Selection MUST rank challengers in elimination by the paired item-level recall difference against the incumbent. (c) Selection MUST replace the incumbent only when a challenger's recall advantage exceeds \u03b4_B of OD-28 and the exact upper bound on its false-positive increase is at or below the OD-9 margin, each tested at the OD-19 family-wise \u03b1 with Holm over the challengers. (d) When several challengers are accepted, selection MUST break the tie by the largest lower bound on recall advantage, then the shortest artifact, then the lowest candidate id. (e) Selection MUST score the winner and the incumbent once each on the labelled gate B audit set (both metrics) and on the SPEC-090 gate A audit set (authoring validity), and MUST report the paired difference with an exact 1 \u2212 \u03b1 interval (\u03b1 of SPEC-090 OD-1); the audit result MUST NOT change the selection (SPEC-090 REQ-036)."
+    },
+    {
+      "id": "REQ-042",
+      "scenarios": [
+        {
+          "given": "a selection input that contains a gate B audit item",
+          "id": "SC-044",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T022.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LabelTests.test_gate_b_audit_disjoint",
+          "then": "it is rejected",
+          "when": "selection is configured"
+        }
+      ],
+      "text": "Labelled gate B audit set. A labelled gate B audit set of the OD-25 size MUST be authored from its own pool, labelled under REQ-002, frozen by sha256, kept disjoint from every slice, pilot, split and twin, and scored once per winner and once for its incumbent (REQ-041)."
+    },
+    {
+      "id": "REQ-043",
+      "scenarios": [
+        {
+          "given": "a lever build with the description overlay",
+          "id": "SC-045",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T004.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "LeverTests.test_description_overlay_only",
+          "then": "the canonical SKILL.md hash is unchanged and only the build output carries the overlay",
+          "when": "the repository files are hashed after the build"
+        }
+      ],
+      "text": "Description lever as an overlay. The use-case-first skill description MUST be a laboratory overlay applied when a lever build is assembled; the canonical `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md`, which is the optimizer's origin path and default target, MUST stay byte-identical."
+    },
+    {
+      "id": "REQ-044",
+      "scenarios": [
+        {
+          "given": "a 2\u00d72 protocol that names no decisive cell",
+          "id": "SC-046",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T011.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "FactorialTests.test_decisive_cell_named",
+          "then": "it is rejected",
+          "when": "the freeze check runs"
+        }
+      ],
+      "text": "Preregistered decisive cell. The T011 freeze MUST name the one preregistered 2\u00d72 cell whose paired comparison against the shipped-build cell must meet OD-9 for REQ-014, tested at the OD-19 family-wise \u03b1."
+    },
+    {
+      "id": "REQ-045",
+      "scenarios": [
+        {
+          "given": "a frozen SPEC-091 protocol with no matching owner yes line, and a second protocol without the T007 simulation record hash",
+          "id": "SC-056",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T003.",
+          "test_file": "specs/091-invocation-gate/validation-plan.md",
+          "test_name": "BoundaryTests.test_owner_yes_and_simulation_hash_required",
+          "then": "the runner refuses both before any rollout and names what is missing",
+          "when": "each run is requested"
+        }
+      ],
+      "text": "Owner yes record and simulation hash. Every SPEC-091 run that spends quota MUST have a dated owner yes line in `specs/091-invocation-gate/evidence/owner-yes.md` naming the specification, task, run and frozen protocol hash, and its protocol MUST carry the hash of the T007 simulation record; the runner MUST refuse otherwise."
+    }
+  ],
+  "scientific_limits": "Synthetic labelled prompts in a laboratory; labels encode a product intent, not ground truth; one host and model; lever effects may not transfer across host versions; the host tool-search ranking is undocumented and alwaysLoad on a plugin server is untested here; cited community measurements and preprints are leads.",
+  "scope": "Gate B of ADR 0046: item labelling per OD-B1, a laboratory with competing tools and co-installed skills, architecture levers as arms, the optimizer target beyond the skill body, development factorial and noise pilots, a preregistered 2x2 factorial (description x hook), and a later gate B held-out, with simulation tests before any real run.",
+  "stage": "draft"
+}
