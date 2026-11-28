@@ -46,7 +46,10 @@ transcripts for the 0/3 review follow SPEC-074.
    reach 0.05 (smallest p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs
    are discordant in one direction, and McNemar's n counts discordant pairs only. The same formula sizes the
    confirmation slice; a quota cap below the computed size is rejected (REQ-041).
-4. **Selection (REQ-008, REQ-010, REQ-011, REQ-034, REQ-035, REQ-041).** Each elimination round assigns the
+4. **Selection (REQ-008, REQ-010, REQ-011, REQ-034, REQ-035, REQ-041).** Elimination uses r* repetitions per prompt and the valid-rate variance;
+   the confirmation slice is sized from the variance of the per-prompt majority-pass difference; sizing is
+   refused when Δ exceeds the pilot's upper bound on majority-pass discordance (prompts whose majority-pass
+   outcomes differ), because an advantage cannot exceed it. Each elimination round assigns the
    same new items to every surviving candidate and ranks them by the per-prompt valid-rate difference; the
    OD-11 rule drops candidates; rounds stop when one candidate survives or the slice budget is spent. The
    survivors are then tested against the incumbent on a confirmation slice, frozen before elimination and
@@ -85,12 +88,14 @@ transcripts for the 0/3 review follow SPEC-074.
 | REQ-001, REQ-004, REQ-006, REQ-023, REQ-026, REQ-028, REQ-030 | SC-001, SC-006, SC-009, SC-028, SC-031, SC-033, SC-035 | `tests/test_lightning_gate_a.py` | unit test output, T009 |
 | REQ-002, REQ-003 | SC-002, SC-004 | `tests/test_lightning_stats.py` | reference values, T002 |
 | REQ-002, REQ-003, REQ-033 | SC-003, SC-005, SC-038 | `tests/test_lightning_sim.py`, `scripts/spec090_simulate.py` | simulation records, T004, T005 |
-| REQ-032, REQ-039 | SC-037, SC-046 | `tests/test_spec090_pilot.py`, `tests/test_spec090_boundaries.py` | pilot report, T020 |
-| REQ-038 | SC-044, SC-045 | `tests/test_lightning_gate_a.py` | T009 |
+| REQ-032, REQ-039 | SC-037, SC-047 | `tests/test_spec090_pilot.py`, `tests/test_spec090_boundaries.py` | pilot report, T020 |
+| REQ-038 | SC-045, SC-046 | `tests/test_lightning_gate_a.py` | T009 |
+| REQ-042, REQ-043 | SC-050, SC-051 | `tests/test_spec090_boundaries.py` | T016 |
+| REQ-044 | SC-052 | `tests/test_lightning_gate_a.py` | T023 |
 | REQ-005 | SC-007, SC-008 | `tests/test_lightning_gate_a.py` | unit test output, T010 |
-| REQ-008 to REQ-011, REQ-031, REQ-034, REQ-035, REQ-041 | SC-011 to SC-015, SC-036, SC-039, SC-040, SC-048 | `tests/test_lightning_selection.py`, simulation | T006 |
+| REQ-008 to REQ-011, REQ-031, REQ-034, REQ-035, REQ-041 | SC-011 to SC-015, SC-036, SC-039, SC-040, SC-049 | `tests/test_lightning_selection.py`, simulation | T006 |
 | REQ-012, REQ-016, REQ-019, REQ-027, REQ-036 | SC-016, SC-021, SC-024, SC-032, SC-041 | `tests/test_lightning_selection.py` | T007, T011, T014 |
-| REQ-013, REQ-021, REQ-037, REQ-040 | SC-017, SC-018, SC-026, SC-042, SC-043, SC-047 | `tests/test_lightning_drift.py` | T012 |
+| REQ-013, REQ-021, REQ-037, REQ-040 | SC-017, SC-018, SC-026, SC-042 to SC-044, SC-048 | `tests/test_lightning_drift.py` | T012 |
 | REQ-014, REQ-018 | SC-019, SC-023 | `tests/test_lightning_runner.py` | T008, T015 |
 | REQ-015 | SC-020 | `tests/test_lightning_gate_a.py` | T013 |
 | REQ-007, REQ-017, REQ-020, REQ-022, REQ-024, REQ-029 | SC-010, SC-022, SC-025, SC-027, SC-029, SC-034 | `tests/test_spec090_boundaries.py` | T016 |
@@ -108,6 +113,6 @@ and preregistration precede observation. No blocker.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-19 are open (spec.md). The owner's yes is required for T020 (pilot), T022 (Gate 0 run) and T017
-(gate A run), and the owner reviews every freeze (T016, T020, T021).
+OD-1 to OD-19 are open (spec.md). The owner's yes is required for T020 (pilot), T022 (Gate 0 tripwire run) and
+T017 (gate A run); T023 is a static Gate 0 with no rollout; and the owner reviews every freeze (T016, T020, T021).
 SPEC-079 T009 is not decided here.

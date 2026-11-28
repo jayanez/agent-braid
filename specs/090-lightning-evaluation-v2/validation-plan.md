@@ -45,12 +45,16 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-034 | SC-039 | `tests/test_lightning_selection.py` | `SelectionTests.test_confirmation_slice_disjoint` | Output of T006. |
 | REQ-035 | SC-040 | `tests/test_lightning_selection.py` | `SelectionTests.test_holm_family` | Output of T006. |
 | REQ-036 | SC-041 | `tests/test_lightning_selection.py` | `AuditTests.test_audit_once_per_winner` | Output of T011. |
-| REQ-037 | SC-042 | `tests/test_lightning_drift.py` | `DriftTests.test_blocked_resume_invalidates` | Output of T012. |
-| REQ-037 | SC-043 | `tests/test_lightning_drift.py` | `DriftTests.test_resume_fills_missing_slots` | Output of T012. |
-| REQ-038 | SC-044 | `tests/test_lightning_gate_a.py` | `GateATests.test_verdict_precedence` | Output of T009. |
-| REQ-038 | SC-045 | `tests/test_lightning_gate_a.py` | `GateATests.test_conjunctive_verdict` | Output of T009. |
-| REQ-039 | SC-046 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_pilot_freeze_required` | Output of T020. |
-| REQ-040 | SC-047 | `tests/test_lightning_drift.py` | `DriftTests.test_aa_threshold_action` | Output of T012. |
-| REQ-041 | SC-048 | `tests/test_lightning_selection.py` | `SelectionTests.test_cap_does_not_shrink_slice` | Output of T006. |
+| REQ-037 | SC-042 | `tests/test_lightning_drift.py` | `DriftTests.test_host_mismatch_refuses_before_rollout` | Output of T012. |
+| REQ-037 | SC-043 | `tests/test_lightning_drift.py` | `DriftTests.test_blocked_resume_invalidates` | Output of T012. |
+| REQ-037 | SC-044 | `tests/test_lightning_drift.py` | `DriftTests.test_resume_fills_missing_slots` | Output of T012. |
+| REQ-038 | SC-045 | `tests/test_lightning_gate_a.py` | `GateATests.test_verdict_precedence` | Output of T009. |
+| REQ-038 | SC-046 | `tests/test_lightning_gate_a.py` | `GateATests.test_conjunctive_verdict` | Output of T009. |
+| REQ-039 | SC-047 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_pilot_freeze_required` | Output of T020. |
+| REQ-040 | SC-048 | `tests/test_lightning_drift.py` | `DriftTests.test_aa_threshold_action` | Output of T012. |
+| REQ-041 | SC-049 | `tests/test_lightning_selection.py` | `SelectionTests.test_cap_does_not_shrink_slice` | Output of T006. |
+| REQ-042 | SC-050 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_seeded_partition` | Output of T016. |
+| REQ-043 | SC-051 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_gate_a_item_names_product` | Output of T016. |
+| REQ-044 | SC-052 | `tests/test_lightning_gate_a.py` | `Gate0Tests.test_static_gate0` | Output of T023. |
 
-Negative controls: SC-008 (reserve cap invalidates), SC-009 (class rule), SC-015 (incumbent kept below the margin), SC-017 (host change), SC-020 (tripwire blocks), SC-022 (simulation required), SC-023 (parallel refused), SC-036 (minimum slice), SC-039 (confirmation slice disjoint), SC-041 (audit once), SC-042 (blocked resume), SC-044 and SC-045 (verdict), SC-046 (pilot freeze), SC-048 (cap does not shrink), SC-025 to SC-030 and SC-032 to SC-035 (boundaries).
+Negative controls: SC-008 (instrument counted as 0/3), SC-009 (class rule), SC-015 (incumbent kept below the margin), SC-017 (host change), SC-020 (tripwire blocks), SC-022 (simulation required), SC-023 (parallel refused), SC-036 (underpowered slice), SC-039 (confirmation slice disjoint), SC-041 (audit once), SC-042 (host mismatch refused before rollout), SC-043 (blocked resume), SC-045 and SC-046 (verdict), SC-047 (pilot freeze), SC-049 (cap does not shrink), SC-051 (gate A item without product name), SC-052 (null baselines), SC-025 to SC-030 and SC-032 to SC-035 (boundaries).

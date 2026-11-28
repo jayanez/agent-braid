@@ -50,12 +50,19 @@ paired McNemar per contrast on the [OD-17] item outcome; a logistic mixed model 
 a sign-flip permutation test on item-level differences. Main effects use Holm at [OD-19]; the interaction
 is tested for equivalence within ±[OD-18] by TOST, otherwise reported descriptively. Report per cell:
 recall on necessary and beneficial items and the false-positive rate on `tool-unnecessary` items
-(including near-misses), each with the [OD-17] item-level bound. Criterion to proceed to a held-out, paired
-on the same items: [OD-9].
+(including near-misses), each with the [OD-17] item-level bound. False positives are a noninferiority condition: the
+exact upper bound on the paired false-positive difference at or below the [OD-9] margin. Criterion to
+proceed to a held-out, paired on the same items: [OD-9]. If the hook arm is unavailable, the preregistered
+description-only paired comparison (hook absent) replaces the factorial for that criterion. Each rollout
+records whether the hook context appeared, any host safety notice, and whether the skill and
+`analyze-work` were listed; a missing listing is an instrument event.
 
 ## Gate B held-out (T014, T015)
 
-A fresh labelled set frozen and scored once, with a labelled development twin and the SPEC-090 tripwire.
+A fresh labelled pool partitioned by a recorded seed into the held-out set, a reserve and a twin of
+recall-labelled items (SPEC-090 REQ-042); the builder refuses, with zero rollouts, any item that names the
+product. Gate 0 tripwire threshold: the T008 invocation rate on recall-labelled items minus the [OD-22]
+margin, never the gate A threshold. Frozen and scored once.
 The arm is [OD-20]. Gate met when the recall lower bound is at least [OD-3] and the false-positive upper
 bound is at most [OD-3], at α = SPEC-090 [OD-1]; the gate is conjunctive, so a false `met` stays at or below
 α (intersection–union). Verdicts and precedence as SPEC-090 REQ-038 (REQ-034).

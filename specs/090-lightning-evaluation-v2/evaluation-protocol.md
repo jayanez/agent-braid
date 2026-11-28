@@ -28,16 +28,21 @@ changes.
 
 ## Gate A (real stage, after T016)
 
-- Split: a fresh split of [OD-13] prompts that name the product, with a reserve of [OD-8] and a
+- Split: one authored pool of prompts that name the product (the builder refuses any item that does not,
+  with zero rollouts), partitioned by a recorded seed into a split of [OD-13], a reserve of [OD-8] and a
   development twin of [OD-9]; leakage checks against SPEC-069, v2, v3 and v4 (REQ-024).
 - Host `claude-code`, model pinned, host CLI pinned with auto-update off, subscription route, EUR 0.
 - Three repetitions per prompt (REQ-007). Missing results count as failed repetitions.
-- Gate 0: references valid, null baselines below the gate, invocation tripwire on the twin at [OD-9].
+- Gate 0: first static, with zero rollouts (every reference valid, a rule-violating null baseline per class
+  below the gate); then the invocation tripwire on the twin at the T020 rate minus the [OD-9] margin.
 - Gate met when all hold:
   1. exact one-sided Clopper–Pearson lower bound of the passing share at α = [OD-1] is at least 0.80;
   2. exact upper bound of the all-fail rate at α = [OD-1] is at most τ = [OD-2];
   3. every class has at least half its prompts passing;
-  4. no 0/3 prompt is unreviewed; `instrument` prompts replaced within the cap [OD-8].
+  4. no 0/3 prompt is unreviewed; every `instrument` prompt counts as 0/3; reserve prompts run in the same
+     session block and are reported only, within the cap [OD-8].
+  The gate is conjunctive, so a false `met` stays at or below α (intersection–union); precedence
+  `invalidated` > `held` > `missed` and `met`.
 
 ## Selection (development use)
 

@@ -16,7 +16,10 @@ Decision: bound θ = E[(1−p)³], with p a prompt's per-repetition probability 
 The 0/3 count is binomial in θ when prompts are independent and
 repetitions are independent given p (own derivation). With n rollouts per item only moments up to degree n
 are identified (2609.09245, paper; 2610.04135, minimax barrier), so θ is identified and a share of prompts
-below a threshold is not. The rule did not fail on noise: the v2 and v3 0/3 prompts were deterministic
+below a threshold is not. The earlier rule "no prompt is 0/3" is therefore already an all-fail test: at
+α = 0.05 and n = 100 it equals τ in [0.0295, 0.0466). OD-2 makes τ explicit; values at or above 0.075 pass
+v3 (two 0/3 prompts, bound 0.0616) and values at or above 0.0757 also pass v2 (three, bound 0.0757), each
+with the `units` defect present. The rule did not fail on noise: the v2 and v3 0/3 prompts were deterministic
 `units` choices reviewed as `model` and 25 to 100 times more frequent than independence predicts (repo).
 Exact 95 % upper bounds for 0 to 4 zero-prompts in 100: 0.0295, 0.0466, 0.0616, 0.0757, 0.0892 (own
 calculation).

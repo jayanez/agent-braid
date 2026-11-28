@@ -65,7 +65,18 @@ intent; the observed outcome is whether `analyze-work` was called.
 9. **Dependency failure.** If a SPEC-090 dependency (bounds, selection, drift controls) is unavailable, the
    dependent task stops and no real run starts. If host documentation no longer describes a lever, or the
    lever fails on the pinned host, its arm is recorded as `unavailable` and dropped from the comparison,
-   not replaced by a guess.
+   not replaced by a guess. If the hook arm is unavailable (its context never appears, REQ-039), the 2×2
+   factorial reduces to its preregistered description-only paired comparison and REQ-014 uses that, so
+   gate B can still run.
+10. **Same-build certification and selection (REQ-038, REQ-041, REQ-042).** A build that changes the
+   description, server instructions, `_meta` or the hook needs gate B met and, on that same build, gate A
+   met or SPEC-049 noninferiority on a fresh gate A split (T023). Selection (T019) runs only when the best
+   2×2 cell misses OD-3; its incumbent is that cell; the winner is scored once on the labelled gate B audit
+   set (T022) and the gate A audit set with noninferiority on both.
+11. **Other hosts (REQ-025).** The plugin is shared by codex, claude and opencode
+   (`integrations/agent-braid/hosts.json`), and T004 edits shared files; a lever ships scoped to
+   claude-code only, or after a non-regression measurement on each other host, which SPEC-089 (a skeleton)
+   does not yet specify.
 
 ## Validation strategy
 
@@ -79,7 +90,9 @@ intent; the observed outcome is whether `analyze-work` was called.
 | REQ-011, REQ-012, REQ-013, REQ-033, REQ-035 | SC-012 to SC-014, SC-034, SC-037 | `tests/test_spec091_pilots.py` | T008, T009, T011, T018 |
 | REQ-014, REQ-015, REQ-016, REQ-030 | SC-015 to SC-017, SC-031 | `tests/test_lightning_gate_b.py` | T014, T016 |
 | REQ-018 | SC-019 | `tests/test_lightning_sim.py` | T007 |
-| REQ-023, REQ-025, REQ-036 | SC-024, SC-026, SC-038 | `tests/test_spec091_boundaries.py` | T011, T017 |
+| REQ-023, REQ-025, REQ-036, REQ-038 | SC-024, SC-026, SC-038, SC-040 |
+| REQ-039, REQ-041 | SC-041, SC-043 | `tests/test_lightning_gate_b.py` | T010, T019 |
+| REQ-040, REQ-042 | SC-042, SC-044 | `tests/test_spec091_items.py` | T002, T022 | `tests/test_spec091_boundaries.py` | T011, T017 |
 
 Labels are human proxy labels; disagreements are recorded verbatim and reported with agreement. Missing
 results count as non-calls and are reported separately. Calibration is not claimed.
@@ -91,6 +104,6 @@ precede observation. The hook stays laboratory-only pending OD-11. No blocker.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-20 are open (spec.md). Owner yes required for T008, T009, T018, T012, T019, T021, T015 and
-T016. SPEC-079 T009
+OD-1 to OD-26 are open (spec.md). Owner yes required for T008, T009, T018, T012, T019, T023, T021, T015
+and T016. SPEC-079 T009
 is not decided here.

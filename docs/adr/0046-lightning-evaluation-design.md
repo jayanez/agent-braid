@@ -55,16 +55,18 @@ direction, and McNemar's n counts discordant pairs only.
      auditable artifact the prose answer does not), or `tool-unnecessary`. Recall is measured and bounded
      on the first two labels together; the false-positive rate is measured and bounded on
      `tool-unnecessary` items and near-misses. The item, not the rollout, is the unit of both bounds,
-     because rollouts of one prompt are correlated (0.81 on v4); the per-item outcome is an open decision
+     because rollouts of one prompt are correlated (ANOVA ICC of per-prompt pass counts 0.81 on v4); the per-item outcome is an open decision
      (SPEC-091 OD-17). Neither bound is combined into one score.
 2. **Identified estimands only.** Gate A reports:
    - an **exact one-sided Clopper–Pearson lower bound** on the share of passing prompts, at an α declared
      before measurement (the Wilson interval with z = 1.96 is a one-sided 97.5 % bound without a coverage
      guarantee and is not used);
    - an **exact upper bound on the all-fail rate** E[(1−p)³], where p is a prompt's per-repetition probability of a valid first
-     attempt. This
-     is the functional identified by the number of prompts with 0 of 3, and it replaces the rule "no prompt
-     is 0/3". Each 0/3 prompt is still reviewed by the owner as `model` or `instrument`; `instrument`
+     attempt. The 0/3 count is Binomial(n, θ), so the earlier rule "no prompt is 0/3" is already a test of
+     this functional: at α = 0.05 and n = 100 it equals an all-fail threshold τ in [0.0295, 0.0466). Making
+     τ explicit means the owner knowingly keeps or loosens that rule (SPEC-090 OD-2); thresholds at or above
+     0.075 are excluded because they pass v3 (and from 0.0757 also v2) with the `units` defect present. Replaced prompts count
+     as 0/3 in the verdict. Each 0/3 prompt is still reviewed by the owner as `model` or `instrument`; `instrument`
      prompts are replaced from a reserve frozen before the run, within a preregistered cap. A share such as
      "prompts with p below τ" is not reported as a gate quantity.
    - The class rule is kept.
@@ -83,15 +85,22 @@ direction, and McNemar's n counts discordant pairs only.
    selected winner is reported on it with a confidence interval, to expose the winner's curse.
 5. **Drift controls.** The host CLI and model are pinned with no auto-update; the host, model and plugin
    versions are recorded per rollout; A/A anchors (the same arm twice) run each session; arms are
-   interleaved in randomized blocks; any host change triggers a re-baseline. Reports carry `configDigest`,
-   per-rollout versions, tool-call counts and whether the skill was invoked.
+   interleaved in randomized blocks; any host change triggers a re-baseline (the A/A pair and the twin rerun;
+   sizing reruns if a pilot estimate leaves its interval). A frozen protocol pins the host: a different host
+   refuses the run before any rollout without spending the split. Reports carry `configDigest`,
+   per-rollout versions, the server-reported model identifier, tool-call counts and whether the skill was
+   invoked.
 6. **Gate 0 invocation tripwire.** Every future Gate 0 includes an invocation-rate tripwire on a
    development twin of the held-out set (about 20 prompts, a few minutes at the observed 8.5 s per
-   rollout), so a collapse such as T008's is seen before a held-out set is spent.
+   rollout), so a collapse such as T008's is seen before a held-out set is spent. The threshold is per
+   gate: gate A uses its pilot's rate on product-naming prompts, gate B its pilot's rate on recall-labelled
+   items, each minus an owner margin.
 7. **Architecture before text.** For invocation, deterministic levers are measured before text is
    optimized: `anthropic/alwaysLoad` tool meta, MCP server instructions, a skill description that leads
    with the use case, a factual (non-imperative) `UserPromptSubmit` hook, and an explicit command. Each is
-   an arm. Their effect on this host is unmeasured; external reports are leads (see Research).
+   an arm. Their effect on this host is unmeasured; external reports are leads (see Research). A build that
+   changes any of them is certified on the same build: gate B met, and gate A met or SPEC-049
+   noninferiority on a fresh gate A split (SPEC-091 REQ-038).
 8. **Reframing.** The track is **best-arm selection over text artifacts under host drift**, with a frozen
    closed-model policy. It is not reinforcement learning of weights. ADR 0039's "reward-driven
    optimization" wording is read in that sense; no weights are trained (ADR 0042 deferred).
@@ -114,10 +123,10 @@ direction, and McNemar's n counts discordant pairs only.
   probability E[p] without saying so, and is optimal only if authoring a prompt costs nothing. It would
   have passed v3 (272/300 = 0.907) while the per-prompt signal that exposed the deterministic `units`
   defect is lost. Rejected.
-- **Keep the zero-0/3 rule.** It detected real defects in v2 and v3, but its 0/3 events are not an
-  identified functional and a single instrument-flawed prompt invalidates a run. Replaced by the exact
-  all-fail bound plus review, not by silence: without the rule v2 and v3 would have passed (95 and 91)
-  with the defect inside.
+- **Keep the zero-0/3 rule as written.** It detected real defects in v2 and v3, and it is itself an
+  all-fail test at τ in [0.0295, 0.0466) for α = 0.05 and n = 100. It is not discarded but restated as an
+  explicit τ (SPEC-090 OD-2), so that keeping or loosening it is a recorded owner choice; without any such
+  rule v2 and v3 would have passed (95 and 91) with the defect inside.
 - **Share of prompts with p below τ as the second-stage gate.** Not identifiable from 3 repetitions
   (2609.09245, Thm 1). Rejected.
 - **Thompson Sampling (including top-two) for allocation.** Evaluated and not adopted:

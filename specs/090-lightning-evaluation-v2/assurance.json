@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "fa8e892dc5aba5e2b8ed4064bdc02f64b10db8cd4e97741bbe82c21d99b48ace",
+      "docs/adr/0046-lightning-evaluation-design.md": "e9d85bd9e1ca0221d2dd8be7c7b850bef70c27dff48c5629a03bf463fc35d0d7",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -228,13 +228,13 @@
       "id": "REQ-005",
       "scenarios": [
         {
-          "given": "two instrument findings and a cap of three",
+          "given": "a run that meets the gate only if two `instrument` prompts are dropped, with a cap of three",
           "id": "SC-007",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T010.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "GateATests.test_reserve_replacement",
-          "then": "the first two reserve prompts in frozen order replace them and both originals stay in the report",
+          "then": "the verdict counts both as 0/3 and stays missed, and the two reserve results appear in the report only",
           "when": "replacement runs"
         },
         {
@@ -248,7 +248,7 @@
           "when": "replacement runs"
         }
       ],
-      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification, a prompt classified `instrument` MUST be replaced by the next prompt of a reserve frozen by sha256 with the split, in a preregistered draw order, up to the cap of OD-8, under the safeguards adopted in OD-18; the replaced prompt and its results stay in the record. Exceeding the cap invalidates the run. SPEC-079, where `instrument` invalidates the run, is unchanged."
+      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification, the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; the next prompt of a reserve frozen by sha256 with the split, in a preregistered draw order, is run in the same session block as the split and its result is added to the report only, up to the cap of OD-8 (a replaced reserve prompt counts toward the cap), under the safeguards adopted in OD-18. Exceeding the cap, or a host change before the reserve run, invalidates the run. SPEC-079, where `instrument` invalidates the run, is unchanged."
     },
     {
       "id": "REQ-006",
@@ -312,17 +312,17 @@
       "id": "REQ-009",
       "scenarios": [
         {
-          "given": "pilot variance, \u03b1, power, margin \u03b4 and target advantage \u0394",
+          "given": "pilot variances, \u03c1, c_p/c_r, \u03b1, power, \u03b4 and \u0394, and a second input where \u0394 exceeds the discordance upper bound",
           "id": "SC-013",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T006.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "SelectionTests.test_slice_sizing",
-          "then": "it returns the plan.md formula value computed with \u0394 \u2212 \u03b4",
+          "then": "it returns the plan.md formula values computed with \u0394 \u2212 \u03b4 and r*, and refuses the second input",
           "when": "the sizing function runs"
         }
       ],
-      "text": "Slice sized from the pilot. The slice size MUST come from the gate A noise pilot of REQ-032 (variance of paired differences, discordance rate) through the formula in plan.md, at the \u03b1 and power of OD-1 and OD-4 and the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3."
+      "text": "Slice sized from the pilot. The slice sizes MUST come from the gate A noise pilot of REQ-032 through the formulas in plan.md, at the \u03b1 and power of OD-1 and OD-4 and the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3: the elimination slice from the variance of the per-prompt valid-rate difference, the confirmation slice from the variance of the per-prompt majority-pass difference, and repetitions per slice prompt r* = max(1, round(\u221a((c_p/c_r)(1\u2212\u03c1)/\u03c1))). Sizing is refused when \u0394 exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it."
     },
     {
       "id": "REQ-010",
@@ -396,7 +396,7 @@
           "when": "arms are scheduled"
         }
       ],
-      "text": "Drift controls. Every real run under this specification MUST pin the host CLI version with auto-update off and the model; record the host, model and plugin versions per rollout; include A/A anchors each session, drawn from development prompts only during held-out runs; interleave arms in randomized blocks with a recorded seed; and require a new baseline after any host or model change."
+      "text": "Drift controls. Every real run under this specification MUST pin the host CLI version with auto-update off and the model; record the host, model and plugin versions per rollout; include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; interleave arms in randomized blocks with a recorded seed; and require a re-baseline after any host or model change. A re-baseline reruns the A/A pair and the twin on the new host; if any pilot estimate leaves its recorded interval, sizing reruns before the next freeze."
     },
     {
       "id": "REQ-014",
@@ -412,7 +412,7 @@
           "when": "the report is built"
         }
       ],
-      "text": "Run metadata. Run reports MUST carry `configDigest`, per-rollout host CLI, model and plugin versions, the tool-call count and whether the skill was invoked."
+      "text": "Run metadata. Run reports MUST carry `configDigest`, per-rollout host CLI, model and plugin versions, the server-reported model identifier, the tool-call count and whether the skill was invoked."
     },
     {
       "id": "REQ-015",
@@ -428,7 +428,7 @@
           "when": "Gate 0 evaluates the tripwire"
         }
       ],
-      "text": "Gate 0 invocation tripwire. Gate 0 of every split frozen under SPEC-090 or SPEC-091 MUST reject the held-out run when the invocation rate on a development twin is below the preregistered threshold of OD-9."
+      "text": "Gate 0 invocation tripwire. Gate 0 MUST reject a held-out run when the invocation rate on its development twin is below that gate's own threshold: for gate A, the T020 invocation rate on product-naming prompts minus the OD-9 margin; for gate B, the threshold of SPEC-091 REQ-015. One threshold is never applied to both gates."
     },
     {
       "id": "REQ-016",
@@ -588,7 +588,7 @@
           "when": "its outputs are read"
         }
       ],
-      "text": "Human promotion. A gate A pass MUST NOT promote a candidate; promotion stays human under SPEC-073 with SPEC-049 noninferiority."
+      "text": "Human promotion. A gate A pass MUST NOT promote a candidate; promotion stays human under SPEC-073 with SPEC-049 noninferiority, and a build that changes the skill description, server instructions, `_meta` or the hook also needs the same-build certification of SPEC-091 REQ-038."
     },
     {
       "id": "REQ-026",
@@ -696,11 +696,11 @@
           "planned_evidence": "Test or procedure output, T020.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "PilotTests.test_gate_a_noise_report",
-          "then": "it holds the correlation, the paired-difference variance, the discordance rate and A/A differences with intervals in the sizing input format",
+          "then": "it holds \u03c1, both paired-difference variances, the discordance, A/A differences and the invocation rate with intervals, and the measured c_p/c_r, in the sizing input format",
           "when": "its report is built"
         }
       ],
-      "text": "Gate A noise pilot. Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation, the variance of paired per-prompt differences between two candidate arms, their discordance rate and A/A drift, each with an interval."
+      "text": "Gate A noise pilot. Before the slice is sized, a gate A noise pilot MUST run in the current laboratory on fresh development prompts that name the product, at the size of OD-14, and estimate the within-prompt correlation \u03c1, the variances of the per-prompt valid-rate and majority-pass differences between two candidate arms, their majority-pass discordance, A/A drift and the invocation rate, each with an interval, and record the cost ratio c_p/c_r (authoring and freezing time per prompt over mean rollout time, both measured)."
     },
     {
       "id": "REQ-033",
@@ -770,8 +770,18 @@
       "id": "REQ-037",
       "scenarios": [
         {
-          "given": "a held-out run stopped by quota after which the host version changed",
+          "given": "a frozen protocol whose pinned host differs from the installed host",
           "id": "SC-042",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_host_mismatch_refuses_before_rollout",
+          "then": "it is refused before any rollout and the split stays unspent",
+          "when": "a run is requested"
+        },
+        {
+          "given": "a held-out run stopped by quota after which the host version changed",
+          "id": "SC-043",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -781,7 +791,7 @@
         },
         {
           "given": "a run stopped by quota with the host unchanged",
-          "id": "SC-043",
+          "id": "SC-044",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -790,14 +800,14 @@
           "when": "it is resumed"
         }
       ],
-      "text": "Stops, host changes and resume. A quota stop or a host or model change MUST stop the session with every completed rollout kept. A resume runs only on the same frozen bytes and the same pinned host and model, and fills exactly the missing (prompt, repetition) slots in their frozen order, never rerunning a completed slot or drawing a new prompt. When a host or model change blocks the resume of a held-out split, the run is `invalidated`, the split is spent and it is not rescored. SPEC-091 applies this rule unchanged."
+      "text": "Stops, host changes and resume. A frozen protocol pins the host version and model: a different host or model at start refuses the run before any rollout, requires a refreeze and does not spend the split. A held-out run starts only when the remaining quota estimate covers all its slots. A quota stop or a host or model change during a run MUST stop the session with every completed rollout kept. A resume runs only on the same frozen bytes and the same pinned host and model, after the earlier session's A/A anchors are compared with the new session's under OD-19, and fills exactly the missing (prompt, repetition) slots in their frozen order, never rerunning a completed slot or drawing a new prompt. When a host or model change blocks the resume of a held-out split, the run is `invalidated`, the split is spent and it is not rescored. SPEC-091 applies this rule unchanged."
     },
     {
       "id": "REQ-038",
       "scenarios": [
         {
           "given": "a run with an unreviewed 0/3 prompt and a canary hit",
-          "id": "SC-044",
+          "id": "SC-045",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T009.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -807,7 +817,7 @@
         },
         {
           "given": "a run whose lower bound and class rule hold but whose all-fail bound exceeds \u03c4",
-          "id": "SC-045",
+          "id": "SC-046",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T009.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -823,7 +833,7 @@
       "scenarios": [
         {
           "given": "a pilot run whose prompt file hash differs from the pilot freeze",
-          "id": "SC-046",
+          "id": "SC-047",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T020.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -839,7 +849,7 @@
       "scenarios": [
         {
           "given": "an A/A difference above the threshold",
-          "id": "SC-047",
+          "id": "SC-048",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -855,7 +865,7 @@
       "scenarios": [
         {
           "given": "a session cap smaller than the sized slice",
-          "id": "SC-048",
+          "id": "SC-049",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T006.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
@@ -864,7 +874,55 @@
           "when": "selection is configured"
         }
       ],
-      "text": "Selection stopping rule. Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent, then go to the confirmation test; the configurator rejects a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice."
+      "text": "Selection stopping rule. Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent, then go to the confirmation test; the configurator rejects a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice, and there is no default: the owner chooses a smaller pool, a larger \u0394 or no selection (OD-4)."
+    },
+    {
+      "id": "REQ-042",
+      "scenarios": [
+        {
+          "given": "an authored pool and a seed",
+          "id": "SC-050",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_seeded_partition",
+          "then": "both draws are identical and the three parts are disjoint and cover the pool",
+          "when": "the partition is drawn twice"
+        }
+      ],
+      "text": "Seeded partition of one pool. The split, the reserve and the twin of a gate MUST be drawn by a seeded random partition of one authored pool, with the seed recorded in the freeze."
+    },
+    {
+      "id": "REQ-043",
+      "scenarios": [
+        {
+          "given": "a gate A pool with one item lacking the product name",
+          "id": "SC-051",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_gate_a_item_names_product",
+          "then": "it rejects the pool before any rollout and names the item",
+          "when": "the builder runs"
+        }
+      ],
+      "text": "Product name in gate A items. The gate A builder MUST reject, with zero rollouts, any gate A item that does not name the product."
+    },
+    {
+      "id": "REQ-044",
+      "scenarios": [
+        {
+          "given": "a frozen split with its references and per-class null baselines",
+          "id": "SC-052",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T023.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "Gate0Tests.test_static_gate0",
+          "then": "every reference is valid, every null baseline misses the gate, and no rollout is spent",
+          "when": "static Gate 0 runs"
+        }
+      ],
+      "text": "Static Gate 0. Before the tripwire run, Gate 0 MUST score, with zero rollouts, the reference answer of every split prompt (all valid) and a rule-violating null baseline per class (gate not met), as SPEC-078 did."
     }
   ],
   "scientific_limits": "Simulations show properties of the procedures under their stated models only; real prompts are templated and clustered, so independence across prompts is an assumption; one host and model per run; cited 2026 preprints are leads; nothing is claimed about other hosts or real sessions.",
