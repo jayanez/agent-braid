@@ -32,7 +32,7 @@ Next: Record unresolved decisions as specific questions, or explicitly state tha
 Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/spec.md:73: - **REQ-003 — Item pool composition.** The item-set builder MUST reject a gate B item set that holds no near-miss items (prompts that resemble a tool use but are `tool-unnecessary`).
 - specs/091-invocation-gate/spec.md:80: - **REQ-006 — One difference per arm.** The comparison configurator MUST reject two compared arms that differ in more than one lever outside the preregistered factorials; compared arms share the pinned plugin build, host and model.
-- specs/091-invocation-gate/spec.md:88: - **REQ-010 — Size caps.** The candidate validator MUST reject, without truncating, a candidate above its host limit (re-verified against host documentation at T004; documented today as at most 1,536 characters for a skill description and at most 4,096 for server instructions) or above the ADR 0038 
+- specs/091-invocation-gate/spec.md:88: - **REQ-010 — Size caps.** The candidate validator MUST reject, without truncating, a candidate above its host limit (re-verified against host documentation at T004; documented today as at most 1,536 characters for a skill description and at most 4,096 for server instructions) or above the ADR 0038
 - specs/091-invocation-gate/spec.md:149: - **REQ-040 — Product name absent from gate B items.** The gate B builder MUST reject, with zero rollouts, any gate B item that contains the product name.
 Next: State the measurable outcome and operating conditions; ask for unknown values.
 
@@ -150,7 +150,7 @@ Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/tasks.md:31: - [ ] T007 (REQ-018 / SC-019): SIM: coverage of the item-level recall and false-positive bounds, type I and II error of each named 2×2 candidate analysis (paired McNemar per contrast, logistic mixed model with an item random effect, sign-flip permutation) for the main effects with Holm and for the T
 - specs/091-invocation-gate/tasks.md:32: - [ ] T010 (REQ-001, REQ-017, REQ-026, REQ-034, REQ-037, REQ-039 / SC-001, SC-018, SC-027, SC-035, SC-036, SC-039, SC-041): Gate B analysis: recall and false-positive rate over items with the OD-17 per-item outcome and bound, by label and class, near-misses separately, agreed-only subset; per-rollou
 - specs/091-invocation-gate/tasks.md:36: - [ ] T008 (REQ-012, REQ-035 / SC-013, SC-037): Gate B noise pilot: freeze its protocol section, items and builds, then, after the owner's yes, run it in the gate B laboratory on fresh development prompts that do not name the product: within-item correlation of invocation, candidate discordance, A/A
-- specs/091-invocation-gate/tasks.md:47: - [ ] T013 (REQ-009, REQ-020 / SC-021): Only when the best 2×2 cell that met OD-9 misses the OD-3 bounds on its 2×2 estimates (OD-20 (a)): generate one to three rounds of contrastive rewrites of the adopted targets from false positives and false negatives (5 to 20 candidates, SPEC-090 OD-7), with a 
+- specs/091-invocation-gate/tasks.md:47: - [ ] T013 (REQ-009, REQ-020 / SC-021): Only when the best 2×2 cell that met OD-9 misses the OD-3 bounds on its 2×2 estimates (OD-20 (a)): generate one to three rounds of contrastive rewrites of the adopted targets from false positives and false negatives (5 to 20 candidates, SPEC-090 OD-7), with a
 Next: Link each dependency or risk to the requirement or task it affects.
 
 ### P1.4 Dependency verification and failure handling — partial
@@ -185,7 +185,7 @@ Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/tasks.md:3: **Milestone:** provisional, BL.2c (OD-15).
 - specs/091-invocation-gate/tasks.md:20: ## Phase P0 — owner review
 - specs/091-invocation-gate/tasks.md:24: ## Phase P1 — items, laboratory, levers and target (no quota)
-- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md 
+- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md
 Next: Describe a delivery order and its prerequisites.
 
 ### P2.5 Completeness management — partial
@@ -279,7 +279,7 @@ Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/plan.md:3: ## Technical context and scope
 - specs/091-invocation-gate/tasks.md:22: - [ ] T001 (OD-1..OD-28, OD-B1, ADR 0046): Owner review of this specification and ADR 0046: commit the dated OD-B1 record (2026-11-27) and the strategy approval (2026-11-28); record the deliberate deviations from the approved plan, each with its reason: (1) its section 5 says the development factori
 - specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
-- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny
 Next: Keep behavior identifiable and place implementation choices in supporting artifacts.
 
 ### C1.3 Traceable transition to implementation — partial
@@ -287,7 +287,7 @@ Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/tasks.md:9: and the owner's yes: T008, T009 and T018 (development pilots, REQ-035), T012 (2×2 factorial), T019
 - specs/091-invocation-gate/tasks.md:13: Stops and resumes follow SPEC-090 REQ-037 (REQ-036).
 - specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
-- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny
 Next: Connect tasks to the requirements they implement.
 
 ### C2.1 Technical context and foundations — partial
@@ -299,8 +299,8 @@ Next: Document the technical context and required compatibility in the plan.
 Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/tasks.md:22: - [ ] T001 (OD-1..OD-28, OD-B1, ADR 0046): Owner review of this specification and ADR 0046: commit the dated OD-B1 record (2026-11-27) and the strategy approval (2026-11-28); record the deliberate deviations from the approved plan, each with its reason: (1) its section 5 says the development factori
 - specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
-- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
-- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md 
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny
+- specs/091-invocation-gate/tasks.md:28: - [ ] T004 (REQ-005, REQ-006, REQ-024, REQ-032, REQ-043 / SC-005, SC-007, SC-025, SC-033, SC-045): Lever arms as laboratory builds: `anthropic/alwaysLoad` in `analyze-work` `_meta`, MCP server instructions, use-case-first skill description as an overlay applied at build time (the canonical SKILL.md
 Next: Break delivery into individually checkable tasks.
 
 ### C2.3 Requirements-to-implementation traceability — partial
@@ -308,7 +308,7 @@ Textual signals found. Presence does not establish completeness or correctness.
 - specs/091-invocation-gate/tasks.md:9: and the owner's yes: T008, T009 and T018 (development pilots, REQ-035), T012 (2×2 factorial), T019
 - specs/091-invocation-gate/tasks.md:13: Stops and resumes follow SPEC-090 REQ-037 (REQ-036).
 - specs/091-invocation-gate/tasks.md:26: - [ ] T002 (REQ-002, REQ-003, REQ-019, REQ-027, REQ-028, REQ-040 / SC-002, SC-003, SC-020, SC-028, SC-029, SC-042): Labelling rubric, two independent labels with Cohen's κ per label pair against OD-21 (below it the rubric is revised and items relabelled), label record schema with sha256 freeze and v
-- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny 
+- specs/091-invocation-gate/tasks.md:27: - [ ] T003 (REQ-004, REQ-021, REQ-022, REQ-031 / SC-004, SC-022, SC-023, SC-032): Gate B laboratory profile with the OD-5 tools and pinned co-installed skills recorded in `configDigest`; other tools stay disabled; subscription-only guard. Files: `agent_braid/lightning_hosts.py` (tool allow and deny
 Next: Record the requirement IDs served by each task; links alone do not prove implementation.
 
 ### C2.4 Data models and evolution — partial
