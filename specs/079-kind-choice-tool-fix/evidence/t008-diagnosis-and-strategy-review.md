@@ -9,9 +9,12 @@ local run store, reported as counts only), **paper** (opened and read), **abstra
 
 ## 1. Summary
 
-- T008 measured a different construct from v2 and v3. On v4, the model called
-  `analyze-work` in 53 of 300 rollouts; when it called, the request was valid in 51
-  of 53. Authoring is near target. Unprompted invocation is not.
+- On v4 the model called `analyze-work` in 53 of 300 rollouts; when it called, the
+  first request was valid in 51 of 53 (28 of those first requests were `git`, 23
+  `aim`, 2 `units`, so this is a self-selected and class-skewed subset).
+- Hypothesis, not a finding: v4 mostly measured whether the model reaches for the
+  tool unprompted, a different construct from v2 and v3. Whether that makes the
+  0/3 prompts `model` or `instrument` is the owner's T009 classification.
 - The cause is not isolated. Seven things changed between v3 and v4 at once. The
   missing product name is one of them.
 - The proposed "Lightning evaluation v2" plan points the right way (separate
@@ -37,8 +40,9 @@ local run store, reported as counts only), **paper** (opened and read), **abstra
 | Seconds per rollout | 16.4 | 17.9 | 8.5 | repo |
 | Within-prompt correlation (ANOVA ICC) | 0.52 | 0.41 | 0.81 | own calculation |
 
-- Host version 2.1.311, model `claude-sonnet-5-5`, the skill hash and the lab config
-  digest (`c9e23177…`) are the same for v3 and v4 (repo, lab).
+- Host version 2.1.311, model `claude-sonnet-5-5` and the skill hash are the same
+  for v3 and v4 (repo). The config digest (`c9e23177…`) is also the same; the v3
+  value is in the lab only.
 - No v4 rollout passed without calling the tool (0 of 247). This follows from the
   SPEC-069 validity definition and is not a scorer artefact.
 - `gate-v4-report.json` now carries `configDigest` and an `invocation` block with the
@@ -49,8 +53,8 @@ local run store, reported as counts only), **paper** (opened and read), **abstra
 | # | Difference | v3-test | v4-test |
 |---|---|---|---|
 | 1 | Prompt names the product | 100/100 | 0/100 |
-| 2 | Grammatical form | 100 directives | 87 questions, 0 directives |
-| 3 | Completeness sentence ("Those are the only files involved.") | 0 | 90/100 |
+| 2 | Grammatical form | 100 directives naming the product | 87 questions, 13 non-questions, none naming the product |
+| 3 | Completeness sentence (three variants, such as "Those are the only files involved.") | 0 | 90/100 |
 | 4 | Tool descriptions (`agent_braid/tooling_mcp.py`) | pre-079 text | new `units` sentence and `analyze` help |
 | 5 | Class taxonomy | 10 classes of 10 | 7 new classes; no delete, deploy or partial |
 | 6 | Casual openers ("Quick sanity question…") | none | kind-choice-probe class |
@@ -65,8 +69,10 @@ behind it. A small factorial pilot on development prompts would measure it.
 - Under the 079 protocol an `instrument` finding invalidates the whole run and
   requires a new split version. It does not replace individual prompts.
 - Whether a prompt that states every fact needs the tool at all is a product
-  question the repository does not answer. The owner decided on 2026-11-27 to label
-  items as tool-necessary, tool-beneficial or tool-unnecessary before measuring.
+  question the repository does not answer. The owner stated on 2026-11-27, in the
+  planning session, that items should be labelled tool-necessary, tool-beneficial
+  or tool-unnecessary before measuring. That statement has no committed decision
+  record yet; the invocation spec should record it.
 
 ## 3. Review of the proposed "evaluation v2" plan
 
@@ -75,7 +81,7 @@ behind it. A small factorial pilot on development prompts would measure it.
 | Plan claim | Finding |
 |---|---|
 | Lightning optimizes the skill description and tool descriptions | The optimizer mutates only the skill body. Front matter is fixed (`lightning_resources.py`), `target.kind` accepts only `skill` (`lightning_config.py`), and the development set is the fixed SPEC-069 set, where every prompt names the product |
-| Add invocation text to the tool description | The description sits at about 1,499 of 1,500 tokens (ADR 0038 D12) |
+| Add invocation text to the tool description | A source comment in `tooling_mcp.py` puts the `analyze-work` definition at about 1,499 of the 1,500 approximate-token cap (ADR 0038 D12), which covers name, description and input schema together |
 | `parallel` 2 to 4 is already available | The configuration accepts it; the runner loop is sequential |
 | The gate B rates can be measured in the current lab | The lab disables Read, Grep, Glob and Bash and installs one plugin, so there is no competing tool or skill |
 | ADR 0039 must be amended for adaptive allocation and precision rewards | ADR 0039 does not address allocation, and section 5 already allows verifiable rewards |
@@ -84,7 +90,7 @@ behind it. A small factorial pilot on development prompts would measure it.
 
 ### 3.2 Statistics
 
-The four cited preprints exist. Two are overstated.
+The four cited preprints exist and were read (paper). Two are overstated.
 
 | arXiv id | Title | What it supports |
 |---|---|---|
@@ -100,17 +106,20 @@ Design findings:
    degree n or lower are identified (2609.09245, paper). The plan's stage-two gate
    certifies a quantity the data cannot estimate.
 2. **Moving to 300 prompts with one run each changes the estimand** from majority
-   pass to mean pass probability. With the measured correlation (0.41 to 0.52) and a
-   non-zero cost of authoring a prompt, about three repetitions is already close to
-   optimal (own calculation from 2611.26592).
+   pass to mean pass probability. With the measured correlation (0.41 to 0.52),
+   three repetitions is near the optimum when authoring and freezing one prompt
+   costs about 6 to 10 rollouts; at a cost ratio of 1 the optimum is one repetition
+   (own calculation from 2611.26592). The ratio is an assumption to measure.
 3. **Rerunning only the failures** is valid with a moment estimator and invalid with
    any rule of the form "failed, then passed 2 of 3, so reliable" (own derivation).
 4. **Five-case minibatches support no test.** The smallest two-sided exact McNemar
    p-value at n = 5 is 0.0625.
 5. **The zero-0/3 rule did not fail on noise.** The 0/3 prompts in v2 and v3 were
-   deterministic `units` choices, 25 to 100 times more frequent than independence
-   predicts, and SPEC-079 fixed them (`units` use 19 to 2 of 300). An identified
-   replacement is an exact upper bound on the all-fail rate E[(1−p)³].
+   reviewed as `model`, with `units` chosen on nearly every repetition, and were 25
+   to 100 times more frequent than independence predicts. `units` was chosen in 19
+   of 294 calling rollouts on v3 and 2 of 53 on v4; the sets are not paired, and the
+   H1 outcome is recorded in T010. An identified replacement is an exact upper
+   bound on the all-fail rate E[(1−p)³].
 6. The current Wilson bound with z = 1.96 is a one-sided 97.5 % bound with no
    coverage guarantee. An exact Clopper–Pearson bound is the preregisterable form.
 
@@ -157,7 +166,7 @@ Design findings:
 | A Gate 0 invocation tripwire before T008 | About 20 prompts and a few minutes would have shown the collapse without spending v4 |
 | Thompson Sampling adopted | No useful effect; see section 6 |
 
-## 5. Recommended strategy
+## 5. Proposed strategy (input for a future ADR, not adopted)
 
 Nothing below spends a held-out set until the pilots are done.
 
@@ -213,9 +222,8 @@ with noise.
 ## 8. Sources
 
 Papers (arXiv): 2512.21326, 2606.07726, 2610.09239, 2611.26592, 2609.09245,
-2610.04135, 2411.00640, 2306.02630, 1905.11397, 2103.12198, 2010.09686, 2610.05671,
-2611.22605, 2607.11944, 2606.30775, 2610.14216, 2611.23266, 2609.16268, 2605.14038,
-2402.09723, 2507.19457, 2608.17528.
+1905.11397, 2103.12198, 2610.05671, 2611.22605, 2606.30775, 2610.14216, 2611.23266,
+2609.16268.
 
 Upstream and host documentation: `github.com/microsoft/agent-lightning` (releases,
 `skills/assets/agl-skill.pdf`); `code.claude.com/docs/en/skills`, `/mcp`, `/hooks`,

@@ -6,8 +6,9 @@ Re-scores the stored results of the run with the unchanged SPEC-069 scorer, appl
 usage per class and overall, ``units-cannot-answer-independence`` refusals and their ``aim`` retries, rollouts
 that call ``analyze`` and never ``analyze-work``, the ``validWithinRetry`` passing share, the run's config digest
 and how many traced rollouts made no tool call or used ``ToolSearch``, ``Skill`` and ``analyze-work``. A missing rollout
-result counts as a failed rollout. No prompt text, transcript or model text is written, only ids, classes, counts
-and the scorer's first reason per failure.
+result counts as a failed rollout and a repeated ``rolloutId`` keeps its last result. No prompt text or transcript
+is written, only ids, classes, counts and the scorer's first reason per failure; that reason is scorer text and
+can quote a refusal or a request field value.
 
     python -m scripts.spec079_gate_report --run-id <id> [--home <lab home>] [--review <review.json>] \\
         > specs/079-kind-choice-tool-fix/evidence/gate-v4-report.json
@@ -60,7 +61,9 @@ def report(home: Path, run_id: str, review: dict | None = None) -> dict:
     run = store.RunStore(home, run_id)
     cases = json.loads((ROOT / v4.PROMPT_FILES[PROMPT_SET]).read_text())['cases']
     by_id = {c['id']: c for c in cases}
-    results = [r.value for r in run.read('result')]
+    results = list({r.value['rolloutId']: r.value for r in run.read('result')}.values())  # a rerun replaces
+    if not results:
+        raise SystemExit('refused: the run has no results')
     if {r['promptSetSha256'] for r in results} - {sha}:
         raise SystemExit('refused: the run is not on the frozen v4-test split')
     traces = {line['record']['attemptId']: line['record'] for line in run.read_content() if 'record' in line}
@@ -139,7 +142,8 @@ def report(home: Path, run_id: str, review: dict | None = None) -> dict:
                                'firstAttempt': _share(first_pass, len(cases))},
         'firstRequestKind': dict(sorted(first_kind.items())),
         'configDigest': run.manifest()['configDigest'],
-        'invocation': invocation([[c['tool'] for c in t.get('toolCalls', [])] for t in traces.values()]),
+        'invocation': invocation([[c['tool'] for c in traces[r['attemptId']].get('toolCalls', [])]
+                                  for r in results if r['attemptId'] in traces]),
         'failures': failures, 'executionAuthorization': False,
     }
 

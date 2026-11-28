@@ -7,7 +7,9 @@ import json
 from pathlib import Path
 import unittest
 
+from agent_braid import lightning_store as store
 from scripts import spec079_gate_report as gate
+from tests.test_spec079_runner import V4Root
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / 'specs/079-kind-choice-tool-fix/evidence/gate-v4-report.json'
@@ -45,15 +47,36 @@ class CommittedReportTests(unittest.TestCase):
         self.assertEqual(len(record['configDigest']), 64)
         self.assertEqual(sorted(record['zeroPrompts']), sorted(record['analysis']['zeroPrompts']))
 
-    def test_no_prompt_or_model_text_is_recorded(self):
-        text = json.dumps(self.record)
-        for key in ('"prompt"', '"response"', '"transcript"'):
-            self.assertNotIn(key, text)
+    def test_failures_carry_only_ids_classes_and_bounded_scorer_reasons(self):
+        for failure in self.record['failures']:
+            self.assertEqual(set(failure), {'rolloutId', 'class', 'reason'})
+            self.assertLessEqual(len(failure['reason']), 400)
 
     def test_the_report_reproduces_from_the_lab_run(self):
         if not (gate.LAB / 'lightning/runs' / self.record['runId']).is_dir():
             self.skipTest('the lab run is local to the owner machine')
-        self.assertEqual(gate.report(gate.LAB, self.record['runId']), self.record)
+        review = self.record['analysis']['review'] or None
+        self.assertEqual(gate.report(gate.LAB, self.record['runId'], review), self.record)
+
+
+class FakeRunReportTests(V4Root):
+    def test_a_fake_run_is_reported_whole_and_a_wrong_review_is_refused(self):
+        status = self.run_fake()
+        record = gate.report(self.home, status['runId'])
+        self.assertEqual(record['rollouts'], 300)
+        self.assertEqual(record['missingResults'], [])
+        self.assertEqual(sum(record['firstRequestKind'].values()), 300)
+        self.assertEqual(record['configDigest'], store.RunStore(self.home, status['runId']).manifest()['configDigest'])
+        self.assertEqual(len(record['failures']), 300 - round(record['analysis']['trialRate'] * 300))
+        self.assertLessEqual(record['invocation']['tracedRollouts'], 300)
+        with self.assertRaises(SystemExit):
+            gate.report(self.home, status['runId'], {'V4T-000': {'classification': 'model'}})
+
+    def test_a_run_without_results_is_refused(self):
+        store.RunStore(self.home, 'run-empty').create(config_digest='0' * 64)
+        with self.assertRaises(SystemExit) as caught:
+            gate.report(self.home, 'run-empty')
+        self.assertIn('no results', str(caught.exception))
 
 
 if __name__ == '__main__':
