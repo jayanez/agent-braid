@@ -413,6 +413,14 @@
     "089-analyze-work-validity-codex-opencode": {
       "milestone": "Host parity",
       "state": "open"
+    },
+    "090-lightning-evaluation-v2": {
+      "milestone": "BL.2c — Lightning tool-level kind-choice fix",
+      "state": "open"
+    },
+    "091-invocation-gate": {
+      "milestone": "BL.2c — Lightning tool-level kind-choice fix",
+      "state": "open"
     }
   },
   "task_state_overrides": {

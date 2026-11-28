@@ -17,7 +17,7 @@ Method: counts computed on 2026-11-26 at `develop` `02b19545` from `specs/`,
 
 | Item | Value | Source |
 | --- | --- | --- |
-| Specs | 84 (`specs/*/spec.md`; SPEC-087 to SPEC-089 added 2026-11-27), all assigned to a milestone | `specs/`, `github-tracking.json` (`specs`) |
+| Specs | 86 (`specs/*/spec.md`; SPEC-087 to SPEC-089 added 2026-11-27, SPEC-090 and SPEC-091 added 2026-11-28), all assigned to a milestone | `specs/`, `github-tracking.json` (`specs`) |
 | Published milestones | 39: 28 closed, 11 open (M4.5 reopened on 2026-11-27 for #425; Host parity created 2026-11-27) | GitHub milestones API |
 | Unpublished milestone | 1 (M4.6 — Claude Code dynamic workflows; no remote record) | `github-tracking.json` (`unpublished_milestones`) |
 | Latest plugin release | `0.1.0-alpha.9`, tag `agent-braid--v0.1.0-alpha.9`, published 2026-11-16; rollback target `0.1.0-alpha.8` | [release notes](tooling/RELEASE_NOTES_ALPHA9.md), `git ls-remote --tags` |
