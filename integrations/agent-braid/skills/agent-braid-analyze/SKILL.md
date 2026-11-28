@@ -1,7 +1,8 @@
 ---
 name: agent-braid-analyze
 description: Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.
-license: CC-BY-SA-4.0
+metadata:
+  license: CC-BY-SA-4.0
 ---
 
 # Analyze interactions

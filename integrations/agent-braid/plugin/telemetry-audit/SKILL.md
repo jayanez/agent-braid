@@ -1,7 +1,8 @@
 ---
 name: telemetry-audit
 description: Use before a wave of work, or when the Agent Braid MCP was down or looked unreliable, to audit startup refusals and host-log versus local-telemetry gaps read-only.
-license: CC-BY-SA-4.0
+metadata:
+  license: CC-BY-SA-4.0
 ---
 
 # Audit plugin telemetry and host logs

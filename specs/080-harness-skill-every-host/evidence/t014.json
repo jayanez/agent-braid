@@ -1,0 +1,80 @@
+{
+  "schema": "agent-braid-task-evidence/v1",
+  "spec": "080-harness-skill-every-host",
+  "task": "T014",
+  "requirements": ["REQ-005"],
+  "successCriteria": ["SC-005"],
+  "procedure": "procedure_005 (loader and build-check part only)",
+  "decision": "OD-2 in evidence/t001-owner-review.md: license moves into metadata in all skills",
+  "date": "2026-11-24",
+  "note": "The broader runs below were made on the same file bytes before rebasing from af798c1f to 54d195cc; the rebase brought only SPEC-080 T009 and SPEC-084 documentation and evidence.",
+  "baseCommit": "54d195cc0159c4ba564766049fca1a4e5093f0cc",
+  "candidateCommit": "e07bf04a865df2ed894ccc332882f22850b1db66",
+  "environment": {
+    "os": "Darwin 27.2.0 (macOS, arm64)",
+    "python": "/opt/homebrew/bin/python3.13 (3.13.11)",
+    "network": "not used; the build tests replace downloads and pip with fixtures"
+  },
+  "change": {
+    "frontmatterForm": "metadata:\\n  license: CC-BY-SA-4.0 (Agent Skills metadata map, YAML block form)",
+    "parser": "agent_braid/tooling_assets.py parse_skill_frontmatter: line-based, single-line name, description and optional compatibility (at most 500 characters), and a one-level metadata map of two-space-indented key: value lines (at most 16 entries). metadata.license is required and must be CC-BY-SA-4.0. A top-level license, any other top-level key, a duplicate key, an empty value, a metadata entry outside the map and a nested line are refused with SkillBundleError. No new dependency; the 32 KiB size limit and UTF-8 and NUL checks are unchanged.",
+    "publicInventory": "SkillAsset.license and inventory()['skills'][i]['license'] keep their shape and value (CC-BY-SA-4.0); the value is now read from metadata.license.",
+    "buildCheck": "scripts/build_native_plugin.py check_package_names runs parse_skill_frontmatter on every packaged skill (all seven, including the plugin-only setup and telemetry-audit) after the existing name check, and reports a failure as 'Naming policy violation: <loader message>'."
+  },
+  "filesChanged": [
+    {"path": "agent_braid/tooling_assets.py", "sha256": "c9fba75e16dda41576c906043cb32e21bc9df0781f7b305c780533ad3ad46e9f"},
+    {"path": "scripts/build_native_plugin.py", "sha256": "4323d515ad3169e18d44d3aca669e9a2a75abe33f1bbe377adcec74b5c4904bd"},
+    {"path": "tests/test_tooling_assets.py", "sha256": "9ba11474425c8d5b99f2b65c03e163c7a57c31879e9e0b18ffb8e6bec73f3354"},
+    {"path": "tests/test_plugin_skill_naming.py", "sha256": "604e9ba54c9a4e4cb9c52f3c4d160011714f53f0eab852b3a03aeef632d1d795"},
+    {"path": "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md", "sha256": "c1c9c5e8a5bd9b3dc18cbfd12d220541f3e40559065860c4dcdc14978310fa41", "previousSha256": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f"},
+    {"path": "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md", "sha256": "052877cbeddb905e017f0a6f42e28afce1fbe0843caed96a7c2a1400b62b204a", "previousSha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1"},
+    {"path": "integrations/agent-braid/skills/agent-braid-execute/SKILL.md", "sha256": "84c14714f087dee5aebea4f0bb609dfc1c1ecfa454398ca89cb29443d11287fe", "previousSha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43"},
+    {"path": "integrations/agent-braid/skills/agent-braid-plan/SKILL.md", "sha256": "ccc3cce710567af0e77bf2f0fe9188798857abec96e322dc0a1d0b3974c5e5b5", "previousSha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3"},
+    {"path": "integrations/agent-braid/skills/agent-braid-recover/SKILL.md", "sha256": "699383dc46508ac21f0a98a7ebe1b360e135b08bd072e3220dbcc2cb49735ae4", "previousSha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f"},
+    {"path": "integrations/agent-braid/plugin/setup/SKILL.md", "sha256": "b1083cbfdb00b47b6dc5a0e71feb582f5cf0c3bf62337138fdad2fa977b9799a", "previousSha256": "d0a5afc93081d2aac65203bb752bd60f279c5332759d5f1ef93f0557b377584a"},
+    {"path": "integrations/agent-braid/plugin/telemetry-audit/SKILL.md", "sha256": "00b41fc4f953eb8f074a3c3a88f3b065b5a30adb22a2b6aeb788ddcb8f35b9d2", "previousSha256": "3312f4af9878e6cd9332d77733022e7e6d115e0be146e4d4e5bd0045eded4ac0"}
+  ],
+  "consumers": [
+    {"path": "agent_braid/tooling_assets.py", "parsesFrontmatter": true, "change": "replaced the name|description|license line parser with parse_skill_frontmatter; license read from metadata.license"},
+    {"path": "scripts/build_native_plugin.py", "parsesFrontmatter": true, "change": "check_package_names validates every packaged skill's frontmatter; package_skill (name rewrite, FRONTMATTER_NAME) unchanged because it only matches the unindented name line"},
+    {"path": "integrations/agent-braid/plugin/opencode/index.js", "parsesFrontmatter": true, "change": "none; readSkill reads only the description line, which is unchanged"},
+    {"path": "agent_braid/plugin_opencode.py", "parsesFrontmatter": false, "change": "none; lists SKILL.md paths only"},
+    {"path": "build_support.py", "parsesFrontmatter": false, "change": "none; copies the five canonical SKILL.md files byte for byte into the wheel (agent_braid/tooling_assets/skills); there is no committed packaged copy"},
+    {"path": "agent_braid/lightning_resources.py and agent_braid/lightning_arm.py", "parsesFrontmatter": "splits front matter from body", "change": "none; no committed candidate store or promotion export pins the analyze front matter (integrations/lightning-promotion/ does not exist)"},
+    {"path": "agent_braid/harness_skills.py", "parsesFrontmatter": true, "change": "none; it parses a different skill-surface catalog format (triggers), not these seven skills"},
+    {"path": "agent_braid/lightning_heldout_v2.py, lightning_heldout_v3.py, lightning_heldout_v4.py, scripts/spec079_freeze.py", "parsesFrontmatter": false, "change": "none; these bind the analyze SKILL.md bytes by SHA-256 (see limits: the SPEC-079 v4 freeze no longer holds)"}
+  ],
+  "testsAdded": [
+    "tests.test_tooling_assets.ToolingAssetTests.test_frontmatter_identity_and_instruction_bounds (updated: metadata.license present, no top-level license, top-level keys exactly name, description, metadata)",
+    "tests.test_tooling_assets.ToolingAssetTests.test_inventory_license_reads_metadata_license",
+    "tests.test_tooling_assets.ToolingAssetTests.test_frontmatter_guards_refuse_with_a_mutation_control_each",
+    "tests.test_tooling_assets.ToolingAssetTests.test_parse_skill_frontmatter_returns_the_four_agent_skills_fields",
+    "tests.test_plugin_skill_naming.SkillNamingTests.test_every_packaged_skill_carries_metadata_license_only",
+    "tests.test_plugin_skill_naming.SkillNamingTests.test_frontmatter_guards_fail_the_build_check_with_a_mutation_control_each"
+  ],
+  "commands": [
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_tooling_assets tests.test_plugin_skill_naming", "when": "after writing the tests, before the parser change and the migration", "result": "FAILED (failures=22, errors=1) in 25 tests: the expected red"},
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_tooling_assets tests.test_native_plugin_build tests.test_plugin_skill_naming", "when": "candidate (re-run after rebasing onto 54d195cc)", "result": "OK, 44 tests"},
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_*plugin*.py\"", "when": "candidate", "result": "OK, 229 tests, skipped=7"},
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_tooling*.py\"", "when": "candidate", "result": "FAILED (errors=6, skipped=15) in 797 tests; all six are ModuleNotFoundError: No module named 'jsonschema' in this interpreter (test_tooling_mcp setUpClass, test_tooling_mcp_acceptance sc003 and sc006, test_tooling_mcp_descriptions and test_tooling_mcp_units_redirect imports, test_tooling_telemetry analyze_git). None reaches the changed code; not re-run with jsonschema installed."},
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_spec078_v3 tests.test_spec078_heldout_v2 tests.test_spec078_gate1_report tests.test_lightning_arm tests.test_opencode_entry tests.test_onboarding_docs tests.test_validation_profiles", "when": "candidate", "result": "OK for each module"},
+    {"command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_spec079_runner", "when": "base af798c1f (before the change), then candidate", "result": "base OK; candidate FAILED (failures=18, errors=4): FreezeError 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md differs from the v4 freeze' (skill-hash-mismatch)"}
+  ],
+  "negativeControls": [
+    {"guard": "top-level license refused", "fixture": "metadata.license kept and a top-level 'license: CC-BY-SA-4.0' added", "control": "the same line under the allowed key compatibility loads", "loader": "refused: 'skill license must be metadata.license, not top level'", "buildCheck": "refused for setup, telemetry-audit and plan"},
+    {"guard": "missing metadata.license refused", "fixture": "metadata map holding only owner", "control": "the same map with license plus owner loads", "loader": "refused: 'skill metadata.license is missing'; a frontmatter without any metadata map is refused with 'requires name, description and metadata'", "buildCheck": "refused for setup, telemetry-audit and plan"},
+    {"guard": "unknown top-level key refused", "fixture": "allowed-tools: Bash", "control": "compatibility: Requires a shell. loads", "loader": "refused: 'unsupported skill frontmatter field allowed-tools'", "buildCheck": "refused for setup, telemetry-audit and plan"},
+    {"guard": "metadata.license other than CC-BY-SA-4.0 refused", "fixture": "metadata.license: MIT", "control": "metadata.license: CC-BY-SA-4.0 plus owner loads", "loader": "refused: 'license must be CC-BY-SA-4.0'", "buildCheck": "refused for setup, telemetry-audit and plan"},
+    {"guard": "map shape", "fixture": "a metadata entry after another top-level key, a duplicate metadata.license, and a four-space nested line", "control": "metadata.license plus owner loads", "loader": "refused with 'outside the metadata map', 'duplicate skill metadata field license' and 'unsupported skill frontmatter line'"},
+    {"guard": "implementation mutation", "procedure": "each of the four guards removed from tooling_assets.py in turn (the missing-license guard replaced by a default), both guard tests run, original bytes restored and compared", "result": "every removal made both guard tests fail (loader test failures=1, build-check test failures=3 each); file restored byte-identical"}
+  ],
+  "limits": [
+    "SPEC-079 conflict: the SPEC-079 v4 freeze (specs/079-kind-choice-tool-fix/prompts/FREEZE-v4.json, develop 331a384e) binds the analyze SKILL.md bytes 8fb7c5cd... and T008 (the 300-rollout v4 run) is still open. After this change agent_braid.lightning_heldout_v4.check_freeze refuses the v4 run with skill-hash-mismatch and tests.test_spec079_runner fails. Resolving it (run SPEC-079 T008 first, or a dated re-freeze decision) is an owner decision and is not made here.",
+    "The SPEC-078 v2 and v3 freezes also bind the old analyze hash; their tests use copies and still pass, and those splits are closed.",
+    "Only the loader and build-check part of procedure_005 ran. The eight-skill count, the harness skill and a full built plugin in all three host layouts belong to T003 and T005.",
+    "No real host loaded the migrated skills. Whether Claude Code, Codex and OpenCode accept metadata.license was not observed.",
+    "The Agent Skills specification at agentskills.io was not fetched; the metadata map form follows the task brief.",
+    "Historical evidence records that quote the old frontmatter or old skill hashes were not changed."
+  ],
+  "executionAuthorization": false
+}

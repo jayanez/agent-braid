@@ -25,11 +25,32 @@ SKILL_NAMES = (
 )
 _MAX_SKILL_BYTES = 32 * 1024
 _EXPECTED_LICENSE = "CC-BY-SA-4.0"
-_FRONTMATTER_LINE = re.compile(r"^(name|description|license): (.+)$")
+# SPEC-080 OD-2: only the Agent Skills fields name, description, compatibility and a
+# one-level metadata map; the license is metadata.license.
+_FRONTMATTER_FIELDS = frozenset({"name", "description", "compatibility", "metadata"})
+_REQUIRED_FRONTMATTER_FIELDS = frozenset({"name", "description", "metadata"})
+_FRONTMATTER_LINE = re.compile(r"^([A-Za-z][A-Za-z0-9_-]*):(?: (.*))?$")
+_METADATA_LINE = re.compile(r"^  ([A-Za-z][A-Za-z0-9_.-]*): (.+)$")
+_MAX_COMPATIBILITY_CHARS = 500
+_MAX_METADATA_ENTRIES = 16
 
 
 class SkillBundleError(ValueError):
     """The installed or source skill bundle is missing or invalid."""
+
+
+@dataclass(frozen=True)
+class SkillFrontmatter:
+    """The validated Agent Skills frontmatter of one skill document."""
+
+    name: str
+    description: str
+    compatibility: str | None
+    metadata: tuple[tuple[str, str], ...]
+
+    @property
+    def license(self) -> str:
+        return dict(self.metadata)["license"]
 
 
 @dataclass(frozen=True)
@@ -180,22 +201,29 @@ def _read_skill(directory, expected_name: str, *, source_root: Path | None) -> S
         raise SkillBundleError(f"skill document is not UTF-8: {expected_name}") from exc
     if "\x00" in content:
         raise SkillBundleError(f"skill document contains a NUL byte: {expected_name}")
-    metadata = _parse_frontmatter(content, expected_name)
-    if metadata["name"] != expected_name:
+    frontmatter = parse_skill_frontmatter(content, expected_name)
+    if frontmatter.name != expected_name:
         raise SkillBundleError(f"skill frontmatter name does not match directory: {expected_name}")
-    if metadata["license"] != _EXPECTED_LICENSE:
-        raise SkillBundleError(f"skill license must be {_EXPECTED_LICENSE}: {expected_name}")
     return SkillAsset(
         name=expected_name,
-        description=metadata["description"],
-        license=metadata["license"],
+        description=frontmatter.description,
+        license=frontmatter.license,
         content=content,
         sha256=hashlib.sha256(raw).hexdigest(),
         size_bytes=len(raw),
     )
 
 
-def _parse_frontmatter(content: str, name: str) -> dict[str, str]:
+def parse_skill_frontmatter(content: str, name: str) -> SkillFrontmatter:
+    """Parse and validate the bounded frontmatter subset of one skill document.
+
+    Accepts only single-line ``name``, ``description`` and optional ``compatibility``
+    values and a one-level ``metadata`` map of two-space-indented ``key: value`` lines.
+    ``metadata.license`` is required and must be CC-BY-SA-4.0; a top-level ``license``
+    or any other field is refused. ``name`` identifies the skill in error messages;
+    callers compare ``SkillFrontmatter.name`` with the expected directory themselves.
+    """
+
     lines = content.splitlines()
     if not lines or lines[0] != "---":
         raise SkillBundleError(f"skill must start with YAML frontmatter: {name}")
@@ -204,19 +232,56 @@ def _parse_frontmatter(content: str, name: str) -> dict[str, str]:
     except ValueError as exc:
         raise SkillBundleError(f"skill frontmatter is not closed: {name}") from exc
     fields: dict[str, str] = {}
+    metadata: dict[str, str] = {}
+    in_metadata = False
     for line in lines[1:end]:
+        entry = _METADATA_LINE.fullmatch(line)
+        if entry is not None:
+            if not in_metadata:
+                raise SkillBundleError(f"skill metadata entry is outside the metadata map: {name}")
+            key, value = entry.groups()
+            if key in metadata:
+                raise SkillBundleError(f"duplicate skill metadata field {key}: {name}")
+            if not value.strip():
+                raise SkillBundleError(f"skill metadata field {key} is empty: {name}")
+            metadata[key] = value.strip()
+            continue
         match = _FRONTMATTER_LINE.fullmatch(line)
         if match is None:
-            raise SkillBundleError(f"unsupported skill frontmatter field: {name}")
+            raise SkillBundleError(f"unsupported skill frontmatter line: {name}")
         key, value = match.groups()
+        if key == "license":
+            raise SkillBundleError(f"skill license must be metadata.license, not top level: {name}")
+        if key not in _FRONTMATTER_FIELDS:
+            raise SkillBundleError(f"unsupported skill frontmatter field {key}: {name}")
         if key in fields:
             raise SkillBundleError(f"duplicate skill frontmatter field {key}: {name}")
+        in_metadata = key == "metadata"
+        if in_metadata:
+            if value is not None:
+                raise SkillBundleError(f"skill metadata must be a map of indented key: value lines: {name}")
+            fields[key] = ""
+            continue
+        if value is None or not value.strip():
+            raise SkillBundleError(f"skill {key} is empty: {name}")
         fields[key] = value.strip()
-    if set(fields) != {"name", "description", "license"}:
-        raise SkillBundleError(f"skill frontmatter requires name, description and license: {name}")
-    if not fields["description"]:
-        raise SkillBundleError(f"skill description is empty: {name}")
-    return fields
+    if not _REQUIRED_FRONTMATTER_FIELDS <= set(fields):
+        raise SkillBundleError(f"skill frontmatter requires name, description and metadata: {name}")
+    if len(metadata) > _MAX_METADATA_ENTRIES:
+        raise SkillBundleError(f"skill metadata exceeds {_MAX_METADATA_ENTRIES} entries: {name}")
+    if "license" not in metadata:
+        raise SkillBundleError(f"skill metadata.license is missing: {name}")
+    if metadata["license"] != _EXPECTED_LICENSE:
+        raise SkillBundleError(f"skill license must be {_EXPECTED_LICENSE}: {name}")
+    compatibility = fields.get("compatibility")
+    if compatibility is not None and len(compatibility) > _MAX_COMPATIBILITY_CHARS:
+        raise SkillBundleError(f"skill compatibility exceeds {_MAX_COMPATIBILITY_CHARS} characters: {name}")
+    return SkillFrontmatter(
+        name=fields["name"],
+        description=fields["description"],
+        compatibility=compatibility,
+        metadata=tuple(metadata.items()),
+    )
 
 
 __all__ = [
@@ -225,5 +290,7 @@ __all__ = [
     "SkillAsset",
     "SkillBundle",
     "SkillBundleError",
+    "SkillFrontmatter",
     "load_skill_bundle",
+    "parse_skill_frontmatter",
 ]

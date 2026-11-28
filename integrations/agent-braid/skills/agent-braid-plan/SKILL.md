@@ -1,7 +1,8 @@
 ---
 name: agent-braid-plan
 description: Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.
-license: CC-BY-SA-4.0
+metadata:
+  license: CC-BY-SA-4.0
 ---
 
 # Prepare an advisory plan

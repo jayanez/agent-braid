@@ -22,7 +22,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from agent_braid.plugin_package import check_lightning_promotions, file_hash, inventory, verify_package
-from agent_braid.tooling_assets import load_skill_bundle
+from agent_braid.tooling_assets import SkillBundleError, load_skill_bundle, parse_skill_frontmatter
 
 VERSION = '0.1.0-alpha.9'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
@@ -97,7 +97,8 @@ def check_package_names(staging, *, opencode=False):
     """Fail unless every SPEC-054 packaged name matches the naming policy.
 
     ``staging`` is the marketplace root holding ``plugins/agent-braid``. A ``package.json`` is
-    checked whenever present (SPEC-068) and required with ``opencode=True``."""
+    checked whenever present (SPEC-068) and required with ``opencode=True``. Every packaged
+    skill's frontmatter must pass ``parse_skill_frontmatter`` (SPEC-080 OD-2)."""
     staging = Path(staging)
     plugin = staging / 'plugins' / PLUGIN_NAME
 
@@ -133,6 +134,11 @@ def check_package_names(staging, *, opencode=False):
         text = (skills / directory / 'SKILL.md').read_text()
         match = FRONTMATTER_NAME.search(text.partition('\n---\n')[0])
         require(match and match.group(1) == directory, f'skill {directory} frontmatter name differs from directory')
+        # SPEC-080 OD-2: only name, description, compatibility and metadata; license is metadata.license.
+        try:
+            parse_skill_frontmatter(text, directory)
+        except SkillBundleError as exc:
+            require(False, str(exc))
         require(NAME_PATTERN.match(directory) and len(directory) <= 64, f'skill name {directory} is not portable')
         for path in (skills / directory).rglob('*'):
             if path.is_file() and PREFIXED_TOKEN.search(path.read_text(errors='ignore')):
