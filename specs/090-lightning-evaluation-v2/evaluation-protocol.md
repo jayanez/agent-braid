@@ -5,7 +5,7 @@ stays open until T001. T016 completes this file and freezes it by sha256 on a `d
 rollout (T022 Gate 0, T017 gate A run) may start before that freeze, the committed simulation record
 (T004 to T007 and T019) and the owner's yes for that run. The gate A noise pilot (T020) is a development
 run: it needs the simulation record of T004 to T007, its own pilot freeze (protocol section, prompts and
-arms by sha256, REQ-039) and the owner's yes; it never uses held-out, reserve, twin or audit prompts.
+the [OD-21] arms by sha256, REQ-039) and the owner's yes; it never uses held-out, reserve, twin or audit prompts.
 
 ## Simulation stage (no quota)
 
@@ -30,11 +30,15 @@ changes.
 
 - Split: one authored pool of prompts that name the product (the builder refuses any item that does not,
   with zero rollouts), partitioned by a recorded seed into a split of [OD-13], a reserve of [OD-8] and a
-  development twin of [OD-9]; leakage checks against SPEC-069, v2, v3 and v4 (REQ-024).
-- Host `claude-code`, model pinned, host CLI pinned with auto-update off, subscription route, EUR 0.
+  development twin of [OD-9]; leakage checks against SPEC-069, v2, v3, v4 and the frozen audit set
+  (REQ-024). Before the freeze, the instrument safeguards of [OD-18].
+- Arm under test: [OD-17], named by plugin commit and artifact digests.
+- Host `claude-code`, model pinned, host CLI pinned with auto-update off, subscription route, EUR 0. A/A
+  anchors of [OD-20] size each session.
 - Three repetitions per prompt (REQ-007). Missing results count as failed repetitions.
 - Gate 0: first static, with zero rollouts (every reference valid, a rule-violating null baseline per class
-  below the gate); then the invocation tripwire on the twin at the T020 rate minus the [OD-9] margin.
+  below the gate); then the invocation tripwire on the twin at the T020 invocation rate of the shipped-build arm minus the
+  [OD-9] margin.
 - Verdict (REQ-038). `met` when all three hold:
   1. exact one-sided Clopper–Pearson lower bound of the passing share at α = [OD-1] is at least 0.80;
   2. exact upper bound of the all-fail rate at α = [OD-1] is at most τ = [OD-2];
@@ -43,7 +47,8 @@ changes.
   event: canary hit, cap [OD-8] exceeded, host or model change before the reserve run, blocked held-out
   resume, the [OD-19] invalidate action) over `held` (an unreviewed 0/3 prompt, an unfilled slot, or the
   [OD-19] hold action) over `missed` and `met`. Every `instrument` prompt counts as 0/3; the next reserve
-  prompt of the same class runs in the same session block and is reported only. The gate is conjunctive,
+  prompt of the same class runs on the same frozen bytes and the same pinned host and model as the split and
+  is reported only. The gate is conjunctive,
   so a false `met` stays at or below α (intersection–union).
 
 ## Selection (development use)
@@ -51,8 +56,9 @@ changes.
 Candidates are compared on one fixed slice sized from the gate A noise pilot of [OD-14] by the plan.md
 formula with [OD-3] (δ and Δ) and [OD-4],
 synchronized rounds stopped when one candidate survives or the budget is spent, the rule of [OD-11], then
-the majority-pass replacement test on a disjoint confirmation slice with Holm at [OD-16], the incumbent kept
-unless the margin is met, and the winner scored once on the audit set of [OD-5].
+the majority-pass replacement test of at most the [OD-7] maximum of challengers on a disjoint confirmation
+slice with Holm at [OD-16], the incumbent kept unless the margin is met, and the winner and its incumbent
+each scored once on the audit set of [OD-5].
 
 ## Report
 

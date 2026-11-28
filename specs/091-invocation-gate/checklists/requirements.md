@@ -22,8 +22,8 @@ scientific proof or approval.
 ## Empirical protocol
 
 - [ ] CHK-008: Labels are human proxy labels assigned before measurement, with a stated adjudication and agreement report. (REQ-002, OD-2)
-- [ ] CHK-009: Leakage control against SPEC-069, v2, v3 and v4; v4 reuse only per OD-1. (REQ-019)
-- [ ] CHK-010: Simulations precede real runs; each real run has its own freeze and owner yes. (REQ-018, tasks.md)
+- [ ] CHK-009: Leakage control against SPEC-069, v2, v3 and v4 and against every pilot, screening, 2×2, selection and audit item for the held-out pool; v4 reuse only per OD-1. (REQ-014, REQ-019; T002, T014)
+- [ ] CHK-010: Simulations precede real runs; each real run has its own freeze and owner yes. (REQ-018, REQ-045, tasks.md)
 - [ ] CHK-011: Hypotheses H1 to H3 are preregistered and none is a completion condition. (spec.md Scientific boundaries)
 - [ ] CHK-012: Cost is stated and EUR 0; no LLM judge. (REQ-021, Non-functional requirements)
 

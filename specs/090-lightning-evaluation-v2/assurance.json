@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "276815c75f9723e65c6c64e2ad9251f1fe9fb754d93ae0e9a98dbb570cb66cfe",
+      "docs/adr/0046-lightning-evaluation-design.md": "41b112ff949521b258869ec31b742e405619c97489649ab9f5eca29a205a4c03",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -154,7 +154,7 @@
           "when": "the gate A analysis scores it"
         }
       ],
-      "text": "Gate A unit and outcome. Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result counts as a failed repetition."
+      "text": "Gate A unit and outcome. Gate A MUST score prompts that name the product. The unit is the prompt; a prompt passes when at least 2 of its 3 repetitions are `validFirstAttempt` under the unchanged SPEC-069 scorer, giving one binary result per prompt. A missing rollout result MUST count as a failed repetition."
     },
     {
       "id": "REQ-002",
@@ -204,6 +204,16 @@
           "test_name": "SimAllFailTests.test_coverage",
           "then": "its coverage is at least 1 \u2212 \u03b1 within simulation error for every \u03b8 in the grid",
           "when": "the bound is simulated (SIM)"
+        },
+        {
+          "given": "a protocol under this specification that states the rule \"no prompt is 0/3\" as a gate condition",
+          "id": "SC-054",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T016.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "FreezeTests.test_zero_prompt_rule_refused",
+          "then": "it refuses",
+          "when": "the freeze check runs"
         }
       ],
       "text": "All-fail upper bound. (a) Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions. (b) This condition holds when the bound is at most the preregistered threshold \u03c4 of OD-2. (c) The rule \"no prompt is 0/3\" MUST NOT be used for splits frozen under this specification."
@@ -222,7 +232,7 @@
           "when": "the gate A analysis runs"
         }
       ],
-      "text": "Review of each 0/3 prompt. Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts; disagreements are recorded verbatim. The verdict is `held` while any 0/3 prompt is unreviewed."
+      "text": "Review of each 0/3 prompt. Each prompt at 0/3 MUST be held until the owner classifies it as `model` or `instrument` on redacted transcripts. The verdict MUST be `held` while any 0/3 prompt is unreviewed."
     },
     {
       "id": "REQ-005",
@@ -238,7 +248,7 @@
           "when": "replacement runs"
         },
         {
-          "given": "instrument findings above the cap",
+          "given": "instrument findings above the cap, or a host or model change before the reserve run",
           "id": "SC-008",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T010.",
@@ -246,9 +256,29 @@
           "test_name": "GateATests.test_reserve_cap_invalidates",
           "then": "the verdict is invalidated",
           "when": "replacement runs"
+        },
+        {
+          "given": "a split with one prompt classified `instrument`",
+          "id": "SC-055",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_reserve_order_same_bytes_host_model",
+          "then": "the next reserve prompt of the same class in the preregistered draw order runs on the same frozen bytes and the same pinned host and model as the split",
+          "when": "replacement runs"
+        },
+        {
+          "given": "a split whose record of the safeguard adopted in OD-18 is missing",
+          "id": "SC-056",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T010.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_instrument_safeguard_record_required",
+          "then": "it is refused and names the missing record",
+          "when": "replacement is requested"
         }
       ],
-      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification: (a) the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; (b) the runner MUST run the next reserve prompt of the same class, in a preregistered per-class draw order from a reserve frozen by sha256 with the split, in the same session block as the split; (c) the runner MUST add that reserve result to the report only; (d) replacements MUST NOT exceed the cap of OD-8, and a replaced reserve prompt counts toward the cap; (e) the replacements MUST follow the safeguards adopted in OD-18; (f) exceeding the cap, or a host change before the reserve run, MUST invalidate the run. (g) SPEC-079, where `instrument` invalidates the run, is unchanged."
+      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification: (a) the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; (b) after the owner classifies a prompt `instrument`, the runner MUST run the next reserve prompt of the same class, in the preregistered per-class draw order of the reserve frozen by sha256 with the split, on the same frozen bytes and the same pinned host and model as the split; (c) the runner MUST add that reserve result to the report only; (d) replacements MUST NOT exceed the cap of OD-8, and a replaced reserve prompt MUST count toward the cap; (e) the replacements MUST follow the safeguards adopted in OD-18; (f) exceeding the cap, or a host or model change before the reserve run, MUST invalidate the run. (g) This requirement MUST NOT change SPEC-079, where `instrument` invalidates the run."
     },
     {
       "id": "REQ-006",
@@ -280,7 +310,7 @@
           "when": "the freeze check runs"
         }
       ],
-      "text": "Three repetitions. Gate A MUST use 3 repetitions per prompt. A different number needs a new owner decision recorded before the split is frozen."
+      "text": "Three repetitions. Gate A MUST use 3 repetitions per prompt. The freeze check MUST refuse a different number unless a new owner decision is recorded before the split is frozen."
     },
     {
       "id": "REQ-008",
@@ -296,7 +326,7 @@
           "when": "selection runs"
         },
         {
-          "given": "known-p candidates with the within-prompt correlation of the noise pilot",
+          "given": "known-p candidates with within-prompt correlation over the 0.41 to 0.81 range before the pilots and with the pilot's parameters in the re-run (T019) before any selection or held-out run",
           "id": "SC-012",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T006.",
@@ -306,13 +336,13 @@
           "when": "paired selection and n = 5 independent means are simulated (SIM)"
         }
       ],
-      "text": "Paired comparison on one fixed slice. Elimination MUST rank candidates by per-prompt paired differences in the valid rate, averaged over repetitions, with every surviving candidate evaluated on the same fixed slice of prompts and repetitions; independent means are never the decision statistic. The finer valid-rate difference is used only to screen; the replacement test of REQ-011 uses per-prompt majority pass, the gate A estimand."
+      "text": "Paired comparison on one fixed slice. Elimination MUST rank candidates by per-prompt paired differences in the valid rate, averaged over repetitions, with every surviving candidate evaluated on the same fixed slice of prompts and repetitions; independent means MUST NOT be the decision statistic. The finer valid-rate difference MUST be used only to screen; the replacement test of REQ-011 MUST use per-prompt majority pass, the gate A estimand."
     },
     {
       "id": "REQ-009",
       "scenarios": [
         {
-          "given": "pilot discordance 0.30 with advantage 0.07, \u03c1 0.5, c_p/c_r 8, family-wise \u03b1 0.05 over 3 challengers, power 0.80, \u03b4 0.02 and \u0394 0.07, and a second input with \u0394 0.35",
+          "given": "pilot discordance estimate 0.30 with exact upper bound 0.33, \u03c1 0.5, c_p/c_r 8, family-wise \u03b1 0.05 over 3 challengers, power 0.80, \u03b4 0.02 and \u0394 0.07, and a second input with \u0394 0.35",
           "id": "SC-013",
           "obtained_evidence": [],
           "planned_evidence": "Test or procedure output, T006.",
@@ -322,7 +352,7 @@
           "when": "the sizing function runs"
         }
       ],
-      "text": "Slice sized from the pilot. The confirmation slice size MUST come from the gate A noise pilot of REQ-032 through the plan.md formula, in majority-pass units: variance \u03c3_m\u00b2 = discordance minus the squared advantage, the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3, the power of OD-4, and the Holm worst-case level, the OD-16 family-wise \u03b1 divided by the number of challengers that can reach confirmation (OD-7). The elimination slice is a screen with no power target; its size is the OD-4 budget share left after confirmation. Each elimination prompt runs r* = max(1, round(\u221a((c_p/c_r)(1\u2212\u03c1)/\u03c1))) repetitions; each confirmation prompt runs 3, as majority pass requires. Sizing is refused when \u0394 exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it."
+      "text": "Slice sized from the pilot. The confirmation slice size MUST come from the gate A noise pilot of REQ-032 through the plan.md formula, in majority-pass units: variance \u03c3_m\u00b2 = discordance minus the squared advantage a\u00b2 (\u03c3_m\u00b2 uses the pilot's point estimate of the discordance and a = \u0394), the margin \u03b4 and target advantage \u0394 > \u03b4 of OD-3, the power of OD-4, and the Holm worst-case level, the OD-16 family-wise \u03b1 divided by the maximum number of challengers admitted to confirmation (OD-7). The elimination slice is a screen with no power target; its size MUST be the OD-4 budget share left after confirmation. Each elimination prompt MUST run r* = max(1, round(\u221a((c_p/c_r)(1\u2212\u03c1)/\u03c1))) repetitions; each confirmation prompt MUST run 3, as majority pass requires. The sizing function MUST refuse an input whose \u0394 exceeds the pilot's exact upper bound on the majority-pass discordance, the share of prompts (unit: prompt) on which the two arms' majority-pass outcomes differ, because an advantage cannot exceed it."
     },
     {
       "id": "REQ-010",
@@ -338,7 +368,7 @@
           "when": "elimination runs"
         }
       ],
-      "text": "Synchronized elimination. Elimination MUST be synchronized: in each round all surviving candidates see the same new items. The elimination rule is the one the owner picks in OD-11 after the simulation comparison."
+      "text": "Synchronized elimination. Elimination MUST be synchronized: in each round all surviving candidates see the same new items. The elimination rule MUST be the one the owner picks in OD-11 after the simulation comparison."
     },
     {
       "id": "REQ-011",
@@ -370,7 +400,7 @@
           "when": "its inputs are traced"
         }
       ],
-      "text": "Audit set. An audit set of the size of OD-5 MUST be frozen by sha256, disjoint by normalized text and fingerprint from every selection slice, development set and held-out split. The selected candidate is reported on it with an exact confidence interval."
+      "text": "Audit set. An audit set of the size of OD-5 MUST be frozen by sha256, disjoint by normalized text and fingerprint from every selection slice, development set and held-out split. The selected candidate MUST be reported on it with an exact 1 \u2212 \u03b1 confidence interval (OD-1)."
     },
     {
       "id": "REQ-013",
@@ -392,8 +422,28 @@
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "DriftTests.test_interleaved_blocks",
-          "then": "the block order is reproducible from the seed and contains the A/A anchors",
+          "then": "the block order is reproducible from the seed and contains the A/A anchors at the OD-20 size, drawn from development prompts only when the run is a held-out run",
           "when": "arms are scheduled"
+        },
+        {
+          "given": "a run configuration without a pinned host CLI version, with host auto-update on, or without a pinned model",
+          "id": "SC-057",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_pins_required",
+          "then": "the runner refuses before any rollout",
+          "when": "a real run is requested"
+        },
+        {
+          "given": "a re-baseline after which a pilot estimate lies outside its recorded interval",
+          "id": "SC-058",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_resize_after_rebaseline",
+          "then": "it is refused until sizing has rerun",
+          "when": "the next freeze is requested"
         }
       ],
       "text": "Drift controls. Every real run under this specification: (a) MUST pin the host CLI version with auto-update off, and the model; (b) MUST record the host, model and plugin versions per rollout; (c) MUST include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; (d) MUST interleave arms in randomized blocks with a recorded seed; (e) MUST re-baseline after any host or model change, with the runner rerunning the A/A pair and the twin on the new host; (f) when any pilot estimate leaves its recorded interval after a re-baseline, sizing MUST rerun before the next freeze."
@@ -428,7 +478,7 @@
           "when": "Gate 0 evaluates the tripwire"
         }
       ],
-      "text": "Gate 0 invocation tripwire. Gate 0 MUST reject a held-out run when the invocation rate on its development twin is below that gate's own threshold: for gate A, the T020 invocation rate on product-naming prompts minus the OD-9 margin; for gate B, the threshold of SPEC-091 REQ-015. One threshold is never applied to both gates."
+      "text": "Gate 0 invocation tripwire. Gate 0 MUST reject a held-out run when the invocation rate on its development twin is below that gate's own threshold: for gate A, the T020 invocation rate of the shipped-build arm on product-naming prompts minus the OD-9 margin; for gate B, the threshold of SPEC-091 REQ-015. One threshold MUST NOT be applied to both gates."
     },
     {
       "id": "REQ-016",
@@ -460,7 +510,7 @@
           "when": "a run is requested"
         }
       ],
-      "text": "Simulation before any real run. The runner MUST reject a real run under this specification unless its protocol carries both the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and the owner yes record of REQ-045; a development pilot (T020) needs the T004 to T007 record and its own pilot freeze (REQ-039) in place of T019."
+      "text": "Simulation before any real run. The runner MUST reject a real run under this specification unless its frozen protocol carries the hash of the recorded simulation evidence (T004 to T007, plus T019 for runs sized from the pilot) and an owner yes record (REQ-045) names that protocol's hash; a development pilot (T020) needs the T004 to T007 record and its own pilot freeze (REQ-039) in place of T019."
     },
     {
       "id": "REQ-018",
@@ -476,7 +526,7 @@
           "when": "the run starts"
         }
       ],
-      "text": "Runner concurrency. The runner MUST reject a `parallel` value above 1 unless the owner adopts concurrency in OD-6; if adopted, A/A anchors measure the effect and a decision replay is identical for any `parallel` value."
+      "text": "Runner concurrency. The runner MUST reject a `parallel` value above 1 unless the owner adopts concurrency in OD-6; if adopted, A/A anchors MUST measure the effect and a decision replay MUST be identical for any `parallel` value."
     },
     {
       "id": "REQ-019",
@@ -572,7 +622,7 @@
           "when": "the builder checks them"
         }
       ],
-      "text": "Fresh gate A held-out split. Gate A under this specification MUST use a fresh split, reserve and twin: none shares a prompt, fingerprint or normalized 8-word window with the spent v2, v3 or v4 sets or with the frozen audit set."
+      "text": "Fresh gate A held-out split. Gate A under this specification MUST use a fresh split, reserve and twin: none shares a prompt, fingerprint or normalized 8-word window with SPEC-069, v2, v3, v4 and the frozen audit set."
     },
     {
       "id": "REQ-025",
@@ -581,14 +631,14 @@
           "given": "a passed gate",
           "id": "SC-030",
           "obtained_evidence": [],
-          "planned_evidence": "Test or procedure output, T017.",
+          "planned_evidence": "Test or procedure output, T009.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
-          "test_name": "BoundaryTests.test_no_promotion",
+          "test_name": "GateATests.test_no_promotion",
           "then": "no promotion pointer changes and `executionAuthorization` is false",
           "when": "its outputs are read"
         }
       ],
-      "text": "Human promotion. A gate A pass MUST NOT promote a candidate; promotion stays human under SPEC-073 with SPEC-049 noninferiority, and a build that changes the skill description, server instructions, `_meta` or the hook also needs the same-build certification of SPEC-091 REQ-038."
+      "text": "Human promotion. A gate A pass MUST NOT promote a candidate; promotion MUST stay human under SPEC-073 with SPEC-049 noninferiority, and a build that changes the skill description, server instructions, `_meta` or the hook also needs the same-build certification of SPEC-091 REQ-038."
     },
     {
       "id": "REQ-026",
@@ -620,7 +670,7 @@
           "when": "it runs"
         }
       ],
-      "text": "Audit set not read by selection. Selection MUST NOT read any audit set item; every selection slice is checked against the frozen audit set by normalized text and fingerprint when it is frozen (split from REQ-012)."
+      "text": "Audit set not read by selection. Selection MUST NOT read any audit set item; the freeze check MUST check every selection slice against the frozen audit set by normalized text and fingerprint when the slice is frozen (split from REQ-012)."
     },
     {
       "id": "REQ-028",
@@ -764,7 +814,7 @@
           "when": "it is requested"
         }
       ],
-      "text": "Audit scored once per winner. The audit set MUST be scored once for each selected winner, and its result is never an input to a choice between runs, candidates or configurations."
+      "text": "Audit scored once per winner and incumbent. The audit set MUST be scored once for each selected winner and once for its incumbent, and its result MUST NOT be an input to a choice between runs, candidates or configurations."
     },
     {
       "id": "REQ-037",
@@ -796,11 +846,31 @@
           "planned_evidence": "Test or procedure output, T012.",
           "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
           "test_name": "DriftTests.test_resume_fills_missing_slots",
-          "then": "only the missing slots run, in frozen order, and completed slots are untouched",
+          "then": "the runner first compares the earlier session's A/A anchors with the new session's under OD-19, only the missing slots run, in frozen order, and completed slots are untouched",
           "when": "it is resumed"
+        },
+        {
+          "given": "a held-out run whose remaining quota estimate covers fewer than all its slots",
+          "id": "SC-059",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_quota_must_cover_all_slots",
+          "then": "the runner refuses before any rollout",
+          "when": "it is requested"
+        },
+        {
+          "given": "a split recorded as spent",
+          "id": "SC-060",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T012.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "DriftTests.test_spent_split_not_rescored",
+          "then": "it is rejected",
+          "when": "a second scoring of it is requested"
         }
       ],
-      "text": "Stops, host changes and resume. A frozen protocol pins the host version and model. (a) When the host or model at start differs from the pinned one, the runner MUST refuse the run before any rollout; the split is not spent, and a refreeze is required. (b) A held-out run MUST start only when the remaining quota estimate covers all its slots. (c) When a quota stop or a host or model change occurs during a run, the runner MUST stop the session and keep every completed rollout. (d) A resume MUST run only on the same frozen bytes and the same pinned host and model, after the runner compares the earlier session's A/A anchors with the new session's under OD-19. (e) A resume MUST fill exactly the unfilled (prompt, repetition) slots in their frozen order. (f) A resume MUST NOT rerun a completed slot or draw a new prompt. (g) When a host or model change blocks the resume of a held-out split, the run MUST be recorded as `invalidated`, and the split is spent. (h) A spent split MUST NOT be rescored. (i) SPEC-091 MUST apply this rule unchanged."
+      "text": "Stops, host changes and resume. A frozen protocol MUST pin the host version and model. (a) When the host or model at start differs from the pinned one, the runner MUST refuse the run before any rollout; the split MUST stay unspent, and the run MUST wait for a refreeze. (b) A held-out run MUST start only when the remaining quota estimate covers all its slots. (c) When a quota stop or a host or model change occurs during a run, the runner MUST stop the session and keep every completed rollout. (d) A resume MUST run only on the same frozen bytes and the same pinned host and model, after the runner compares the earlier session's A/A anchors with the new session's under OD-19; when the between-session anchor difference exceeds the OD-19 threshold, the runner MUST apply the OD-19 action (REQ-040). (e) A resume MUST fill exactly the unfilled (prompt, repetition) slots in their frozen order. (f) A resume MUST NOT rerun a completed slot or draw a new prompt. (g) When a host or model change blocks the resume of a held-out split, the run MUST be recorded as `invalidated`, and the split MUST be marked spent. (h) A spent split MUST NOT be rescored. (i) SPEC-091 MUST apply this rule unchanged."
     },
     {
       "id": "REQ-038",
@@ -824,9 +894,19 @@
           "test_name": "GateATests.test_conjunctive_verdict",
           "then": "it is missed",
           "when": "the verdict is computed"
+        },
+        {
+          "given": "a run with one unfilled slot and no invalidating event, and a second run with a session under the OD-19 hold action and no invalidating event",
+          "id": "SC-061",
+          "obtained_evidence": [],
+          "planned_evidence": "Test or procedure output, T009.",
+          "test_file": "specs/090-lightning-evaluation-v2/validation-plan.md",
+          "test_name": "GateATests.test_held_on_unfilled_slot_or_hold_action",
+          "then": "both are held",
+          "when": "each verdict is computed"
         }
       ],
-      "text": "Gate A verdict. (a) The gate A verdict MUST be `met` only when the passing-share lower bound, the all-fail upper bound and the class rule all hold; requiring every condition keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST apply the precedence `invalidated` over `held` over `missed` and `met`. (c) An invalidating event MUST give `invalidated`. (d) Otherwise, an unreviewed 0/3 prompt or an unfilled slot MUST give `held`. (e) Otherwise, the verdict MUST be `met` or `missed`."
+      "text": "Gate A verdict. (a) The gate A verdict MUST be `met` only when the passing-share lower bound, the all-fail upper bound and the class rule all hold; requiring every condition keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST apply the precedence `invalidated` over `held` over `missed` and `met`. (c) An invalidating event MUST give `invalidated`. (d) Otherwise, an unreviewed 0/3 prompt, an unfilled slot or the OD-19 hold action (REQ-040) MUST give `held`. (e) Otherwise, the verdict MUST be `met` or `missed`."
     },
     {
       "id": "REQ-039",
@@ -842,7 +922,7 @@
           "when": "it is requested"
         }
       ],
-      "text": "Development pilot freeze. A development pilot (T020) MUST run only after its protocol section, its prompts and the arms under test are frozen by sha256 on a `develop` commit; pilot prompts are development prompts and never enter a held-out split, reserve, twin or audit set."
+      "text": "Development pilot freeze. A development pilot (T020) MUST run only after its protocol section, its prompts and the arms under test are frozen by sha256 on a `develop` commit; pilot prompts are development prompts and MUST NOT enter a held-out split, reserve, twin or audit set."
     },
     {
       "id": "REQ-040",
@@ -874,7 +954,7 @@
           "when": "selection is configured"
         }
       ],
-      "text": "Selection stopping rule. Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent, then go to the confirmation test; the configurator rejects a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice, and there is no default: the owner chooses a smaller pool, a larger \u0394 or no selection (OD-4)."
+      "text": "Selection stopping rule. Selection rounds MUST stop when one candidate survives or the OD-4 slice budget is spent; the OD-11 rule MUST leave at most the OD-7 maximum number of challengers, which then go to the confirmation test; the configurator MUST reject a quota cap that would leave the slice below its REQ-031 size rather than shrinking the slice, and there is no default: the owner chooses a smaller pool, a larger \u0394 or no selection (OD-4)."
     },
     {
       "id": "REQ-042",
@@ -938,7 +1018,7 @@
           "when": "a run is requested"
         }
       ],
-      "text": "Owner yes record. Every run that spends quota MUST have an owner yes record before its first rollout: a dated line in `specs/090-lightning-evaluation-v2/evidence/owner-yes.md` naming the task, the run and the frozen protocol hash, written by the owner; the runner refuses a run whose record is missing or names another hash."
+      "text": "Owner yes record. Every run that spends quota MUST have an owner yes record before its first rollout: a dated line in `specs/090-lightning-evaluation-v2/evidence/owner-yes.md` naming the specification, the task, the run and the frozen protocol hash, written by the owner; the runner MUST refuse a run whose record is missing or names another hash."
     }
   ],
   "scientific_limits": "Simulations show properties of the procedures under their stated models only; real prompts are templated and clustered, so independence across prompts is an assumption; one host and model per run; cited 2026 preprints are leads; nothing is claimed about other hosts or real sessions.",

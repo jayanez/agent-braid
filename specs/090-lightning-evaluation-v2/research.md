@@ -15,7 +15,7 @@ model, not for template clustering, which REQ-033 simulates.
 Decision: bound θ = E[(1−p)³], with p a prompt's per-repetition probability of a valid first attempt.
 The 0/3 count is binomial in θ when prompts are independent and
 repetitions are independent given p (own derivation). With n rollouts per item only moments up to degree n
-are identified (2609.09245, paper; 2610.04135, minimax barrier), so θ is identified and a share of prompts
+are identified (2609.09245, paper; 2610.04135, abstract only, minimax barrier), so θ is identified and a share of prompts
 below a threshold is not. The earlier rule "no prompt is 0/3" is therefore already an all-fail test: at
 α = 0.05 and n = 100 it equals τ in [0.0295, 0.0466). OD-2 makes τ explicit; values at or above 0.075 pass
 v3 (two 0/3 prompts, bound 0.0616) and values at or above 0.0757 also pass v2 (three, bound 0.0757), each
@@ -35,9 +35,11 @@ the per-prompt signal).
 ## R4 — Paired selection on a fixed slice
 
 Decision: pair. Pairing alone gives about 2.25× in sample size; the "3 to 6×" figure needs averaging over
-repeated runs too (2512.21326, paper). Five-case minibatches support no test (own calculation). SySRs
+repeated runs too (2512.21326, paper). Five-case minibatches are underpowered: the smallest two-sided exact McNemar p-value is 0.0625 and a
+one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one direction (own
+calculation). SySRs
 (2606.07726, paper) was shown on deterministic scores without comparison to racing or covariance-adaptive
-best-arm identification (2306.02630), so the rule is chosen by simulation (OD-11). Near ties need samples
+best-arm identification (2306.02630, abstract only), so the rule is chosen by simulation (OD-11). Near ties need samples
 growing as 1/gap² (gap: the true difference between candidates) under any allocation.
 
 ## R5 — Audit set

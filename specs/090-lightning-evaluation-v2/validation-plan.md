@@ -33,7 +33,7 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-022 | SC-027 | `tests/test_spec090_boundaries.py` | `BoundaryTests.test_subscription_only` | Output of T016. |
 | REQ-023 | SC-028 | `tests/test_lightning_gate_a.py` | `ReportTests.test_no_threshold_share` | Output of T009. |
 | REQ-024 | SC-029 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_fresh_split` | Output of T016. |
-| REQ-025 | SC-030 | `tests/test_spec090_boundaries.py` | `BoundaryTests.test_no_promotion` | Output of T017. |
+| REQ-025 | SC-030 | `tests/test_lightning_gate_a.py` | `GateATests.test_no_promotion` | Output of T009. |
 | REQ-026 | SC-031 | `tests/test_lightning_gate_a.py` | `ReportTests.test_no_wilson_verdict` | Output of T009. |
 | REQ-027 | SC-032 | `tests/test_lightning_selection.py` | `AuditTests.test_selection_rejects_audit_items` | Output of T011. |
 | REQ-028 | SC-033 | `tests/test_lightning_gate_a.py` | `GateATests.test_no_retroactive_gate` | Output of T009. |
@@ -57,5 +57,13 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-043 | SC-051 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_gate_a_item_names_product` | Output of T016. |
 | REQ-044 | SC-052 | `tests/test_lightning_gate_a.py` | `Gate0Tests.test_static_gate0` | Output of T023. |
 | REQ-045 | SC-053 | `tests/test_lightning_runner.py` | `RunnerTests.test_owner_yes_required` | Output of T008. |
+| REQ-003 | SC-054 | `tests/test_spec090_boundaries.py` | `FreezeTests.test_zero_prompt_rule_refused` | Output of T016. |
+| REQ-005 | SC-055 | `tests/test_lightning_gate_a.py` | `GateATests.test_reserve_order_same_bytes_host_model` | Output of T010. |
+| REQ-005 | SC-056 | `tests/test_lightning_gate_a.py` | `GateATests.test_instrument_safeguard_record_required` | Output of T010. |
+| REQ-013 | SC-057 | `tests/test_lightning_drift.py` | `DriftTests.test_pins_required` | Output of T012. |
+| REQ-013 | SC-058 | `tests/test_lightning_drift.py` | `DriftTests.test_resize_after_rebaseline` | Output of T012. |
+| REQ-037 | SC-059 | `tests/test_lightning_drift.py` | `DriftTests.test_quota_must_cover_all_slots` | Output of T012. |
+| REQ-037 | SC-060 | `tests/test_lightning_drift.py` | `DriftTests.test_spent_split_not_rescored` | Output of T012. |
+| REQ-038 | SC-061 | `tests/test_lightning_gate_a.py` | `GateATests.test_held_on_unfilled_slot_or_hold_action` | Output of T009. |
 
-Negative controls: SC-008 (instrument counted as 0/3), SC-009 (class rule), SC-015 (incumbent kept below the margin), SC-017 (host change), SC-020 (tripwire blocks), SC-022 (simulation required), SC-023 (parallel refused), SC-036 (underpowered slice), SC-039 (confirmation slice disjoint), SC-041 (audit once), SC-042 (host mismatch refused before rollout), SC-043 (blocked resume), SC-045 and SC-046 (verdict), SC-047 (pilot freeze), SC-049 (cap does not shrink), SC-051 (gate A item without product name), SC-052 (null baselines), SC-025 to SC-030 and SC-032 to SC-035 (boundaries).
+Negative controls: SC-007 (instrument counted as 0/3), SC-008 (cap exceeded invalidates), SC-009 (class rule), SC-015 (incumbent kept below the margin), SC-017 (host change), SC-020 (tripwire blocks), SC-022 (simulation required), SC-023 (parallel refused), SC-036 (underpowered slice), SC-039 (confirmation slice disjoint), SC-041 (audit once), SC-042 (host mismatch refused before rollout), SC-043 (blocked resume), SC-045 and SC-046 (verdict), SC-047 (pilot freeze), SC-049 (cap does not shrink), SC-051 (gate A item without product name), SC-052 (null baselines), SC-054 (zero-0/3 rule refused), SC-056 (safeguard record required), SC-057 (pins required), SC-058 (sizing reruns after a re-baseline), SC-059 (quota covers all slots), SC-060 (spent split not rescored), SC-061 (held), SC-025 to SC-030 and SC-032 to SC-035 (boundaries).

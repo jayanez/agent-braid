@@ -50,5 +50,15 @@ Planned tests; none exists yet. Each scenario's `test_file` in `assurance.json` 
 | REQ-042 | SC-044 | `tests/test_spec091_items.py` | `LabelTests.test_gate_b_audit_disjoint` | Output of T022. |
 | REQ-043 | SC-045 | `tests/test_spec091_levers.py` | `LeverTests.test_description_overlay_only` | Output of T004. |
 | REQ-044 | SC-046 | `tests/test_spec091_pilots.py` | `FactorialTests.test_decisive_cell_named` | Output of T011. |
+| REQ-002 | SC-047 | `tests/test_spec091_items.py` | `LabelTests.test_kappa_threshold_gates_freeze` | Output of T002. |
+| REQ-013 | SC-048 | `tests/test_spec091_pilots.py` | `FactorialTests.test_protocol_names_contrasts_and_tests` | Output of T011. |
+| REQ-013 | SC-049 | `tests/test_lightning_gate_b.py` | `GateBTests.test_hook_unavailable_fallback` | Output of T010. |
+| REQ-014 | SC-050 | `tests/test_lightning_gate_b.py` | `GateBTests.test_heldout_scored_once` | Output of T014. |
+| REQ-014 | SC-051 | `tests/test_spec091_boundaries.py` | `FreezeTests.test_heldout_pool_fresh` | Output of T014. |
+| REQ-015 | SC-052 | `tests/test_lightning_gate_b.py` | `GateBTests.test_gate_a_threshold_refused` | Output of T014. |
+| REQ-025 | SC-053 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_levers_scoped_to_claude_code` | Output of T017. |
+| REQ-035 | SC-054 | `tests/test_spec091_boundaries.py` | `FreezeTests.test_pilot_items_excluded` | Output of T014. |
+| REQ-041 | SC-055 | `tests/test_lightning_gate_b.py` | `GateBTests.test_false_positives_block_replacement` | Output of T019. |
+| REQ-045 | SC-056 | `tests/test_spec091_boundaries.py` | `BoundaryTests.test_owner_yes_and_simulation_hash_required` | Output of T003. |
 
-Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries), SC-035 and SC-036 (verdict), SC-037 (pilot freeze), SC-038 (shared stop rule), SC-040 (same-build certification), SC-041 (listing absence is instrument), SC-042 (gate B item with product name), SC-044 (gate B audit disjoint), SC-045 (canonical SKILL.md unchanged), SC-046 (decisive cell named).
+Negative controls: SC-002 (labels frozen), SC-003 (near-miss required), SC-007 (single difference), SC-008 (hook text), SC-009 (prompt not persisted), SC-011 (caps), SC-015 (held-out before factorial), SC-016 (tripwire), SC-020 to SC-026 and SC-028, SC-029, SC-031 to SC-033 (boundaries), SC-035 and SC-036 (verdict), SC-037 (pilot freeze), SC-038 (shared stop rule), SC-040 (same-build certification), SC-041 (listing absence is instrument), SC-042 (gate B item with product name), SC-044 (gate B audit disjoint), SC-045 (canonical SKILL.md unchanged), SC-046 (decisive cell named), SC-047 (κ below threshold), SC-048 (protocol parts named), SC-050 (held-out scored once), SC-051 (held-out pool fresh), SC-052 (gate A threshold refused), SC-053 (lever scoped to claude-code), SC-054 (pilot items excluded), SC-055 (false positives block replacement), SC-056 (owner yes and simulation hash).

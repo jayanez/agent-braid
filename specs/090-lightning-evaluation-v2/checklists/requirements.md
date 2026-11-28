@@ -22,7 +22,7 @@ scientific proof or approval.
 ## Empirical protocol
 
 - [ ] CHK-008: Simulations (known p, correlation range, error rates, coverage, replay) precede any real run. (REQ-017, evaluation-protocol.md)
-- [ ] CHK-009: Leakage control against SPEC-069, v2, v3 and v4 for the gate A split, the reserve and the twin (REQ-024), and against the frozen audit set (REQ-012, REQ-024, REQ-027).
+- [ ] CHK-009: Leakage control against SPEC-069, v2, v3, v4 and the frozen audit set for the gate A split, the reserve and the twin. (REQ-024; REQ-012, REQ-027)
 - [ ] CHK-010: Hypotheses H1 to H3 are about procedures, preregistered, and none is a completion condition. (spec.md Scientific boundaries)
 - [ ] CHK-011: Cost and stopping rules are stated; EUR 0; no LLM judge. (REQ-022, evaluation-protocol.md)
 
