@@ -11,6 +11,11 @@ does each planned test file belong to the task named as its owner. It reads ``as
     python -m scripts.check_spec_references specs/090-example [specs/091-example ...]
 
 Exit status 1 when any error is found. Warnings do not fail the check.
+
+Interim tool. Reference integrity of a specification set is the remit of SpecTorque, the external checker this
+repository already uses (docs/development/SPEC_KIT.md). Retire this script, its tests and its section in
+SPEC_KIT.md when a SpecTorque release reports the same errors for this repository's ID conventions; until then
+it is run by hand and is not wired into CI or the validation profiles.
 """
 
 from __future__ import annotations

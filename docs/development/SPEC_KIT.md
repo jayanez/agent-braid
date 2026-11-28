@@ -173,6 +173,13 @@ that names no requirement and a decision never cited. It does not read meaning:
 it cannot tell whether a citation points at the right rule, only that the rule
 exists. Specs written before this section are not required to pass it.
 
+The script is interim. Reference integrity belongs in SpecTorque, which already
+counts traceability links; this script exists because SpecTorque does not yet
+report these errors for this repository's ID conventions. It is run by hand and
+is not part of CI or the validation profiles. Retire the script, its tests and
+this paragraph when a SpecTorque release covers the same errors; the review
+sequence below stays.
+
 Review sequence for a new or substantially rewritten spec:
 
 1. Run the reference check and fix every error before any review.
