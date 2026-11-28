@@ -150,6 +150,44 @@ convention in this document goes to owner review, and this section changes only
 by owner decision. Do not edit a spec to silence a finding that is an engine
 false positive.
 
+### Reference check and review sequence
+
+Proposed 2026-11-28 after the SPEC-090 and SPEC-091 drafting, where five full
+review rounds each found regressions introduced by the previous fixes. It takes
+effect when the owner merges this section.
+
+Mechanical questions are answered by a script, not by a reviewer:
+
+```bash
+python3 -m scripts.check_spec_references specs/NNN-your-feature [specs/MMM-other ...]
+```
+
+The script reads `assurance.json` (REQ and SC), `tasks.md` (tasks) and `spec.md`
+(owner decisions written `**OD-n`). It reports as errors: an ID cited and not
+defined, including `SPEC-NNN <id>` citations into another feature; a requirement
+without a scenario; a requirement or scenario no task traces; a task dependency
+cycle, within and across the named features; a T001 decision range that stops
+short of the highest decision; and a planned test file in `validation-plan.md`
+that the task named as its owner does not list. It reports as warnings a task
+that names no requirement and a decision never cited. It does not read meaning:
+it cannot tell whether a citation points at the right rule, only that the rule
+exists. Specs written before this section are not required to pass it.
+
+Review sequence for a new or substantially rewritten spec:
+
+1. Run the reference check and fix every error before any review.
+2. Before the first pull request, run one adversarial review (contradictions,
+   ambiguous normative sentences, recomputed numbers, protocol order) and one
+   counterfactual review (walk the text through past failures, plausible futures
+   and each offered decision option).
+3. Apply the findings in one pass. Rerun the reference check.
+4. Verify the fixes on the difference only: review the commits since the
+   reviewed one, plus the sentences they cite. Repeat a full review only when a
+   fix changes a gate rule, an estimand, the set of owner decisions or the task
+   order.
+5. Record the SpecTorque score with the highest score its rubric can give, so a
+   score at that ceiling is not read as unfinished work.
+
 ## Assurance record
 
 SPEC-045's draft assurance retains the historical synthetic software snapshot.
