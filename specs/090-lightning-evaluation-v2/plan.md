@@ -86,8 +86,8 @@ transcripts for the 0/3 review follow SPEC-074.
 14. **Data model and evolution.** The journal, the gate A report and the simulation record each carry a
     `schema` version string; a reader rejects an unknown version instead of guessing. The SPEC-078 and
     SPEC-079 report schemas are not changed; new fields go into the new schema versions only.
-15. **Dependency failure.** If the gate A noise pilot (T020, dependency of T019) fails or is unavailable,
-    T019 does not run, the slice size stays undecided and T016 stays blocked; no default size is substituted.
+15. **Dependency failure.** T019 depends on T020 (the gate A noise pilot, REQ-032); if T020 fails or is
+    unavailable, T019 MUST NOT run, the slice size stays undecided and T016 stays blocked; no default size is substituted.
 
 ## Validation strategy
 
@@ -125,6 +125,6 @@ and preregistration precede observation. No blocker.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-19 are open (spec.md). The owner's yes is required for T020 (pilot), T022 (Gate 0 tripwire run) and
+OD-1 to OD-21 are open (spec.md). The owner's yes is required for T020 (pilot), T022 (Gate 0 tripwire run) and
 T017 (gate A run); T023 is a static Gate 0 with no rollout; and the owner reviews every freeze (T016, T020, T021).
 SPEC-079 T009 is not decided here.

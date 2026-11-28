@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "0931c4058ba7d8ed4b06d0727fd8f15153f30cc77b1da843e487d1cf7c1dab63",
+      "docs/adr/0046-lightning-evaluation-design.md": "276815c75f9723e65c6c64e2ad9251f1fe9fb754d93ae0e9a98dbb570cb66cfe",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -206,7 +206,7 @@
           "when": "the bound is simulated (SIM)"
         }
       ],
-      "text": "All-fail upper bound. Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions, together with its comparison against the preregistered threshold \u03c4 of OD-2; this condition holds when the bound is at most \u03c4. The rule \"no prompt is 0/3\" is not used for splits frozen under this specification."
+      "text": "All-fail upper bound. (a) Gate A MUST report the exact one-sided Clopper\u2013Pearson upper bound of the all-fail rate \u03b8 = E[(1\u2212p)\u00b3], with p a prompt's per-repetition probability of a valid first attempt, estimated by the count of prompts with 0 of 3 valid repetitions. (b) This condition holds when the bound is at most the preregistered threshold \u03c4 of OD-2. (c) The rule \"no prompt is 0/3\" MUST NOT be used for splits frozen under this specification."
     },
     {
       "id": "REQ-004",
@@ -248,7 +248,7 @@
           "when": "replacement runs"
         }
       ],
-      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification, the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; the next reserve prompt of the same class, in a preregistered per-class draw order from a reserve frozen by sha256 with the split, is run in the same session block as the split and its result is added to the report only, up to the cap of OD-8 (a replaced reserve prompt counts toward the cap), under the safeguards adopted in OD-18. Exceeding the cap, or a host change before the reserve run, invalidates the run. SPEC-079, where `instrument` invalidates the run, is unchanged."
+      "text": "Instrument replacement from a frozen reserve. For a split frozen under this specification: (a) the verdict MUST be computed with every prompt classified `instrument` counted as 0/3; (b) the runner MUST run the next reserve prompt of the same class, in a preregistered per-class draw order from a reserve frozen by sha256 with the split, in the same session block as the split; (c) the runner MUST add that reserve result to the report only; (d) replacements MUST NOT exceed the cap of OD-8, and a replaced reserve prompt counts toward the cap; (e) the replacements MUST follow the safeguards adopted in OD-18; (f) exceeding the cap, or a host change before the reserve run, MUST invalidate the run. (g) SPEC-079, where `instrument` invalidates the run, is unchanged."
     },
     {
       "id": "REQ-006",
@@ -396,7 +396,7 @@
           "when": "arms are scheduled"
         }
       ],
-      "text": "Drift controls. Every real run under this specification MUST pin the host CLI version with auto-update off and the model; record the host, model and plugin versions per rollout; include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; interleave arms in randomized blocks with a recorded seed; and require a re-baseline after any host or model change. A re-baseline reruns the A/A pair and the twin on the new host; if any pilot estimate leaves its recorded interval, sizing reruns before the next freeze."
+      "text": "Drift controls. Every real run under this specification: (a) MUST pin the host CLI version with auto-update off, and the model; (b) MUST record the host, model and plugin versions per rollout; (c) MUST include A/A anchors of the OD-20 size each session, drawn from development prompts only during held-out runs; (d) MUST interleave arms in randomized blocks with a recorded seed; (e) MUST re-baseline after any host or model change, with the runner rerunning the A/A pair and the twin on the new host; (f) when any pilot estimate leaves its recorded interval after a re-baseline, sizing MUST rerun before the next freeze."
     },
     {
       "id": "REQ-014",
@@ -444,7 +444,7 @@
           "when": "it is replayed twice"
         }
       ],
-      "text": "Replayable decisions. Every selection and gate decision MUST be a pure function of a journal (results, seeds, frozen hashes); replaying a journal gives an identical decision."
+      "text": "Replayable decisions. (a) Every selection and gate decision MUST be a pure function of a journal (results, seeds, frozen hashes). (b) A replay of a journal MUST give an identical decision."
     },
     {
       "id": "REQ-017",
@@ -492,7 +492,7 @@
           "when": "its survivors are chosen"
         }
       ],
-      "text": "Optimizer selection steps. The GEPA and APO selection steps (`agent_braid/lightning_gepa.py`, `agent_braid/lightning_apo.py`) MUST use the paired selection of REQ-008 to REQ-011 for splits under this specification; their candidate target stays the skill body."
+      "text": "Optimizer selection steps. For splits under this specification: (a) the GEPA and APO selection steps (`agent_braid/lightning_gepa.py`, `agent_braid/lightning_apo.py`) MUST use the paired selection of REQ-008 to REQ-011; (b) their candidate target MUST stay the skill body."
     },
     {
       "id": "REQ-020",
@@ -524,7 +524,7 @@
           "when": "it is validated"
         }
       ],
-      "text": "No adaptive allocation in frozen data. Held-out and audit data MUST NOT be collected with adaptive allocation, including Thompson Sampling."
+      "text": "No adaptive allocation in frozen data. Adaptive allocation, including Thompson Sampling, MUST NOT be used to collect held-out or audit data."
     },
     {
       "id": "REQ-022",
@@ -540,7 +540,7 @@
           "when": "the run starts"
         }
       ],
-      "text": "Cost and route. A run MUST NOT read or accept a provider API key or other secret; it uses the subscription route at EUR 0 only."
+      "text": "Cost and route. A run MUST NOT read or accept a provider API key or other secret. A run MUST use only the subscription route at EUR 0."
     },
     {
       "id": "REQ-023",
@@ -684,7 +684,7 @@
           "when": "the sizing function runs"
         }
       ],
-      "text": "Minimum testable slice. The sizing function MUST reject a slice whose power at the target advantage \u0394, from the plan.md formula, is below the OD-4 power, and MUST name the needed size. A 5-prompt slice is underpowered: a two-sided exact McNemar test cannot reach 0.05 (smallest p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one direction, and McNemar's n counts discordant pairs only (split from REQ-009)."
+      "text": "Minimum testable slice. (a) The sizing function MUST reject a slice whose power at the target advantage \u0394, from the plan.md formula, is below the OD-4 power. (b) When it rejects a slice, the sizing function MUST name the needed size. (c) A 5-prompt slice is underpowered: a two-sided exact McNemar test cannot reach 0.05 (smallest p-value 0.0625), a one-sided exact sign test reaches 1/32 only when all five pairs are discordant in one direction, and McNemar's n counts discordant pairs only (split from REQ-009)."
     },
     {
       "id": "REQ-032",
@@ -716,7 +716,7 @@
           "when": "the gate A and all-fail simulations run"
         }
       ],
-      "text": "Template-clustered simulation. The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances, and report type I error, power and coverage under it against the tolerance of OD-15."
+      "text": "Template-clustered simulation. (a) The simulations of T004 and T005 MUST include a template-clustered scenario in which prompts of one template or class share a latent effect on p, over a grid of between-class variances. (b) Each of those simulations MUST report type I error, power and coverage under that scenario against the tolerance of OD-15."
     },
     {
       "id": "REQ-034",
@@ -800,7 +800,7 @@
           "when": "it is resumed"
         }
       ],
-      "text": "Stops, host changes and resume. A frozen protocol pins the host version and model: a different host or model at start refuses the run before any rollout, requires a refreeze and does not spend the split. A held-out run starts only when the remaining quota estimate covers all its slots. A quota stop or a host or model change during a run MUST stop the session with every completed rollout kept. A resume runs only on the same frozen bytes and the same pinned host and model, after the earlier session's A/A anchors are compared with the new session's under OD-19, and fills exactly the missing (prompt, repetition) slots in their frozen order, never rerunning a completed slot or drawing a new prompt. When a host or model change blocks the resume of a held-out split, the run is `invalidated`, the split is spent and it is not rescored. SPEC-091 applies this rule unchanged."
+      "text": "Stops, host changes and resume. A frozen protocol pins the host version and model. (a) When the host or model at start differs from the pinned one, the runner MUST refuse the run before any rollout; the split is not spent, and a refreeze is required. (b) A held-out run MUST start only when the remaining quota estimate covers all its slots. (c) When a quota stop or a host or model change occurs during a run, the runner MUST stop the session and keep every completed rollout. (d) A resume MUST run only on the same frozen bytes and the same pinned host and model, after the runner compares the earlier session's A/A anchors with the new session's under OD-19. (e) A resume MUST fill exactly the unfilled (prompt, repetition) slots in their frozen order. (f) A resume MUST NOT rerun a completed slot or draw a new prompt. (g) When a host or model change blocks the resume of a held-out split, the run MUST be recorded as `invalidated`, and the split is spent. (h) A spent split MUST NOT be rescored. (i) SPEC-091 MUST apply this rule unchanged."
     },
     {
       "id": "REQ-038",
@@ -826,7 +826,7 @@
           "when": "the verdict is computed"
         }
       ],
-      "text": "Gate A verdict. The gate A verdict MUST be `met` only when the passing-share lower bound, the all-fail upper bound and the class rule all hold; requiring every condition keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. Precedence is `invalidated` over `held` over `missed` and `met`: an invalidating event gives `invalidated`; otherwise an unreviewed 0/3 prompt or an unfilled resumable slot gives `held`; otherwise `met` or `missed`."
+      "text": "Gate A verdict. (a) The gate A verdict MUST be `met` only when the passing-share lower bound, the all-fail upper bound and the class rule all hold; requiring every condition keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST apply the precedence `invalidated` over `held` over `missed` and `met`. (c) An invalidating event MUST give `invalidated`. (d) Otherwise, an unreviewed 0/3 prompt or an unfilled slot MUST give `held`. (e) Otherwise, the verdict MUST be `met` or `missed`."
     },
     {
       "id": "REQ-039",
@@ -890,7 +890,7 @@
           "when": "the partition is drawn twice"
         }
       ],
-      "text": "Seeded partition of one pool. The split, the reserve and the twin of a gate MUST be drawn by a seeded random partition of one authored pool, with the seed recorded in the freeze."
+      "text": "Seeded partition of one pool. (a) The split, the reserve and the twin of a gate MUST be drawn by a seeded random partition of one authored pool. (b) The freeze MUST record the seed."
     },
     {
       "id": "REQ-043",

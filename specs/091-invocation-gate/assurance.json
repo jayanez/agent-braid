@@ -69,7 +69,7 @@
       "docs/adr/0043-harness-mcp-readonly-surface.md": "b2daa8a3d4e2c877bc55bc7deef63a6d0ce8456506231e29e8b617b71465b1a0",
       "docs/adr/0044-harness-portability-tiers-skill-surface.md": "dedf0c753bfd1cc1f4ba33ec6833c3ffe77f3466e53085e96d44e03aa53adbcb",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "d4ca80ca81e1c9233c8cfb2f8f99b3e43a856bc861e0d27332534fe571ef171a",
-      "docs/adr/0046-lightning-evaluation-design.md": "0931c4058ba7d8ed4b06d0727fd8f15153f30cc77b1da843e487d1cf7c1dab63",
+      "docs/adr/0046-lightning-evaluation-design.md": "276815c75f9723e65c6c64e2ad9251f1fe9fb754d93ae0e9a98dbb570cb66cfe",
       "docs/adr/README.md": "1b9ffe2cf5fdd6a8928d073a4ed30bf95dd905d54fd037b298c99ffabd1bc5ec",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -170,7 +170,7 @@
           "when": "a run is requested"
         }
       ],
-      "text": "Labels before measurement. Every gate B item MUST carry one label, `tool-necessary`, `tool-beneficial` or `tool-unnecessary` (OD-B1, 2026-11-27), assigned by the OD-2 procedure from a written rubric and frozen by sha256 before any rollout on it; labels freeze only when Cohen's \u03ba between the two labellers reaches the OD-21 threshold on each label pair, otherwise the rubric is revised and the items relabelled."
+      "text": "Labels before measurement. (a) Every gate B item MUST carry one label, `tool-necessary`, `tool-beneficial` or `tool-unnecessary` (OD-B1, 2026-11-27), assigned by the OD-2 procedure from a written rubric and frozen by sha256 before any rollout on it. (b) Labels MUST freeze only when Cohen's \u03ba between the two labellers reaches the OD-21 threshold on each label pair; otherwise the rubric MUST be revised and the items relabelled."
     },
     {
       "id": "REQ-003",
@@ -324,7 +324,7 @@
           "when": "it is built"
         }
       ],
-      "text": "Development factorial pilot. Before any gate B held-out, a 2\u00b3 factorial on fresh development prompts (plus spent v4 prompts only if and as OD-1 allows) MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent), at the size of OD-6, reported descriptively with exact intervals per cell. It estimates the effect of three of the seven v3/v4 differences on fresh prompts; it does not isolate the v3 to v4 change, and it is not a gate."
+      "text": "Development factorial pilot. Before any gate B held-out, a 2\u00b3 factorial MUST cross product name (present or absent), form (directive or question) and the completeness sentence (present or absent) on fresh development prompts, plus spent v4 prompts only to the extent OD-1 allows, at the size of OD-6, reported descriptively with exact intervals per cell. The pilot estimates the effect of three of the seven v3/v4 differences on fresh prompts; the pilot does not isolate the v3 to v4 change and is not a gate."
     },
     {
       "id": "REQ-012",
@@ -340,7 +340,7 @@
           "when": "its report is built"
         }
       ],
-      "text": "Noise pilot. A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, using the two OD-27 arms, the within-item correlation of invocation, the variance of paired per-item differences in the item outcome, the discordance between the two arms (share of items whose item outcomes differ), A/A drift and item-level recall on recall-labelled items, and publish them in the SPEC-090 sizing input format for gate B selection (T019), the OD-7 sizes and the OD-22 threshold; gate A is sized from its own pilot (SPEC-090 REQ-032)."
+      "text": "Noise pilot. (a) A gate B noise pilot MUST estimate, in the gate B laboratory on prompts that do not name the product, using the two OD-27 arms: the within-item correlation of invocation, the variance of paired per-item differences in the item outcome, the discordance between the two arms (share of items whose item outcomes differ), A/A drift and item-level recall on recall-labelled items. (b) The pilot MUST publish these estimates in the SPEC-090 sizing input format for gate B selection (T019), the OD-7 sizes and the OD-22 threshold. (c) Gate A is sized from its own pilot (SPEC-090 REQ-032)."
     },
     {
       "id": "REQ-013",
@@ -356,7 +356,7 @@
           "when": "it is generated from the frozen seed"
         }
       ],
-      "text": "Preregistered 2\u00d72 factorial. The description \u00d7 hook factorial MUST be preregistered and frozen before its run as a within-item design (every item runs in all four cells), with arms interleaved in randomized blocks and the items per cell of OD-7 (rollouts derived as items \u00d7 3); the protocol names the contrasts (description main effect, hook main effect, interaction as the difference of differences), the candidate analyses (exact paired McNemar per contrast on the item outcome; a logistic mixed model with an item random effect; a sign-flip permutation test on item-level differences) from which T007 picks one, Holm over the recall main effects at the OD-19 family-wise \u03b1 with false-positive noninferiority per effect, and the TOST equivalence test of the interaction within \u00b1\u03b7 of OD-18. If the hook arm is recorded as unavailable (REQ-039), the factorial reduces to the preregistered description-only paired comparison (use-case-first against current, hook absent), and REQ-014 uses that comparison."
+      "text": "Preregistered 2\u00d72 factorial. (a) The description \u00d7 hook factorial MUST be preregistered and frozen before its run as a within-item design (every item runs in all four cells), with arms interleaved in randomized blocks and the items per cell of OD-7 (rollouts derived as items \u00d7 3). (b) The protocol MUST name the contrasts (description main effect, hook main effect, interaction as the difference of differences). (c) The protocol MUST name the candidate analyses (exact paired McNemar per contrast on the item outcome; a logistic mixed model with an item random effect; a sign-flip permutation test on item-level differences), from which T007 picks one. (d) The protocol MUST state Holm over the recall main effects at the OD-19 family-wise \u03b1, with false-positive noninferiority per effect. (e) The protocol MUST state the TOST equivalence test of the interaction within \u00b1\u03b7 of OD-18. (f) If the hook arm is recorded as unavailable (REQ-039), the factorial MUST reduce to the preregistered description-only paired comparison (use-case-first against current, hook absent). (g) In that case REQ-014 MUST use the description-only comparison."
     },
     {
       "id": "REQ-014",
@@ -372,7 +372,7 @@
           "when": "a held-out freeze is requested"
         }
       ],
-      "text": "Gate B held-out. A gate B held-out set MUST be frozen by sha256 and scored once, and MAY be built only after the 2\u00d72 factorial meets the paired OD-9 criterion in the decisive cell named under REQ-044, at the OD-19 family-wise \u03b1, or its preregistered description-only fallback does (REQ-013): on the same items, the recall difference against the shipped build has a lower bound above zero, and false positives are noninferior, with the exact upper bound on the paired false-positive difference at or below the OD-9 margin."
+      "text": "Gate B held-out. (a) A gate B held-out set MUST be frozen by sha256 and scored once. (b) A gate B held-out set MUST NOT be built before the 2\u00d72 factorial meets the paired OD-9 criterion in the decisive cell named under REQ-044, at the OD-19 family-wise \u03b1, or its preregistered description-only fallback does (REQ-013): on the same items, the recall difference against the shipped build has a lower bound above zero, and false positives are noninferior, with the exact upper bound on the paired false-positive difference at or below the OD-9 margin."
     },
     {
       "id": "REQ-015",
@@ -388,7 +388,7 @@
           "when": "Gate 0 runs"
         }
       ],
-      "text": "Gate B tripwire. Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items drawn with the split and reserve by the seeded partition of SPEC-090 REQ-042, with the gate B threshold: the T008 item-level recall (item outcome of OD-17) on `tool-necessary` and `tool-beneficial` items, minus the OD-22 margin; the twin size is OD-22. The gate A threshold is never used for gate B."
+      "text": "Gate B tripwire. (a) Gate 0 of a gate B held-out MUST run the SPEC-090 invocation tripwire on a twin of recall-labelled items, of the OD-22 size, drawn with the split and reserve by the seeded partition of SPEC-090 REQ-042. (b) The tripwire MUST use the gate B threshold: the T008 item-level recall (item outcome of OD-17) on `tool-necessary` and `tool-beneficial` items, minus the OD-22 margin. (c) Gate B MUST NOT use the gate A threshold."
     },
     {
       "id": "REQ-016",
@@ -548,7 +548,7 @@
           "when": "its plugin manifest is checked"
         }
       ],
-      "text": "No default shipping of levers. A lever MUST NOT ship enabled by default in a release without the owner's promotion decision under SPEC-073, the hook policy of OD-11 and the same-build certification of REQ-038; because the plugin is shared by codex, claude and opencode (`integrations/agent-braid/hosts.json`), a lever ships scoped to claude-code only, or after a non-regression measurement on each other host, which SPEC-089 (a skeleton for analyze-work validity on Codex and OpenCode) does not yet specify."
+      "text": "No default shipping of levers. (a) A lever MUST NOT ship enabled by default in a release without the owner's promotion decision under SPEC-073, the hook policy of OD-11 and the same-build certification of REQ-038. (b) Because the plugin is shared by codex, claude and opencode (`integrations/agent-braid/hosts.json`), a lever MUST ship scoped to claude-code only unless a non-regression measurement exists on each other host; SPEC-089 (a skeleton for analyze-work validity on Codex and OpenCode) does not yet specify that measurement."
     },
     {
       "id": "REQ-026",
@@ -676,7 +676,7 @@
           "when": "it is frozen"
         }
       ],
-      "text": "Lever screening run. Before the 2\u00d72 factorial, the `alwaysLoad` and server-instruction arms MUST each be compared with the shipped build on the same items in one preregistered, frozen screening run (T018), on item-level recall (superiority) and false positives (noninferiority: exact upper bound on the paired difference at or below the OD-9 margin)."
+      "text": "Lever screening run. Before the 2\u00d72 factorial, each lever arm (`alwaysLoad`, server instructions) MUST be compared with the shipped build on the same items in one preregistered, frozen screening run (T018), on item-level recall (superiority) and false positives (noninferiority: exact upper bound on the paired difference at or below the OD-9 margin)."
     },
     {
       "id": "REQ-034",
@@ -702,7 +702,7 @@
           "when": "the verdict is computed"
         }
       ],
-      "text": "Gate B verdict. The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. Allowed values and precedence follow SPEC-090 REQ-038: `invalidated` over `held` over `missed` and `met`; `held` while a slot is unfilled after a stop or a label disagreement is not yet adjudicated under OD-2; invalidating events are those of SPEC-090 REQ-038."
+      "text": "Gate B verdict. (a) The gate B verdict MUST be `met` only when the recall lower bound and the false-positive upper bound both meet OD-3; requiring both keeps a false `met` at or below \u03b1 by the intersection\u2013union principle. (b) The verdict MUST use the allowed values and precedence of SPEC-090 REQ-038: `invalidated` over `held` over `missed` and `met`, with the invalidating events of SPEC-090 REQ-038. (c) The verdict MUST be `held` while a slot is unfilled after a stop or a label disagreement is not yet adjudicated under OD-2."
     },
     {
       "id": "REQ-035",
@@ -718,7 +718,7 @@
           "when": "it is requested"
         }
       ],
-      "text": "Development pilot freezes. Each development pilot and the contrast run (T008, T009, T018, T016) MUST run only after its protocol section, its labelled items and its pinned builds are frozen by sha256 on a `develop` commit and the owner says yes; pilot items never enter a held-out set or its twin."
+      "text": "Development pilot freezes. (a) Each development pilot and the contrast run (T008, T009, T018, T016) MUST run only after its protocol section, its labelled items and its pinned builds are frozen by sha256 on a `develop` commit and the owner says yes. (b) Pilot items MUST NOT enter a held-out set or its twin."
     },
     {
       "id": "REQ-036",
@@ -734,7 +734,7 @@
           "when": "a resume is requested"
         }
       ],
-      "text": "Stops and resume. Quota stops, host or model changes and resumes MUST follow SPEC-090 REQ-037 unchanged."
+      "text": "Stops and resume. Every quota stop, host or model change, or resume MUST follow SPEC-090 REQ-037 unchanged."
     },
     {
       "id": "REQ-037",
@@ -750,7 +750,7 @@
           "when": "the family is adjusted"
         }
       ],
-      "text": "Family-wise error for levers and effects. Recall superiority tests of H1 (each lever against the shipped build) and of the 2\u00d72 main effects MUST be adjusted by Holm within each family at the family-wise \u03b1 of OD-19; false positives enter as a noninferiority condition per comparison (exact upper bound on the paired difference at or below the OD-9 margin), never as a superiority test, and a lever is accepted only when both hold (intersection\u2013union)."
+      "text": "Family-wise error for levers and effects. (a) Recall superiority tests of H1 (each lever against the shipped build) and of the 2\u00d72 main effects MUST be adjusted by Holm within each family at the family-wise \u03b1 of OD-19. (b) False positives MUST enter as a noninferiority condition per comparison (exact upper bound on the paired difference at or below the OD-9 margin), never as a superiority test. (c) A lever MUST be accepted only when both hold (intersection\u2013union)."
     },
     {
       "id": "REQ-038",
@@ -814,7 +814,7 @@
           "when": "the winner is chosen"
         }
       ],
-      "text": "Gate B selection rule. Gate B selection (T019) MUST follow a preregistered rule: the incumbent is the 2\u00d72 cell that met OD-9; elimination ranks challengers by the paired item-level recall difference against the incumbent; a challenger replaces the incumbent only when its recall advantage exceeds \u03b4_B of OD-28 and the exact upper bound on its false-positive increase is at or below the OD-9 margin, each tested at the OD-19 family-wise \u03b1 with Holm over the challengers, with no combined score; when several challengers are accepted the tie-break is the largest lower bound on recall advantage, then the shortest artifact, then the lowest candidate id; the winner is scored once on the labelled gate B audit set (REQ-042) for both gate B metrics, and once on the SPEC-090 gate A audit set, whose items name the product by design, for authoring validity only, each with noninferiority to the incumbent."
+      "text": "Gate B selection rule. Gate B selection (T019) MUST follow a preregistered rule, with no combined score: (a) Selection MUST take as incumbent the 2\u00d72 cell that met OD-9. (b) Selection MUST rank challengers in elimination by the paired item-level recall difference against the incumbent. (c) Selection MUST replace the incumbent only when a challenger's recall advantage exceeds \u03b4_B of OD-28 and the exact upper bound on its false-positive increase is at or below the OD-9 margin, each tested at the OD-19 family-wise \u03b1 with Holm over the challengers. (d) When several challengers are accepted, selection MUST break the tie by the largest lower bound on recall advantage, then the shortest artifact, then the lowest candidate id. (e) Selection MUST score the winner once on the labelled gate B audit set (REQ-042) for both gate B metrics, and once on the SPEC-090 gate A audit set, whose items name the product by design, for authoring validity only, each with noninferiority to the incumbent."
     },
     {
       "id": "REQ-042",

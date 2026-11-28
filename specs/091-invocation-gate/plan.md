@@ -57,7 +57,7 @@ intent; the observed outcome is whether `analyze-work` was called.
    independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
    T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
    gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
-   and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
+   and T017; SPEC-091 T021 and T015). Each run MUST be behind its own freeze and owner yes record.
 6c. **Lever screening (REQ-033).** `alwaysLoad` and server instructions are screened against the current
    build in T018 before the 2×2 factorial, so every built lever is measured.
 6d. **Verdict (REQ-034).** Conjunctive, so a false `met` stays at or below α by the intersection–union

@@ -48,16 +48,16 @@ direction, and McNemar's n counts discordant pairs only.
    - **Gate A (authoring validity).** Prompts that name the product. Unit: the prompt. Outcome: the prompt
      passes when at least 2 of its 3 repetitions are valid first attempts. The primary estimand is the
      share of prompts that pass (one binary result per prompt, treated as independent across prompts).
-   - **Gate B (unprompted invocation).** Prompts that do not name the product. Every item carries a label
+   - **Gate B (unprompted invocation).** Prompts that do not name the product. Every item MUST carry a label
      fixed before measurement (owner decision OD-B1, stated on 2026-11-27; it has no committed record
      yet, and SPEC-091 T001 records it): `tool-necessary` (the needed fact is
      not in the prompt, for example repository state), `tool-beneficial` (the product gives a verified,
      auditable artifact the prose answer does not), or `tool-unnecessary`. Recall is measured and bounded
      on the first two labels together; the false-positive rate is measured and bounded on
-     `tool-unnecessary` items, including near-misses. The item, not the rollout, is the unit of both bounds,
+     `tool-unnecessary` items, including near-misses. The item, not the rollout, MUST be the unit of both bounds,
      because rollouts of one prompt are correlated (ANOVA ICC of per-prompt pass counts 0.81 on v4); the per-item outcome is an open decision
-     (SPEC-091 OD-17). Neither bound is combined into one score.
-2. **Identified estimands only.** Gate A reports:
+     (SPEC-091 OD-17). The two bounds MUST NOT be combined into one score.
+2. **Identified estimands only.** Gate A MUST report:
    - an **exact one-sided Clopper–Pearson lower bound** on the share of passing prompts, at an α declared
      before measurement (the Wilson interval with z = 1.96 is a one-sided 97.5 % bound without a coverage
      guarantee and is not used);
@@ -74,32 +74,33 @@ direction, and McNemar's n counts discordant pairs only.
    Three repetitions are kept: with the measured within-prompt correlation (0.41 to 0.52) and a prompt cost
    of about 6 to 10 rollouts, the optimum is near 3 (own calculation from 2611.26592; the cost ratio is an
    assumption the noise pilot must measure).
-3. **Paired selection on one fixed slice.** Candidate text artifacts are compared on the same fixed slice
+3. **Paired selection on one fixed slice.** Candidate text artifacts MUST be compared on the same fixed slice
    of prompts, sized from a pilot (a 5-prompt slice is underpowered). Elimination pairs per-prompt valid
    rates averaged over repetitions; the final replacement test runs on a separate confirmation slice, on
    per-prompt majority pass (the gate A estimand), with Holm when several challengers reach it. Elimination is synchronized (all surviving candidates see the same items per round). The
-   incumbent is kept unless a preregistered margin δ is met (an ε-good objective); the slice is sized for
+   incumbent MUST be kept unless a preregistered margin δ is met (an ε-good objective); the slice is sized for
    power at a target advantage Δ greater than δ (both open, SPEC-090 OD-3). The elimination rule is
    chosen by simulation with the pilot's parameters before any real run.
-4. **Audit set.** An audit set of items (128 proposed; the size is an OD) is never used for selection. The
+4. **Audit set.** An audit set of items (128 proposed; the size is an OD) MUST NOT be used for selection. The
    selected winner is reported on it with a confidence interval, to expose the winner's curse.
-5. **Drift controls.** The host CLI and model are pinned with no auto-update; the host, model and plugin
+5. **Drift controls.** The host CLI and model MUST be pinned with no auto-update; the host, model and plugin
    versions are recorded per rollout; A/A anchors (the same arm twice) run each session; arms are
    interleaved in randomized blocks; any host change triggers a re-baseline (the A/A pair and the twin rerun;
    sizing reruns if a pilot estimate leaves its interval). A frozen protocol pins the host: a different host
    refuses the run before any rollout without spending the split. Reports carry `configDigest`,
    per-rollout versions, the server-reported model identifier, tool-call counts and whether the skill was
    invoked.
-6. **Gate 0 invocation tripwire.** Every Gate 0 of a split frozen under SPEC-090 or SPEC-091 includes an invocation-rate tripwire on a
+6. **Gate 0 invocation tripwire.** Every Gate 0 of a split frozen under SPEC-090 or SPEC-091 MUST include an invocation-rate tripwire on a
    development twin of the held-out set (about 20 prompts, a few minutes at the observed 8.5 s per
    rollout), so a collapse such as T008's is seen before a held-out set is spent. The threshold is per
    gate: gate A uses its pilot's rate on product-naming prompts, gate B its pilot's rate on recall-labelled
    items, each minus an owner margin.
-7. **Architecture before text.** For invocation, deterministic levers are measured before text is
+7. **Architecture before text.** For invocation, deterministic levers MUST be measured before text is
    optimized: `anthropic/alwaysLoad` tool meta, MCP server instructions, a skill description that leads
    with the use case, a factual (non-imperative) `UserPromptSubmit` hook, and an explicit command. Each is
    an arm. Their effect on this host is unmeasured; external reports are leads (see Research). A build that
-   changes any of them is certified on the same build: gate B met, and gate A met or SPEC-049
+   changes any of them MUST be certified on the same build: gate B met and, on that build, at least one
+   of gate A met or SPEC-049
    noninferiority on a fresh gate A split (SPEC-091 REQ-038).
 8. **Reframing.** The track is **best-arm selection over text artifacts under host drift**, with a frozen
    closed-model policy. It is not reinforcement learning of weights. ADR 0039's "reward-driven
@@ -112,8 +113,8 @@ direction, and McNemar's n counts discordant pairs only.
    (`agent_braid/lightning_gepa.py`); APO keeps a top-k beam by mean (`agent_braid/lightning_apo.py`).
 10. **Thompson Sampling: evaluated, not adopted.** See Alternatives. It is excluded from any frozen gate.
 11. **Boundaries unchanged.** EUR 0 on the subscription route (ADR 0021, ADR 0039 decision 2); no LLM
-    judge as a reward source (ADR 0039 decision 5); promotion stays human with SPEC-049 noninferiority;
-    held-out sets are hash-frozen and scored once; `executionAuthorization` stays false; no weights.
+    judge as a reward source (ADR 0039 decision 5); promotion MUST stay human with SPEC-049 noninferiority;
+    held-out sets MUST be hash-frozen and scored once; `executionAuthorization` stays false; no weights.
     **ADR 0039 needs no amendment:** it does not address allocation, section 5 already admits verifiable
     rewards, and decision 1 already covers tool descriptions. **ADR 0042 stays deferred.**
 
@@ -169,7 +170,7 @@ Real-run order, the same in ADR 0046, SPEC-090 and SPEC-091: the gate A noise pi
 independently and in either order, the gate B noise pilot and development factorial (SPEC-091 T008,
 T009); then lever screening (SPEC-091 T018) and the 2×2 factorial (T012); then, only where it applies,
 gate B selection (T019) and the same-build gate A run (T023); then the frozen held-out runs (SPEC-090 T022
-and T017; SPEC-091 T021 and T015). Each run is behind its own freeze and owner yes record.
+and T017; SPEC-091 T021 and T015). Each run MUST be behind its own freeze and owner yes record.
 
 ## Research (leads, not facts)
 
